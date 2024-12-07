@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on Catatan Ilham</title>
+    <link>http://localhost:44665/posts/</link>
+    <description>Recent content in Posts on Catatan Ilham</description>
+    <generator>Hugo -- 0.139.3</generator>
+    <language>en</language>
+    <copyright>©ilham.dev</copyright>
+    <lastBuildDate>Sat, 07 Dec 2024 19:32:38 +0700</lastBuildDate>
+    <atom:link href="http://localhost:44665/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Artikel Pertama</title>
+      <link>http://localhost:44665/posts/artikel-pertama/</link>
+      <pubDate>Sat, 07 Dec 2024 19:32:38 +0700</pubDate>
+      <guid>http://localhost:44665/posts/artikel-pertama/</guid>
+      <description>&lt;p&gt;Halo 👋,&lt;br&gt;
+ini merupakan artikel pertama yang dibuat dengan hugo.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

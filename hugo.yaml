@@ -1,0 +1,92 @@
+baseURL: "https://ilham.dev/"
+languageCode: en-us
+title: Catatan Ilham
+theme: "PaperMod"
+copyright: "©ilham.dev"
+
+enableInlineShortcodes: true
+enableRobotsTXT: true
+enableEmoji: true
+pygmentsUseClasses: true
+
+minify:
+    disableXML: true
+
+languages:
+    en:
+        languageName: "English"
+        weight: 1
+        taxonomies:
+          category: categories
+          tag: tags
+          series: series
+        menu:
+            main:
+                - name: Tentang
+                  url: about/
+                  weight: 5
+                - name: Artikel
+                  url: posts/
+                  weight: 10
+                - name: Tags
+                  url: tags/
+                  weight: 15
+                - name: Cari
+                  url: search/
+                  weight: 20
+
+outputs:
+    home:
+        - HTML
+        - RSS
+        - JSON
+
+params:
+    env: production
+    description: "Catatan Ilham"
+    author: "Ilham Andika"
+    hideAuthor: true
+    defaultTheme: auto
+    disableThemeToggle: false
+    ShowShareButtons: false
+    ShowReadingTime: true
+    disableSpecial1stPost: false
+    displayFullLangName: true
+    ShowPostNavLinks: true
+    ShowBreadCrumbs: false
+    ShowCodeCopyButtons: true
+    ShowRssButtonInSectionTermList: false
+    ShowToc: false
+    comments: false
+    # googleAnalyticsID: 
+    # disqusShortname: 
+
+    homeInfoParams:
+        # Title: 
+        Content: >
+            - Halo, saya Ilham Andika👋,  
+
+            - ✨ Ini adalah ruang pribadi untuk mencatat perjalanan belajar saya. 📘💻 Tempat saya menyimpan ide, solusi, tantangan, dan pelajaran yang saya temukan di setiap langkah.
+            🚀 Bukan tentang menjadi sempurna, tapi tentang terus belajar, berkembang, dan melihat sejauh mana saya telah melangkah. 🌱
+
+    socialIcons:
+        - name: github
+          url: "https://github.com/ilhamandikas"
+        - name: gitlab
+          url: "https://gitlab.com/ilhamandika"
+        - name: linkedin
+          url: "https://www.linkedin.com/in/ilham-andika-setiawan-57275a1b2/"
+        - name: instagram
+          url: "https://instagram.com/llhamandika"
+
+    label:
+        text: "🚀"
+
+    assets:
+      disableHLJS: true
+      favicon: "favicon/favicon.ico"
+      favicon16x16: "favicon/favicon-16x16.png"
+      favicon32x32: "favicon/favicon-32x32.png"
+      apple_touch_icon: "favicon/apple-touch-icon.png"
+      disableFingerprinting: true
+
