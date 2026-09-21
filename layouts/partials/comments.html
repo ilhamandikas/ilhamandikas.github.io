@@ -1,0 +1,27 @@
+{{- $g := site.Params.giscus -}}
+{{- if and $g.repoid (not hugo.IsServer) }}
+<section class="comments" aria-labelledby="comments-title">
+  <h2 id="comments-title">Comments</h2>
+  <p class="comments-note">Comments are welcome — please read the
+    <a href="{{ "/comment-policy/" | relURL }}">comment policy</a> first.
+    Powered by <a href="https://giscus.app" rel="noopener">giscus</a> and GitHub Discussions.</p>
+  <div class="giscus"></div>
+  <script src="https://giscus.app/client.js"
+          data-repo="{{ $g.repo }}"
+          data-repo-id="{{ $g.repoid }}"
+          data-category="{{ $g.category }}"
+          data-category-id="{{ $g.categoryid }}"
+          data-mapping="{{ $g.mapping }}"
+          data-strict="1"
+          data-reactions-enabled="{{ $g.reactions }}"
+          data-emit-metadata="0"
+          data-input-position="{{ $g.inputposition }}"
+          data-theme="{{ $g.theme }}"
+          data-lang="{{ $g.lang }}"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>Please enable JavaScript to view the comments.</noscript>
+</section>
+{{- end }}

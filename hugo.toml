@@ -1,0 +1,37 @@
+baseURL = "https://ilham.dev/"
+languageCode = "en"
+defaultContentLanguage = "en"
+title = "ilham.dev"
+enableRobotsTXT = true
+paginate = 10
+summaryLength = 30
+timeZone = "Asia/Jakarta"
+
+[params]
+  author = "Ilham Andika"
+  email = "ilham-andika@outlook.com"
+  github = "https://github.com/ilhamandikas"
+  description = "Ilham Andika — notes on backend, servers, infrastructure, and automation: what I build, what breaks, and what I learn."
+  gravatarSize = 240
+
+# Comments via giscus (GitHub Discussions). Values come from https://giscus.app.
+[params.giscus]
+  repo = "ilhamandikas/ilhamandikas.github.io"
+  repoid = "R_kgDOUiew2A"
+  category = "Announcements"
+  categoryid = "DIC_kwDOUiew2M4DGBNS"
+  mapping = "pathname"
+  reactions = "1"
+  inputposition = "bottom"
+  theme = "light"
+  lang = "en"
+
+[taxonomies]
+  tag = "tags"
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+    style = "github"
+  [markup.goldmark.renderer]
+    unsafe = false

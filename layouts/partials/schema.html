@@ -1,0 +1,21 @@
+{{- /* Structured data. One small graph per page is enough. */ -}}
+{{- $author := site.Params.author -}}
+{{- $home := site.BaseURL -}}
+{{- $lang := site.LanguageCode | default "en" -}}
+{{- $desc := site.Params.description -}}
+{{- with .Description }}{{ $desc = . }}{{ end -}}
+{{- $image := "og.png" | absURL -}}
+{{- with .Params.images }}{{ $image = index . 0 | absURL }}{{ end -}}
+{{- $person := dict "@type" "Person" "name" $author "url" $home -}}
+{{- with site.Params.github }}{{ $person = merge $person (dict "sameAs" .) }}{{ end -}}
+{{- if .IsHome -}}
+{{- $data := dict "@context" "https://schema.org" "@type" "WebSite" "name" site.Title "url" $home "description" $desc "inLanguage" $lang "author" $person -}}
+<script type="application/ld+json">{{ $data | jsonify | safeJS }}</script>
+{{- else if and .IsPage (eq .Section "posts") -}}
+{{- $modified := .Date }}{{ if not .Lastmod.IsZero }}{{ $modified = .Lastmod }}{{ end -}}
+{{- $data := dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" .Title "description" $desc "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" ($modified.Format "2006-01-02T15:04:05Z07:00") "inLanguage" $lang "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink) "image" $image "author" $person "publisher" $person -}}
+<script type="application/ld+json">{{ $data | jsonify | safeJS }}</script>
+{{- else -}}
+{{- $data := dict "@context" "https://schema.org" "@type" "WebPage" "name" .Title "description" $desc "url" .Permalink "inLanguage" $lang -}}
+<script type="application/ld+json">{{ $data | jsonify | safeJS }}</script>
+{{- end -}}

@@ -1,0 +1,15 @@
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; {{ now.Year }} {{ site.Params.author }}. All rights reserved.</span>
+    <nav aria-label="Footer">
+      <a href="{{ "/contact/" | relURL }}">Contact</a>
+      <a href="{{ "/terms/" | relURL }}">Terms</a>
+      <a href="{{ "/privacy/" | relURL }}">Privacy</a>
+      <a href="{{ "/comment-policy/" | relURL }}">Comment Policy</a>
+      <a href="{{ "index.xml" | relURL }}">RSS</a>
+      {{- with site.Params.github }}
+      <a href="{{ . }}" rel="me noopener">GitHub</a>
+      {{- end }}
+    </nav>
+  </div>
+</footer>

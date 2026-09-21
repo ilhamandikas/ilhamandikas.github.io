@@ -1,0 +1,74 @@
+{{ define "main" }}
+<section class="hero profile-hero">
+  <div class="container profile-hero-inner">
+    <div class="profile-photo">{{ partial "gravatar.html" . }}</div>
+    <div class="profile-intro">
+      <h1>Hi, I'm <span class="accent">Ilham</span>.</h1>
+      <p class="lead">
+        I like understanding how things work behind the scenes — not just the part I'm
+        working on, but how the whole thing fits together. Most of what I write here
+        started as something I had to fix.
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="{{ "/posts/" | relURL }}">Read the blog &rarr;</a>
+        <a class="btn" href="{{ "/contact/" | relURL }}">Get in touch</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="focus">
+  <div class="container">
+    <h2 id="focus" class="section-title">What I work on</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="icon" aria-hidden="true">&#9881;</span>
+        <h3>Backend &amp; databases</h3>
+        <p>I spend a lot of time working somewhere between the application and the database — building APIs, tracing weird issues, looking at slow queries, and figuring out why something that worked yesterday suddenly doesn't.</p>
+      </article>
+      <article class="card">
+        <span class="icon" aria-hidden="true">&#9729;</span>
+        <h3>Servers &amp; infrastructure</h3>
+        <p>Most of my infrastructure work starts with a Linux server. I run services in containers, deal with networking and reverse proxies, move things between servers, and try to keep everything simple enough that I can still understand it months later.</p>
+      </article>
+      <article class="card">
+        <span class="icon" aria-hidden="true">&#8635;</span>
+        <h3>Automation</h3>
+        <p>If I notice myself doing the same thing over and over, I'll probably try to automate it. Sometimes that means a proper tool, sometimes it's just a small script or a cron job that saves me from doing the boring part again.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+{{- $posts := where site.RegularPages "Section" "posts" }}
+{{- with $posts.ByDate.Reverse }}
+<section class="section" aria-labelledby="latest">
+  <div class="container">
+    <h2 id="latest" class="section-title">Things I've been figuring out</h2>
+    <p class="subtitle">Notes from projects, experiments, and problems I've spent time working through.</p>
+    <ul class="post-list">
+      {{- range first 5 . }}
+      <li class="post-item">
+        <a class="post-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
+        <p class="post-summary">{{ .Summary | plainify | truncate 200 }}</p>
+        <p class="post-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time> &middot; {{ .ReadingTime }} min read</p>
+      </li>
+      {{- end }}
+    </ul>
+    <p class="more-link"><a href="{{ "/posts/" | relURL }}">All posts &rarr;</a></p>
+  </div>
+</section>
+{{- end }}
+
+<section class="section" aria-labelledby="contact">
+  <div class="container">
+    <div class="contact-box">
+      <div>
+        <h3 id="contact"><a class="contact-link" href="{{ "/contact/" | relURL }}">Let's talk</a></h3>
+        <p>Working on something similar, or want to discuss a post? Feel free to reach out.</p>
+      </div>
+      <a class="btn primary" href="{{ "/contact/" | relURL }}">Get in touch</a>
+    </div>
+  </div>
+</section>
+{{ end }}

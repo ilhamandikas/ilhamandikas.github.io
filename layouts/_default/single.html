@@ -1,0 +1,34 @@
+{{ define "main" }}
+{{- if eq .Section "posts" }}
+<article class="page post">
+  <div class="container">
+    <div class="page-header">
+      <h1>{{ .Title }}</h1>
+      <p class="updated">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time>
+        &middot; {{ .ReadingTime }} min read
+      </p>
+      {{- with .Params.tags }}
+      <p class="tags">{{ range . }}<a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}/">#{{ . }}</a> {{ end }}</p>
+      {{- end }}
+    </div>
+    <div class="prose">{{ .Content }}</div>
+    {{ partial "comments.html" . }}
+    <nav class="post-nav" aria-label="Post navigation">
+      {{- with .PrevInSection }}<a href="{{ .RelPermalink }}">&larr; {{ .Title }}</a>{{ end }}
+      {{- with .NextInSection }}<a class="next" href="{{ .RelPermalink }}">{{ .Title }} &rarr;</a>{{ end }}
+    </nav>
+  </div>
+</article>
+{{- else }}
+<article class="page">
+  <div class="container">
+    <div class="page-header">
+      <h1>{{ .Title }}</h1>
+      {{- if not .Lastmod.IsZero }}<p class="updated">Last updated: {{ .Lastmod.Format "2 January 2006" }}</p>{{ end }}
+    </div>
+    <div class="prose">{{ .Content }}</div>
+  </div>
+</article>
+{{- end }}
+{{ end }}

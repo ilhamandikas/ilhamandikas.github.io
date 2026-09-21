@@ -1,0 +1,32 @@
+{{ define "main" }}
+<section class="page">
+  <div class="container">
+    <div class="page-header">
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="updated">{{ . }}</p>{{ end }}
+    </div>
+
+    {{- $pag := .Paginate .Pages }}
+    {{- if $pag.Pages }}
+    <ul class="post-list">
+      {{- range $pag.Pages }}
+      <li class="post-item">
+        <a class="post-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
+        <p class="post-summary">{{ .Summary | plainify | truncate 220 }}</p>
+        <p class="post-meta">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
+          &middot; {{ .ReadingTime }} min read
+          {{- with .Params.tags }} &middot;
+          {{- range . }} <a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}/">#{{ . }}</a>{{ end }}
+          {{- end }}
+        </p>
+      </li>
+      {{- end }}
+    </ul>
+    {{ template "_internal/pagination.html" . }}
+    {{- else }}
+    <p class="subtitle">No posts yet.</p>
+    {{- end }}
+  </div>
+</section>
+{{ end }}
