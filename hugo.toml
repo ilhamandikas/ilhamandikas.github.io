@@ -9,7 +9,7 @@ timeZone = "Asia/Jakarta"
 
 [params]
   author = "Ilham Andika"
-  email = "ilham-andika@outlook.com"
+  email = "hai@ilham.dev"
   github = "https://github.com/ilhamandikas"
   description = "Ilham Andika — notes on backend, servers, infrastructure, and automation: what I build, what breaks, and what I learn."
   gravatarSize = 240

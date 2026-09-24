@@ -106,7 +106,7 @@ I may update this Privacy Statement from time to time. When I do, I will revise 
 ## 12. Contact
 
 For any privacy-related question or request, contact me at
-[ilham-andika@outlook.com](mailto:ilham-andika@outlook.com).
+[hai@ilham.dev](mailto:hai@ilham.dev).
 
 > **Note:** This page is provided for general informational purposes and does not
 > constitute legal advice. Please consult a qualified professional for advice specific
