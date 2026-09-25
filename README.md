@@ -174,6 +174,14 @@ prerendered markup stays put and no DOM is rebuilt on each keystroke.
 `tools-nav.js` ranks the sidebar. Both read the name and description back out of
 the markup and take only `data-keywords` as an attribute.
 
+`order` only works on flex and grid items, which is a trap: a flex item's
+default `order` is `0` and ranked items use negative values, so anything that
+shares the container with them silently sorts *below* the results. In the sidebar
+that put the search field at the bottom of the list. Only the ranked groups
+belong in that container, so they get their own `.tool-nav-list` wrapper and the
+field stays outside it — asserted structurally, since jsdom cannot measure
+layout.
+
 **Cmd+K works everywhere, not just on `/tools/`.** On a tool page the sidebar
 carries its own field: typing filters and ranks, ↑/↓ move the selection, Enter
 opens the row, and Escape clears then blurs. The categories are dropped while a

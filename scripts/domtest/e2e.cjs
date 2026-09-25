@@ -348,6 +348,9 @@ const check = (label, actual, expected) => {
 
     check('catalog: script ran', page.scripts.length, 1);
     check('catalog: all cards visible at rest', visibleCards() > 80, true);
+    // Same trap as the sidebar: ranked groups use negative `order` inside this
+    // flex container, so anything else in here would sort below the results.
+    check('catalog: the catalog holds nothing but ranked groups', [...document.querySelector('#tools-catalog').children].every((c) => c.hasAttribute('data-tools-group')), true);
 
     key({ key: 'k', metaKey: true });
     check('catalog: Cmd+K focuses search', document.activeElement === search, true);
@@ -474,6 +477,7 @@ const check = (label, actual, expected) => {
     const { document } = page.w;
     const input = document.querySelector('#tool-nav-search');
     const nav = document.querySelector('.tool-nav');
+    const navSearch = document.querySelector('.tool-nav-search');
     const empty = document.querySelector('#tool-nav-empty');
     const links = [...document.querySelectorAll('.tool-nav a')];
     const name = (link) => link.textContent.trim();
@@ -490,10 +494,14 @@ const check = (label, actual, expected) => {
 
     check('sidebar: the field is there', Boolean(input), true);
     check('sidebar: every tool is listed', links.length, 90);
-    // Ranking is CSS `order`, which needs a flex or grid container. The mobile
-    // rule that reopens the collapsed nav has to keep it one.
-    check('sidebar: the nav is a flex container', /\.tool-nav\{[^}]*display:flex/.test(CSS), true);
-    check('sidebar: ...and stays one on mobile', /#tool-nav-toggle:checked~\.tool-nav\{display:flex\}/.test(CSS), true);
+    // The field must not share a flex container with the ranked groups: a flex
+    // item's default `order` is 0 and ranked groups use negative values, so
+    // sharing one sorted the field to the bottom of the sidebar.
+    check('sidebar: the field is outside the ranked list', nav.querySelector('.tool-nav-list').contains(navSearch), false);
+    check('sidebar: the field is the first thing in the nav', nav.firstElementChild, navSearch);
+    check('sidebar: the ranked list is a flex container', /\.tool-nav-list\{[^}]*display:flex/.test(CSS), true);
+    // ...and the mobile rule that reopens the collapsed nav must not clobber it.
+    check('sidebar: the ranked list keeps its own display on mobile', /#tool-nav-toggle:checked~\.tool-nav\{display:block\}/.test(CSS), true);
 
     document.dispatchEvent(new page.w.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true, cancelable: true }));
     check('sidebar: Cmd+K focuses the field', document.activeElement === input, true);

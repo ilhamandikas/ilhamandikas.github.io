@@ -8,18 +8,20 @@
     </label>
   </div>
   <p class="tool-nav-empty" id="tool-nav-empty" hidden>No tools match.</p>
-  {{- range site.Data.tools }}
-  <div class="tool-nav-group">
-    <span class="tool-nav-title">{{ .name }}</span>
-    <ul>
-      {{- range .tools }}
-      <li>
-        <a href="{{ printf "/tools/%s/" .slug | relURL }}"
-           data-keywords="{{ delimit .keywords " " }}"
-           {{ if eq .slug $current }}class="active" aria-current="page"{{ end }}>{{ .name }}{{ if ne .status "done" }} <span class="tool-soon">soon</span>{{ end }}</a>
-      </li>
-      {{- end }}
-    </ul>
+  <div class="tool-nav-list">
+    {{- range site.Data.tools }}
+    <div class="tool-nav-group">
+      <span class="tool-nav-title">{{ .name }}</span>
+      <ul>
+        {{- range .tools }}
+        <li>
+          <a href="{{ printf "/tools/%s/" .slug | relURL }}"
+             data-keywords="{{ delimit .keywords " " }}"
+             {{ if eq .slug $current }}class="active" aria-current="page"{{ end }}>{{ .name }}{{ if ne .status "done" }} <span class="tool-soon">soon</span>{{ end }}</a>
+        </li>
+        {{- end }}
+      </ul>
+    </div>
+    {{- end }}
   </div>
-  {{- end }}
 </nav>
