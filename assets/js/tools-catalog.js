@@ -1,43 +1,75 @@
-// Client-side filter for the /tools/ catalog. No dependencies.
+// Client-side search for the /tools/ catalog, backed by tools-search.js.
+import { bindFocusShortcut, buildIndex, search, shortcutLabel } from './tools-search.js';
+
 const input = document.querySelector('#tools-search');
+const catalog = document.querySelector('#tools-catalog');
 const groups = Array.from(document.querySelectorAll('[data-tools-group]'));
 const cards = Array.from(document.querySelectorAll('[data-tool-card]'));
 const empty = document.querySelector('#tools-empty');
+const fuzzyNote = document.querySelector('#tools-fuzzy');
 
-if (input) {
-  const apply = () => {
-    const q = input.value.trim().toLowerCase();
-    let visible = 0;
+if (input && catalog) {
+  const groupCards = new Map(
+    groups.map((group) => [group, Array.from(group.querySelectorAll('[data-tool-card]'))]),
+  );
 
+  // The name and description are read back out of the markup instead of being
+  // duplicated into data attributes.
+  const index = buildIndex(
+    cards.map((card) => ({
+      card,
+      name: card.querySelector('.tool-card-name').textContent,
+      desc: card.querySelector('.tool-card-desc').textContent,
+      keywords: card.dataset.keywords || '',
+    })),
+  );
+
+  const reset = () => {
     cards.forEach((card) => {
-      const haystack = card.getAttribute('data-search') || '';
-      const match = q === '' || haystack.includes(q);
-      card.hidden = !match;
-      if (match) visible += 1;
+      card.hidden = false;
+      card.style.order = '';
+    });
+    groups.forEach((group) => {
+      group.hidden = false;
+      group.style.order = '';
+    });
+    if (empty) empty.hidden = true;
+    if (fuzzyNote) fuzzyNote.hidden = true;
+  };
+
+  const apply = () => {
+    if (input.value.trim() === '') {
+      reset();
+      return;
+    }
+
+    const results = search(input.value, index);
+    const scores = new Map(results.map((result) => [result.item.card, result.score]));
+
+    // Rank rather than only filter, otherwise a fuzzy search returns more
+    // results in an arbitrary order. This uses CSS `order` instead of moving
+    // nodes so the DOM stays stable.
+    cards.forEach((card) => {
+      const score = scores.get(card);
+      card.hidden = score === undefined;
+      card.style.order = score === undefined ? '' : String(-score);
     });
 
     groups.forEach((group) => {
-      const any = group.querySelector('[data-tool-card]:not([hidden])');
-      group.hidden = !any;
+      const shown = groupCards.get(group).filter((card) => scores.has(card));
+      group.hidden = shown.length === 0;
+      group.style.order = shown.length === 0 ? '' : String(-Math.max(...shown.map((card) => scores.get(card))));
     });
 
-    if (empty) empty.hidden = visible !== 0;
+    if (empty) empty.hidden = results.length !== 0;
+    if (fuzzyNote) fuzzyNote.hidden = !(results.length > 0 && results[0].fuzzy);
   };
 
-  // The hint has to name the key people actually have on their keyboard.
   const kbd = document.querySelector('#tools-search-kbd');
-  if (kbd) {
-    const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent || '';
-    kbd.textContent = /mac|iphone|ipad|ipod/i.test(platform) ? '⌘K' : 'Ctrl K';
-  }
+  if (kbd) kbd.textContent = shortcutLabel();
+  bindFocusShortcut(input);
 
   document.addEventListener('keydown', (event) => {
-    if ((event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === 'k') {
-      event.preventDefault();
-      input.focus();
-      input.select();
-      return;
-    }
     // Escape clears the query first, then hands focus back to the page.
     if (event.key === 'Escape' && document.activeElement === input) {
       if (input.value === '') {

@@ -33,6 +33,8 @@
 {{ define "scripts" }}
 {{- $toolkit := resources.Get "js/toolkit.js" | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $toolkit.RelPermalink }}" integrity="{{ $toolkit.Data.Integrity }}"></script>
+{{- $nav := resources.Get "js/tools-nav.js" | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $nav.RelPermalink }}" integrity="{{ $nav.Data.Integrity }}"></script>
 {{- with .Params.js }}
 {{- $js := resources.Get . | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>

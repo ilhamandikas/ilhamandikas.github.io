@@ -352,7 +352,22 @@ const check = (label, actual, expected) => {
     search.dispatchEvent(new page.w.Event('input', { bubbles: true }));
     const yamlOnly = visibleCards();
     check('catalog: filters to a few cards', yamlOnly > 0 && yamlOnly < 15, true);
-    check('catalog: filter keeps yaml tools', [...document.querySelectorAll('[data-tool-card]')].filter((c) => !c.hidden).every((c) => c.getAttribute('data-search').includes('yaml')), true);
+
+    // Ranking is expressed as CSS `order`, so this is also the visual order.
+    const ranked = () =>
+      [...document.querySelectorAll('[data-tool-card]')]
+        .filter((c) => !c.hidden)
+        .sort((a, b) => Number(a.style.order) - Number(b.style.order));
+    check('catalog: the best match is ranked first', ranked()[0].getAttribute('href').includes('yaml'), true);
+
+    // jsdom has no layout engine, so the only way to catch "el.hidden = true but
+    // display:flex keeps it on screen" is to read the built stylesheet.
+    const css = fs
+      .readdirSync(path.join(ROOT, 'css'))
+      .filter((f) => f.endsWith('.css'))
+      .map((f) => fs.readFileSync(path.join(ROOT, 'css', f), 'utf8'))
+      .join('\n');
+    check('catalog: the hidden attribute beats component display rules', /\[hidden\]\s*\{\s*display:\s*none\s*!important/.test(css), true);
 
     key({ key: 'Escape' });
     check('catalog: Escape clears the query', search.value, '');
@@ -368,6 +383,163 @@ const check = (label, actual, expected) => {
 
     const result = page.finish();
     check('catalog: no uncaught errors', result.thrown.length + result.errors.length, 0);
+    page.dom.window.close();
+  }
+
+  console.log('\n=== fuzzy search ===');
+  {
+    const page = loadFile(path.join(ROOT, 'tools', 'index.html'), 'https://ilham.dev/tools/');
+    const { document } = page.w;
+    const input = document.querySelector('#tools-search');
+    const fuzzy = document.querySelector('#tools-fuzzy');
+    const empty = document.querySelector('#tools-empty');
+    const cards = [...document.querySelectorAll('[data-tool-card]')];
+    const name = (card) => card.querySelector('.tool-card-name').textContent;
+
+    const rank = (query) => {
+      input.value = query;
+      input.dispatchEvent(new page.w.Event('input', { bubbles: true }));
+      return cards
+        .filter((card) => !card.hidden)
+        .sort((a, b) => Number(a.style.order) - Number(b.style.order));
+    };
+    const top = (query) => {
+      const first = rank(query)[0];
+      return first ? name(first) : null;
+    };
+    const shows = (query, title) => rank(query).some((card) => name(card) === title);
+
+    // Multi-token queries: every token has to match, in any order.
+    check('search: "generator qr code" finds the QR tool', top('generator qr code'), 'QR Code Generator');
+    check('search: "sha 256" finds the hash tool', top('sha 256'), 'Hash Text');
+    check('search: "base 64" finds base64', String(top('base 64')).startsWith('Base64'), true);
+    check('search: "domain lookup" finds WHOIS', top('domain lookup'), 'WHOIS Lookup');
+
+    // Ranking, which matters more than fuzziness. With a plain substring filter
+    // "ip" put JSON Minifier first (str-IP) and the IP tool fourth.
+    check('search: "ip" ranks the IP tool first', top('ip'), 'IP & Geolocation Lookup');
+    check('search: "time" ranks the timestamp tool first', top('time'), 'Timestamp Converter');
+    check('search: "password" ranks password strength first', top('password'), 'Password Strength');
+
+    // One edit away.
+    check('search: "qr genereator" still finds the QR tool', top('qr genereator'), 'QR Code Generator');
+    check('search: "json formater" still finds the formatter', top('json formater'), 'JSON Formatter');
+    check('search: "uuid generatr" still finds the UUID tool', top('uuid generatr'), 'UUID Generator');
+    check('search: "scheduler" still finds crontab', top('scheduler'), 'Crontab Generator');
+
+    // The two guards that keep fuzzy matching from turning into noise.
+    check('search: "time" does not drag in MIME Types', shows('time', 'MIME Types'), false);
+    check('search: "hash" does not drag in the Git cheatsheet', shows('hash', 'Git Cheatsheet'), false);
+
+    // Subsequences, but only a word-initial one.
+    check('search: "b64" finds base64', String(top('b64')).startsWith('Base64'), true);
+
+    // Keywords, which no amount of fuzziness can invent.
+    check('search: keywords are searched too ("compare")', top('compare'), 'JSON Diff');
+    check('search: keywords are searched too ("2fa")', top('2fa'), 'OTP Generator');
+    check('search: keywords are searched too ("unique id")', top('unique id'), 'UUID Generator');
+    check('search: keywords are searched too ("bearer")', top('bearer'), 'JWT Parser');
+    check('search: keywords are searched too ("color picker")', top('color picker'), 'Color Converter');
+    check('search: keywords are searched too ("screen size")', top('screen size'), 'Device Information');
+    check('search: keywords are searched too ("keyboard shortcut")', top('keyboard shortcut'), 'Keycode Info');
+    check('search: keywords are searched too ("bcrypt generator")', top('bcrypt generator'), 'bcrypt');
+
+    // Nonsense has to keep finding nothing, or fuzzy is just a random generator.
+    for (const nonsense of ['asdfgh', 'xyz', 'qqq', 'nonsense', 'kubernetes']) {
+      check(`search: "${nonsense}" finds nothing`, rank(nonsense).length, 0);
+    }
+    check('search: the empty state is shown when nothing matches', empty.hidden, false);
+
+    // The UI has to admit when the match was not something the user typed.
+    rank('json formater');
+    check('search: a fuzzy match says so', fuzzy.hidden, false);
+    rank('json formatter');
+    check('search: an exact match does not', fuzzy.hidden, true);
+
+    rank('');
+    check('search: clearing restores every card', cards.filter((card) => !card.hidden).length > 80, true);
+    check('search: clearing drops the ranking', cards.every((card) => card.style.order === ''), true);
+
+    const result = page.finish();
+    check('search: no uncaught errors', result.thrown.length + result.errors.length, 0);
+    page.dom.window.close();
+  }
+
+  console.log('\n=== sidebar search ===');
+  {
+    const page = loadPage('uuid-generator');
+    const { document } = page.w;
+    const input = document.querySelector('#tool-nav-search');
+    const nav = document.querySelector('.tool-nav');
+    const empty = document.querySelector('#tool-nav-empty');
+    const links = [...document.querySelectorAll('.tool-nav a')];
+    const name = (link) => link.textContent.trim();
+    const shown = () =>
+      links
+        .filter((link) => !link.hidden)
+        .sort((a, b) => Number(a.parentElement.style.order) - Number(b.parentElement.style.order));
+    const selected = () => document.querySelector('.tool-nav a.selected');
+    const type = (value) => {
+      input.value = value;
+      input.dispatchEvent(new page.w.Event('input', { bubbles: true }));
+    };
+    const key = (key_) => input.dispatchEvent(new page.w.KeyboardEvent('keydown', { key: key_, bubbles: true, cancelable: true }));
+
+    check('sidebar: the field is there', Boolean(input), true);
+    check('sidebar: every tool is listed', links.length, 90);
+
+    document.dispatchEvent(new page.w.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true, cancelable: true }));
+    check('sidebar: Cmd+K focuses the field', document.activeElement === input, true);
+
+    type('uuid');
+    check('sidebar: "uuid" narrows the list', shown().length <= 2, true);
+    check('sidebar: ...to the UUID generator', name(shown()[0]), 'UUID Generator');
+
+    type('domain');
+    check('sidebar: keywords work here too ("domain")', name(shown()[0]), 'WHOIS Lookup');
+
+    // Ranking matters here because Enter follows the preselected row.
+    type('ip');
+    check('sidebar: "ip" ranks the IP tool first', name(shown()[0]), 'IP & Geolocation Lookup');
+    check('sidebar: the best match is preselected', name(selected()), 'IP & Geolocation Lookup');
+    check('sidebar: the categories are dropped while searching', nav.hasAttribute('data-searching'), true);
+
+    type('generatr');
+    check('sidebar: typos work here too', shown().length > 0, true);
+
+    type('qqqqq');
+    check('sidebar: nothing matches', shown().length, 0);
+    check('sidebar: the empty message is shown', empty.hidden, false);
+
+    type('json');
+    const first = name(shown()[0]);
+    key('ArrowDown');
+    check('sidebar: ArrowDown moves the selection', name(selected()) === first, false);
+    key('ArrowUp');
+    check('sidebar: ArrowUp comes back', name(selected()), first);
+    key('ArrowUp');
+    check('sidebar: ArrowUp wraps to the last row', name(selected()), name(shown()[shown().length - 1]));
+
+    // Capture activation rather than navigating: jsdom does not follow anchors.
+    let activated = null;
+    links.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        activated = link;
+        event.preventDefault();
+      });
+    });
+    const chosen = selected();
+    key('Enter');
+    check('sidebar: Enter activates the selected row', activated === chosen, true);
+
+    type('qqqqq');
+    key('Escape');
+    check('sidebar: Escape clears the query', input.value, '');
+    check('sidebar: Escape restores every tool', shown().length, 90);
+    check('sidebar: the categories come back', nav.hasAttribute('data-searching'), false);
+
+    const result = page.finish();
+    check('sidebar: no uncaught errors', result.thrown.length + result.errors.length, 0);
     page.dom.window.close();
   }
 

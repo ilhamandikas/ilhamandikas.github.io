@@ -161,7 +161,7 @@
     - slug: uuid-generator
       name: UUID Generator
       desc: Generate v4 UUIDs, single or in bulk.
-      keywords: [uuid, guid, v4, random, id]
+      keywords: [uuid, guid, v4, random, id, unique]
       status: done
     - slug: ulid-generator
       name: ULID Generator
@@ -176,7 +176,7 @@
     - slug: bcrypt
       name: bcrypt
       desc: Hash a password with bcrypt, or verify one against a hash.
-      keywords: [bcrypt, password, hash, verify, salt]
+      keywords: [bcrypt, password, hash, verify, salt, generator]
       status: done
     - slug: aes-encryption
       name: AES Encryption
@@ -264,7 +264,7 @@
     - slug: jwt-parser
       name: JWT Parser
       desc: Decode and inspect the header, payload and claims of a JSON Web Token.
-      keywords: [jwt, token, decode, claims, auth]
+      keywords: [jwt, token, decode, claims, auth, bearer]
       status: done
     - slug: url-parser
       name: URL Parser
@@ -294,7 +294,7 @@
     - slug: keycode-info
       name: Keycode Info
       desc: Press a key to see its code, key and modifier state.
-      keywords: [keycode, key, keyboard, event, code]
+      keywords: [keycode, key, keyboard, event, code, shortcut]
       status: done
     - slug: slugify
       name: Slugify
@@ -309,7 +309,7 @@
     - slug: device-information
       name: Device Information
       desc: Show what the browser reports about the current device.
-      keywords: [device, browser, screen, platform, info]
+      keywords: [device, browser, screen, platform, info, size]
       status: done
     - slug: qr-code-generator
       name: QR Code Generator
@@ -441,7 +441,7 @@
     - slug: color-converter
       name: Color Converter
       desc: Convert colors between HEX, RGB, HSL and more.
-      keywords: [color, hex, rgb, hsl, convert]
+      keywords: [color, hex, rgb, hsl, convert, picker]
       status: done
 
 - name: Math

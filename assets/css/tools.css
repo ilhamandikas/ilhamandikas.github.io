@@ -31,6 +31,7 @@
   white-space: nowrap;
 }
 .tools-search-icon { color: var(--muted); font-size: 16px; }
+.tools-search-note { margin: 10px 0 0; color: var(--muted); font-size: 14px; }
 .tools-search-field input {
   flex: 1;
   border: 0;
@@ -42,7 +43,15 @@
   background: transparent;
 }
 
-.tools-group { margin-top: 34px; }
+/* Flex so groups and cards can be ranked with `order` instead of by moving
+   nodes around. The `gap` replaces the margins that no longer collapse. */
+#tools-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.tools-group { margin-top: 0; }
 .tools-group-title {
   margin: 0 0 14px;
   font-size: 0.82rem;
@@ -140,6 +149,53 @@
   border-left-color: var(--accent);
   background: var(--accent-soft);
   font-weight: 600;
+}
+
+/* ---------- sidebar search ---------- */
+
+/* Flex so search results can be ranked with `order` instead of by moving nodes
+   around, which would fight the prerendered markup. */
+.tool-nav {
+  display: flex;
+  flex-direction: column;
+}
+.tool-nav ul {
+  display: flex;
+  flex-direction: column;
+}
+
+/* While a query is active the categories are dropped and the list is ordered by
+   score, so the sidebar reads as one flat result list. */
+.tool-nav[data-searching] .tool-nav-title { display: none; }
+.tool-nav[data-searching] .tool-nav-group { margin-bottom: 0; }
+
+/* Sticky inside the scrolling aside, with an opaque background so the tool
+   list passes underneath it. */
+.tool-nav-search {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-bottom: 12px;
+  background: var(--bg);
+}
+
+.tool-nav-field {
+  max-width: none;
+  padding: 0 10px;
+}
+#tool-nav-search {
+  padding: 9px 0;
+  font-size: 13.5px;
+}
+
+.tool-nav-empty { margin: 0 0 12px; color: var(--muted); font-size: 13.5px; }
+
+/* The arrow-key selection. Deliberately not bold, so the row cannot change
+   width as the selection moves. */
+.tool-nav a.selected {
+  color: var(--text);
+  border-left-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .tool-main { min-width: 0; }

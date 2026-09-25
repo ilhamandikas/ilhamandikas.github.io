@@ -150,6 +150,57 @@ otherwise waits for the `prerenderingchange` event. `ip-lookup` is the one tool
 that needs this today; it is a requirement for any future tool that fetches on
 load.
 
+### Finding a tool
+
+`assets/js/tools-search.js` is the whole matcher — about 150 lines, no
+`fuse.js`. It scores instead of filtering, because plain substring matching ranks
+badly: `haystack.includes('ip')` puts JSON Minifier first (`str-IP`),
+AES Encryption second (`c-IP-her`) and the actual IP tool fourth.
+
+Each query token is scored against the name, the keywords and the description,
+and keeps its best tier — `word` (+40), `prefix` (+25), `substring` (+10), `typo`
+(+5) or `subsequence` (0) — with the field deciding the base (name 100, keywords
+60, description 30). **Every token must match something**, so `json yaml` cannot
+quietly degrade into "anything mentioning json". Two guards keep the fuzzy tiers
+from becoming noise, and both were found by trying the obvious version first:
+
+- a typo must agree on the first letter, or `time` matches `mime`
+- a subsequence must start a word and cover 45% of it, or `hash` matches
+  `cheatsheet` (`h-a-s-h` in order) and every search returns rubbish
+
+Ranking is applied with CSS `order` rather than by moving nodes, so the
+prerendered markup stays put and no DOM is rebuilt on each keystroke.
+`tools-catalog.js` ranks cards inside their grid and the groups around them;
+`tools-nav.js` ranks the sidebar. Both read the name and description back out of
+the markup and take only `data-keywords` as an attribute.
+
+**Cmd+K works everywhere, not just on `/tools/`.** On a tool page the sidebar
+carries its own field: typing filters and ranks, ↑/↓ move the selection, Enter
+opens the row, and Escape clears then blurs. The categories are dropped while a
+query is active so the sidebar reads as one flat result list — which is also what
+makes Enter safe, since the preselected row is then the best match instead of
+whichever tool happens to come first in the menu. The field lives inside the
+collapsible `.tool-nav`, so on narrow screens it appears with "Browse all tools"
+rather than pushing the tool down the page.
+
+The index is built from the 90 names already in the sidebar plus a
+`data-keywords` attribute per link: **+1.6 KB gzip per tool page** (4.0 KB →
+5.6 KB), no extra request. Moving the keywords into the shared JS bundle would
+save that, but Hugo 0.123 does not inject `js.Build` `params`, and a build-time
+`defines` blob is more machinery than 1.6 KB is worth.
+
+Keywords decide what is findable at all, and no algorithm can invent them: the
+phrases `unique id`, `bearer`, `bcrypt generator`, `color picker`, `screen size`
+and `keyboard shortcut` all returned nothing until the word was added to
+`data/tools.yaml`. When a search "does not work", check the data before the
+matcher.
+
+A related bug this work surfaced: `el.hidden = true` did **not** hide anything
+styled `display: flex`, because an author rule beats the user-agent `[hidden]`
+rule. The catalog filter had been updating the property without hiding the cards.
+`styles.css` now carries `[hidden] { display: none !important }`, and because
+jsdom has no layout engine the test asserts it by reading the built stylesheet.
+
 ### Search and indexing
 
 A tool page is a form and some labels. Left alone that is about thirty words of

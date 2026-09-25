@@ -41,6 +41,9 @@ function resolveScripts(html) {
 
 function installGlobals(w) {
   globalThis.window = w;
+
+  // jsdom has no layout engine and never implemented this one.
+  if (!w.Element.prototype.scrollIntoView) w.Element.prototype.scrollIntoView = function () {};
   globalThis.document = w.document;
   globalThis.location = w.location;
   Object.defineProperty(globalThis, 'navigator', { value: w.navigator, configurable: true, writable: true });

@@ -1,5 +1,13 @@
 {{- $current := .current -}}
 <nav class="tool-nav" aria-label="Tools">
+  <div class="tool-nav-search">
+    <label class="tools-search-field tool-nav-field">
+      <input type="search" id="tool-nav-search" placeholder="Find a tool…" autocomplete="off"
+             aria-label="Find a tool" aria-keyshortcuts="Meta+K Control+K">
+      <kbd class="tools-search-kbd" id="tool-nav-kbd" aria-hidden="true">⌘K</kbd>
+    </label>
+  </div>
+  <p class="tool-nav-empty" id="tool-nav-empty" hidden>No tools match.</p>
   {{- range site.Data.tools }}
   <div class="tool-nav-group">
     <span class="tool-nav-title">{{ .name }}</span>
@@ -7,6 +15,7 @@
       {{- range .tools }}
       <li>
         <a href="{{ printf "/tools/%s/" .slug | relURL }}"
+           data-keywords="{{ delimit .keywords " " }}"
            {{ if eq .slug $current }}class="active" aria-current="page"{{ end }}>{{ .name }}{{ if ne .status "done" }} <span class="tool-soon">soon</span>{{ end }}</a>
       </li>
       {{- end }}

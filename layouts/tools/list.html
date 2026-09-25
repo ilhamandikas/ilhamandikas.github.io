@@ -12,6 +12,7 @@
         <input type="search" id="tools-search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools" aria-keyshortcuts="Meta+K Control+K">
         <kbd class="tools-search-kbd" id="tools-search-kbd" aria-hidden="true">⌘K</kbd>
       </label>
+      <p class="tools-search-note" id="tools-fuzzy" hidden>No exact match — showing the closest results.</p>
     </div>
 
     <div id="tools-catalog">
@@ -22,7 +23,7 @@
           {{- range .tools }}
           <a class="tool-card" href="{{ printf "/tools/%s/" .slug | relURL }}"
              data-tool-card
-             data-search="{{ .name | lower }} {{ .desc | lower }} {{ delimit .keywords " " | lower }}">
+             data-keywords="{{ delimit .keywords " " }}">
             <span class="tool-card-name">{{ .name }}{{ if ne .status "done" }} <span class="tool-soon">soon</span>{{ end }}</span>
             <span class="tool-card-desc">{{ .desc }}</span>
           </a>
