@@ -237,6 +237,11 @@
       desc: Parse, explain and rebuild curl commands locally.
       keywords: [curl, http, request, command, import, export, api]
       status: done
+    - slug: curl-converter
+      name: curl Converter
+      desc: Convert curl commands into JavaScript fetch, Axios or Python requests code.
+      keywords: [curl, fetch, axios, python, requests, convert, code, http]
+      status: done
     - slug: grpc-tester
       name: gRPC Tester
       desc: Build grpcurl commands and test gRPC-Web endpoints from the browser.
@@ -478,6 +483,11 @@
       name: Case Converter
       desc: Switch text between camelCase, snake_case, kebab-case and more.
       keywords: [case, camel, snake, kebab, pascal, convert]
+      status: done
+    - slug: line-comma-formatter
+      name: Line Comma Formatter
+      desc: Add commas, quotes, arrays or SQL IN formatting to one-item-per-line lists.
+      keywords: [list, comma, lines, quote, array, sql in, csv, formatter]
       status: done
 
 - name: Convert

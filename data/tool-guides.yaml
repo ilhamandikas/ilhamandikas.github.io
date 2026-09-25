@@ -1149,3 +1149,22 @@ sticker-maker:
   faq:
     - q: "How good is the background removal?"
       a: "It is colour-based, using the image corners as the background sample. It works well for flat studio-like backgrounds; complex backgrounds still need a dedicated segmentation model or manual editing."
+
+curl-converter:
+  about: >-
+    Convert a curl command into JavaScript fetch, Axios or Python requests code.
+    It handles the common method, URL, header and body flags locally in the browser
+    so you can move from a copied API example to app code without asking an AI to
+    rewrite the same boilerplate.
+  faq:
+    - q: "Does it execute the request?"
+      a: "No. It only converts command syntax into code. Use the HTTP Request Tester if you want the browser to send the request."
+
+line-comma-formatter:
+  about: >-
+    Format one-item-per-line lists without opening an editor. Add trailing commas,
+    turn lines into CSV, quote each item, build a JavaScript array, or make a SQL
+    IN list. Empty-line skipping and trimming are optional.
+  faq:
+    - q: "Can it keep blank lines?"
+      a: "Yes. Turn off Skip empty if the blank lines are meaningful. Turn off Trim lines if leading or trailing spaces should be preserved."

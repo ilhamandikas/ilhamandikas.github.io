@@ -1,0 +1,28 @@
+<div class="tool-panel">
+  <h2>Line Comma Formatter</h2>
+  <label class="tool-field">
+    <span>Input list</span>
+    <textarea id="lcf-input" class="tool-input" rows="10" spellcheck="false" placeholder="apple&#10;banana&#10;orange"></textarea>
+  </label>
+  <div class="tool-row">
+    <label class="tool-inline">Output
+      <select id="lcf-mode" class="tool-select">
+        <option value="line-comma">Add comma at end of each line</option>
+        <option value="csv-line">One line CSV</option>
+        <option value="quoted-line-comma">Quote + comma each line</option>
+        <option value="quoted-csv">Quoted CSV</option>
+        <option value="js-array">JavaScript array</option>
+        <option value="sql-in">SQL IN list</option>
+      </select>
+    </label>
+    <label class="tool-check"><input type="checkbox" id="lcf-trim" checked> Trim lines</label>
+    <label class="tool-check"><input type="checkbox" id="lcf-skip-empty" checked> Skip empty</label>
+    <button class="btn" type="button" data-copy="#lcf-output" data-status="#lcf-status">Copy</button>
+    <span class="tool-status" id="lcf-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Output</h2>
+  <textarea id="lcf-output" class="tool-input tool-code" rows="10" readonly spellcheck="false"></textarea>
+</div>
