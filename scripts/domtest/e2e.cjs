@@ -1,5 +1,7 @@
 // End-to-end assertions: drive real pages with real input and check the output.
 // Anything printed under "actual output" still needs a human eye.
+const fs = require('fs');
+const path = require('path');
 const { ROOT, loadPage, loadFile, read, set, click, sleep, errorStatuses } = require('./harness.cjs');
 
 async function run(slug, fields = {}, { clicks = [], wait = 150 } = {}) {
@@ -307,7 +309,6 @@ const check = (label, actual, expected) => {
 
   console.log('\n=== catalog page ===');
   {
-    const path = require('path');
     const page = loadFile(path.join(ROOT, 'tools', 'index.html'), 'https://ilham.dev/tools/');
     const { document } = page.w;
     const search = document.querySelector('#tools-search');
@@ -345,6 +346,32 @@ const check = (label, actual, expected) => {
     const result = page.finish();
     check('catalog: no uncaught errors', result.thrown.length + result.errors.length, 0);
     page.dom.window.close();
+  }
+
+  console.log('\n=== sort button ===');
+  {
+    const page = loadPage('json-formatter');
+    const button = page.w.document.querySelector('#jf-sort');
+    const label = () => button.querySelector('.tool-sort-text').textContent;
+    const labels = [label()];
+    const pressed = [button.getAttribute('aria-pressed')];
+    for (let i = 0; i < 3; i += 1) {
+      click(page.w, '#jf-sort');
+      labels.push(label());
+      pressed.push(button.getAttribute('aria-pressed'));
+    }
+    check('sort button: label cycles off -> ↑ -> ↓ -> off', labels, ['off', '↑', '↓', 'off']);
+    check('sort button: pressed only while sorted', pressed, ['false', 'true', 'true', 'false']);
+    check('sort button: title names the next action', button.title, 'Sort keys A → Z');
+    page.dom.window.close();
+  }
+  {
+    // jsdom has no layout engine, so guard the size by inspecting the rule.
+    const css = fs.readFileSync(path.join(__dirname, '..', '..', 'assets', 'css', 'tools.css'), 'utf8');
+    const rule = css.slice(css.indexOf('.tool-sort-btn {'), css.indexOf('.tool-sort-btn:hover'));
+    check('sort button: box has a fixed width', /(^|\s)width:\s*\d/.test(rule), true);
+    check('sort button: box has a fixed height', /(^|\s)height:\s*\d/.test(rule), true);
+    check('sort button: press does not change the weight', /aria-pressed="true"\][^{]*\{[^}]*font-weight/.test(css), false);
   }
 
   console.log('\n=== actual output (review by eye) ===');

@@ -226,18 +226,24 @@ textarea.tool-input { min-height: 96px; }
 }
 .tool-number { width: 84px; }
 
-/* Single button that cycles the key sort: off -> A → Z -> Z → A. */
+/* Single button that cycles the key sort: off -> ↑ -> ↓. The box is a fixed
+   size in both axes and the weight never changes, so swapping the label cannot
+   nudge the surrounding row. */
 .tool-sort-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
+  justify-content: center;
+  width: 64px;
+  height: 42px;
+  padding: 0;
   border: 1px solid var(--border-strong);
   border-radius: 8px;
   background: var(--surface);
   color: var(--text);
   font: inherit;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
   cursor: pointer;
 }
 .tool-sort-btn:hover { border-color: var(--accent); }
@@ -245,9 +251,8 @@ textarea.tool-input { min-height: 96px; }
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent);
-  font-weight: 600;
 }
-.tool-sort-icon { font-size: 15px; line-height: 1; }
+.tool-sort-text { display: block; }
 
 .tool-text {
   padding: 8px 10px;

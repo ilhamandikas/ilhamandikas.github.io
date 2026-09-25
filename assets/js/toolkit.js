@@ -90,12 +90,11 @@ const tk = {
     const button = document.getElementById(id);
     if (!button) return () => 'off';
     const cycle = [
-      { value: 'off', icon: '⇅', text: 'off', action: 'Sort keys A → Z' },
-      { value: 'asc', icon: '↑', text: 'A → Z', action: 'Sort keys Z → A' },
-      { value: 'desc', icon: '↓', text: 'Z → A', action: 'Turn sorting off' },
+      { value: 'off', text: 'off', name: 'off', action: 'Sort keys A → Z' },
+      { value: 'asc', text: '↑', name: 'ascending, A to Z', action: 'Sort keys Z → A' },
+      { value: 'desc', text: '↓', name: 'descending, Z to A', action: 'Turn sorting off' },
     ];
     const label = button.dataset.sortLabel || 'Sort keys';
-    const iconEl = button.querySelector('.tool-sort-icon');
     const textEl = button.querySelector('.tool-sort-text');
     let index = Math.max(0, cycle.findIndex((s) => s.value === (button.dataset.sort || 'off')));
 
@@ -103,10 +102,9 @@ const tk = {
       const state = cycle[index];
       button.dataset.sort = state.value;
       button.setAttribute('aria-pressed', String(state.value !== 'off'));
-      button.setAttribute('aria-label', `${label}: ${state.text}`);
+      button.setAttribute('aria-label', `${label}: ${state.name}`);
       button.title = state.action;
-      if (iconEl) iconEl.textContent = state.icon;
-      if (textEl) textEl.textContent = `${label}: ${state.text}`;
+      if (textEl) textEl.textContent = state.text;
     };
 
     button.addEventListener('click', () => {
