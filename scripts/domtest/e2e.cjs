@@ -442,14 +442,21 @@ const check = (label, actual, expected) => {
     check('seo: the tool is declared free to use', app.offers.price, '0');
     check('seo: the breadcrumb points back at the catalog', ld(qr)['@graph'].find((n) => n['@type'] === 'BreadcrumbList').itemListElement[0].item, 'https://ilham.dev/tools/');
 
-    const bare = read('tools/benchmark-builder/index.html');
-    check('seo: a tool with no written questions has no FAQPage', types(bare).includes('FAQPage'), false);
-    check('seo: it is still a SoftwareApplication', types(bare).includes('SoftwareApplication'), true);
-
     const catalog = read('tools/index.html');
     check('seo: the catalog is a CollectionPage', types(catalog).includes('CollectionPage'), true);
     const slugs = [...catalog.matchAll(/class=tool-card href=\/tools\/([^/]+)\//g)].map((m) => m[1]);
     check('seo: the catalog links every tool', slugs.length, 90);
+
+    // Structured data has to describe what is actually on the page. Walk every
+    // tool and check the schema agrees with the markup.
+    const pages = slugs.map((slug) => read(`tools/${slug}/index.html`));
+    check('seo: every tool page has written content', pages.filter((h) => /class=tool-about/.test(h)).length, 90);
+    const withFaq = pages.filter((h) => types(h).includes('FAQPage'));
+    check('seo: an FAQPage never appears without written questions', withFaq.filter((h) => !/class=tool-about/.test(h)).length, 0);
+    check('seo: the FAQPage lists exactly the questions on the page',
+      withFaq.filter((h) => ld(h)['@graph'].find((n) => n['@type'] === 'FAQPage').mainEntity.length !== (h.match(/<dt>/g) || []).length).length, 0);
+    check('seo: every tool declares itself a SoftwareApplication',
+      pages.filter((h) => !types(h).includes('SoftwareApplication')).length, 0);
 
     const sitemap = read('sitemap.xml');
     const dated = new Set([...sitemap.matchAll(/<loc>https:\/\/ilham\.dev\/tools\/([^/]+)\/<\/loc><lastmod>/g)].map((m) => m[1]));
@@ -460,7 +467,7 @@ const check = (label, actual, expected) => {
     check('seo: robots.txt advertises the sitemap', robots.includes('Sitemap: https://ilham.dev/sitemap.xml'), true);
 
     const prose = qr.replace(/<(script|style)\b[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-    check('seo: a tool with a guide has real prose to read', prose.split(' ').length > 400, true);
+    check('seo: a tool page has real prose to read', prose.split(' ').length > 400, true);
   }
 
   console.log('\n=== actual output (review by eye) ===');

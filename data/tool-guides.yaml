@@ -512,3 +512,419 @@ ascii-text-drawer:
   faq:
     - q: "Will the banner line up everywhere?"
       a: "Only in a monospaced font. In a proportional font the columns collapse, which is why the preview here is monospaced."
+
+html-entities:
+  about: >-
+    Escape and unescape HTML special characters, choosing between named entities
+    and numeric ones, so text can be embedded safely in a page or a snippet read
+    back to see what it really contains. It escapes what needs escaping rather
+    than every non-ASCII character, which keeps the output readable.
+  faq:
+    - q: "Which characters actually need escaping?"
+      a: "In HTML text content, & and <. Inside an attribute value, also the quote character you are using to delimit it. Escaping more than that is harmless but makes the source noisy."
+
+text-to-binary:
+  about: >-
+    Convert text to its UTF-8 bytes written in binary, and back again. Each
+    character is shown as the eight bits that encode it, which is the clearest
+    way to see how a string becomes bytes on the wire.
+  faq:
+    - q: "Why is one character sometimes more than eight bits?"
+      a: "Because it is not ASCII. UTF-8 uses one byte for ASCII characters and up to four for others, so an accented letter or an emoji comes out as two or more groups of eight bits."
+
+text-to-unicode:
+  about: >-
+    Show the Unicode code points behind a piece of text, as U+XXXX escapes and as
+    decimal values, and turn those escapes back into text. It is the quickest way
+    to find out what an invisible or look-alike character actually is.
+  faq:
+    - q: "What is the difference between a code point and a UTF-8 byte?"
+      a: "A code point is the abstract character number. UTF-8 is one particular way of writing that number as bytes, so the same code point can occupy a different number of bytes in a different encoding."
+    - q: "Why does text I copied have an invisible character in it?"
+      a: "Usually a zero-width space or a non-breaking space picked up from a web page or a word processor. Listing the code points is what makes it visible."
+
+text-to-nato-alphabet:
+  about: >-
+    Spell out text using the NATO phonetic alphabet — Alfa, Bravo, Charlie —
+    which is what you use when a word has to survive a noisy phone line.
+  faq:
+    - q: "Why Alfa and Juliett, with a double t?"
+      a: "Both spellings were chosen so that speakers of languages which do not distinguish those sounds still pronounce them correctly. The spelling is deliberate, not a typo."
+
+string-obfuscator:
+  about: >-
+    Hide part of a string while leaving enough of it visible to recognise — the
+    usual way to show a card number, an API key or an email address in a log, a
+    ticket or a screenshot without exposing the whole value.
+  faq:
+    - q: "Is this a security measure?"
+      a: "No. It is a presentation aid. The original value is still wherever you copied it from, and masking is not the same thing as redaction."
+
+safelink-decoder:
+  about: >-
+    Extract the real destination from an Outlook SafeLink, which wraps the
+    original URL in a redirect through Microsoft's safelinks service. It decodes
+    the url parameter and shows where the link genuinely goes.
+  faq:
+    - q: "Why do SafeLinks exist?"
+      a: "Microsoft rewrites links in email so it can scan the destination at click time and block it later if it turns malicious. That is why the address you see is not the real one."
+
+basic-auth-generator:
+  about: >-
+    Build the Authorization: Basic header value from a username and password, and
+    optionally produce a ready-to-use curl command. The encoding is plain Base64,
+    which is exactly why it is only safe over HTTPS.
+  faq:
+    - q: "Is Basic authentication encrypted?"
+      a: "No. The credentials are Base64-encoded, which anyone can reverse. They are protected only by the TLS connection carrying them, so never use it over plain HTTP."
+
+json-minifier:
+  about: >-
+    Strip the whitespace out of a JSON document while keeping it valid, so it
+    takes fewer bytes over the wire. It parses first and re-serialises, so a
+    malformed document is rejected rather than mangled.
+  faq:
+    - q: "How much smaller does it get?"
+      a: "Typically 20–40% for hand-formatted JSON. If the server gzips its responses the gain is mostly redundant, because gzip already removes repeated whitespace."
+
+json-to-yaml:
+  about: >-
+    Convert JSON to YAML, preserving the structure rather than reformatting the
+    text. It is the usual way to move a config between a tool that speaks one and
+    a file that is written in the other.
+  faq:
+    - q: "Are comments kept?"
+      a: "JSON has no comments, so converting JSON to YAML cannot invent any. Going the other way, YAML comments are dropped because JSON has nowhere to put them."
+    - q: "Why does my document fail to convert?"
+      a: "Usually an anchor or a custom tag with no equivalent, or a duplicate key. The error names the position."
+
+yaml-to-json:
+  about: >-
+    Convert YAML to JSON, preserving nesting, arrays and types. Anchors and
+    aliases are resolved, so the output is the effective document rather than the
+    shorthand used to write it.
+  faq:
+    - q: "What happens to a non-string key?"
+      a: "JSON requires string keys, so numeric and boolean keys are converted to their string form. That is a real difference between the two formats, not a bug."
+    - q: "Are duplicate keys allowed?"
+      a: "No. YAML permits them but almost every parser takes the last one silently, which hides mistakes. This tool reports them instead."
+
+yaml-to-toml:
+  about: >-
+    Convert YAML to TOML, preserving nesting, arrays and types. TOML has no null,
+    so a null value is reported rather than quietly dropped or turned into an
+    empty string.
+  faq:
+    - q: "What happens to a null value?"
+      a: "TOML has no null type, so it cannot be represented. The converter tells you which key it was, so you can decide what the absence should mean."
+    - q: "Does key order survive?"
+      a: "Yes, and it matters in TOML, because keys have to be defined before any table that uses them. The converter keeps the order it was given."
+
+json-to-toml:
+  about: >-
+    Convert JSON to TOML, mapping objects to tables and arrays of tables to the
+    TOML equivalent. Useful for turning an API response into a config file.
+  faq:
+    - q: "Why is a nested structure sometimes rejected?"
+      a: "TOML requires that a table is fully defined before it is extended. A document that is legal JSON can therefore be inexpressible in TOML without restructuring, and the tool says so rather than emitting something invalid."
+
+toml-to-json:
+  about: >-
+    Convert TOML to JSON, turning tables into nested objects and arrays of tables
+    into arrays. Dates and datetimes are kept as strings in their TOML form.
+  faq:
+    - q: "How are TOML dates represented?"
+      a: "JSON has no date type, so they become ISO 8601 strings — the same text, with the type information lost. That is a limitation of the target format."
+
+toml-to-yaml:
+  about: >-
+    Convert TOML to YAML, turning tables into nested mappings and arrays of
+    tables into sequences. Handy when a tool wants YAML but the config is written
+    in TOML.
+  faq:
+    - q: "How are TOML dates represented?"
+      a: "As ISO 8601 strings. YAML does have a timestamp type, but writing one that other parsers agree on is unreliable, so plain strings are the safer output."
+
+xml-formatter:
+  about: >-
+    Pretty-print or minify XML at the indentation you choose. It parses the
+    document first, so mismatched and unclosed tags are reported instead of being
+    passed through.
+  faq:
+    - q: "Does it preserve CDATA and comments?"
+      a: "Yes. Both are kept as they are; only the whitespace between elements changes."
+    - q: "Why does it refuse my file?"
+      a: "The parser is strict. A stray ampersand, an undeclared namespace prefix or a mismatched tag will stop it, and the error names the position."
+
+xml-to-json:
+  about: >-
+    Convert XML to JSON. XML is a document format and JSON is a data format, so
+    the mapping has to make decisions — attributes, text content and repeated
+    elements all need a shape — and the tool states which convention it uses.
+  faq:
+    - q: "Is the conversion reversible?"
+      a: "Not always, and no converter can promise that. XML can express things JSON cannot, such as mixed text and elements, or the same attribute twice. Check the output before relying on a round trip."
+
+json-to-xml:
+  about: >-
+    Convert JSON to XML, with a root element you choose and a stated convention
+    for arrays, attributes and primitive values.
+  faq:
+    - q: "What happens to an array?"
+      a: "Each item becomes an element with the same name, which is the standard convention. The tool shows the rule it applied so the output is predictable."
+
+json-to-csv:
+  about: >-
+    Flatten an array of JSON objects into CSV, using the union of the keys as the
+    header row. It is the usual way to get an API response into a spreadsheet.
+  faq:
+    - q: "What happens to nested objects?"
+      a: "They are flattened into dotted column names like user.address.city. An array inside a row is joined into a single cell, because CSV has no way to express nesting."
+    - q: "Why are some cells empty?"
+      a: "Because not every object has every key. The header is the union of all keys, so an object missing one simply leaves that cell blank."
+
+sql-prettify:
+  about: >-
+    Reformat a SQL query with consistent indentation and uppercased keywords, so
+    a one-line statement pasted out of a log becomes something you can read. It
+    reformats; it does not validate.
+  faq:
+    - q: "Does it understand my dialect?"
+      a: "It knows the common keywords and the usual quoting styles. It will not tell you whether the query is valid for your database, or whether it will do what you meant."
+
+yaml-viewer:
+  about: >-
+    A collapsible tree view of a YAML document, showing the structure and the
+    value counts on each branch. Anchors and aliases are resolved, so you see the
+    effective document rather than the shorthand.
+  faq:
+    - q: "Are YAML anchors expanded?"
+      a: "Yes, which means the tree shows what the document means rather than how it was written. That is usually what you want, but it does hide where the reuse came from."
+
+list-converter:
+  about: >-
+    Turn a list into the shape you need: one item per line, comma-separated, a
+    JSON array, a SQL IN clause or a numbered list. Useful for turning a column
+    pasted out of a spreadsheet into something a query or a script will accept.
+  faq:
+    - q: "Does it deduplicate or sort?"
+      a: "Only if you ask it to. By default the order and the duplicates are exactly as you pasted them."
+    - q: "Why is my SQL IN clause broken?"
+      a: "Almost always because an item contained a single quote. The tool escapes what it can, but read the output before running it."
+
+hmac-generator:
+  about: >-
+    Compute an HMAC over a message using SHA-256, SHA-384 or SHA-512 and a shared
+    secret, which is how a webhook signature is normally verified. The
+    computation uses WebCrypto.
+  faq:
+    - q: "What is the difference between an HMAC and a plain hash?"
+      a: "A plain hash proves nothing about who produced it. An HMAC mixes in a secret, so only someone holding that secret can produce the same value — which is what lets you verify that a webhook came from the service you expect."
+
+bcrypt:
+  about: >-
+    Hash a password with bcrypt, or verify a password against an existing bcrypt
+    hash. The cost factor controls how much work each hash takes, and that
+    expense is the whole point.
+  faq:
+    - q: "Which cost factor should I use?"
+      a: "The highest one your server can afford at login time. The tool reports how long each hash took, which is the number that matters — a login should not take much more than about 250 ms."
+    - q: "Why does the same password give a different hash every time?"
+      a: "Because bcrypt generates a random salt per hash and stores it inside the result. That is what stops two users who chose the same password from having the same hash."
+
+aes-encryption:
+  about: >-
+    Encrypt and decrypt text with AES-GCM using a passphrase, with the key
+    derived by PBKDF2. The output is a self-contained Base64 blob carrying the
+    salt and the initialisation vector, so it can be decrypted later with the
+    passphrase alone.
+  faq:
+    - q: "Is this strong enough for real data?"
+      a: "AES-GCM and PBKDF2 are sound primitives and the construction is standard. What it cannot protect you from is a weak passphrase, or forgetting it — there is no recovery path."
+    - q: "Why does the ciphertext change every time?"
+      a: "Because a fresh random salt and IV are generated for each encryption. The same plaintext and passphrase therefore produce a different blob, which is the intended behaviour."
+    - q: "Is the passphrase sent anywhere?"
+      a: "No. Deriving the key and encrypting both happen in the browser."
+
+rsa-key-pair:
+  about: >-
+    Generate an RSA key pair in the browser with WebCrypto, in PEM form, ready to
+    paste into an SSH or TLS configuration. The private key never leaves the page
+    unless you copy it out.
+  faq:
+    - q: "How many bits should the key be?"
+      a: "2048 is the accepted minimum today. 4096 is slower to generate and to use for a modest margin, and 1024 should be treated as broken."
+    - q: "Is a key generated in a browser trustworthy?"
+      a: "The cryptography is the same WebCrypto implementation your browser uses for TLS, so the maths is sound. What you have to trust is the page itself, which is why generating keys offline is the safer habit for anything that matters."
+
+bip39:
+  about: >-
+    Generate a BIP-39 mnemonic phrase from a chosen word count and derive the
+    seed from it, which is how a cryptocurrency wallet backs up a key as words.
+    It also checks a phrase you were given for a valid checksum.
+  faq:
+    - q: "Is it safe to generate a wallet seed in a browser?"
+      a: "The entropy comes from crypto.getRandomValues, so the randomness is real. The risk is the page and the machine, not the maths. For anything holding real value, generate offline on a machine you control."
+    - q: "Why does it reject my phrase?"
+      a: "The last word carries a checksum. If one word was mistyped the checksum fails and the phrase is rejected, which is the feature working as intended."
+
+pdf-signature-checker:
+  about: >-
+    Read a PDF and report the signatures it contains: who signed, when, and
+    whether the byte range each signature covers still matches the file. It walks
+    the PDF structure directly, with no upload and no external library.
+  faq:
+    - q: "Does this prove the signer's identity?"
+      a: "No. It checks that the signature covers the current bytes and reports the certificate details. Whether to trust that certificate is a separate judgement, and this tool does not make it for you."
+    - q: "Why is a signature reported as invalid?"
+      a: "Usually because the file was changed after it was signed, which is the check doing its job. It can also happen with signature formats the reader does not recognise."
+
+ipv6-ula-generator:
+  about: >-
+    Generate a random IPv6 unique local address prefix in fd00::/8, following
+    RFC 4193, for a network that should never be routed on the public internet.
+  faq:
+    - q: "What is the difference between fc00::/7 and fd00::/8?"
+      a: "The whole range is fc00::/7. The fd00::/8 half is where the 40-bit global ID is generated locally rather than assigned by a registry, which is the practical choice."
+
+mac-address-generator:
+  about: >-
+    Generate random MAC addresses, optionally holding a prefix so the result
+    stays inside a vendor range you specify.
+  faq:
+    - q: "Can I use a generated MAC on a real network?"
+      a: "Technically yes, but if it collides with another device on the same segment both will break. Keep the locally-administered bit set so the address cannot clash with a registered vendor range."
+
+random-port-generator:
+  about: >-
+    Pick one or more port numbers, with the option to stay above 1024 and to
+    avoid the ports that are usually already taken.
+  faq:
+    - q: "Does it check whether the port is free?"
+      a: "No. A browser cannot scan ports on another host. This picks numbers that are unlikely to clash — you still have to check your own machine."
+
+url-parser:
+  about: >-
+    Break a URL into its parts — scheme, host, port, path, query parameters and
+    fragment — and show each one both raw and decoded. It is the quickest way to
+    see what a tracking-heavy link is really carrying.
+  faq:
+    - q: "Why is each parameter shown twice?"
+      a: "Once percent-encoded exactly as it appears in the URL, and once decoded. The difference between the two is usually the interesting part."
+    - q: "Why does a repeated parameter appear twice in the list?"
+      a: "Because it is genuinely there twice. Repeated parameters are legal and often significant, so every occurrence is kept rather than the last one winning."
+
+user-agent-parser:
+  about: >-
+    Break a user-agent string into browser, version, engine and operating system,
+    and explain what each part is for.
+  faq:
+    - q: "Why is the browser detected wrongly?"
+      a: "Because user-agent strings lie, deliberately. Every browser claims to be Mozilla, and some reduce or freeze the rest of the string. Treat any detection as a hint, and feature-detect instead whenever you can."
+
+keycode-info:
+  about: >-
+    Press a key and see everything the browser reports about it: the key name,
+    the legacy keyCode and whichCode, the physical position on the keyboard, and
+    which modifier keys were held. It is for wiring up a shortcut without
+    guessing.
+  faq:
+    - q: "Why is keyCode deprecated?"
+      a: "It is inconsistent across layouts and languages — the same physical key reports different values. Use event.key for the character and event.code for the physical position, and press a key here to see the difference."
+
+device-information:
+  about: >-
+    Show what the browser reports about the current device: screen and viewport
+    size, pixel ratio, platform, language, timezone, CPU core count, memory where
+    it is exposed, and whether the device claims to support touch.
+  faq:
+    - q: "Why is the reported platform sometimes wrong?"
+      a: "User-agent strings are unreliable, and some browsers deliberately reduce them for privacy. Treat what you see as a hint rather than a fact."
+
+camera-recorder:
+  about: >-
+    Record a short video from your webcam and download it. Nothing is uploaded —
+    the recording is captured with MediaRecorder and held in memory until you
+    save it.
+  faq:
+    - q: "Why can it not reach my camera?"
+      a: "Camera access needs HTTPS and an explicit permission grant. If the button is disabled, the browser is missing MediaRecorder or reports no camera."
+    - q: "Where does the recording go?"
+      a: "Into memory in this tab, and then into your downloads folder when you save it. No part of it is sent anywhere."
+
+html-wysiwyg-editor:
+  about: >-
+    A small rich-text editor that writes HTML, with bold, italic, headings, lists
+    and links, and shows the markup it produced so you can copy it out.
+  faq:
+    - q: "Is the generated HTML clean?"
+      a: "It is browser-generated, which is tidier than a word processor's output but still carries some inline styling. Expect to tidy it before using it in production."
+
+git-cheatsheet:
+  about: >-
+    A searchable reference for the Git commands that come up less often: undoing
+    a commit, recovering a deleted branch, rewriting history, and finding which
+    commit introduced a line.
+  faq:
+    - q: "Is it safe to run these commands?"
+      a: "Read what each one does first. The entries that rewrite history are marked, because on a shared branch they affect everyone who has pulled it."
+
+emoji-picker:
+  about: >-
+    Search and copy emoji by name, with the whole set available rather than the
+    subset your keyboard happens to offer.
+  faq:
+    - q: "Why do some emoji render as boxes?"
+      a: "The font on your system does not include them. The character is still correct and will render wherever the font supports it."
+
+numeronym:
+  about: >-
+    Turn a long word into a numeronym — the first letter, the number of letters
+    omitted and the last letter, so internationalization becomes i18n.
+  faq:
+    - q: "Why is it called a numeronym?"
+      a: "Because the omitted letters are replaced by their count. The pattern long predates the web — a11y for accessibility, k8s for Kubernetes, l10n for localization."
+
+base-converter:
+  about: >-
+    Convert a number between binary, octal, decimal, hexadecimal and any base up
+    to 36, working on the digits directly so long values are not rounded by
+    floating point.
+  faq:
+    - q: "Why does the value not change when I paste a very long number?"
+      a: "Because it should not. This converter works on the digits rather than through a floating-point number, so a 64-bit value keeps every digit — which is the whole reason to use it instead of a calculator."
+    - q: "How are values above 9 written in base 36?"
+      a: "With the letters A–Z after the digits, so 35 is Z and 36 is 10."
+
+eta-calculator:
+  about: >-
+    Estimate a finish time from how much is done, how long it took and how much
+    is left, assuming the current rate holds.
+  faq:
+    - q: "How accurate is it?"
+      a: "Only as accurate as the assumption that the remaining work resembles the work already done. It is most useful for spotting an overrun early, not for planning."
+
+chronometer:
+  about: >-
+    A stopwatch with lap times, counting in tenths of a second, for timing
+    something without leaving the browser.
+  faq:
+    - q: "Does it keep running if I switch tabs?"
+      a: "Yes. The elapsed time is computed from a clock reading rather than by counting ticks, so a backgrounded tab cannot make it drift."
+
+benchmark-builder:
+  about: >-
+    Compare a set of measured values and see each one as a ratio against the
+    fastest, so the differences are readable without doing the arithmetic.
+  faq:
+    - q: "Why ratios rather than percentages?"
+      a: "Because 2.4× slower is easier to act on than 140% slower, and it does not break down when the baseline is the smallest value."
+
+email-normalizer:
+  about: >-
+    Normalise an email address to a canonical form: lowercase the domain, strip a
+    +tag from the local part, and remove dots for providers where they are
+    ignored. Useful for deduplicating a mailing list.
+  faq:
+    - q: "Is removing dots always safe?"
+      a: "No. Dots are only ignorable at specific providers — Gmail and a few others. At most providers first.last and firstlast are genuinely different mailboxes, so only apply this when you know the domain."
