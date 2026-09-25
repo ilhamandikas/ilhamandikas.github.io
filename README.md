@@ -203,6 +203,23 @@ and `keyboard shortcut` all returned nothing until the word was added to
 `data/tools.yaml`. When a search "does not work", check the data before the
 matcher.
 
+**The sidebar survives a navigation.** Pressing Enter on a result replaces the
+whole document, so a query that only lived in `tools-nav.js` vanished and the
+list snapped back to its full 90 entries — which reads as a page refresh. The
+query and the sidebar's scroll offset now go into `sessionStorage` on `pagehide`
+(`pagehide`, not `beforeunload`, so the back/forward cache is covered too) and
+are restored before the first paint. The effect is that you can keep narrowing a
+search from one tool to the next: delete a character and more tools appear,
+clear the field and all 90 come back.
+
+`.tool-aside` also carries `view-transition-name: tool-nav`, so a cross-document
+view transition holds the panel still instead of fading it out with the rest of
+the page. The scroll offset has to be restored for that to look right — without
+it the two snapshots would cross-fade two different scroll positions.
+
+Deleting characters widening the list is not special code: every `input` event
+re-runs the same filter, so the list is simply recomputed from a shorter query.
+
 A related bug this work surfaced: `el.hidden = true` did **not** hide anything
 styled `display: flex`, because an author rule beats the user-agent `[hidden]`
 rule. The catalog filter had been updating the property without hiding the cards.

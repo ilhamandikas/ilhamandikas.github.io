@@ -558,6 +558,58 @@ const check = (label, actual, expected) => {
     page.dom.window.close();
   }
 
+  console.log('\n=== sidebar survives a navigation ===');
+  {
+    const KEY = 'tk:tool-nav';
+    const page = loadPage('uuid-generator');
+    const input = page.w.document.querySelector('#tool-nav-search');
+    input.value = 'json';
+    input.dispatchEvent(new page.w.Event('input', { bubbles: true }));
+    const narrowed = [...page.w.document.querySelectorAll('.tool-nav a')].filter((a) => !a.hidden).length;
+
+    // Leaving the page is the only moment the query can be written down.
+    page.w.dispatchEvent(new page.w.Event('pagehide'));
+    const saved = page.w.sessionStorage.getItem(KEY);
+    check('sidebar nav: the query is written down on the way out', JSON.parse(saved).q, 'json');
+    page.dom.window.close();
+
+    // Now land on another tool the way a click would: a brand new document that
+    // can only know about the query through that storage.
+    const next = loadPage('json-formatter', { session: { [KEY]: saved } });
+    const nextInput = next.w.document.querySelector('#tool-nav-search');
+    const visibleLinks = () => [...next.w.document.querySelectorAll('.tool-nav a')].filter((a) => !a.hidden).length;
+    const type = (value) => {
+      nextInput.value = value;
+      nextInput.dispatchEvent(new next.w.Event('input', { bubbles: true }));
+    };
+
+    check('sidebar nav: the query comes back on the next page', nextInput.value, 'json');
+    check('sidebar nav: the list comes back already narrowed', visibleLinks(), narrowed);
+    check('sidebar nav: ...and is still ranked', next.w.document.querySelectorAll('.tool-nav a.selected').length, 1);
+
+    // The point of keeping the query: deleting a character widens the list
+    // instead of throwing the search away.
+    type('j');
+    check('sidebar nav: deleting a character widens the list', visibleLinks() > narrowed, true);
+    type('jso');
+    check('sidebar nav: typing more narrows it again', visibleLinks() <= narrowed, true);
+    type('');
+    check('sidebar nav: an empty query brings every tool back', visibleLinks(), 90);
+    check('sidebar nav: ...and the categories with them', next.w.document.querySelector('.tool-nav').hasAttribute('data-searching'), false);
+
+    // A cleared field must be remembered as cleared, or the old query returns.
+    next.w.dispatchEvent(new next.w.Event('pagehide'));
+    check('sidebar nav: a cleared field is remembered as cleared', JSON.parse(next.w.sessionStorage.getItem(KEY)).q, '');
+    const fresh = loadPage('uuid-generator', { session: { [KEY]: next.w.sessionStorage.getItem(KEY) } });
+    check('sidebar nav: ...so the next page starts unfiltered', fresh.w.document.querySelector('#tool-nav-search').value, '');
+    check('sidebar nav: ...and shows every tool', [...fresh.w.document.querySelectorAll('.tool-nav a')].filter((a) => !a.hidden).length, 90);
+
+    const result = next.finish();
+    check('sidebar nav: no uncaught errors', result.thrown.length + result.errors.length, 0);
+    fresh.dom.window.close();
+    next.dom.window.close();
+  }
+
   console.log('\n=== sort button ===');
   {
     const page = loadPage('json-formatter');
@@ -607,6 +659,12 @@ const check = (label, actual, expected) => {
     check('wiring: speculation rules survive minification as valid JSON', Boolean(parsed), true);
     check('wiring: prerender waits for a hover, not every link', parsed && parsed.prerender[0].eagerness, 'moderate');
     check('wiring: feeds are excluded from prerendering', JSON.stringify(parsed).includes('/*.xml'), true);
+
+    // jsdom cannot run a view transition, so the only checkable part is that the
+    // rules are there: the sidebar is named so it is held still rather than
+    // faded out with the rest of the page.
+    check('wiring: the sidebar is held still across a navigation', /\.tool-aside\{view-transition-name:tool-nav\}/.test(CSS), true);
+    check('wiring: cross-document transitions are enabled', /@view-transition\{navigation:\s*auto/.test(CSS), true);
   }
 
   console.log('\n=== seo ===');

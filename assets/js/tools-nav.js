@@ -13,6 +13,21 @@ if (input && nav) {
   const rows = new Map(links.map((link) => [link, link.parentElement]));
   const empty = document.querySelector('#tool-nav-empty');
   const kbd = document.querySelector('#tool-nav-kbd');
+  const aside = document.querySelector('.tool-aside');
+
+  // Every navigation replaces this whole document, so a query that only lives in
+  // this script would vanish and the list would snap back to its full length.
+  // Carrying both across in sessionStorage is what lets you keep narrowing a
+  // search from one tool to the next instead of retyping it each time.
+  const REMEMBER = 'tk:tool-nav';
+  const memory = { q: '', top: 0 };
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(REMEMBER) || 'null');
+    if (saved && typeof saved.q === 'string') memory.q = saved.q;
+    if (saved && Number.isFinite(saved.top)) memory.top = saved.top;
+  } catch {
+    /* private mode, or somebody else's junk under our key */
+  }
 
   // The names are already in the page, so the index only costs the keywords —
   // which are the part you cannot read off the link text.
@@ -128,5 +143,22 @@ if (input && nav) {
 
   if (kbd) kbd.textContent = shortcutLabel();
   bindFocusShortcut(input);
+
+  // Restored before the first paint, so a cross-document view transition
+  // snapshots the sidebar as it was left rather than empty and unscrolled.
+  if (memory.q !== '') input.value = memory.q;
   apply();
+  if (aside && memory.top > 0) aside.scrollTop = memory.top;
+
+  // pagehide, not beforeunload: it fires for the back/forward cache too, where
+  // beforeunload never runs.
+  window.addEventListener('pagehide', () => {
+    memory.q = input.value;
+    memory.top = aside ? aside.scrollTop : 0;
+    try {
+      sessionStorage.setItem(REMEMBER, JSON.stringify(memory));
+    } catch {
+      /* ignore */
+    }
+  });
 }

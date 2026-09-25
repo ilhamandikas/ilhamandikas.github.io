@@ -48,6 +48,7 @@ function installGlobals(w) {
   globalThis.location = w.location;
   Object.defineProperty(globalThis, 'navigator', { value: w.navigator, configurable: true, writable: true });
   Object.defineProperty(globalThis, 'localStorage', { value: w.localStorage, configurable: true, writable: true });
+  Object.defineProperty(globalThis, 'sessionStorage', { value: w.sessionStorage, configurable: true, writable: true });
 
   const bindThese = /^(getComputedStyle|matchMedia|requestAnimationFrame|cancelAnimationFrame|structuredClone)$/;
   for (const name of [
@@ -88,7 +89,9 @@ function loadPage(slug, options) {
 }
 
 // Same, for any built page (the catalog, the home page, ...).
-function loadFile(htmlPath, url, { onConsole, prerendering = false } = {}) {
+// `session` seeds sessionStorage before any script runs, which is how a test
+// pretends to be the *next* page after a navigation.
+function loadFile(htmlPath, url, { onConsole, prerendering = false, session = null } = {}) {
   const html = fs.readFileSync(htmlPath, 'utf8');
   const entries = [];
   const vc = new VirtualConsole();
@@ -104,6 +107,10 @@ function loadFile(htmlPath, url, { onConsole, prerendering = false } = {}) {
   });
   const w = dom.window;
   installGlobals(w);
+
+  if (session) {
+    for (const [key, value] of Object.entries(session)) w.sessionStorage.setItem(key, value);
+  }
 
   // Pretend the browser is building this page in the background ahead of a
   // click, so we can check that nothing expensive runs before it is shown.

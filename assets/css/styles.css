@@ -466,6 +466,12 @@ img, svg { max-width: 100%; }
 
 .site-header { view-transition-name: site-header; }
 
+/* The sidebar keeps its query and its scroll offset across a navigation, so
+   naming it holds the whole panel still instead of fading it out with the rest
+   of the page. Without this, pressing Enter on a search result looks like the
+   sidebar reloaded even though the content behind it is unchanged. */
+.tool-aside { view-transition-name: tool-nav; }
+
 @media (prefers-reduced-motion: no-preference) {
   ::view-transition-old(root) { animation: vt-out 110ms ease-out both; }
   ::view-transition-new(root) { animation: vt-in 200ms ease-in both; }
