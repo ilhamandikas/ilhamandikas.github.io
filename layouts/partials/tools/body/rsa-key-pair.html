@@ -1,4 +1,5 @@
 <div class="tool-panel">
+  <h2>Generate a key pair</h2>
   <div class="tool-row">
     <label class="tool-inline">Modulus
       <select id="rsa-size" class="tool-select">
@@ -24,4 +25,23 @@
   <div class="tool-row">
     <button class="btn" type="button" data-copy="#rsa-private" data-status="#rsa-status">Copy private</button>
   </div>
+  <p class="tool-hint">The pair is generated in this page by the Web Crypto API. Nothing is uploaded, and nothing is stored — reload and it is gone.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Do these two keys match?</h2>
+  <div class="tool-field">
+    <label for="rsa-check-public">Public key (PEM)</label>
+    <textarea id="rsa-check-public" class="tool-input" rows="7" spellcheck="false" placeholder="-----BEGIN PUBLIC KEY-----"></textarea>
+  </div>
+  <div class="tool-field">
+    <label for="rsa-check-private">Private key (PEM)</label>
+    <textarea id="rsa-check-private" class="tool-input" rows="9" spellcheck="false" placeholder="-----BEGIN PRIVATE KEY-----"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="rsa-check">Check the pair</button>
+    <button class="btn" type="button" id="rsa-check-fill">Use the generated pair</button>
+    <span class="tool-status" id="rsa-check-status"></span>
+  </div>
+  <p class="tool-hint">Both <code>BEGIN PUBLIC KEY</code> (SPKI) and <code>BEGIN RSA PUBLIC KEY</code> (PKCS#1) are accepted, and likewise <code>BEGIN PRIVATE KEY</code> and <code>BEGIN RSA PRIVATE KEY</code>. Only RSA keys can be checked — the matching test works by signing a throwaway message with the private key and asking the public key to verify it, and a signature never leaves this page.</p>
 </div>

@@ -104,6 +104,19 @@ Shared building blocks keep the per-tool code small:
 - `layouts/partials/tools/cheatsheet.html` — searchable reference panel
 - `assets/js/toolkit.js` — `tk.transform()`, `tk.live()`, clipboard, downloads, Base64
 
+`assets/js/pem.js` holds the PEM/DER plumbing that only two tools need, so it is a
+module rather than another toolkit helper: esbuild inlines it into the RSA and JWT
+bundles and no other page downloads it. It reads PEM blocks as bytes, rebuilds the
+PKCS#1 wrappers that `openssl genrsa` still prints into the PKCS#8 and SPKI shapes
+WebCrypto accepts, and normalises ECDSA signatures.
+
+That last one is worth a note, because the obvious implementation is backwards.
+The WebCrypto ECDSA sign steps say to *"convert r to a byte sequence of length n and
+append it to result"* — the signature is raw `R||S`, not DER, which is also exactly
+what a JWS `ES256` signature already is. OpenSSL and Node's `crypto` module print
+DER, so `ecdsaToRaw()` accepts either shape and returns raw. Raw is exactly `2n`
+bytes and no DER `SEQUENCE` of these curves can be, so the two never collide.
+
 ### Vendored libraries
 
 Most tools are written from scratch on top of browser APIs (WebCrypto, `DOMParser`,
@@ -280,6 +293,16 @@ exact expected output (Base64, slugify, roman numerals, JSON key sorting, …) a
 checks the converter round trips (JSON→YAML→JSON, XML→JSON→XML, and so on).
 
 This is a development aid only: it is not part of the build and CI never runs it.
+
+Two parts of the suite are worth calling out because they would otherwise be easy
+to fake. The network tools run against a mocked `fetch`, so the assertions are
+about the parsing rather than the internet. The crypto tools generate their keys
+and signatures at test time with Node's `crypto` module — two unrelated RSA pairs
+and one EC pair, a real HMAC, and real RS256, PS256 and ES256 tokens — so the
+verifier is checked against an independent implementation instead of against a
+stored fixture that could encode the same misunderstanding twice. The suite has
+already caught one such misunderstanding: ECDSA signatures are raw `R||S` in
+WebCrypto, and a test written the other way round fails loudly.
 
 ## Configuration notes
 

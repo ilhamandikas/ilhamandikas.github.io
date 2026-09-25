@@ -185,8 +185,8 @@
       status: done
     - slug: rsa-key-pair
       name: RSA Key Pair
-      desc: Generate an RSA public and private key pair in the browser.
-      keywords: [rsa, keypair, public, private, pem, crypto]
+      desc: Generate an RSA public and private key pair, and check whether two keys match.
+      keywords: [rsa, keypair, public, private, pem, crypto, match, verify, check, openssl]
       status: done
     - slug: bip39
       name: BIP39 Mnemonic
@@ -264,7 +264,7 @@
     - slug: jwt-parser
       name: JWT Parser
       desc: Decode and inspect the header, payload and claims of a JSON Web Token.
-      keywords: [jwt, token, decode, claims, auth, bearer]
+      keywords: [jwt, token, decode, claims, auth, bearer, verify, signature, validate, hs256, rs256]
       status: done
     - slug: url-parser
       name: URL Parser

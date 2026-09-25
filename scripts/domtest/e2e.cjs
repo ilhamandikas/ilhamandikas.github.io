@@ -449,6 +449,10 @@ const check = (label, actual, expected) => {
     check('search: keywords are searched too ("screen size")', top('screen size'), 'Device Information');
     check('search: keywords are searched too ("keyboard shortcut")', top('keyboard shortcut'), 'Keycode Info');
     check('search: keywords are searched too ("bcrypt generator")', top('bcrypt generator'), 'bcrypt');
+    check('search: keywords are searched too ("rsa key match")', top('rsa key match'), 'RSA Key Pair');
+    check('search: keywords are searched too ("openssl")', top('openssl'), 'RSA Key Pair');
+    check('search: keywords are searched too ("jwt verify")', top('jwt verify'), 'JWT Parser');
+    check('search: keywords are searched too ("hs256")', top('hs256'), 'JWT Parser');
 
     // Nonsense has to keep finding nothing, or fuzzy is just a random generator.
     for (const nonsense of ['asdfgh', 'xyz', 'qqq', 'nonsense', 'kubernetes']) {
@@ -608,6 +612,170 @@ const check = (label, actual, expected) => {
     check('sidebar nav: no uncaught errors', result.thrown.length + result.errors.length, 0);
     fresh.dom.window.close();
     next.dom.window.close();
+  }
+
+  console.log('\n=== key and signature checking ===');
+  {
+    const { constants, createHmac, createSign, generateKeyPairSync } = require('crypto');
+
+    // Two unrelated RSA pairs plus an EC one. Generated here rather than checked
+    // in as a fixture, so the test has a real oracle and cannot pass by agreeing
+    // with a mistake baked into a stored key.
+    const a = generateKeyPairSync('rsa', { modulusLength: 2048 });
+    const b = generateKeyPairSync('rsa', { modulusLength: 2048 });
+    const ec = generateKeyPairSync('ec', { namedCurve: 'P-256' });
+    const pem = (key, type) => key.export({ type, format: 'pem' });
+    const publicA = pem(a.publicKey, 'spki');
+    const privateA = pem(a.privateKey, 'pkcs8');
+    const publicB = pem(b.publicKey, 'spki');
+    const privateB = pem(b.privateKey, 'pkcs8');
+
+    // --- RSA pair matching ---
+    const rsa = loadPage('rsa-key-pair');
+    const rdoc = rsa.w.document;
+    const fill = (sel, value) => {
+      const el = rdoc.querySelector(sel);
+      el.value = value;
+      el.dispatchEvent(new rsa.w.Event('input', { bubbles: true }));
+    };
+    const press = (sel) => rdoc.querySelector(sel).dispatchEvent(new rsa.w.MouseEvent('click', { bubbles: true, cancelable: true }));
+    const rsaStatus = () => rdoc.querySelector('#rsa-check-status').textContent.trim();
+    const until = async (test, tries = 60) => {
+      for (let i = 0; i < tries; i += 1) {
+        if (test()) return true;
+        await sleep(50);
+      }
+      return false;
+    };
+
+    // The whole round trip: generate a pair, turn it into PEM, read the PEM back
+    // and prove the two halves belong together.
+    press('#rsa-generate');
+    await until(() => rdoc.querySelector('#rsa-status').textContent.trim() !== 'Generating…');
+    check('rsa: generating a pair succeeds', rdoc.querySelector('#rsa-status').textContent.trim(), 'Key pair ready');
+    check('rsa: the output is PEM', rdoc.querySelector('#rsa-public').value.startsWith('-----BEGIN PUBLIC KEY-----'), true);
+    press('#rsa-check-fill');
+    press('#rsa-check');
+    await sleep(200);
+    check('rsa: the generated pair matches itself', rsaStatus().startsWith('Match'), true);
+
+    fill('#rsa-check-public', publicA);
+    fill('#rsa-check-private', privateA);
+    press('#rsa-check');
+    await sleep(150);
+    check('rsa: a real pair matches', rsaStatus(), 'Match — both keys are 2048-bit and belong to the same pair');
+
+    fill('#rsa-check-private', privateB);
+    press('#rsa-check');
+    await sleep(150);
+    check('rsa: an unrelated private key does not match', rsaStatus().startsWith('No match'), true);
+    check('rsa: ...and that is shown as an error', rdoc.querySelector('#rsa-check-status').classList.contains('err'), true);
+
+    // PKCS#1 is what `openssl genrsa` prints, so it has to work, not just be
+    // reported as unsupported.
+    fill('#rsa-check-public', pem(a.publicKey, 'pkcs1'));
+    fill('#rsa-check-private', pem(a.privateKey, 'pkcs1'));
+    press('#rsa-check');
+    await sleep(150);
+    check('rsa: PKCS#1 keys are wrapped rather than refused', rsaStatus().startsWith('Match'), true);
+
+    fill('#rsa-check-private', 'definitely not a key');
+    press('#rsa-check');
+    await sleep(50);
+    check('rsa: junk gets a readable message', rsaStatus().includes('No PEM block found'), true);
+
+    fill('#rsa-check-public', publicA);
+    fill('#rsa-check-private', '');
+    press('#rsa-check');
+    await sleep(50);
+    check('rsa: half a pair asks for the other half', rsaStatus(), 'Paste both keys');
+
+    rdoc.querySelector('#rsa-public').value = '';
+    press('#rsa-check-fill');
+    check('rsa: "use the generated pair" reports a pair that is not there', rsaStatus(), 'Generate a pair first');
+
+    const rsaResult = rsa.finish();
+    check('rsa: no uncaught errors', rsaResult.thrown.length + rsaResult.errors.length, 0);
+    rsa.dom.window.close();
+
+    // --- JWT signatures ---
+    const b64u = (value) => Buffer.from(value).toString('base64url');
+    const makeToken = (header, claims, sign) => {
+      const signed = `${b64u(JSON.stringify(header))}.${b64u(JSON.stringify(claims))}`;
+      return `${signed}.${b64u(sign(signed))}`;
+    };
+
+    const jwt = loadPage('jwt-parser');
+    const jdoc = jwt.w.document;
+    const put = (sel, value) => {
+      const el = jdoc.querySelector(sel);
+      el.value = value;
+      el.dispatchEvent(new jwt.w.Event('input', { bubbles: true }));
+    };
+    const go = (sel) => jdoc.querySelector(sel).dispatchEvent(new jwt.w.MouseEvent('click', { bubbles: true, cancelable: true }));
+    const verdict = async (token, key) => {
+      put('#jwt-input', token);
+      put('#jwt-key', key);
+      go('#jwt-verify');
+      await sleep(150);
+      return jdoc.querySelector('#jwt-verify-status').textContent.trim();
+    };
+
+    const hs256 = makeToken({ alg: 'HS256', typ: 'JWT' }, { sub: '123' }, (input) => createHmac('sha256', 's3cret').update(input).digest());
+    check('jwt: HS256 verifies with the right secret', (await verdict(hs256, 's3cret')).includes('is valid'), true);
+    check('jwt: HS256 fails with the wrong secret', (await verdict(hs256, 'wrong')).includes('does not match'), true);
+
+    // The whole point of the tool: an edited payload must not verify.
+    const [head, , sig] = hs256.split('.');
+    const tampered = `${head}.${b64u(JSON.stringify({ sub: 'admin' }))}.${sig}`;
+    check('jwt: a tampered payload breaks the signature', (await verdict(tampered, 's3cret')).includes('does not match'), true);
+
+    const rs256 = makeToken({ alg: 'RS256' }, { sub: '123' }, (input) => createSign('RSA-SHA256').update(input).sign(privateA));
+    check('jwt: RS256 verifies with the matching public key', (await verdict(rs256, publicA)).includes('is valid'), true);
+    check('jwt: RS256 fails with an unrelated public key', (await verdict(rs256, publicB)).includes('does not match'), true);
+
+    const ps256 = makeToken({ alg: 'PS256' }, { sub: '123' }, (input) =>
+      createSign('sha256').update(input).sign({ key: privateA, padding: constants.RSA_PKCS1_PSS_PADDING, saltLength: 32 }),
+    );
+    check('jwt: PS256 verifies (salt length taken from the hash)', (await verdict(ps256, publicA)).includes('is valid'), true);
+
+    // JWS stores ECDSA as raw R||S, which is also what WebCrypto consumes. Node's
+    // crypto module prints DER by default, so both shapes are exercised: the raw
+    // one passes straight through, the DER one has to be normalised.
+    const es256 = makeToken({ alg: 'ES256' }, { sub: '123' }, (input) =>
+      createSign('sha256').update(input).sign({ key: pem(ec.privateKey, 'pkcs8'), dsaEncoding: 'ieee-p1363' }),
+    );
+    const ecPublic = pem(ec.publicKey, 'spki');
+    check('jwt: ES256 verifies (raw R||S signature)', (await verdict(es256, ecPublic)).includes('is valid'), true);
+
+    const es256der = makeToken({ alg: 'ES256' }, { sub: '123' }, (input) => createSign('sha256').update(input).sign(pem(ec.privateKey, 'pkcs8')));
+    check('jwt: ES256 verifies (DER signature, normalised to raw)', (await verdict(es256der, ecPublic)).includes('is valid'), true);
+    const shortSig = `${es256.split('.').slice(0, 2).join('.')}.${b64u(Buffer.alloc(32))}`;
+    check('jwt: ES256 fails with a signature of the wrong length', (await verdict(shortSig, ecPublic)).includes('ECDSA signature'), true);
+    check('jwt: ES256 is not accepted with an RSA key', (await verdict(es256, publicA)).includes('is valid'), false);
+
+    const unsigned = `${b64u(JSON.stringify({ alg: 'none' }))}.${b64u(JSON.stringify({ sub: 'admin' }))}.`;
+    check('jwt: alg "none" is refused', (await verdict(unsigned, 's3cret')).includes('unsigned'), true);
+    const weird = `${b64u(JSON.stringify({ alg: 'toString' }))}.${b64u(JSON.stringify({ sub: '1' }))}.AAAA`;
+    check('jwt: a nonsense alg does not fall through to the prototype', (await verdict(weird, 's3cret')).includes('cannot check'), true);
+    check('jwt: a two-part token has nothing to check', (await verdict('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0', 's3cret')).includes('no signature'), true);
+    check('jwt: an unreadable header is reported', (await verdict('not.a.token', 's3cret')).includes('not readable JSON'), true);
+
+    put('#jwt-input', hs256);
+    put('#jwt-key', '');
+    go('#jwt-verify');
+    await sleep(50);
+    check('jwt: an empty key says which key is wanted', jdoc.querySelector('#jwt-verify-status').textContent.includes('Paste the secret to check HS256'), true);
+
+    // A public key pasted where an HMAC secret belongs is the algorithm-confusion
+    // attack, and there is no honest reason for that shape of input.
+    const confused = makeToken({ alg: 'HS256' }, { sub: 'admin' }, (input) => createHmac('sha256', publicA).update(input).digest());
+    check('jwt: algorithm confusion is refused', (await verdict(confused, publicA)).includes('algorithm-confusion'), true);
+    check('jwt: ...and an RSA token is not checked with a secret', (await verdict(rs256, 's3cret')).includes('is valid'), false);
+
+    const jwtResult = jwt.finish();
+    check('jwt: no uncaught errors', jwtResult.thrown.length + jwtResult.errors.length, 0);
+    jwt.dom.window.close();
   }
 
   console.log('\n=== sort button ===');

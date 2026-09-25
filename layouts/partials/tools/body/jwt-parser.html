@@ -1,4 +1,5 @@
 <div class="tool-panel">
+  <h2>Decode</h2>
   <div class="tool-field">
     <label for="jwt-input">JWT</label>
     <textarea id="jwt-input" class="tool-input" rows="4" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMifQ.signature"></textarea>
@@ -7,4 +8,18 @@
   <div class="tool-field"><label>Payload</label><pre id="jwt-payload" class="tool-pre"></pre></div>
   <div class="tool-field"><label>Signature</label><pre id="jwt-signature" class="tool-pre"></pre></div>
   <p class="tool-status" id="jwt-status"></p>
+  <p class="tool-hint">Decoding is not verifying. The header and payload are plain base64url, so anyone can read or edit them — only the signature can show that the token has not been tampered with.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Check the signature</h2>
+  <div class="tool-field">
+    <label for="jwt-key">Secret or public key</label>
+    <textarea id="jwt-key" class="tool-input" rows="5" spellcheck="false" placeholder="HMAC secret, or a PEM public key for RS, PS and ES"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="jwt-verify">Verify signature</button>
+    <span class="tool-status" id="jwt-verify-status"></span>
+  </div>
+  <p class="tool-hint">The algorithm is read from the token header. HS256, HS384 and HS512 take the shared secret as UTF-8 text; RS, PS and ES take a <code>BEGIN PUBLIC KEY</code> PEM. A valid signature proves the token was signed by the holder of that key — it does not prove the issuer is one you trust, and it says nothing about <code>exp</code>, <code>aud</code> or <code>iss</code>. Use this to debug a token, not as an authorisation check.</p>
 </div>

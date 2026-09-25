@@ -167,15 +167,21 @@ password-strength:
 
 jwt-parser:
   about: >-
-    Decode the header, payload and claims of a JSON Web Token. It shows the
-    signing algorithm, the registered claims and when the token expires, and
-    flags the pitfalls worth noticing — an alg: none header, or an exp that has
-    already passed.
+    Decode the header, payload and claims of a JSON Web Token, and check its
+    signature. It shows the signing algorithm, the registered claims and when the
+    token expires, and flags the pitfalls worth noticing — an alg: none header, or
+    an exp that has already passed. Signature checking covers HMAC (HS256/384/512),
+    RSASSA-PKCS1-v1_5 (RS256/384/512), RSA-PSS (PS256/384/512) and ECDSA
+    (ES256/384/512).
   faq:
     - q: "Does this verify the signature?"
-      a: "No, and that distinction matters. Decoding is not verification. Anyone can read a JWT payload; only the signature proves the token came from the party you expect, and checking it needs the key. Never trust a token just because it decodes cleanly."
+      a: "Yes, in the Check the signature panel, for HS, RS, PS and ES algorithms. Paste the shared secret for HMAC tokens or the PEM public key for the rest, and it recomputes the signature over the header and payload exactly as they arrived. That is why editing the payload by even one character flips the answer to a mismatch."
+    - q: "Does a valid signature mean the token is trustworthy?"
+      a: "No. It only means the token was signed by whoever holds the key you pasted. It says nothing about whether that issuer is one you trust, and it does not enforce exp, nbf, aud or iss — those are separate checks your application still has to make."
+    - q: "Why is alg: none refused?"
+      a: "Because alg: none means the token is unsigned, so anyone who can edit it can also rewrite the payload. A verifier that accepts the algorithm named in the token is the classic algorithm-confusion bug; here the algorithm is read from the header so the right primitive is chosen, and none is always reported as a failure."
     - q: "Is it safe to paste a token here?"
-      a: "The decoding happens in your browser and nothing is uploaded. Even so, a token is a live credential — use a throwaway one when you are testing."
+      a: "The decoding and the signature check both happen in your browser and nothing is uploaded. Even so, a token is a live credential — use a throwaway one when you are testing, and never paste a production secret."
 
 timestamp-converter:
   about: >-
@@ -749,11 +755,16 @@ aes-encryption:
 rsa-key-pair:
   about: >-
     Generate an RSA key pair in the browser with WebCrypto, in PEM form, ready to
-    paste into an SSH or TLS configuration. The private key never leaves the page
-    unless you copy it out.
+    paste into an SSH or TLS configuration — and check whether a public key and a
+    private key you already have are actually a pair. The private key never leaves
+    the page unless you copy it out.
   faq:
     - q: "How many bits should the key be?"
       a: "2048 is the accepted minimum today. 4096 is slower to generate and to use for a modest margin, and 1024 should be treated as broken."
+    - q: "How do you tell whether two keys match?"
+      a: "WebCrypto cannot derive one key from the other, so the check signs a fixed throwaway message with the private key and asks the public key to verify it. If the signature verifies, the two halves share a modulus and are a genuine pair. The probe message is a constant, so the same two keys always give the same answer."
+    - q: "Which key formats are accepted for the check?"
+      a: "PKCS#8 and PKCS#1 for private keys, SPKI and PKCS#1 for public keys — that is BEGIN PRIVATE KEY, BEGIN RSA PRIVATE KEY, BEGIN PUBLIC KEY and BEGIN RSA PUBLIC KEY. The PKCS#1 forms are what openssl genrsa and openssl rsa -RSAPublicKey_out print, so they are wrapped into PKCS#8 or SPKI before WebCrypto sees them rather than rejected."
     - q: "Is a key generated in a browser trustworthy?"
       a: "The cryptography is the same WebCrypto implementation your browser uses for TLS, so the maths is sound. What you have to trust is the page itself, which is why generating keys offline is the safer habit for anything that matters."
 
