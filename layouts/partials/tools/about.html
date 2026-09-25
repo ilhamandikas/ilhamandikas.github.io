@@ -1,7 +1,3 @@
-{{- /* The prose block under a tool: what it does, how it works, what it will not
-       do. This is the part a search engine actually has something to read, so
-       it only renders for tools that have written content — no generated
-       filler. */ -}}
 {{- $slug := . -}}
 {{- $guide := partial "tools/guide.html" $slug -}}
 {{- with $guide.about }}

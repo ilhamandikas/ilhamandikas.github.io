@@ -1,32 +1,8 @@
-// Remember what was typed into a tool — both the current state and a short list of
-// previous entries — so a refresh, a trip to another page or an accidental
-// overwrite does not lose it. Only after asking, and only in this browser.
-//
-// What is kept is the tool's own form fields, in localStorage. Nothing is uploaded
-// and there is no account. That is the honest version of "your data never leaves
-// your browser": it is true, and it is not the same as "it is private". Anything in
-// localStorage can be read by anyone who can use this browser profile, and by any
-// script that runs on this site later. A tool page can hold a private key, a
-// password or a signed token, so the choice is put in front of the user instead of
-// being made for them — and the warning says what the risk actually is.
-//
-// Fields that must never be written down are left out: password inputs, file
-// inputs, and anything a tool has marked with data-no-memory.
-//
-// The two stores have different jobs, which is why they are written on different
-// timers. The current state is saved 400ms after you stop typing, so a refresh does
-// not lose the last sentence. A history entry is written 2s after you stop, because
-// that is the point at which you have finished a thought rather than paused in the
-// middle of one — recording on the fast timer would fill the list with every
-// half-word you typed.
 const CONSENT = 'ilham:memory-consent';
 const PREFIX = 'ilham:memory:';
 const HISTORY = 'ilham:history:';
 const FIELDS = '.tool-body input, .tool-body textarea, .tool-body select';
 
-// A cap on both, because localStorage is about 5MB for the whole origin and one
-// pasted blob can be most of that. An entry larger than this is not recorded: a
-// 2MB base64 string is not something anyone scrolls back through.
 const MAX_ENTRIES = 12;
 const MAX_ENTRY_BYTES = 8000;
 
@@ -34,8 +10,6 @@ const slug = (/\/tools\/([^/]+)\//.exec(location.pathname) || [])[1] || '';
 const key = () => `${PREFIX}${slug}`;
 const historyKey = () => `${HISTORY}${slug}`;
 
-// Private mode, a full disk and a disabled-storage setting all make localStorage
-// throw. Every access is defended, and a failure means "no memory", not a crash.
 function readStore(name) {
   try {
     return localStorage.getItem(name);
@@ -55,7 +29,7 @@ function writeStore(name, value) {
 }
 
 function savable(el) {
-  if (!el.id) return false; // with no stable name there is nothing to restore into
+  if (!el.id) return false;
   if (el.dataset.noMemory !== undefined) return false;
   if (el.readOnly || el.disabled) return false;
   const type = (el.type || '').toLowerCase();
@@ -89,8 +63,6 @@ function stored() {
   }
 }
 
-// Writing a value in has to fire the same events a person typing would, or the tool
-// would show the restored input next to output built from the empty one.
 function apply(data) {
   let count = 0;
   for (const el of fields()) {
@@ -120,9 +92,6 @@ function focusRestoredField(data) {
 function clearFields() {
   for (const el of fields()) {
     if (el.tagName === 'SELECT') {
-      // A select has no defaultValue — assigning one writes the string
-      // "undefined" into it, and the tool then looks up an option that does not
-      // exist. The HTML reset rule is the option marked selected, else the first.
       const marked = [...el.options].findIndex((option) => option.defaultSelected);
       el.selectedIndex = marked === -1 ? 0 : marked;
     } else if (el.type === 'checkbox' || el.type === 'radio') {
@@ -135,10 +104,6 @@ function clearFields() {
   }
 }
 
-/* ---------- previous entries ---------- */
-
-// Anything that survived a version change, a half-written write or another script
-// under the same prefix is discarded rather than trusted.
 function readHistory() {
   const raw = readStore(historyKey());
   if (!raw) return [];
@@ -159,8 +124,6 @@ function writeHistory(list) {
   else writeStore(historyKey(), JSON.stringify(list));
 }
 
-// Both sides come from snapshot(), which walks the DOM in the same order every
-// time, so comparing the serialised forms is comparing the same shape.
 const sameSnapshot = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 function commit() {
@@ -169,17 +132,12 @@ function commit() {
   const text = JSON.stringify(data);
   if (text.length > MAX_ENTRY_BYTES) return false;
   const list = readHistory();
-  // The newest entry is what the form currently holds, so re-recording it would
-  // just push the same thing down the list and evict a real entry.
   if (list.length > 0 && sameSnapshot(list[0].data, data)) return false;
   list.unshift({ at: Date.now(), data });
   writeHistory(list.slice(0, MAX_ENTRIES));
   return true;
 }
 
-// The first few values that are not empty, which is what you recognise an entry by.
-// Only fields someone actually typed into count: a number, a colour, a range or a
-// select is a setting, and "{\"a\":1} · 2" is a worse label than the text alone.
 const TEXTUAL = ['', 'text', 'search', 'url', 'email', 'tel'];
 const describable = (el) =>
   el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && TEXTUAL.includes((el.type || '').toLowerCase()));
@@ -232,8 +190,6 @@ function ago(then) {
   return new Date(then).toLocaleDateString();
 }
 
-/* ---------- the bar and the list ---------- */
-
 const bar = document.querySelector('#tool-memory');
 const ask = document.querySelector('#tool-memory-ask');
 const on = document.querySelector('#tool-memory-on');
@@ -248,8 +204,6 @@ if (bar && slug) {
   let historyTimer = null;
   let suspended = false;
 
-  // One entry point for both timers, so a tool that fires input and change for the
-  // same keystroke cannot end up with two different schedules.
   const queue = () => {
     if (suspended || consent() !== 'yes') return;
     clearTimeout(timer);
@@ -267,8 +221,6 @@ if (bar && slug) {
     off.hidden = state !== 'off';
   };
 
-  // Rows are built with createElement, never innerHTML: every character in them
-  // came from a field the user typed into.
   function row(entry, index) {
     const item = document.createElement('li');
     item.className = 'tool-history-item';
@@ -299,7 +251,6 @@ if (bar && slug) {
     drop.className = 'tool-history-link';
     drop.textContent = 'Remove';
     drop.addEventListener('click', () => {
-      // Read it back before splicing: another tab may have written to the same key.
       const current = readHistory();
       current.splice(index, 1);
       writeHistory(current);
@@ -338,20 +289,15 @@ if (bar && slug) {
         if (name && (name.startsWith(PREFIX) || name.startsWith(HISTORY))) keys.push(name);
       }
     } catch {
-      /* ignore */
-    }
+      }
     for (const name of keys) writeStore(name, null);
     writeStore(CONSENT, null);
   }
 
-  // Started in three places — the first yes, "start saving" again, and a reload that
-  // already had consent — so it lives here rather than being repeated.
   function start() {
     bar.dataset.memory = 'on';
     document.addEventListener('input', queue);
     document.addEventListener('change', queue);
-    // A tab closed mid-sentence would otherwise lose the last few hundred
-    // milliseconds of typing that the debounce is still holding.
     window.addEventListener('pagehide', () => {
       if (suspended || consent() !== 'yes') return;
       save();

@@ -1,0 +1,39 @@
+<div class="tool-panel">
+  <h2>CORS Checker</h2>
+  <div class="cors-grid">
+    <label class="tool-field">
+      <span>URL</span>
+      <input id="cors-url" class="tool-input" type="text" placeholder="https://api.example.com/data" spellcheck="false" autocomplete="off">
+    </label>
+    <label class="tool-field">
+      <span>Method</span>
+      <select id="cors-method" class="tool-select">
+        <option>GET</option>
+        <option>POST</option>
+        <option>PUT</option>
+        <option>PATCH</option>
+        <option>DELETE</option>
+      </select>
+    </label>
+  </div>
+  <div class="cors-grid">
+    <label class="tool-field">
+      <span>Origin to check</span>
+      <input id="cors-origin" class="tool-input" type="text" spellcheck="false">
+    </label>
+    <label class="tool-field">
+      <span>Request headers</span>
+      <input id="cors-req-headers" class="tool-input" type="text" placeholder="Authorization, Content-Type" spellcheck="false">
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="cors-check">Check</button>
+    <span class="tool-status" id="cors-status"></span>
+  </div>
+  <p class="tool-hint">Browsers do not let a page spoof the real Origin header. This tool sends a normal browser request and an OPTIONS-style preflight probe where possible, then explains what the browser allows this page to see.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <div id="cors-result" class="tool-results"></div>
+</div>

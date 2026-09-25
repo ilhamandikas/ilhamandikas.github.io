@@ -227,6 +227,11 @@
       desc: Send an HTTP request from the browser and inspect responses.
       keywords: [http, request, api, rest, postman, fetch, headers, post, get, debug, client, endpoint, test api]
       status: done
+    - slug: cors-checker
+      name: CORS Checker
+      desc: Check whether a URL can be read from this browser origin and inspect visible CORS headers.
+      keywords: [cors, origin, access-control, header, api, browser, preflight, options]
+      status: done
     - slug: curl-tester
       name: curl Tester
       desc: Parse, explain and rebuild curl commands locally.

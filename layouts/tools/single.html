@@ -41,8 +41,6 @@
 {{- $js := resources.Get . | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
 {{- end }}
-{{- /* Loaded after the tool so it can restore values and replay the events that
-       make the tool redraw from them. */}}
 {{- $memory := resources.Get "js/tools-memory.js" | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $memory.RelPermalink }}" integrity="{{ $memory.Data.Integrity }}"></script>
 {{ end }}

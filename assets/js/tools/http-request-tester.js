@@ -1,11 +1,3 @@
-// HTTP Request Tester — send a request from the browser, and move between the
-// form and a curl command in both directions.
-//
-// There is no proxy here and no server of ours in the path: the browser talks to
-// the address directly, so the target's CORS policy decides whether the reply can
-// be read at all. That limit is stated in the page rather than worked around,
-// because working around it would mean routing somebody's credentials and tokens
-// through a server we run.
 const { tk } = window;
 
 const method = document.querySelector('#hrt-method');
@@ -29,11 +21,6 @@ const curlStatus = document.querySelector('#hrt-curl-status');
 const CONTENT_TYPES = { json: 'application/json', form: 'application/x-www-form-urlencoded', text: 'text/plain' };
 const NO_BODY = new Set(['GET', 'HEAD']);
 
-/* ---------- reading and writing the form ---------- */
-
-// One `Name: value` per line. A line without a colon is a typo worth reporting
-// rather than silently ignoring, because a header that never gets sent is the
-// hardest kind of bug to see from the outside.
 function readHeaders(text) {
   const list = [];
   const problems = [];
@@ -51,8 +38,6 @@ function readHeaders(text) {
 
 const writeHeaders = (list) => list.map(([name, value]) => `${name}: ${value}`).join('\n');
 
-// The header block wins over the Body dropdown, so a pasted Content-Type is never
-// silently replaced by the one this page would have picked.
 function effectiveContentType(list, type) {
   const explicit = list.find(([name]) => name.toLowerCase() === 'content-type');
   return explicit ? explicit[1] : CONTENT_TYPES[type] || null;
@@ -90,12 +75,6 @@ const syncBodyField = () => {
   bodyWrap.hidden = bodyType.value === 'none';
 };
 
-/* ---------- curl ---------- */
-
-// Shell words, so a value with spaces survives. Single quotes are literal, double
-// quotes allow the four escapes the shell does allow inside them, and a backslash
-// before a newline is a continuation — which is how most curl commands in
-// documentation are written.
 function tokenize(text) {
   const source = String(text).replace(/\\\r?\n/g, ' ');
   const words = [];
@@ -139,8 +118,6 @@ function tokenize(text) {
   return words;
 }
 
-// Options curl accepts that have no browser equivalent. Naming them is the honest
-// move: a silently dropped `-F` would send a request that is not the one asked for.
 const UNSUPPORTED = {
   '-F': 'multipart form uploads',
   '--form': 'multipart form uploads',
@@ -166,15 +143,10 @@ const UNSUPPORTED = {
   '--limit-rate': 'throttling the transfer',
   '--cert-type': 'a client certificate',
   '--key-type': 'a client certificate',
-  // The one that matters: a browser cannot be told to accept a bad certificate,
-  // so a command that needs this will fail here and the reason is not obvious.
   '-k': 'skipping certificate checks — a browser refuses a bad certificate and cannot be told otherwise',
   '--insecure': 'skipping certificate checks — a browser refuses a bad certificate and cannot be told otherwise',
 };
 
-// Flags that ask for something this page does anyway, or that only affect a
-// terminal. Listing these as "left out" would be false — nothing was lost — and it
-// would train people to skim the list that actually matters.
 const HARMLESS = {
   '-s': 'quiet mode',
   '--silent': 'quiet mode',
@@ -193,7 +165,6 @@ const HARMLESS = {
   '--verbose': 'the raw traffic log, which a page cannot see',
 };
 
-// Long options that take a value, and the short letters that do.
 const LONG_VALUE = new Set([
   'request', 'header', 'data', 'data-raw', 'data-binary', 'data-ascii', 'data-urlencode',
   'json', 'user', 'cookie', 'user-agent', 'referer', 'url', 'max-time', 'connect-timeout',
@@ -202,7 +173,6 @@ const LONG_VALUE = new Set([
 ]);
 const SHORT_VALUE = new Set(['X', 'H', 'd', 'b', 'u', 'A', 'e', 'T', 'm', 'o', 'x', 'F', 'c', 'w']);
 
-// `a=1&b=2` stays two pairs; the names and the values are what get encoded.
 function encodePairs(text) {
   return String(text)
     .split('&')
@@ -220,14 +190,7 @@ function parseCurl(text) {
     throw new Error(`That does not start with curl — it starts with "${words[0]}"`);
   }
 
-  // Two lists, because they are not the same thing: `notes` is what the command
-  // asked for and this page will not do, and `adjustments` is what was understood
-  // but written down differently. Calling the second kind "left out" is a lie that
-  // trains people to ignore the first kind.
   const result = { method: null, url: '', headers: [], body: null, get: false, notes: [], adjustments: [] };
-  // Each chunk remembers whether curl would percent-encode it in a -G query string.
-  // `-d` is encoded, `--data-raw` and `--data-binary` are not, and `--data-urlencode`
-  // has already been encoded here.
   const data = [];
   let urlencoded = false;
   let rawBinary = false;
@@ -247,8 +210,6 @@ function parseCurl(text) {
         if (value === undefined) throw new Error(`${word} needs a value`);
       }
     } else if (word.startsWith('-') && word.length > 1) {
-      // A cluster such as -sSL is several flags; the first letter that takes a
-      // value swallows the rest of the cluster, which is how -dfoo works.
       let at = 1;
       let taken = false;
       while (at < word.length) {
@@ -303,9 +264,6 @@ function parseCurl(text) {
       case '--data':
       case '--data-raw':
       case '--data-ascii':
-        // curl sends these as application/x-www-form-urlencoded unless told
-        // otherwise, so the form has to remember that or the re-exported command
-        // asks for a different request than the one that was pasted in.
         urlencoded = true;
         if (/^[@<]/.test(String(value))) {
           result.notes.push('the @file and <file forms read a file from disk, which a page cannot do — the reference is sent as literal text');
@@ -313,7 +271,6 @@ function parseCurl(text) {
         data.push({ text: String(value), encode: name !== '--data-raw' });
         break;
       case '--data-binary':
-        // Raw bytes, and curl adds no Content-Type of its own for this one.
         rawBinary = true;
         if (/^[@<]/.test(String(value))) {
           result.notes.push('the @file and <file forms read a file from disk, which a page cannot do — the reference is sent as literal text');
@@ -332,8 +289,6 @@ function parseCurl(text) {
       }
       case '-u':
       case '--user': {
-        // btoa needs one byte per character, so a non-ASCII password would throw.
-        // Encoding to UTF-8 first keeps it honest instead of failing.
         const bytes = new TextEncoder().encode(String(value));
         let binary = '';
         for (const byte of bytes) binary += String.fromCharCode(byte);
@@ -379,10 +334,6 @@ function parseCurl(text) {
   if (data.length > 0) {
     const joined = data.map((chunk) => chunk.text).join('&');
     if (result.get) {
-      // curl percent-encodes -d data before moving it into the query string, which is
-      // why `-d 'q=hello world'` becomes q=hello%20world. Appending the raw text puts
-      // a literal space in the URL and breaks at the first & or = inside a value.
-      // The separators stay: only what is around them is encoded.
       const query = data.map((chunk) => (chunk.encode ? encodePairs(chunk.text) : chunk.text)).join('&');
       const [path, existing] = result.url.split('?');
       result.url = existing ? `${path}?${existing}&${query}` : `${path}?${query}`;
@@ -402,7 +353,6 @@ function parseCurl(text) {
   return result;
 }
 
-// Single quotes, with the one escape a single-quoted shell word has.
 const quote = (value) => (/^[A-Za-z0-9._:/@%+=-]+$/.test(value) ? value : `'${String(value).replace(/'/g, "'\\''")}'`);
 
 function buildCurl({ method: verb, url: target, headers: list, body }) {
@@ -411,8 +361,6 @@ function buildCurl({ method: verb, url: target, headers: list, body }) {
   if (body !== null && body !== '') lines.push(`  -d ${quote(body)}`);
   return lines.join(' \\\n');
 }
-
-/* ---------- sending ---------- */
 
 let running = null;
 
@@ -474,8 +422,6 @@ async function send() {
       headers: request.headers,
       body: request.body,
       signal: controller.signal,
-      // `include` is the only value that sends cookies, and it also asks the
-      // browser for a stricter CORS reply — which is why it is a checkbox.
       credentials: credentials.checked ? 'include' : 'same-origin',
       redirect: 'follow',
       cache: 'no-store',
@@ -500,8 +446,6 @@ async function send() {
     cancelButton.hidden = true;
   }
 }
-
-/* ---------- wiring ---------- */
 
 document.querySelector('#hrt-send').addEventListener('click', send);
 cancelButton.addEventListener('click', () => running?.abort());
@@ -531,8 +475,6 @@ if (curlIn && curlOut) {
   });
 }
 
-// Copying the body is what people actually want nine times out of ten, so it gets
-// its own button rather than making them select 40 kB of textarea by hand.
 document.querySelector('#hrt-copy-body').addEventListener('click', () => {
   navigator.clipboard?.writeText(resBody.value);
   tk.flash(status, 'Body copied', 'ok');
@@ -542,8 +484,6 @@ document.querySelector('#hrt-copy-headers').addEventListener('click', () => {
   tk.flash(status, 'Headers copied', 'ok');
 });
 
-// Keep the curl view in step with the form, but only once somebody has shown they
-// care about it — the command is not worth building on every keystroke otherwise.
 tk.live([method, url, headers, bodyType, bodyField], () => {
   syncBodyField();
   if (curlOut && curlOut.value !== '') refreshCurl();

@@ -1,7 +1,3 @@
-// JWT Token Editor — take a token apart, edit the claims, sign it again.
-//
-// The parser next door reads tokens; this one writes them. Only the mechanism is
-// shared (../jws.js); what to trust and what to refuse is different in each tool.
 import { ALGORITHMS, b64url, sign } from '../jws.js';
 
 const { tk } = window;
@@ -33,8 +29,6 @@ function parseObject(text, what) {
   return value;
 }
 
-// A starter payload and header rather than two empty boxes, and a real timestamp
-// so a token signed straight away carries an honest "issued at".
 headerField.value = JSON.stringify({ alg: 'HS256', typ: 'JWT' }, null, 2);
 payloadField.value = JSON.stringify({ sub: 'user_42', role: 'admin', iat: Math.floor(Date.now() / 1000) }, null, 2);
 
@@ -50,15 +44,11 @@ function syncKey() {
 
 algSelect.addEventListener('change', () => {
   syncKey();
-  // The select is what the signature will actually use, so the header has to
-  // agree with it. Leaving a stale alg in the header is how "signed with HS256,
-  // labelled RS256" tokens get made by accident.
   try {
     const header = parseObject(headerField.value, 'header');
     header.alg = algSelect.value;
     headerField.value = JSON.stringify(header, null, 2);
   } catch {
-    // An unparseable header is the sign button's problem to report, not this one's.
   }
 });
 

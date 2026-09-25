@@ -1,11 +1,3 @@
-{{- /* The consent bar for saving what you typed.
-       Three states, only one of which is ever visible: ask (first visit), on
-       (saving), off (declined). The script picks the state and fills in the note
-       line — without JavaScript nothing here can work, so it all ships hidden.
-
-       The two delete actions name their scope in the label itself, because
-       "Clear and forget this tool" and "Forget every tool" sound like the same
-       button and neither says what it removes. */ -}}
 <div class="tool-memory" id="tool-memory" hidden>
   <div class="tool-memory-ask" id="tool-memory-ask" hidden>
     <p>

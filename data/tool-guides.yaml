@@ -1130,3 +1130,13 @@ grpc-tester:
   faq:
     - q: "Can a browser call native gRPC?"
       a: "Not directly. Browsers can use gRPC-Web through a compatible server or proxy. For native gRPC, use the generated grpcurl command from a terminal."
+
+cors-checker:
+  about: >-
+    Check whether a URL can be read by JavaScript from this site origin. The tool
+    sends a browser fetch request and, where possible, an OPTIONS-style probe, then
+    reports what the browser allowed the page to see. It cannot spoof arbitrary
+    Origin headers because browsers deliberately do not allow that.
+  faq:
+    - q: "Why does it say blocked without showing the server headers?"
+      a: "When CORS blocks a response, the browser hides the response from JavaScript. That is the rule this tool is testing, so sometimes the only honest answer is that the page could not read the details."

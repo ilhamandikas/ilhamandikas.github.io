@@ -1,5 +1,2 @@
-{{- /* Long-form content for a tool, read from data/tool-guides.yaml.
-       Returns an empty dict for a tool that has none, so callers can skip the
-       block entirely instead of padding the page with filler. */ -}}
 {{- $guides := index site.Data "tool-guides" | default dict -}}
 {{- return (index $guides . | default dict) -}}

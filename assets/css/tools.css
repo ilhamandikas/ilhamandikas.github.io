@@ -1,14 +1,7 @@
-/* /tools/ — flat-white styling that reuses the site tokens.
-   Own layout: a card catalog, plus a tool page with a plain sticky sidebar. */
-
-/* ---------- catalog ---------- */
-
 .tools-catalog-page { padding-bottom: 60px; }
 
 .tools-search { margin: 0 0 34px; }
 
-/* The recently-used list again, on the catalog page where there is no sidebar to
-   hold it. Same markup, different furniture. */
 .tools-catalog-page .tool-nav-recent {
   margin: 0 0 22px;
   padding: 14px 16px;
@@ -64,8 +57,6 @@
   background: transparent;
 }
 
-/* Flex so groups and cards can be ranked with `order` instead of by moving
-   nodes around. The `gap` replaces the margins that no longer collapse. */
 #tools-catalog {
   display: flex;
   flex-direction: column;
@@ -122,8 +113,6 @@
   vertical-align: middle;
 }
 
-/* ---------- tool page layout ---------- */
-
 .tool-page { padding-top: 34px; }
 
 .tool-layout {
@@ -172,12 +161,6 @@
   font-weight: 600;
 }
 
-/* ---------- sidebar search ---------- */
-
-/* Only the groups are ranked, so only they live in a flex container. The search
-   field and the empty message stay outside it, which is what keeps them above
-   the results: a flex item's default `order` is 0 and ranked groups use negative
-   values, so one shared container would sort the field to the bottom. */
 .tool-nav-list {
   display: flex;
   flex-direction: column;
@@ -187,13 +170,9 @@
   flex-direction: column;
 }
 
-/* While a query is active the categories are dropped and the list is ordered by
-   score, so the sidebar reads as one flat result list. */
 .tool-nav[data-searching] .tool-nav-title { display: none; }
 .tool-nav[data-searching] .tool-nav-group { margin-bottom: 0; }
 
-/* Sticky inside the scrolling aside, with an opaque background so the tool
-   list passes underneath it. */
 .tool-nav-search {
   position: sticky;
   top: 0;
@@ -213,8 +192,6 @@
 
 .tool-nav-empty { margin: 0 0 12px; color: var(--muted); font-size: 13.5px; }
 
-/* Recently used. Sits inside the scrolling list so it moves with the tools, and
-   holds no state the server could render — the list is per device. */
 .tool-nav-recent { margin-bottom: 18px; }
 .tool-nav-recent-head {
   display: flex;
@@ -248,8 +225,6 @@
   font-family: var(--mono);
 }
 
-/* The arrow-key selection. Deliberately not bold, so the row cannot change
-   width as the selection moves. */
 .tool-nav a.selected {
   color: var(--text);
   border-left-color: var(--accent);
@@ -262,8 +237,6 @@
 .tool-crumb a { color: var(--muted); }
 .tool-crumb a:hover { color: var(--accent); }
 .tool-body { max-width: 840px; }
-
-/* ---------- tool UI kit ---------- */
 
 .tool-panel {
   padding: 24px;
@@ -370,9 +343,6 @@ textarea.tool-input { min-height: 96px; }
   color: var(--muted);
 }
 
-/* Single button that cycles the key sort: off -> ↑ -> ↓. The box is a fixed
-   size in both axes and the weight never changes, so swapping the label cannot
-   nudge the surrounding row. */
 .tool-sort-btn {
   display: inline-flex;
   align-items: center;
@@ -398,8 +368,6 @@ textarea.tool-input { min-height: 96px; }
 }
 .tool-sort-text { display: block; }
 
-/* Long-form prose under a tool. Kept narrow so it reads as an aside to the
-   tool rather than competing with it. */
 .tool-about {
   margin-top: 40px;
   padding-top: 24px;
@@ -419,9 +387,6 @@ textarea.tool-input { min-height: 96px; }
 .tool-faq dt { font-weight: 650; color: var(--text); margin-bottom: 4px; }
 .tool-faq dd { margin: 0 0 18px; color: var(--muted); line-height: 1.65; }
 
-/* The consent bar for remembering what was typed. A quiet strip under the tool,
-   not another tool panel: it is a footnote about the page and should read that
-   way rather than competing with the form above it. */
 .tool-memory {
   margin-top: 18px;
   padding: 12px 14px;
@@ -450,8 +415,6 @@ textarea.tool-input { min-height: 96px; }
   margin-top: 14px;
 }
 
-/* The two states that are not a question: one line, a status dot, and the actions
-   as text buttons, so the strip stays the height of a sentence. */
 .tool-memory-line {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -529,7 +492,6 @@ textarea.tool-input { min-height: 96px; }
 .tool-memory-link:hover { background: var(--bg-soft); color: var(--accent); }
 .tool-memory-link.danger:hover { color: #b91c1c; }
 
-/* Empty means there is nothing to say, so it takes no room and adds no gap. */
 .tool-memory-note {
   margin: 10px 0 0 18px;
   color: var(--muted);
@@ -538,8 +500,6 @@ textarea.tool-input { min-height: 96px; }
 }
 .tool-memory-note:empty { display: none; }
 
-/* Previous entries for this one tool. Below the form, because it is the thing you
-   look for after you have already replaced what you wanted. */
 .tool-history {
   margin-top: 18px;
   padding: 16px 18px;
@@ -692,7 +652,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 
 .tool-timer { font-family: var(--mono); font-size: 40px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 8px; }
 
-/* DNS result tables and RDAP status/nameserver chips. */
 .tool-results { margin: 0; }
 .tool-table {
   width: 100%;
@@ -804,7 +763,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 
 .tool-muted { color: var(--muted); }
 
-/* HTTP request tester */
 .hrt-request-grid {
   display: grid;
   grid-template-columns: 130px minmax(0, 1fr) auto;
@@ -830,8 +788,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 }
 .hrt-url { min-width: 0; }
 
-/* Config output reads as code: monospace, and it scrolls in both directions rather
-   than hiding the right-hand end of a long line. */
 .tool-code {
   font-family: var(--mono);
   font-size: 12.5px;
@@ -839,8 +795,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   white-space: pre;
   overflow: auto;
 }
-
-/* ---------- nginx config generator ---------- */
 
 .ngx-preset-row { align-items: center; }
 .ngx-row-label { margin: 0 2px 0 0; }
@@ -878,8 +832,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 }
 #ngx-out { width: 100%; }
 
-/* ---------- QR editor ---------- */
-
 .qre-settings-grid {
   display: grid;
   grid-template-columns: 1.2fr repeat(2, minmax(120px, 0.7fr));
@@ -908,8 +860,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   background-repeat: no-repeat;
 }
 .qre-select:focus { background-image: linear-gradient(45deg, var(--accent) 50%, transparent 50%), linear-gradient(135deg, transparent 50%, var(--accent) 50%); }
-
-/* ---------- random generator ---------- */
 
 .random-stage {
   display: grid;
@@ -982,8 +932,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   font-size: 11px;
 }
 
-/* ---------- JWT parser inline JSON editor ---------- */
-
 .jwt-json-field label {
   display: flex;
   align-items: center;
@@ -995,8 +943,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 .jwt-click-edit:hover { border-color: var(--accent); background: var(--accent-soft); }
 .jwt-json-editor { margin-top: 0; }
 
-/* ---------- drop zones ---------- */
-
 .tool-drop {
   border: 1px dashed var(--border);
   border-radius: var(--radius);
@@ -1004,8 +950,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 .tool-drop.over { border-color: var(--accent); background: var(--surface); }
-
-/* ---------- image metadata report ---------- */
 
 .img-report { margin-top: 18px; }
 .img-group { margin-bottom: 22px; }
@@ -1018,7 +962,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   letter-spacing: 0.06em;
   color: var(--muted);
 }
-/* Name and value in two columns, with the value allowed to be long and to wrap. */
 .img-group dl {
   display: grid;
   grid-template-columns: minmax(140px, 220px) 1fr;
@@ -1038,8 +981,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 }
 .img-warning a { color: var(--accent); }
 
-/* ---------- file hash verdict ---------- */
-
 .fhc-verdict:empty { display: none; }
 .fhc-verdict {
   margin: 14px 0 0;
@@ -1051,8 +992,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 .fhc-verdict.err { border-left-color: #c0392b; }
 .fhc-row .tool-code { word-break: break-all; white-space: pre-wrap; }
 
-/* ---------- websocket tester ---------- */
-
 .ws-connection-grid {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) minmax(180px, 260px);
@@ -1061,8 +1000,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   margin-bottom: 14px;
 }
 .ws-connection-grid .tool-field { margin: 0; }
-
-/* ---------- websocket log ---------- */
 
 .ws-log {
   max-height: 420px;
@@ -1122,8 +1059,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   overflow-wrap: anywhere;
 }
 
-/* ---------- responsive ---------- */
-
 @media (max-width: 900px) {
   .tool-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .tool-aside {
@@ -1145,8 +1080,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   .tool-aside .tool-nav { display: none; padding: 4px 12px 14px; }
   #tool-nav-toggle { position: absolute; opacity: 0; width: 1px; height: 1px; }
   #tool-nav-toggle:checked ~ .tool-nav { display: block; }
-  /* The aside is not a scroll container here, so sticky would pin the field
-     under the site header instead of inside the dropdown. */
   .tool-nav-search { position: static; }
   .tool-memory-line { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
   .tool-memory-menu,

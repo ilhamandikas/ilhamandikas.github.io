@@ -1,4 +1,3 @@
-// Decode a JWT, and check its signature with WebCrypto.
 import { ALGORITHMS, b64url, decodePart, unb64url, verify } from '../jws.js';
 
 const { tk } = window;
@@ -103,7 +102,6 @@ payloadEdit.addEventListener('input', () => rewriteTokenFromEditor('payload'));
 headerEdit.addEventListener('blur', () => setEditor('header', false));
 payloadEdit.addEventListener('blur', () => setEditor('payload', false));
 
-
 document.querySelector('#jwt-verify').addEventListener('click', async () => {
   const token = input.value.trim();
   if (token === '') {
@@ -121,8 +119,6 @@ document.querySelector('#jwt-verify').addEventListener('click', async () => {
     return;
   }
 
-  // Asked before anything else: an unsigned token is the one answer worth
-  // shouting about, and "alg: none" tokens usually carry no signature at all.
   if (alg === undefined || alg === null || String(alg).toLowerCase() === 'none') {
     tk.setStatus(verifyStatus, 'alg is "none" — the token is unsigned, so anyone could have written it', 'err');
     return;
@@ -133,8 +129,6 @@ document.querySelector('#jwt-verify').addEventListener('click', async () => {
     return;
   }
 
-  // hasOwn, not a bare lookup: `alg` comes from the token, so "toString" would
-  // otherwise reach up the prototype chain and find something truthy.
   const spec = Object.prototype.hasOwnProperty.call(ALGORITHMS, alg) ? ALGORITHMS[alg] : null;
   if (!spec) {
     tk.setStatus(verifyStatus, `This page cannot check ${alg} — it handles HS, RS, PS and ES`, 'err');
@@ -147,10 +141,6 @@ document.querySelector('#jwt-verify').addEventListener('click', async () => {
     return;
   }
 
-  // The classic algorithm-confusion attack: an attacker takes a public key, signs
-  // an HS256 token with it as if it were a shared secret, and a verifier that
-  // trusts the token's own alg happily agrees. There is no legitimate HMAC secret
-  // that looks like a PEM file, so this is always worth stopping for.
   if (spec.kind === 'hmac' && /-----BEGIN [A-Z ]+-----/.test(keyInput.value)) {
     tk.setStatus(
       verifyStatus,
@@ -162,8 +152,6 @@ document.querySelector('#jwt-verify').addEventListener('click', async () => {
 
   tk.setStatus(verifyStatus, 'Checking…');
   try {
-    // The signature covers the header and payload exactly as they arrived, so
-    // they are signed as text rather than re-encoded from the parsed objects.
     const signed = new TextEncoder().encode(`${parts[0]}.${parts[1]}`);
     const ok = await verify(spec, keyInput.value, unb64url(parts[2]), signed);
     tk.setStatus(
