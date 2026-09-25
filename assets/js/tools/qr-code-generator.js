@@ -61,7 +61,7 @@ function render() {
   try {
     currentSvg = qr.renderSvg(value, options());
     preview.replaceChildren(currentSvg);
-    tk.setStatus(status, 'Ready', 'ok');
+    tk.setStatus(status, '');
   } catch (error) {
     preview.replaceChildren();
     currentSvg = null;

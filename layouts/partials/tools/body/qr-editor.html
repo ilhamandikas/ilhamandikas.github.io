@@ -10,26 +10,29 @@
   </div>
 </div>
 
-<div class="tool-panel">
+<div class="tool-panel" id="qre-content-panel" hidden>
   <h2>Content</h2>
   <div class="tool-field">
     <label for="qre-text">Text or URL</label>
     <textarea id="qre-text" class="tool-input" rows="3" spellcheck="false" placeholder="Upload a QR image above, or type text / URL here">https://ilham.dev</textarea>
   </div>
-  <div class="tool-row">
-    <label class="tool-inline">Error correction
-      <select id="qre-ecc" class="tool-select">
+  <div class="qre-settings-grid">
+    <label class="tool-field">
+      <span>Error correction</span>
+      <select id="qre-ecc" class="tool-select qre-select">
         <option value="L">L · 7%</option>
         <option value="M">M · 15%</option>
         <option value="Q">Q · 25%</option>
         <option value="H" selected>H · 30%</option>
       </select>
     </label>
-    <label class="tool-inline">Size
-      <input type="number" id="qre-size" class="tool-number" min="128" max="1024" value="512">
+    <label class="tool-field">
+      <span>Size</span>
+      <input type="number" id="qre-size" class="tool-number qre-number" min="128" max="1024" value="512">
     </label>
-    <label class="tool-inline">Quiet zone
-      <input type="number" id="qre-margin" class="tool-number" min="0" max="10" value="2">
+    <label class="tool-field">
+      <span>Quiet zone</span>
+      <input type="number" id="qre-margin" class="tool-number qre-number" min="0" max="10" value="2">
     </label>
   </div>
 </div>

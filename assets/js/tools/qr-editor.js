@@ -7,6 +7,7 @@ const { tk } = window;
 
 const sourceInput = document.querySelector('#qre-source');
 const sourceStatus = document.querySelector('#qre-source-status');
+const contentPanel = document.querySelector('#qre-content-panel');
 const text = document.querySelector('#qre-text');
 const ecc = document.querySelector('#qre-ecc');
 const size = document.querySelector('#qre-size');
@@ -69,6 +70,7 @@ async function decodeSource(file) {
     if (!found || !found.data) throw new Error('No QR code found in that image');
     text.value = found.data;
     text.dispatchEvent(new Event('input', { bubbles: true }));
+    contentPanel.hidden = false;
     tk.setStatus(sourceStatus, 'QR text extracted — edit it below', 'ok');
     render();
   } catch (error) {
@@ -132,7 +134,7 @@ function render() {
     currentSvg = qr.renderSvg(value, options());
     preview.replaceChildren(currentSvg);
     meta.textContent = `Version ${version} · ${count} × ${count} modules`;
-    tk.setStatus(status, 'Ready', 'ok');
+    tk.setStatus(status, '');
   } catch (error) {
     preview.replaceChildren();
     currentSvg = null;
@@ -145,6 +147,7 @@ sourceInput.addEventListener('change', (event) => decodeSource(event.target.file
 
 document.querySelector('#qre-source-clear').addEventListener('click', () => {
   sourceInput.value = '';
+  contentPanel.hidden = true;
   tk.setStatus(sourceStatus, '');
 });
 
