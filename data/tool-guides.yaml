@@ -1140,3 +1140,12 @@ cors-checker:
   faq:
     - q: "Why does it say blocked without showing the server headers?"
       a: "When CORS blocks a response, the browser hides the response from JavaScript. That is the rule this tool is testing, so sometimes the only honest answer is that the page could not read the details."
+
+sticker-maker:
+  about: >-
+    Make a 1024×1024 PNG sticker from an uploaded image, with circle, square or
+    rounded frames, decorative text, a sticker outline and simple local background
+    removal. The image is processed in the browser canvas and is not uploaded.
+  faq:
+    - q: "How good is the background removal?"
+      a: "It is colour-based, using the image corners as the background sample. It works well for flat studio-like backgrounds; complex backgrounds still need a dedicated segmentation model or manual editing."

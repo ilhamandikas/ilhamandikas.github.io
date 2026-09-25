@@ -1059,6 +1059,29 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   overflow-wrap: anywhere;
 }
 
+.sticker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.sticker-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.sticker-grid .tool-field { margin-bottom: 14px; }
+.sticker-preview-wrap {
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+}
+#stk-canvas {
+  width: min(100%, 520px);
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: transparent;
+}
+
 @media (max-width: 900px) {
   .tool-layout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .tool-aside {
@@ -1094,7 +1117,9 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   .tool-history-preview,
   .tool-history-item .tool-history-link { grid-column: 2; }
   .tool-history-preview { white-space: normal; }
-  .qre-settings-grid { grid-template-columns: minmax(0, 1fr); }
+  .qre-settings-grid,
+  .sticker-grid,
+  .sticker-grid-3 { grid-template-columns: minmax(0, 1fr); }
   .random-stage { grid-template-columns: minmax(0, 1fr); }
   .hrt-request-grid,
   .hrt-options-grid,

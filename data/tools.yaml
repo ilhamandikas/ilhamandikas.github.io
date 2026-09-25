@@ -366,6 +366,11 @@
       desc: Restyle a QR code — module shapes, gradient colours, logo, transparent background.
       keywords: [qr, editor, style, design, logo, gradient, custom, rounded, dots, transparent]
       status: done
+    - slug: sticker-maker
+      name: Sticker Maker
+      desc: Create PNG stickers with shapes, text decoration, outlines and simple background removal.
+      keywords: [sticker, image, remove background, png, circle, text, meme, design]
+      status: done
     - slug: svg-placeholder
       name: SVG Placeholder
       desc: Create a placeholder image as an SVG.

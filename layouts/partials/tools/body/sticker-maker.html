@@ -1,0 +1,48 @@
+<div class="tool-panel">
+  <h2>Sticker Maker</h2>
+  <div class="sticker-grid">
+    <label class="tool-field">
+      <span>Image</span>
+      <input id="stk-file" class="tool-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+    </label>
+    <label class="tool-field">
+      <span>Shape</span>
+      <select id="stk-shape" class="tool-select">
+        <option value="circle">Circle</option>
+        <option value="rounded">Rounded square</option>
+        <option value="square">Square</option>
+        <option value="none">No frame</option>
+      </select>
+    </label>
+  </div>
+  <div class="sticker-grid">
+    <label class="tool-field">
+      <span>Top text</span>
+      <input id="stk-top" class="tool-input" type="text" placeholder="TOP TEXT">
+    </label>
+    <label class="tool-field">
+      <span>Bottom text</span>
+      <input id="stk-bottom" class="tool-input" type="text" placeholder="BOTTOM TEXT">
+    </label>
+  </div>
+  <div class="sticker-grid sticker-grid-3">
+    <label class="tool-field"><span>Text style</span><select id="stk-text-style" class="tool-select"><option value="meme">Meme bold</option><option value="bubble">Bubble</option><option value="neon">Neon</option><option value="clean">Clean</option></select></label>
+    <label class="tool-field"><span>Text color</span><input id="stk-text-color" class="tool-input" type="text" value="#ffffff"></label>
+    <label class="tool-field"><span>Accent</span><input id="stk-accent" class="tool-input" type="text" value="#2563eb"></label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="stk-remove-bg"> Remove background</label>
+    <label class="tool-inline">Tolerance <input id="stk-tolerance" class="tool-range" type="range" min="5" max="90" value="34"></label>
+    <label class="tool-check"><input type="checkbox" id="stk-outline" checked> White sticker outline</label>
+    <button class="btn primary" type="button" id="stk-download">Download PNG</button>
+    <span class="tool-status" id="stk-status"></span>
+  </div>
+  <p class="tool-hint">Background removal is local and color-based: it samples the image corners and removes similar pixels. It works best on flat backgrounds.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Preview</h2>
+  <div class="sticker-preview-wrap">
+    <canvas id="stk-canvas" width="1024" height="1024"></canvas>
+  </div>
+</div>
