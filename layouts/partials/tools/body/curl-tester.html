@@ -1,0 +1,22 @@
+<div class="tool-panel curl-tool">
+  <h2>curl Tester</h2>
+  <label class="tool-field">
+    <span>Paste a curl command</span>
+    <textarea id="curl-in" class="tool-input tool-code" rows="7" spellcheck="false" placeholder="curl -X POST https://api.example.com/v1/things -H 'Content-Type: application/json' -d '{&quot;name&quot;:&quot;a thing&quot;}'"></textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="curl-parse">Parse command</button>
+    <button class="btn" type="button" id="curl-copy">Copy rebuilt curl</button>
+    <span class="tool-status" id="curl-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Parsed request</h2>
+  <div class="curl-summary" id="curl-summary"></div>
+  <label class="tool-field">
+    <span>Rebuilt curl</span>
+    <textarea id="curl-out" class="tool-input tool-code" rows="7" readonly spellcheck="false"></textarea>
+  </label>
+  <p class="tool-hint">This parser runs locally. It shows the method, URL, headers and body it understands, then rewrites a clean curl command. Browser-only limitations are called out instead of silently ignored.</p>
+</div>

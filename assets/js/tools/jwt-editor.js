@@ -2,14 +2,12 @@
 //
 // The parser next door reads tokens; this one writes them. Only the mechanism is
 // shared (../jws.js); what to trust and what to refuse is different in each tool.
-import { ALGORITHMS, b64url, decodePart, sign } from '../jws.js';
+import { ALGORITHMS, b64url, sign } from '../jws.js';
 
 const { tk } = window;
 
-const tokenInput = document.querySelector('#jwe-token');
 const headerField = document.querySelector('#jwe-header');
 const payloadField = document.querySelector('#jwe-payload');
-const loadStatus = document.querySelector('#jwe-load-status');
 const algSelect = document.querySelector('#jwe-alg');
 const keyInput = document.querySelector('#jwe-key');
 const keyLabel = document.querySelector('#jwe-key-label');
@@ -49,53 +47,6 @@ function syncKey() {
   keyInput.rows = hmac ? 3 : 9;
   keyInput.placeholder = hmac ? 'a long random string' : '-----BEGIN PRIVATE KEY-----';
 }
-
-let loaded = false;
-
-// Decoding is pure and instant, so it can follow the token field as you type.
-// Signing is not: it is async and it touches a credential, so it stays a button.
-function load() {
-  const token = tokenInput.value.trim();
-  if (token === '') {
-    // Only clear what a token put here. tk.live runs this once on setup, and
-    // wiping the fields then would hide the starter header and payload.
-    if (loaded) {
-      headerField.value = '';
-      payloadField.value = '';
-      loaded = false;
-    }
-    tk.setStatus(loadStatus, '');
-    return;
-  }
-  loaded = true;
-  try {
-    const parts = token.split('.');
-    if (parts.length < 2) throw new Error('A JWT needs at least two dot-separated parts');
-    const header = decodePart(parts[0]);
-    headerField.value = JSON.stringify(header, null, 2);
-    payloadField.value = JSON.stringify(decodePart(parts[1]), null, 2);
-
-    // hasOwn, not a bare lookup: `alg` comes from the token, so "constructor"
-    // would otherwise reach up the prototype chain and find something truthy.
-    if (known(header.alg)) {
-      algSelect.value = header.alg;
-      syncKey();
-      tk.setStatus(loadStatus, 'Loaded — edit the claims, then sign again', 'ok');
-    } else if (String(header.alg).toLowerCase() === 'none') {
-      algSelect.value = 'none';
-      syncKey();
-      tk.setStatus(loadStatus, 'Loaded — this token is unsigned', 'ok');
-    } else {
-      tk.setStatus(loadStatus, `Loaded, but this page cannot sign ${header.alg} — pick an algorithm below`, 'err');
-    }
-  } catch (error) {
-    headerField.value = '';
-    payloadField.value = '';
-    tk.setStatus(loadStatus, error.message, 'err');
-  }
-}
-
-document.querySelector('#jwe-reset').addEventListener('click', load);
 
 algSelect.addEventListener('change', () => {
   syncKey();
@@ -144,4 +95,3 @@ document.querySelector('#jwe-sign').addEventListener('click', async () => {
 });
 
 syncKey();
-tk.live(tokenInput, load);

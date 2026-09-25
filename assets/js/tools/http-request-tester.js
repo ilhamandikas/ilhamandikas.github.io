@@ -507,32 +507,29 @@ document.querySelector('#hrt-send').addEventListener('click', send);
 cancelButton.addEventListener('click', () => running?.abort());
 bodyType.addEventListener('change', syncBodyField);
 
-document.querySelector('#hrt-import').addEventListener('click', () => {
-  try {
-    const parsed = parseCurl(curlIn.value);
-    writeForm(parsed);
-    // The form was filled in by code, so no input event fires and the export panel
-    // would keep showing the request that was there before the import.
-    refreshCurl();
-    const parts = [];
-    if (parsed.notes.length > 0) parts.push(`Left out: ${[...new Set(parsed.notes)].join(', ')}.`);
-    // A flag cluster can repeat an option, and saying the same thing twice reads
-    // like two separate problems.
-    const adjustments = [...new Set(parsed.adjustments)];
-    if (adjustments.length > 0) parts.push(`${adjustments.join('; ')}.`);
-    tk.setStatus(curlStatus, `Imported. ${parts.join(' ')}`.trim(), parsed.notes.length > 0 ? 'err' : 'ok');
-  } catch (error) {
-    tk.setStatus(curlStatus, error.message, 'err');
-  }
-});
-
 const refreshCurl = () => {
-  curlOut.value = buildCurl(readForm());
+  if (curlOut) curlOut.value = buildCurl(readForm());
 };
-document.querySelector('#hrt-copy-curl').addEventListener('click', async () => {
-  refreshCurl();
-  await tk.flash(curlStatus, 'curl copied', 'ok');
-});
+if (curlIn && curlOut) {
+  document.querySelector('#hrt-import')?.addEventListener('click', () => {
+    try {
+      const parsed = parseCurl(curlIn.value);
+      writeForm(parsed);
+      refreshCurl();
+      const parts = [];
+      if (parsed.notes.length > 0) parts.push(`Left out: ${[...new Set(parsed.notes)].join(', ')}.`);
+      const adjustments = [...new Set(parsed.adjustments)];
+      if (adjustments.length > 0) parts.push(`${adjustments.join('; ')}.`);
+      tk.setStatus(curlStatus, `Imported. ${parts.join(' ')}`.trim(), parsed.notes.length > 0 ? 'err' : 'ok');
+    } catch (error) {
+      tk.setStatus(curlStatus, error.message, 'err');
+    }
+  });
+  document.querySelector('#hrt-copy-curl')?.addEventListener('click', async () => {
+    refreshCurl();
+    await tk.flash(curlStatus, 'curl copied', 'ok');
+  });
+}
 
 // Copying the body is what people actually want nine times out of ten, so it gets
 // its own button rather than making them select 40 kB of textarea by hand.
@@ -549,7 +546,7 @@ document.querySelector('#hrt-copy-headers').addEventListener('click', () => {
 // care about it — the command is not worth building on every keystroke otherwise.
 tk.live([method, url, headers, bodyType, bodyField], () => {
   syncBodyField();
-  if (curlOut.value !== '') refreshCurl();
+  if (curlOut && curlOut.value !== '') refreshCurl();
 });
 
 syncBodyField();

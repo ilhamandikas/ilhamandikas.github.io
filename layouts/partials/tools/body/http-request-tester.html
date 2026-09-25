@@ -51,39 +51,7 @@
   </label>
 
   <p class="tool-hint">
-    The request goes from <em>your</em> browser straight to the address you type — nothing is
-    relayed through this site, and no server of ours ever sees it. That also means the
-    browser's own rules apply: the target has to allow cross-origin reads with
-    <code>Access-Control-Allow-Origin</code>, or the reply is blocked before any page could
-    read it. A blocked reply shows up as a failed request with no status, which is the
-    browser refusing, not the API being down.
-  </p>
-</div>
-
-<div class="tool-panel">
-  <h2>curl</h2>
-  <div class="tool-row">
-    <button class="btn" type="button" id="hrt-import">Import into the form above</button>
-    <button class="btn" type="button" id="hrt-copy-curl">Copy as curl</button>
-    <span class="tool-status" id="hrt-curl-status"></span>
-  </div>
-
-  <label class="tool-field">
-    <span>Paste a curl command</span>
-    <textarea id="hrt-curl-in" class="tool-text" rows="5" spellcheck="false"
-              placeholder="curl -X POST https://api.example.com/v1/things -H 'Content-Type: application/json' -d '{&quot;name&quot;: &quot;a thing&quot;}'"></textarea>
-  </label>
-
-  <label class="tool-field">
-    <span>Equivalent curl for the form above</span>
-    <textarea id="hrt-curl-out" class="tool-text" rows="5" readonly spellcheck="false"></textarea>
-  </label>
-
-  <p class="tool-hint">
-    Parsing and building curl happens in the page and never touches the network. Options that
-    have no browser equivalent — <code>-F</code> file uploads, <code>-T</code>,
-    <code>--connect-timeout</code> — are listed after an import instead of being dropped
-    quietly, and the generated command is written to be pasted back in.
+    The request goes from <em>your</em> browser straight to the address you type — nothing is relayed through this site. Browser CORS rules still apply. Need to paste or generate a command? Use the <a href="/tools/curl-tester/">curl Tester</a>.
   </p>
 </div>
 

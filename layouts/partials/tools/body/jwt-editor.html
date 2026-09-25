@@ -1,20 +1,4 @@
 <div class="tool-panel">
-  <h2>JWT Encode</h2>
-  <div class="tool-field">
-    <label for="jwe-token">Optional: paste a token to edit/re-sign</label>
-    <textarea id="jwe-token" class="tool-input" rows="4" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.…"></textarea>
-  </div>
-  <div class="tool-row">
-    <button class="btn" type="button" id="jwe-reset">Reload from the token</button>
-    <span class="tool-status" id="jwe-load-status"></span>
-  </div>
-  <p class="tool-hint">
-    A token is three base64url parts: header, claims and signature. Pasting one fills the two boxes
-    below so you can change it and sign it again. Nothing is sent anywhere and no key is kept.
-  </p>
-</div>
-
-<div class="tool-panel">
   <h2>Header</h2>
   <div class="tool-field">
     <label for="jwe-header">Header as JSON — <code>alg</code> is rewritten to match the algorithm you pick</label>

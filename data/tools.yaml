@@ -224,8 +224,18 @@
       status: done
     - slug: http-request-tester
       name: HTTP Request Tester
-      desc: Send an HTTP request from the page, import it from curl and export it back to curl.
-      keywords: [http, request, api, rest, curl, postman, fetch, headers, post, get, debug, client, endpoint, test api]
+      desc: Send an HTTP request from the browser and inspect responses.
+      keywords: [http, request, api, rest, postman, fetch, headers, post, get, debug, client, endpoint, test api]
+      status: done
+    - slug: curl-tester
+      name: curl Tester
+      desc: Parse, explain and rebuild curl commands locally.
+      keywords: [curl, http, request, command, import, export, api]
+      status: done
+    - slug: grpc-tester
+      name: gRPC Tester
+      desc: Build grpcurl commands and test gRPC-Web endpoints from the browser.
+      keywords: [grpc, grpc-web, grpcurl, protobuf, api, tester, http2]
       status: done
     - slug: dns-lookup
       name: DNS Lookup
