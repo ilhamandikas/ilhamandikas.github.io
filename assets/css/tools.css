@@ -509,5 +509,10 @@ textarea.tool-input { min-height: 96px; }
   }
   .tool-aside .tool-nav { display: none; padding: 4px 12px 14px; }
   #tool-nav-toggle { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  #tool-nav-toggle:checked ~ .tool-nav { display: block; }
+  /* Flex, not block: the search ranks rows with `order`, which needs a flex or
+     grid container. */
+  #tool-nav-toggle:checked ~ .tool-nav { display: flex; }
+  /* The aside is not a scroll container here, so sticky would pin the field
+     under the site header instead of inside the dropdown. */
+  .tool-nav-search { position: static; }
 }

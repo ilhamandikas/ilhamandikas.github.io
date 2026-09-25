@@ -4,6 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const { ROOT, TOOLS, loadPage, loadFile, read, set, click, sleep, errorStatuses } = require('./harness.cjs');
 
+// jsdom has no layout engine, so stylesheet guarantees are asserted by reading the
+// built CSS instead of by measuring anything.
+const CSS = fs
+  .readdirSync(path.join(ROOT, 'css'))
+  .filter((f) => f.endsWith('.css'))
+  .map((f) => fs.readFileSync(path.join(ROOT, 'css', f), 'utf8'))
+  .join('\n');
+
 async function run(slug, fields = {}, { clicks = [], wait = 150 } = {}) {
   const page = loadPage(slug);
   for (const [sel, value] of Object.entries(fields)) set(page.w, sel, value);
@@ -362,12 +370,7 @@ const check = (label, actual, expected) => {
 
     // jsdom has no layout engine, so the only way to catch "el.hidden = true but
     // display:flex keeps it on screen" is to read the built stylesheet.
-    const css = fs
-      .readdirSync(path.join(ROOT, 'css'))
-      .filter((f) => f.endsWith('.css'))
-      .map((f) => fs.readFileSync(path.join(ROOT, 'css', f), 'utf8'))
-      .join('\n');
-    check('catalog: the hidden attribute beats component display rules', /\[hidden\]\s*\{\s*display:\s*none\s*!important/.test(css), true);
+    check('catalog: the hidden attribute beats component display rules', /\[hidden\]\s*\{\s*display:\s*none\s*!important/.test(CSS), true);
 
     key({ key: 'Escape' });
     check('catalog: Escape clears the query', search.value, '');
@@ -487,6 +490,10 @@ const check = (label, actual, expected) => {
 
     check('sidebar: the field is there', Boolean(input), true);
     check('sidebar: every tool is listed', links.length, 90);
+    // Ranking is CSS `order`, which needs a flex or grid container. The mobile
+    // rule that reopens the collapsed nav has to keep it one.
+    check('sidebar: the nav is a flex container', /\.tool-nav\{[^}]*display:flex/.test(CSS), true);
+    check('sidebar: ...and stays one on mobile', /#tool-nav-toggle:checked~\.tool-nav\{display:flex\}/.test(CSS), true);
 
     document.dispatchEvent(new page.w.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true, cancelable: true }));
     check('sidebar: Cmd+K focuses the field', document.activeElement === input, true);
