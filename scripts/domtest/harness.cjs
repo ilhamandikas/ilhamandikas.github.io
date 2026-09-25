@@ -85,7 +85,7 @@ function loadPage(slug, options) {
 }
 
 // Same, for any built page (the catalog, the home page, ...).
-function loadFile(htmlPath, url, { onConsole } = {}) {
+function loadFile(htmlPath, url, { onConsole, prerendering = false } = {}) {
   const html = fs.readFileSync(htmlPath, 'utf8');
   const entries = [];
   const vc = new VirtualConsole();
@@ -101,6 +101,10 @@ function loadFile(htmlPath, url, { onConsole } = {}) {
   });
   const w = dom.window;
   installGlobals(w);
+
+  // Pretend the browser is building this page in the background ahead of a
+  // click, so we can check that nothing expensive runs before it is shown.
+  if (prerendering) Object.defineProperty(w.document, 'prerendering', { value: true, configurable: true, writable: true });
 
   const thrown = [];
   const rejections = [];

@@ -1,9 +1,13 @@
 // Look up the public IP address (or any address) and its geolocation.
 //
-// This is the one tool here that makes an outbound request. It uses two free,
-// key-less services and falls back from the first to the second:
+// This is the one tool here that makes an outbound request on load. It uses two
+// free, key-less services and falls back from the first to the second:
 //   - ipwho.is      (rich: ISP/ASN, timezone, flag)
 //   - freeipapi.com (no ISP, but a solid backup)
+//
+// The request is deferred until the page is actually shown, so a browser that
+// builds this page in the background ahead of a click does not spend a request
+// on the free services for a visit that may never happen.
 const { tk } = window;
 
 const input = document.querySelector('#ip-input');
@@ -183,4 +187,4 @@ input.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') { event.preventDefault(); lookup(); }
 });
 
-lookup();
+tk.whenActive(lookup);

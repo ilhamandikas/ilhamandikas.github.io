@@ -1,4 +1,3 @@
-<head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -53,4 +52,11 @@
 
   {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") (resources.Get "css/tools.css") | resources.Concat "css/bundle.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
-</head>
+
+  {{- /* Warm up the next page on hover. A browser that understands this renders
+         the page in the background so the click lands on something already
+         built; one that doesn't ignores the tag entirely. Feeds are left out,
+         and any link can opt out with data-no-prerender. */}}
+  <script type="speculationrules">
+    {"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.xml"}},{"not":{"selector_matches":"[data-no-prerender]"}}]},"eagerness":"moderate"}]}
+  </script>

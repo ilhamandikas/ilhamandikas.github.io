@@ -22,6 +22,18 @@ const tk = {
     }
   },
 
+  // Run fn once the page is really on screen. Browsers can build a page in the
+  // background ahead of a click (see the speculation rules in <head>), and that
+  // background run executes this script too. Anything that talks to the network
+  // or grabs a device should wait for activation so a hover costs nothing.
+  whenActive(fn) {
+    if (!document.prerendering) {
+      fn();
+      return;
+    }
+    document.addEventListener('prerenderingchange', () => fn(), { once: true });
+  },
+
   debounce(fn, wait = 150) {
     let t;
     return (...args) => {

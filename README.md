@@ -118,6 +118,38 @@ The generated bundles are **committed**, so the Hugo build and the CI workflow s
 npm-free. Only the MIT-licensed sources in `package.json` are bundled; the tools,
 markup, styling and copy are original.
 
+### Page loading
+
+Navigation is a normal full document swap, so three small things keep it feeling
+quick. All three are progressive enhancement — a browser that doesn't understand
+them navigates exactly as it did before.
+
+- **Modules are declared in `<head>`.** Every per-page `scripts` block holds only
+  `type=module` tags, and modules are deferred, so they never block parsing.
+  Putting them at the top means the browser starts downloading them while it is
+  still reading the page instead of only spotting them at the very end.
+- **Speculation rules prerender on hover.** `head.html` emits a
+  `type=speculationrules` block with `"eagerness": "moderate"`, so the page under
+  the pointer is built in the background and the click lands on something already
+  rendered. Feeds are excluded, and any link can opt out with
+  `data-no-prerender`.
+- **Cross-document view transitions.** `@view-transition { navigation: auto }` in
+  `styles.css` cross-fades the content and holds the header still, so the swap
+  reads as one page flowing into the next.
+
+A background prerender **runs the page's script**. Anything a tool does on load
+that costs something real — a network request, opening a camera — has to wait for
+the page to actually be shown:
+
+```js
+tk.whenActive(lookup);   // not: lookup();
+```
+
+`tk.whenActive()` runs the callback straight away in every ordinary visit, and
+otherwise waits for the `prerenderingchange` event. `ip-lookup` is the one tool
+that needs this today; it is a requirement for any future tool that fetches on
+load.
+
 ### Testing
 
 The tools are plain browser code, so they are tested against a real DOM rather than

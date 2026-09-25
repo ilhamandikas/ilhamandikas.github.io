@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ site.LanguageCode | default "en" }}">
-{{ partial "head.html" . }}
+<head>
+  {{ partial "head.html" . }}
+  {{- /* The per-page script block only ever holds type=module tags, and modules
+         are deferred, so they never block parsing. Keeping it here instead of
+         at the end of <body> means the browser starts downloading them while
+         it is still reading the page, rather than only spotting them once the
+         whole document has been parsed. */}}
+  {{ block "scripts" . }}{{ end }}
+</head>
 <body>
   {{ partial "header.html" . }}
   <main>
     {{ block "main" . }}{{ end }}
   </main>
   {{ partial "footer.html" . }}
-  {{ block "scripts" . }}{{ end }}
 </body>
 </html>

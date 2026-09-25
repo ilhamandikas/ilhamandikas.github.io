@@ -451,3 +451,21 @@ img, svg { max-width: 100%; }
 @media (max-width: 380px) {
   .brand span:not(.brand-mark):not(.dot) { font-size: 15px; }
 }
+
+/* ---------- page transitions ---------- */
+/* Moving between pages is a full document swap, which normally shows an empty
+   white frame for a moment. Where a browser supports cross-document view
+   transitions the content cross-fades instead and the header is held still, so
+   the change reads as one page flowing into the next. Browsers that don't know
+   these rules navigate exactly as they did before. */
+@view-transition { navigation: auto; }
+
+.site-header { view-transition-name: site-header; }
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: vt-out 110ms ease-out both; }
+  ::view-transition-new(root) { animation: vt-in 200ms ease-in both; }
+}
+
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }

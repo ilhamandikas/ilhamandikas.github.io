@@ -2,7 +2,7 @@
 // Anything printed under "actual output" still needs a human eye.
 const fs = require('fs');
 const path = require('path');
-const { ROOT, loadPage, loadFile, read, set, click, sleep, errorStatuses } = require('./harness.cjs');
+const { ROOT, TOOLS, loadPage, loadFile, read, set, click, sleep, errorStatuses } = require('./harness.cjs');
 
 async function run(slug, fields = {}, { clicks = [], wait = 150 } = {}) {
   const page = loadPage(slug);
@@ -305,6 +305,29 @@ const check = (label, actual, expected) => {
     w.close();
   }
 
+  console.log('\n=== background prerender ===');
+  {
+    // A browser may build this page in the background ahead of a click, and that
+    // background run executes the page's script too. The IP lookup must not
+    // spend a request on the free services until the page is really shown.
+    const page = loadPage('ip-lookup', { prerendering: true });
+    const seen = mock([['ipwho.is', http(200, {
+      ip: '203.0.113.7', success: true, type: 'IPv4', country: 'Indonesia', country_code: 'ID',
+      city: 'Jakarta', continent: 'Asia', region: 'Jakarta',
+      connection: { asn: 7713, org: 'Example ISP', isp: 'Example ISP' },
+    })]]);
+    await sleep(150);
+    check('prerender: no request while the page is only being built', seen.length, 0);
+
+    page.w.document.prerendering = false;
+    page.w.document.dispatchEvent(new page.w.Event('prerenderingchange'));
+    await sleep(200);
+    check('prerender: request fires once the page is shown', seen.length, 1);
+    check('prerender: result renders after activation', read(page.w, '#ip-result').includes('203.0.113.7'), true);
+    page.finish();
+    page.dom.window.close();
+  }
+
   globalThis.fetch = () => Promise.reject(new Error('offline (harness)'));
 
   console.log('\n=== catalog page ===');
@@ -372,6 +395,31 @@ const check = (label, actual, expected) => {
     check('sort button: box has a fixed width', /(^|\s)width:\s*\d/.test(rule), true);
     check('sort button: box has a fixed height', /(^|\s)height:\s*\d/.test(rule), true);
     check('sort button: press does not change the weight', /aria-pressed="true"\][^{]*\{[^}]*font-weight/.test(css), false);
+  }
+
+  console.log('\n=== page wiring ===');
+  {
+    const html = fs.readFileSync(path.join(TOOLS, 'slugify', 'index.html'), 'utf8');
+    const headEnd = html.indexOf('</head>');
+    const bodyStart = html.indexOf('<body>');
+    const head = html.slice(0, headEnd);
+    const toolkitAt = head.indexOf('/js/toolkit.');
+    const toolAt = head.indexOf('/js/tools/slugify.');
+
+    check('wiring: toolkit module is declared inside <head>', toolkitAt > -1 && toolkitAt < headEnd, true);
+    check('wiring: tool module is declared inside <head>', toolAt > -1 && toolAt < headEnd, true);
+    check('wiring: modules are declared before the body starts', toolAt < bodyStart, true);
+    check('wiring: toolkit loads before the tool script', toolkitAt < toolAt, true);
+
+    const rules = html.match(/<script type=speculationrules>([\s\S]*?)<\/script>/);
+    check('wiring: speculation rules present', Boolean(rules), true);
+    let parsed = null;
+    try {
+      parsed = JSON.parse(rules[1].trim());
+    } catch { /* left null */ }
+    check('wiring: speculation rules survive minification as valid JSON', Boolean(parsed), true);
+    check('wiring: prerender waits for a hover, not every link', parsed && parsed.prerender[0].eagerness, 'moderate');
+    check('wiring: feeds are excluded from prerendering', JSON.stringify(parsed).includes('/*.xml'), true);
   }
 
   console.log('\n=== actual output (review by eye) ===');
