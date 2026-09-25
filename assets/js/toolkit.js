@@ -68,6 +68,84 @@ const tk = {
     return run;
   },
 
+  // Deep-sort object keys, leaving array order untouched. direction: asc | desc.
+  sortDeep(value, direction = 'asc') {
+    if (direction !== 'asc' && direction !== 'desc') return value;
+    if (Array.isArray(value)) return value.map((item) => tk.sortDeep(item, direction));
+    if (value && typeof value === 'object') {
+      const keys = Object.keys(value).sort();
+      if (direction === 'desc') keys.reverse();
+      const out = {};
+      for (const key of keys) out[key] = tk.sortDeep(value[key], direction);
+      return out;
+    }
+    return value;
+  },
+
+  // Render a parsed object or array as a collapsible tree. Everything goes in
+  // through textContent, so keys and values are never treated as markup.
+  tree(container, value, { openDepth = 2 } = {}) {
+    if (!container) return;
+    container.replaceChildren();
+    if (value === undefined) return;
+
+    const build = (key, node, depth) => {
+      const isBranch = node !== null && typeof node === 'object';
+
+      if (!isBranch) {
+        const row = document.createElement('div');
+        row.className = 'tree-leaf';
+        if (key !== null) {
+          const k = document.createElement('span');
+          k.className = 'tree-key';
+          k.textContent = `${key}:`;
+          row.append(k, ' ');
+        }
+        const v = document.createElement('span');
+        v.className = 'tree-value';
+        v.textContent = typeof node === 'string' ? JSON.stringify(node) : String(node);
+        row.appendChild(v);
+        return row;
+      }
+
+      const entries = Array.isArray(node)
+        ? node.map((item, i) => [i, item])
+        : Object.entries(node);
+
+      const details = document.createElement('details');
+      details.open = depth < openDepth;
+
+      const summary = document.createElement('summary');
+      if (key !== null) {
+        const k = document.createElement('span');
+        k.className = 'tree-key';
+        k.textContent = `${key}:`;
+        summary.append(k, ' ');
+      }
+      const type = document.createElement('span');
+      type.className = 'tree-type';
+      type.textContent = Array.isArray(node) ? `[${entries.length}]` : `{${entries.length}}`;
+      summary.appendChild(type);
+      details.appendChild(summary);
+
+      const inner = document.createElement('div');
+      inner.className = 'tree-children';
+      entries.forEach(([childKey, childValue]) => {
+        inner.appendChild(build(childKey, childValue, depth + 1));
+      });
+      details.appendChild(inner);
+      return details;
+    };
+
+    container.appendChild(build(null, value, 0));
+  },
+
+  // Open or close every <details> inside a tree.
+  treeOpenAll(container, open) {
+    if (!container) return;
+    container.querySelectorAll('details').forEach((el) => (el.open = open));
+  },
+
   async copy(text, statusEl, label = 'Copied to clipboard') {
     try {
       await navigator.clipboard.writeText(text);

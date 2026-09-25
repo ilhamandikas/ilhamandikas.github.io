@@ -38,5 +38,8 @@ tk.transform({
   watch: [input, direction],
   output: document.querySelector('#roman-output'),
   status: document.querySelector('#roman-status'),
-  fn: () => (direction.value === 'encode' ? toRoman(input.value) : fromRoman(input.value)),
+  fn: () => {
+    if (input.value.trim() === '') return '';
+    return direction.value === 'encode' ? toRoman(input.value) : fromRoman(input.value);
+  },
 });

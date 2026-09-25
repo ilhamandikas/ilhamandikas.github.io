@@ -33,11 +33,14 @@ async function render() {
     preview.innerHTML = currentSvg;
     tk.setStatus(status, 'Ready', 'ok');
   } catch (error) {
-    tk.setStatus(status, error.message, 'err');
+    preview.replaceChildren();
+    currentSvg = '';
+    tk.setStatus(status, 'Could not build the QR code — try a shorter network name or password.', 'err');
   }
 }
 
 document.querySelector('#wqr-png').addEventListener('click', async () => {
+  if (ssid.value.trim() === '') { tk.setStatus(status, 'Enter a network name first', 'err'); return; }
   try {
     const url = await QRCode.toDataURL(build(), { width: Math.max(128, Math.min(1024, Number(size.value) || 320)), margin: 2 });
     const a = document.createElement('a');
@@ -46,7 +49,7 @@ document.querySelector('#wqr-png').addEventListener('click', async () => {
     a.click();
     tk.setStatus(status, 'PNG downloaded', 'ok');
   } catch (error) {
-    tk.setStatus(status, error.message, 'err');
+    tk.setStatus(status, 'Could not build the PNG here — the SVG download works everywhere.', 'err');
   }
 });
 

@@ -118,6 +118,25 @@ The generated bundles are **committed**, so the Hugo build and the CI workflow s
 npm-free. Only the MIT-licensed sources in `package.json` are bundled; the tools,
 markup, styling and copy are original.
 
+### Testing
+
+The tools are plain browser code, so they are tested against a real DOM rather than
+a bundler or a framework. `scripts/domtest/` boots every built page in jsdom, runs
+the bundled script, then fills each field, clicks each button and checks the output:
+
+```bash
+npm install          # once — jsdom is a devDependency
+rm -rf public && hugo --gc --minify
+npm run test:dom     # smoke test + end-to-end assertions
+```
+
+`smoke.cjs` reports anything that throws outside a tool's own error handling, plus
+any page that shows an error before the visitor has typed anything. `e2e.cjs` pins
+exact expected output (Base64, slugify, roman numerals, JSON key sorting, …) and
+checks the converter round trips (JSON→YAML→JSON, XML→JSON→XML, and so on).
+
+This is a development aid only: it is not part of the build and CI never runs it.
+
 ## Configuration notes
 
 - **Gravatar**: the profile picture is derived from `params.email` in `hugo.toml`

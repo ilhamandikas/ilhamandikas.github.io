@@ -44,7 +44,8 @@ function render() {
   }
 
   if (found.length === 0) {
-    tk.setStatus(status, 'No matches', 'err');
+    // "No matches" is a result, not a mistake — keep it neutral.
+    tk.setStatus(status, 'No matches');
     return;
   }
 

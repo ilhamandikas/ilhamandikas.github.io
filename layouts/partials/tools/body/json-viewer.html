@@ -1,0 +1,22 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="jv-input">JSON</label>
+    <textarea id="jv-input" class="tool-input" rows="10" spellcheck="false" placeholder='{"hello":"world","items":[1,2,3]}'></textarea>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Sort keys
+      <select id="jv-sort" class="tool-select">
+        <option value="off">Off</option>
+        <option value="asc">A → Z</option>
+        <option value="desc">Z → A</option>
+      </select>
+    </label>
+    <button class="btn" type="button" id="jv-expand">Expand all</button>
+    <button class="btn" type="button" id="jv-collapse">Collapse all</button>
+    <span class="tool-status" id="jv-status"></span>
+  </div>
+  <div class="tool-field">
+    <label>Tree</label>
+    <div id="jv-tree" class="tool-tree"></div>
+  </div>
+</div>

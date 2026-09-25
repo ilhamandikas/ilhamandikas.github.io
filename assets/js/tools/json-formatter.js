@@ -2,34 +2,20 @@
 const { tk } = window;
 
 const input = document.querySelector('#jf-input');
-const sortKeys = document.querySelector('#jf-sort');
+const sort = document.querySelector('#jf-sort');
 const indent = document.querySelector('#jf-indent');
 
 let mode = 'format';
 
-function sortDeep(value) {
-  if (Array.isArray(value)) return value.map(sortDeep);
-  if (value && typeof value === 'object') {
-    return Object.keys(value)
-      .sort()
-      .reduce((acc, key) => {
-        acc[key] = sortDeep(value[key]);
-        return acc;
-      }, {});
-  }
-  return value;
-}
-
 const run = tk.transform({
-  watch: [input, sortKeys, indent],
+  watch: [input, sort, indent],
   output: document.querySelector('#jf-output'),
   status: document.querySelector('#jf-status'),
   ok: 'Valid JSON',
   fn: () => {
     const raw = input.value.trim();
     if (raw === '') return '';
-    let value = JSON.parse(raw);
-    if (sortKeys.checked) value = sortDeep(value);
+    const value = tk.sortDeep(JSON.parse(raw), sort.value);
     if (mode === 'minify') return JSON.stringify(value);
     return JSON.stringify(value, null, Math.max(0, Math.min(10, Number(indent.value) || 0)));
   },

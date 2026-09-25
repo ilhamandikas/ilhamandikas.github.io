@@ -32,20 +32,22 @@ async function render() {
   } catch (error) {
     preview.replaceChildren();
     currentSvg = '';
-    tk.setStatus(status, error.message || 'Could not generate the QR code', 'err');
+    tk.setStatus(status, 'Could not build the QR code — try a shorter value.', 'err');
   }
 }
 
 document.querySelector('#qr-png').addEventListener('click', async () => {
+  const value = text.value.trim();
+  if (value === '') { tk.setStatus(status, 'Enter some text first', 'err'); return; }
   try {
-    const url = await QRCode.toDataURL(text.value.trim(), { ...options(), type: 'image/png' });
+    const url = await QRCode.toDataURL(value, { ...options(), type: 'image/png' });
     const a = document.createElement('a');
     a.href = url;
     a.download = 'qr-code.png';
     a.click();
     tk.setStatus(status, 'PNG downloaded', 'ok');
   } catch (error) {
-    tk.setStatus(status, error.message, 'err');
+    tk.setStatus(status, 'Could not build the PNG here — the SVG download works everywhere.', 'err');
   }
 });
 

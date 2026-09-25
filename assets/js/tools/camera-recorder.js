@@ -12,14 +12,28 @@ let stream = null;
 let recorder = null;
 let chunks = [];
 
+// Check up front so the user gets a plain explanation instead of a TypeError.
+const canRecord = Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+  && typeof MediaRecorder !== 'undefined';
+
+if (!canRecord) {
+  startButton.disabled = true;
+  tk.setStatus(
+    status,
+    'Recording needs the MediaRecorder API and camera access. This browser does not offer both — try a recent Chrome, Firefox or Safari over HTTPS.',
+    'err',
+  );
+}
+
 startButton.addEventListener('click', async () => {
+  if (!canRecord) return;
   try {
     stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     video.srcObject = stream;
     recordButton.disabled = false;
     tk.setStatus(status, 'Camera ready', 'ok');
   } catch (error) {
-    tk.setStatus(status, error.message, 'err');
+    tk.setStatus(status, `Could not open the camera: ${error.message}`, 'err');
   }
 });
 

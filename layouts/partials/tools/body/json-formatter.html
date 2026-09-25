@@ -6,7 +6,13 @@
   "filename" "formatted.json"
   "mime" "application/json"
   "inputPlaceholder" `{"hello":"world"}`
-  "controls" `<label class="tool-check"><input type="checkbox" id="jf-sort"> Sort keys</label>
+  "controls" `<label class="tool-inline">Sort keys
+  <select id="jf-sort" class="tool-select">
+    <option value="off">Off</option>
+    <option value="asc">A → Z</option>
+    <option value="desc">Z → A</option>
+  </select>
+</label>
 <label class="tool-inline">Indent <input type="number" id="jf-indent" class="tool-number" min="0" max="10" value="2"></label>
 <button class="btn" type="button" id="jf-minify">Minify</button>
 <button class="btn primary" type="button" id="jf-format">Format</button>`) }}
