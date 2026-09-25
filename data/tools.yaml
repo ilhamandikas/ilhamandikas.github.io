@@ -512,6 +512,11 @@
       desc: Compare a set of measured values and their ratios.
       keywords: [benchmark, compare, ratio, performance]
       status: done
+    - slug: random-generator
+      name: Random Generator
+      desc: Pick from a list with a spin wheel, slot machine, random card, dice or ticker animation.
+      keywords: [random, picker, generator, wheel, spin, slot, card, dice, raffle, giveaway]
+      status: done
 
 - name: Data
   slug: data
@@ -530,4 +535,9 @@
       name: IBAN Validator
       desc: Validate an IBAN and read its country and check digits.
       keywords: [iban, validate, bank, account]
+      status: done
+    - slug: nik-parser
+      name: NIK Parser
+      desc: Parse Indonesian NIK into region codes, birth date, gender and serial number.
+      keywords: [nik, ktp, indonesia, parse, region, wilayah, dukcapil]
       status: done

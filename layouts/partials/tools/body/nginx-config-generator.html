@@ -1,7 +1,7 @@
 <div class="tool-panel">
   <h2>Site</h2>
-  <div class="tool-row">
-    <span class="tool-inline">Preset</span>
+  <div class="tool-row ngx-preset-row">
+    <span class="tool-label ngx-row-label">Preset</span>
     <button class="btn" type="button" data-preset="static">Static site</button>
     <button class="btn" type="button" data-preset="spa">Single-page app</button>
     <button class="btn" type="button" data-preset="proxy">Reverse proxy</button>
@@ -15,8 +15,9 @@
            spellcheck="false" autocomplete="off" autocapitalize="off">
   </label>
 
-  <div class="tool-row">
-    <label class="tool-inline">Serve
+  <div class="ngx-form-grid">
+    <label class="tool-field">
+      <span>Serve</span>
       <select id="ngx-mode" class="tool-select">
         <option value="static">Files from a directory</option>
         <option value="spa">A single-page app</option>
@@ -24,60 +25,67 @@
         <option value="php">PHP files</option>
       </select>
     </label>
-    <label class="tool-check">
+    <label class="tool-check ngx-check-card">
       <input type="checkbox" id="ngx-tls" checked> Serve HTTPS
     </label>
-    <label class="tool-check">
+    <label class="tool-check ngx-check-card">
       <input type="checkbox" id="ngx-hsts" checked> Send HSTS
     </label>
   </div>
 
-  <div class="tool-row" id="ngx-root-row">
-    <label class="tool-inline">Document root
+  <div class="ngx-form-grid ngx-form-grid-single" id="ngx-root-row">
+    <label class="tool-field">
+      <span>Document root</span>
       <input type="text" id="ngx-root" class="tool-text" value="/var/www/example.com" spellcheck="false">
     </label>
   </div>
 
-  <div class="tool-row" id="ngx-proxy-row" hidden>
-    <label class="tool-inline">Forward to
+  <div class="ngx-form-grid ngx-form-grid-single" id="ngx-proxy-row" hidden>
+    <label class="tool-field">
+      <span>Forward to</span>
       <input type="text" id="ngx-proxy" class="tool-text" value="http://127.0.0.1:3000" spellcheck="false">
     </label>
   </div>
 
-  <div class="tool-row" id="ngx-php-row" hidden>
-    <label class="tool-inline">PHP-FPM socket
+  <div class="ngx-form-grid ngx-form-grid-single" id="ngx-php-row" hidden>
+    <label class="tool-field">
+      <span>PHP-FPM socket</span>
       <input type="text" id="ngx-php" class="tool-text" value="unix:/run/php/php8.3-fpm.sock" spellcheck="false">
     </label>
   </div>
 
-  <div class="tool-row" id="ngx-tls-row">
-    <label class="tool-inline">Certificate
+  <div class="ngx-form-grid" id="ngx-tls-row">
+    <label class="tool-field">
+      <span>Certificate</span>
       <input type="text" id="ngx-cert" class="tool-text" value="/etc/letsencrypt/live/example.com/fullchain.pem" spellcheck="false">
     </label>
-    <label class="tool-inline">Key
+    <label class="tool-field">
+      <span>Key</span>
       <input type="text" id="ngx-key" class="tool-text" value="/etc/letsencrypt/live/example.com/privkey.pem" spellcheck="false">
     </label>
   </div>
 
-  <div class="tool-row">
-    <label class="tool-inline">Redirect
+  <div class="ngx-form-grid">
+    <label class="tool-field">
+      <span>Redirect</span>
       <select id="ngx-www" class="tool-select">
         <option value="none">Nothing extra</option>
         <option value="to-apex">www → no www</option>
         <option value="to-www">no www → www</option>
       </select>
     </label>
-    <label class="tool-inline">Largest upload
-      <input type="number" id="ngx-body" class="tool-number" min="1" max="4096" value="16">MB
+    <label class="tool-field ngx-number-field">
+      <span>Largest upload</span>
+      <span><input type="number" id="ngx-body" class="tool-number" min="1" max="4096" value="16"> MB</span>
     </label>
   </div>
 
-  <div class="tool-row">
-    <label class="tool-check"><input type="checkbox" id="ngx-gzip" checked> Compress text replies</label>
-    <label class="tool-check"><input type="checkbox" id="ngx-headers" checked> Security headers</label>
-    <label class="tool-check"><input type="checkbox" id="ngx-cache" checked> Cache static assets for a year</label>
-    <label class="tool-check"><input type="checkbox" id="ngx-tokens" checked> Hide the nginx version</label>
-    <label class="tool-check"><input type="checkbox" id="ngx-logs" checked> Write access and error logs</label>
+  <div class="ngx-options-grid">
+    <label class="tool-check ngx-check-card"><input type="checkbox" id="ngx-gzip" checked> Compress text replies</label>
+    <label class="tool-check ngx-check-card"><input type="checkbox" id="ngx-headers" checked> Security headers</label>
+    <label class="tool-check ngx-check-card"><input type="checkbox" id="ngx-cache" checked> Cache static assets for a year</label>
+    <label class="tool-check ngx-check-card"><input type="checkbox" id="ngx-tokens" checked> Hide the nginx version</label>
+    <label class="tool-check ngx-check-card"><input type="checkbox" id="ngx-logs" checked> Write access and error logs</label>
   </div>
 
   <p class="tool-hint">
@@ -90,7 +98,7 @@
 
 <div class="tool-panel">
   <h2>Config</h2>
-  <div class="tool-row">
+  <div class="tool-row ngx-output-actions">
     <span class="tool-note" id="ngx-meta"></span>
     <button class="btn" type="button" id="ngx-copy">Copy</button>
     <button class="btn" type="button" id="ngx-download">Download .conf</button>

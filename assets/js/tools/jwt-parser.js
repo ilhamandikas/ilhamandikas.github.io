@@ -1,5 +1,5 @@
 // Decode a JWT, and check its signature with WebCrypto.
-import { ALGORITHMS, decodePart, unb64url, verify } from '../jws.js';
+import { ALGORITHMS, b64url, decodePart, unb64url, verify } from '../jws.js';
 
 const { tk } = window;
 
@@ -8,9 +8,15 @@ const header = document.querySelector('#jwt-header');
 const payload = document.querySelector('#jwt-payload');
 const signature = document.querySelector('#jwt-signature');
 const status = document.querySelector('#jwt-status');
+const headerEdit = document.querySelector('#jwt-header-edit');
+const payloadEdit = document.querySelector('#jwt-payload-edit');
 
 const keyInput = document.querySelector('#jwt-key');
 const verifyStatus = document.querySelector('#jwt-verify-status');
+
+const encodeJson = (value) => b64url(new TextEncoder().encode(JSON.stringify(value)));
+let editing = null;
+let rewriting = false;
 
 function withDates(claims) {
   const clone = { ...claims };
@@ -20,6 +26,40 @@ function withDates(claims) {
     }
   }
   return clone;
+}
+
+function syncEditors(headerObject, payloadObject) {
+  if (editing !== 'header') headerEdit.value = JSON.stringify(headerObject, null, 2);
+  if (editing !== 'payload') payloadEdit.value = JSON.stringify(payloadObject, null, 2);
+}
+
+function setEditor(which, open) {
+  const isHeader = which === 'header';
+  const pre = isHeader ? header : payload;
+  const edit = isHeader ? headerEdit : payloadEdit;
+  editing = open ? which : null;
+  pre.hidden = open;
+  edit.hidden = !open;
+  if (open) edit.focus();
+}
+
+function rewriteTokenFromEditor(which) {
+  if (rewriting) return;
+  const edit = which === 'header' ? headerEdit : payloadEdit;
+  const token = input.value.trim();
+  const parts = token.split('.');
+  if (parts.length < 2) return;
+  try {
+    const parsed = JSON.parse(edit.value);
+    parts[which === 'header' ? 0 : 1] = encodeJson(parsed);
+    rewriting = true;
+    input.value = parts.join('.');
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    rewriting = false;
+    tk.setStatus(status, which === 'payload' ? 'Payload edited — token updated. Existing signature may no longer match.' : 'Header edited — token updated. Existing signature may no longer match.');
+  } catch {
+    tk.setStatus(status, `${which === 'header' ? 'Header' : 'Payload'} editor is not valid JSON yet`, 'err');
+  }
 }
 
 tk.transform({
@@ -35,9 +75,12 @@ tk.transform({
     }
     const parts = token.split('.');
     if (parts.length < 2) throw new Error('A JWT needs at least two dot-separated parts');
-    header.textContent = JSON.stringify(decodePart(parts[0]), null, 2);
-    const claims = withDates(decodePart(parts[1]));
+    const headerObject = decodePart(parts[0]);
+    const rawClaims = decodePart(parts[1]);
+    header.textContent = JSON.stringify(headerObject, null, 2);
+    const claims = withDates(rawClaims);
     payload.textContent = JSON.stringify(claims, null, 2);
+    syncEditors(headerObject, rawClaims);
     signature.textContent = parts[2] || '(none)';
 
     const now = Math.floor(Date.now() / 1000);
@@ -47,6 +90,18 @@ tk.transform({
     return 'Decoded — the signature has not been checked';
   },
 });
+
+header.addEventListener('click', () => setEditor('header', true));
+payload.addEventListener('click', () => setEditor('payload', true));
+header.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') setEditor('header', true); });
+payload.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') setEditor('payload', true); });
+for (const button of document.querySelectorAll('[data-jwt-edit]')) {
+  button.addEventListener('click', () => setEditor(button.dataset.jwtEdit, true));
+}
+headerEdit.addEventListener('input', () => rewriteTokenFromEditor('header'));
+payloadEdit.addEventListener('input', () => rewriteTokenFromEditor('payload'));
+headerEdit.addEventListener('blur', () => setEditor('header', false));
+payloadEdit.addEventListener('blur', () => setEditor('payload', false));
 
 document.querySelector('#jwt-verify').addEventListener('click', async () => {
   const token = input.value.trim();

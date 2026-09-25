@@ -1087,3 +1087,29 @@ websocket-tester:
     - q: "How do I connect with a subprotocol?"
       a: "Type them in the subprotocol field, comma separated — for example chat, superchat. The server picks one and the log records which one it chose, which is the part people actually need to see when a handshake succeeds but the application protocol is wrong."
 
+
+nik-parser:
+  about: >-
+    Parse an Indonesian NIK/KTP number locally in the browser. The tool splits the
+    16 digits into province, regency or city, district, encoded birth date, gender
+    marker and serial number, then looks up the region names from an offline copy
+    of Indonesian administrative codes. It does not verify whether a NIK belongs
+    to a real person; it only explains the structure of the number you typed.
+  faq:
+    - q: "Can this validate that a NIK is real?"
+      a: "No. It can validate the format and decode the embedded fields, but only Dukcapil or an authorised system can confirm whether the identity exists and is active. Treat this as a parser, not an identity check."
+    - q: "Why does a female birth date look larger than 31?"
+      a: "In a NIK, the day of birth is stored directly for male holders and with 40 added for female holders. So 01 means male born on the 1st, while 41 means female born on the 1st. The page shows that explanation beside the decoded gender."
+
+random-generator:
+  about: >-
+    Pick one or more random items from a list, with a choice of simple animations:
+    spin wheel, slot machine, random card, dice roll or ticker. The draw uses the
+    browser's crypto random source and runs entirely on the page, so your list is
+    not uploaded. Turn off "No duplicates" if the same item is allowed to win more
+    than once.
+  faq:
+    - q: "Is the animation deciding the result?"
+      a: "No. The result is picked with crypto.getRandomValues, then the animation is only a reveal. That keeps the draw fair even if the animation frame rate changes."
+    - q: "Can I pick multiple winners?"
+      a: "Yes. Increase the Pick number. With No duplicates enabled, an item can appear only once and the count is capped by the number of items in the list."

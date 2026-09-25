@@ -4,8 +4,16 @@
     <label for="jwt-input">JWT</label>
     <textarea id="jwt-input" class="tool-input" rows="4" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMifQ.signature"></textarea>
   </div>
-  <div class="tool-field"><label>Header</label><pre id="jwt-header" class="tool-pre"></pre></div>
-  <div class="tool-field"><label>Payload</label><pre id="jwt-payload" class="tool-pre"></pre></div>
+  <div class="tool-field jwt-json-field">
+    <label>Header <button class="tool-history-link jwt-edit" type="button" data-jwt-edit="header">Edit</button></label>
+    <pre id="jwt-header" class="tool-pre jwt-click-edit" tabindex="0" role="button" title="Click to edit the header JSON"></pre>
+    <textarea id="jwt-header-edit" class="tool-input jwt-json-editor" rows="7" spellcheck="false" hidden></textarea>
+  </div>
+  <div class="tool-field jwt-json-field">
+    <label>Payload <button class="tool-history-link jwt-edit" type="button" data-jwt-edit="payload">Edit</button></label>
+    <pre id="jwt-payload" class="tool-pre jwt-click-edit" tabindex="0" role="button" title="Click to edit the payload JSON"></pre>
+    <textarea id="jwt-payload-edit" class="tool-input jwt-json-editor" rows="10" spellcheck="false" hidden></textarea>
+  </div>
   <div class="tool-field"><label>Signature</label><pre id="jwt-signature" class="tool-pre"></pre></div>
   <p class="tool-status" id="jwt-status"></p>
   <p class="tool-hint">Decoding is not verifying. The header and payload are plain base64url, so anyone can read or edit them — only the signature can show that the token has not been tampered with.</p>

@@ -1,9 +1,12 @@
 // QR Editor — build the same QR code as the generator, then shape it: module and
 // finder style, a two-stop gradient, a transparent background and a logo. The
 // renderer is ../qr.js, shared with the generator and the Wi-Fi tool.
+import jsQR from 'jsqr';
 import * as qr from '../qr.js';
 const { tk } = window;
 
+const sourceInput = document.querySelector('#qre-source');
+const sourceStatus = document.querySelector('#qre-source-status');
 const text = document.querySelector('#qre-text');
 const ecc = document.querySelector('#qre-ecc');
 const size = document.querySelector('#qre-size');
@@ -34,6 +37,44 @@ let logo = null;
 let currentSvg = null;
 
 const pct = (value, fallback) => (Number.isFinite(Number(value)) ? Number(value) : fallback);
+
+function readImageData(file) {
+  return new Promise((resolve, reject) => {
+    if (!file) { reject(new Error('Choose a QR image first')); return; }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth || img.width;
+        canvas.height = img.naturalHeight || img.height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(img, 0, 0);
+        resolve(ctx.getImageData(0, 0, canvas.width, canvas.height));
+      } catch (error) {
+        reject(error);
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read that image')); };
+    img.src = url;
+  });
+}
+
+async function decodeSource(file) {
+  try {
+    const image = await readImageData(file);
+    const found = jsQR(image.data, image.width, image.height);
+    if (!found || !found.data) throw new Error('No QR code found in that image');
+    text.value = found.data;
+    text.dispatchEvent(new Event('input', { bubbles: true }));
+    tk.setStatus(sourceStatus, 'QR text extracted — edit it below', 'ok');
+    render();
+  } catch (error) {
+    tk.setStatus(sourceStatus, error.message, 'err');
+  }
+}
 
 function options() {
   return {
@@ -99,6 +140,13 @@ function render() {
     tk.setStatus(status, 'Could not build the QR code — try a shorter value.', 'err');
   }
 }
+
+sourceInput.addEventListener('change', (event) => decodeSource(event.target.files[0]));
+
+document.querySelector('#qre-source-clear').addEventListener('click', () => {
+  sourceInput.value = '';
+  tk.setStatus(sourceStatus, '');
+});
 
 logoInput.addEventListener('change', async (event) => {
   try {

@@ -1,0 +1,19 @@
+{{- /* Previous entries for this one tool: what you typed, newest first, each one
+       restorable with a click. Ships hidden and empty — there is nothing for the
+       server to render, and with no JavaScript there is nothing to render at all.
+       tools-memory.js fills it and unhides it once there is at least one entry.
+
+       The rows are built in the script rather than rendered here, because they are
+       the user's own text: no user data goes through a template or through
+       innerHTML. */ -}}
+<section class="tool-history" id="tool-history" hidden>
+  <div class="tool-history-head">
+    <div>
+      <h2 class="tool-history-title">History tool ini</h2>
+      <p class="tool-history-subtitle">Data terakhir yang pernah kamu isi di tool ini, tersimpan hanya di device/browser ini.</p>
+    </div>
+    <button class="tool-history-link" type="button" id="tool-history-clear"
+            title="Remove every previous entry for this tool, keeping the current one">Clear history</button>
+  </div>
+  <ol class="tool-history-list" id="tool-history-list"></ol>
+</section>

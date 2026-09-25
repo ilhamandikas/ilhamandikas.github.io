@@ -1,0 +1,38 @@
+<div class="tool-panel random-gen">
+  <h2>Random Generator</h2>
+  <label class="tool-field">
+    <span>Items — one per line, or separated by commas</span>
+    <textarea id="rnd-items" class="tool-input" rows="7" spellcheck="false">Design
+Code
+Ship
+Review
+Refactor
+Document</textarea>
+  </label>
+  <div class="tool-row">
+    <label class="tool-inline">Mode
+      <select id="rnd-mode" class="tool-select">
+        <option value="wheel">Spin wheel</option>
+        <option value="slot">Slot machine</option>
+        <option value="card">Random card</option>
+        <option value="dice">Dice roll</option>
+        <option value="ticker">Ticker</option>
+      </select>
+    </label>
+    <label class="tool-inline">Pick
+      <input type="number" id="rnd-count" class="tool-number" min="1" max="20" value="1">
+    </label>
+    <label class="tool-check"><input type="checkbox" id="rnd-unique" checked> No duplicates</label>
+    <button class="btn primary" type="button" id="rnd-go">Generate</button>
+    <span class="tool-status" id="rnd-status"></span>
+  </div>
+  <p class="tool-hint">Use it for giveaways, deciding what to do next, picking names, or making a small random draw. Everything runs locally.</p>
+</div>
+
+<div class="tool-panel random-stage-panel">
+  <h2>Result</h2>
+  <div class="random-stage" id="rnd-stage" aria-live="polite">
+    <div class="random-visual wheel" id="rnd-visual">?</div>
+    <ol class="random-results" id="rnd-results"></ol>
+  </div>
+</div>

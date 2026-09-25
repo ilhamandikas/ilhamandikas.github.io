@@ -279,9 +279,10 @@
   letter-spacing: -0.01em;
 }
 
-.tool-field { margin-bottom: 16px; }
+.tool-field { display: block; margin-bottom: 16px; }
 .tool-field:last-child { margin-bottom: 0; }
 .tool-field > label,
+.tool-field > span:first-child,
 .tool-label {
   display: block;
   margin-bottom: 6px;
@@ -390,6 +391,214 @@ textarea.tool-input { min-height: 96px; }
 .tool-faq dt { font-weight: 650; color: var(--text); margin-bottom: 4px; }
 .tool-faq dd { margin: 0 0 18px; color: var(--muted); line-height: 1.65; }
 
+/* The consent bar for remembering what was typed. A quiet strip under the tool,
+   not another tool panel: it is a footnote about the page and should read that
+   way rather than competing with the form above it. */
+.tool-memory {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  font-size: 14px;
+}
+
+.tool-memory-ask > p {
+  margin: 0 0 10px;
+  max-width: 72ch;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.tool-memory-ask strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text);
+  font-size: 15px;
+}
+.tool-memory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* The two states that are not a question: one line, a status dot, and the actions
+   as text buttons, so the strip stays the height of a sentence. */
+.tool-memory-line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--muted);
+}
+.tool-memory-copy {
+  min-width: 0;
+  line-height: 1.35;
+}
+.tool-memory-copy strong {
+  display: block;
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 650;
+}
+.tool-memory-copy span {
+  display: block;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.tool-memory-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.tool-memory-dot.off { background: var(--border-strong); }
+.tool-memory-menu {
+  position: relative;
+  justify-self: end;
+}
+.tool-memory-menu summary {
+  list-style: none;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1;
+  cursor: pointer;
+}
+.tool-memory-menu summary::-webkit-details-marker { display: none; }
+.tool-memory-menu summary:hover { border-color: var(--accent); color: var(--accent); }
+.tool-memory-menu-popover {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 3;
+  min-width: 170px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.tool-memory-menu-inline { justify-self: end; }
+.tool-memory-link {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tool-memory-link:hover { background: var(--bg-soft); color: var(--accent); }
+.tool-memory-link.danger:hover { color: #b91c1c; }
+
+/* Empty means there is nothing to say, so it takes no room and adds no gap. */
+.tool-memory-note {
+  margin: 10px 0 0 18px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.tool-memory-note:empty { display: none; }
+
+/* Previous entries for this one tool. Below the form, because it is the thing you
+   look for after you have already replaced what you wanted. */
+.tool-history {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.tool-history-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.tool-history-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tool-history-subtitle {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.tool-history-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: tool-history;
+}
+.tool-history-item {
+  counter-increment: tool-history;
+  display: grid;
+  grid-template-columns: auto 82px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+.tool-history-item::before {
+  content: counter(tool-history, decimal-leading-zero);
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.tool-history-item:first-child { border-top: 0; }
+.tool-history-item.empty { counter-increment: none; }
+.tool-history-item.empty::before { content: '—'; }
+.tool-history-when {
+  color: var(--muted);
+  font-size: 12px;
+  font-family: var(--mono);
+}
+.tool-history-preview {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 13.5px;
+  font-family: var(--mono);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tool-history-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 12.5px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tool-history-link:hover { color: var(--text); }
+
 .tool-text {
   padding: 8px 10px;
   border: 1px solid var(--border-strong);
@@ -400,7 +609,32 @@ textarea.tool-input { min-height: 96px; }
   font-size: 13.5px;
   min-width: 150px;
 }
+.tool-field > .tool-text,
+.tool-field > .tool-select { width: 100%; }
 .tool-text:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+input[type="file"].tool-input,
+input[type="file"].tool-text {
+  padding: 0;
+  overflow: hidden;
+  color: var(--muted);
+  line-height: 1.4;
+}
+input[type="file"].tool-input::file-selector-button,
+input[type="file"].tool-text::file-selector-button {
+  margin: 0 12px 0 0;
+  padding: 11px 14px;
+  border: 0;
+  border-right: 1px solid var(--border-strong);
+  background: var(--bg-soft);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font);
+  font-weight: 600;
+  cursor: pointer;
+}
+input[type="file"].tool-input:hover::file-selector-button,
+input[type="file"].tool-text:hover::file-selector-button { background: var(--accent-soft); color: var(--accent); }
 
 .tool-result-row {
   display: grid;
@@ -541,6 +775,130 @@ textarea.tool-input { min-height: 96px; }
   white-space: pre;
   overflow: auto;
 }
+
+/* ---------- nginx config generator ---------- */
+
+.ngx-preset-row { align-items: center; }
+.ngx-row-label { margin: 0 2px 0 0; }
+.ngx-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 14px 0;
+}
+.ngx-form-grid-single { grid-template-columns: minmax(0, 1fr); }
+.ngx-form-grid .tool-field { margin: 0; }
+.ngx-form-grid .tool-check { align-self: end; }
+.ngx-check-card {
+  min-height: 39px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+}
+.ngx-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+.ngx-number-field > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+.ngx-output-actions .tool-note {
+  flex: 1 1 180px;
+  margin-left: 0;
+}
+#ngx-out { width: 100%; }
+
+/* ---------- random generator ---------- */
+
+.random-stage {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+.random-visual {
+  display: grid;
+  place-items: center;
+  min-height: 180px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+  color: var(--text);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 5vw, 2.4rem);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.random-visual.wheel { border-radius: 999px; }
+.random-visual.slot { font-family: var(--mono); letter-spacing: 0.04em; }
+.random-visual.card {
+  min-height: 220px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+.random-visual.dice {
+  width: 150px;
+  min-height: 150px;
+  justify-self: center;
+  border-radius: 24px;
+  font-size: 3rem;
+}
+.random-visual.ticker { min-height: 96px; font-family: var(--mono); }
+.random-visual.spin { animation: random-pop 0.72s linear infinite; }
+@keyframes random-pop {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.035) rotate(1.5deg); }
+}
+.random-results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: random-result;
+}
+.random-results li {
+  counter-increment: random-result;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 9px 0;
+  border-top: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.random-results li:first-child { border-top: 0; }
+.random-results li::before {
+  content: counter(random-result, decimal-leading-zero);
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+/* ---------- JWT parser inline JSON editor ---------- */
+
+.jwt-json-field label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.jwt-edit { font-family: var(--font); text-transform: none; letter-spacing: 0; }
+.jwt-click-edit { cursor: text; }
+.jwt-click-edit:hover { border-color: var(--accent); background: var(--accent-soft); }
+.jwt-json-editor { margin-top: 0; }
 
 /* ---------- drop zones ---------- */
 
@@ -684,4 +1042,19 @@ textarea.tool-input { min-height: 96px; }
   /* The aside is not a scroll container here, so sticky would pin the field
      under the site header instead of inside the dropdown. */
   .tool-nav-search { position: static; }
+  .tool-memory-line { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+  .tool-memory-menu,
+  .tool-memory-menu-inline { grid-column: 2; justify-self: start; }
+  .tool-memory-menu-popover { left: 0; right: auto; }
+  .tool-memory-link { white-space: normal; }
+  .tool-memory-note { margin-left: 18px; }
+  .tool-history-head { display: block; }
+  .tool-history-head .tool-history-link { display: inline-block; margin-top: 8px; }
+  .tool-history-item { grid-template-columns: auto minmax(0, 1fr); }
+  .tool-history-when,
+  .tool-history-preview,
+  .tool-history-item .tool-history-link { grid-column: 2; }
+  .tool-history-preview { white-space: normal; }
+  .random-stage { grid-template-columns: minmax(0, 1fr); }
+  .ngx-form-grid { grid-template-columns: minmax(0, 1fr); }
 }

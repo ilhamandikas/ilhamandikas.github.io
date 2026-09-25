@@ -1,8 +1,20 @@
 <div class="tool-panel">
+  <h2>Upload existing QR</h2>
+  <p class="tool-hint">Start by choosing an existing QR image. The text is extracted locally, then the editor below redraws it live as you change content or style.</p>
+  <div class="tool-row">
+    <label class="tool-inline">QR image
+      <input class="tool-input" type="file" id="qre-source" accept="image/png,image/jpeg,image/gif,image/webp,image/bmp">
+    </label>
+    <button class="btn" type="button" id="qre-source-clear">Clear</button>
+    <span class="tool-status" id="qre-source-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
   <h2>Content</h2>
   <div class="tool-field">
     <label for="qre-text">Text or URL</label>
-    <textarea id="qre-text" class="tool-input" rows="3" spellcheck="false" placeholder="https://example.com">https://ilham.dev</textarea>
+    <textarea id="qre-text" class="tool-input" rows="3" spellcheck="false" placeholder="Upload a QR image above, or type text / URL here">https://ilham.dev</textarea>
   </div>
   <div class="tool-row">
     <label class="tool-inline">Error correction

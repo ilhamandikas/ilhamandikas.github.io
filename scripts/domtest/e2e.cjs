@@ -1734,7 +1734,7 @@ const check = (label, actual, expected) => {
     check("memory: yes stores the tool's own fields",
       JSON.parse(first.w.localStorage.getItem(MEM))['jf-input'], '{"typed":"before consent"}');
     check('memory: the bar says where the data is kept',
-      first.w.document.querySelector('#tool-memory-note').textContent, 'Saved on this device. It will be here when you come back.');
+      first.w.document.querySelector('#tool-memory-note').textContent, 'Saved. It will be here when you come back to this device.');
 
     // 3. A reload restores the fields and the tool redraws from them.
     const second = load('json-formatter', {
@@ -1746,7 +1746,7 @@ const check = (label, actual, expected) => {
       read(second.w, '#jf-output'), '{\n  "typed": "before consent"\n}');
     check('memory: the bar says how many fields came back',
       second.w.document.querySelector('#tool-memory-note').textContent,
-      'Picked up where you left off — 2 fields restored from this device.');
+      'Restored 2 saved fields from this device.');
 
     // 4. No writes nothing, ever.
     const third = load('json-formatter');
@@ -1792,16 +1792,137 @@ const check = (label, actual, expected) => {
     const all = load('json-formatter', {
       [CONSENT]: 'yes',
       'ilham:memory:other-tool': '{"x":1}',
+      'ilham:history:other-tool': '[{"at":1,"data":{"x":1}}]',
       'ilham:recent-tools': '[]',
     });
     click(all.w, '#tool-memory-forget-all');
     await sleep(100);
-    check('memory: forget-all removes every tool store and the answer itself',
-      [all.w.localStorage.getItem('ilham:memory:other-tool'), all.w.localStorage.getItem(CONSENT)], [null, null]);
+    check('memory: forget-all removes every tool store, every history and the answer itself',
+      [all.w.localStorage.getItem('ilham:memory:other-tool'),
+        all.w.localStorage.getItem('ilham:history:other-tool'),
+        all.w.localStorage.getItem(CONSENT)], [null, null, null]);
     // The sidebar records the current tool on every load, so the exact contents are
     // not the point here — the point is that forget-all did not delete the key.
     check('memory: forget-all leaves the recently-used list alone, because that is a separate promise',
       all.w.localStorage.getItem('ilham:recent-tools') === null, false);
+  }
+
+  /* -------------------------------------------------------- previous entries */
+
+  console.log('\n=== previous entries ===');
+  {
+    const CONSENT = 'ilham:memory-consent';
+    const HIST = 'ilham:history:json-formatter';
+    const load = (slug, seed) => loadFile(path.join(TOOLS, slug, 'index.html'), `https://ilham.dev/tools/${slug}/`, { store: seed });
+    const entries = (page) => JSON.parse(page.w.localStorage.getItem(HIST) || '[]');
+    const rows = (page) => [...page.w.document.querySelectorAll('.tool-history-item')];
+    // The row buttons have no id of their own, so they are reached through the row.
+    const press = (row, label) => [...row.querySelectorAll('button')].find((b) => b.textContent === label).click();
+
+    // 1. No consent, no history — and nothing is even offered.
+    const off = load('json-formatter');
+    set(off.w, '#jf-input', '{"a":1}');
+    await sleep(2400);
+    check('history: nothing is recorded before the question is answered', off.w.localStorage.getItem(HIST), null);
+    check('history: the panel stays hidden while there is nothing in it',
+      off.w.document.querySelector('#tool-history').hidden, true);
+
+    // 2. Consent on: an entry appears after a pause, and the panel opens itself.
+    const page = load('json-formatter', { [CONSENT]: 'yes' });
+    check('history: the empty panel is visible after consent, so the feature is discoverable',
+      page.w.document.querySelector('#tool-history').hidden, false);
+    set(page.w, '#jf-input', '{"first":true}');
+    await sleep(2400);
+    check('history: a pause records one entry', entries(page).length, 1);
+    check('history: the entry holds what was typed', entries(page)[0].data['jf-input'], '{"first":true}');
+    check('history: the panel is visible once there is something in it',
+      page.w.document.querySelector('#tool-history').hidden, false);
+    check('history: one row is rendered', rows(page).length, 1);
+    check('history: the row is labelled with the value it would restore',
+      read(page.w, '.tool-history-preview'), '{"first":true}');
+    check('history: a setting is not part of the label', read(page.w, '.tool-history-preview').includes('2'), false);
+    check('history: the row says when it was recorded', read(page.w, '.tool-history-when'), 'just now');
+
+    // 3. The same thing twice is not two entries — otherwise a pause mid-edit
+    //    would push a real entry off the end of the list.
+    set(page.w, '#jf-input', '{"first":true} ');
+    await sleep(2400);
+    set(page.w, '#jf-input', '{"first":true}');
+    await sleep(2400);
+    check('history: recording the same value again does not add a row', entries(page).length, 1);
+
+    // 4. A different value is a new entry, and the newest is first.
+    set(page.w, '#jf-input', '{"second":true}');
+    await sleep(2400);
+    check('history: a different value is a new entry', entries(page).length, 2);
+    check('history: the newest entry is first', entries(page)[0].data['jf-input'], '{"second":true}');
+    check('history: ...and the first row is the one showing it',
+      read(page.w, '.tool-history-preview'), '{"second":true}');
+
+    // 5. Restore puts an older entry back, and the tool redraws from it.
+    press(rows(page)[1], 'Restore');
+    await sleep(150);
+    check('history: restore puts the older value back in the field', read(page.w, '#jf-input'), '{"first":true}');
+    check('history: ...and the tool redrew from it rather than keeping stale output',
+      read(page.w, '#jf-output'), '{\n  "first": true\n}');
+    check('history: ...and the bar says what happened',
+      page.w.document.querySelector('#tool-memory-note').textContent,
+      'Put 2 fields from that entry back into the form.');
+
+    // 6. Remove drops one row without touching the other.
+    press(rows(page)[1], 'Remove');
+    await sleep(100);
+    check('history: remove drops that entry', entries(page).length, 1);
+    check('history: ...and the remaining entry is the other one', entries(page)[0].data['jf-input'], '{"second":true}');
+    check('history: ...and the row went with it', rows(page).length, 1);
+
+    // 7. Clearing the history is not the same promise as deleting the tool's data:
+    //    the current entry stays, so a refresh still comes back to where you were.
+    click(page.w, '#tool-history-clear');
+    await sleep(100);
+    check('history: clear history empties the list', entries(page).length, 0);
+    check('history: ...and hides the panel again', page.w.document.querySelector('#tool-history').hidden, true);
+    check('history: ...but leaves the current entry alone, which is a different promise',
+      JSON.parse(page.w.localStorage.getItem('ilham:memory:json-formatter'))['jf-input'], '{"first":true}');
+
+    // 8. Deleting this tool's saved data does take the history with it — the label
+    //    says "saved data", so the history has to be part of that.
+    const wiped = load('json-formatter', {
+      [CONSENT]: 'yes',
+      [HIST]: '[{"at":1,"data":{"jf-input":"old"}}]',
+      'ilham:memory:json-formatter': '{"jf-input":"old"}',
+    });
+    click(wiped.w, '#tool-memory-forget');
+    await sleep(100);
+    check("history: deleting this tool's saved data takes the history too",
+      [wiped.w.localStorage.getItem(HIST), wiped.w.localStorage.getItem('ilham:memory:json-formatter')], [null, null]);
+
+    // 9. One pasted blob must not evict everything else. localStorage is about 5MB
+    //    for the whole origin, so an entry over the cap is skipped rather than kept.
+    const big = load('json-formatter', { [CONSENT]: 'yes' });
+    set(big.w, '#jf-input', `{"big":"${'x'.repeat(9000)}"}`);
+    await sleep(2400);
+    check('history: an entry over the size cap is not recorded', big.w.localStorage.getItem(HIST), null);
+    check('history: ...but the current entry is still saved, because losing it is the worse failure',
+      JSON.parse(big.w.localStorage.getItem('ilham:memory:json-formatter'))['jf-input'].length > 9000, true);
+
+    // 10. The list is capped, and the oldest entry is the one that goes.
+    const many = load('json-formatter', { [CONSENT]: 'yes' });
+    for (let i = 0; i < 14; i += 1) {
+      set(many.w, '#jf-input', `{"n":${i}}`);
+      await sleep(2100);
+    }
+    const kept = entries(many);
+    check('history: the list is capped at twelve', kept.length, 12);
+    check('history: ...and the newest is at the top', kept[0].data['jf-input'], '{"n":13}');
+    check('history: ...and the oldest fell off', kept.some((entry) => entry.data['jf-input'] === '{"n":0}'), false);
+    check('history: ...and the rows match the store', rows(many).length, 12);
+
+    // 11. Junk under our key is ignored rather than rendered.
+    const junk = load('json-formatter', { [CONSENT]: 'yes', [HIST]: '{"not":"an array"}' });
+    check('history: a store that is not an array is ignored',
+      junk.w.document.querySelector('#tool-history').hidden, true);
+    check('history: ...and the page is still usable', errorStatuses(junk.w), []);
   }
 
   /* -------------------------------------------------------- recently used tools */

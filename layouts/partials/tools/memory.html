@@ -1,34 +1,59 @@
+{{- /* The consent bar for saving what you typed.
+       Three states, only one of which is ever visible: ask (first visit), on
+       (saving), off (declined). The script picks the state and fills in the note
+       line — without JavaScript nothing here can work, so it all ships hidden.
+
+       The two delete actions name their scope in the label itself, because
+       "Clear and forget this tool" and "Forget every tool" sound like the same
+       button and neither says what it removes. */ -}}
 <div class="tool-memory" id="tool-memory" hidden>
   <div class="tool-memory-ask" id="tool-memory-ask" hidden>
     <p>
-      <strong>Save what you type here, on this device?</strong>
-      Your work would go into this browser's local storage, so a refresh or a trip to another
-      tool does not wipe it. It is never uploaded, and there is no account.
+      <strong>Save what you type here, in this browser?</strong>
+      Your work would go into this browser's local storage, so a refresh or a trip to
+      another tool does not wipe it. You also get a short list of previous entries
+      under the form, each one restorable with a click. Nothing is ever uploaded, and
+      there is no account.
     </p>
     <p>
-      Being straight about the trade-off: anything kept there can be read by anyone who can
-      use this browser profile, and by any script that later runs on this site. A tool page
-      can hold a private key, a password or a signed token. Saving is convenient; it is not
-      private.
+      Being straight about the trade-off: anything kept there can be read by anyone who
+      can use this browser profile, and by any script that later runs on this site. A
+      tool page can hold a private key, a password or a signed token. Saving is
+      convenient; it is not private.
     </p>
-    <div class="tool-row">
-      <button class="btn primary" type="button" id="tool-memory-yes">Save on this device</button>
-      <button class="btn" type="button" id="tool-memory-no">Never on this device</button>
+    <div class="tool-memory-actions">
+      <button class="btn primary" type="button" id="tool-memory-yes">Save in this browser</button>
+      <button class="btn" type="button" id="tool-memory-no">Never save</button>
     </div>
   </div>
 
-  <p class="tool-memory-line" id="tool-memory-on" hidden>
+  <div class="tool-memory-line" id="tool-memory-on" hidden>
     <span class="tool-memory-dot" aria-hidden="true"></span>
-    Saved on this device.
-    <button class="tool-memory-link" type="button" id="tool-memory-forget">Clear and forget this tool</button>
-    <button class="tool-memory-link" type="button" id="tool-memory-forget-all">Forget every tool</button>
-  </p>
+    <div class="tool-memory-copy">
+      <strong>Saved on this device</strong>
+      <span>Your inputs and history are stored locally.</span>
+    </div>
+    <details class="tool-memory-menu">
+      <summary>Manage</summary>
+      <div class="tool-memory-menu-popover">
+        <button class="tool-memory-link" type="button" id="tool-memory-forget"
+                title="Erase the fields this tool stored, its history, and empty the form">Clear this tool</button>
+        <button class="tool-memory-link danger" type="button" id="tool-memory-forget-all"
+                title="Erase every tool's stored fields and history, and forget the answer you gave">Forget all tools</button>
+      </div>
+    </details>
+  </div>
 
-  <p class="tool-memory-line" id="tool-memory-off" hidden>
+  <div class="tool-memory-line" id="tool-memory-off" hidden>
     <span class="tool-memory-dot off" aria-hidden="true"></span>
-    Not saved — this page forgets your work when you leave it.
-    <button class="tool-memory-link" type="button" id="tool-memory-enable">Start saving</button>
-  </p>
+    <div class="tool-memory-copy">
+      <strong>Not saved</strong>
+      <span>This page forgets your work when you leave it.</span>
+    </div>
+    <div class="tool-memory-menu-inline">
+      <button class="tool-memory-link" type="button" id="tool-memory-enable">Start saving</button>
+    </div>
+  </div>
 
   <p class="tool-memory-note" id="tool-memory-note" role="status" aria-live="polite"></p>
 </div>

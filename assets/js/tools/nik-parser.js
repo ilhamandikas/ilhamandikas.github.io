@@ -1,0 +1,93 @@
+import { ID_CITIES, ID_DISTRICTS, ID_PROVINCES } from '../data/id-regions.js';
+
+const { tk } = window;
+
+const input = document.querySelector('#nik-input');
+const status = document.querySelector('#nik-status');
+const results = document.querySelector('#nik-results');
+
+function row(label, value) {
+  const dt = document.createElement('dt');
+  const dd = document.createElement('dd');
+  const wrap = document.createElement('div');
+  wrap.className = 'tool-result-row';
+  dt.textContent = label;
+  dd.textContent = value || '—';
+  wrap.append(dt, dd);
+  return wrap;
+}
+
+function dotted(code) {
+  if (code.length === 2) return code;
+  if (code.length === 4) return `${code.slice(0, 2)}.${code.slice(2)}`;
+  if (code.length === 6) return `${code.slice(0, 2)}.${code.slice(2, 4)}.${code.slice(4)}`;
+  return code;
+}
+
+function dateFromNik(dayCode, month, year2) {
+  const day = dayCode > 40 ? dayCode - 40 : dayCode;
+  const now = new Date();
+  const currentYY = now.getFullYear() % 100;
+  const year = Number(year2) <= currentYY ? 2000 + Number(year2) : 1900 + Number(year2);
+  const date = new Date(year, Number(month) - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== Number(month) - 1 || date.getDate() !== day) return null;
+  return { date, day, year };
+}
+
+function age(date) {
+  const now = new Date();
+  let years = now.getFullYear() - date.getFullYear();
+  const beforeBirthday = now.getMonth() < date.getMonth() || (now.getMonth() === date.getMonth() && now.getDate() < date.getDate());
+  if (beforeBirthday) years -= 1;
+  return years;
+}
+
+function render() {
+  const nik = input.value.replace(/\D/g, '').slice(0, 16);
+  if (input.value !== nik) input.value = nik;
+  results.replaceChildren();
+
+  if (nik.length !== 16) {
+    tk.setStatus(status, 'Masukkan tepat 16 digit NIK.', nik.length ? 'err' : '');
+    return;
+  }
+
+  const provinceCode = nik.slice(0, 2);
+  const cityCode = nik.slice(0, 4);
+  const districtCode = nik.slice(0, 6);
+  const encodedDay = Number(nik.slice(6, 8));
+  const month = nik.slice(8, 10);
+  const year2 = nik.slice(10, 12);
+  const serial = nik.slice(12, 16);
+  const born = dateFromNik(encodedDay, month, year2);
+  const isFemale = encodedDay > 40;
+  const gender = isFemale ? 'Perempuan' : 'Laki-laki';
+  const province = ID_PROVINCES[provinceCode] || 'Kode provinsi tidak dikenal';
+  const city = ID_CITIES[cityCode] || 'Kode kabupaten/kota tidak dikenal';
+  const district = ID_DISTRICTS[districtCode] || 'Kode kecamatan tidak dikenal';
+
+  const errors = [];
+  if (!ID_PROVINCES[provinceCode]) errors.push('kode provinsi tidak ditemukan');
+  if (!ID_CITIES[cityCode]) errors.push('kode kabupaten/kota tidak ditemukan');
+  if (!ID_DISTRICTS[districtCode]) errors.push('kode kecamatan tidak ditemukan');
+  if (!born) errors.push('tanggal lahir tidak valid');
+  tk.setStatus(status, errors.length ? `NIK terbaca dengan catatan: ${errors.join(', ')}.` : 'NIK terbaca lengkap.', errors.length ? 'err' : 'ok');
+
+  results.append(
+    row('NIK bersih', nik),
+    row('Kode provinsi', provinceCode),
+    row('Nama provinsi', province),
+    row('Kode kabupaten/kota', cityCode),
+    row('Nama kabupaten/kota', city),
+    row('Kode kecamatan', districtCode),
+    row('Nama kecamatan', district),
+    row('Kode region lengkap', `${dotted(provinceCode)} / ${dotted(cityCode)} / ${dotted(districtCode)}`),
+    row('Jenis kelamin', `${gender} — karena kode tanggal lahir ${nik.slice(6, 8)} ${isFemale ? 'lebih dari 40; tanggal asli dikurangi 40' : 'tidak lebih dari 40'}.`),
+    row('Tanggal lahir', born ? born.date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Tidak valid'),
+    row('Umur', born ? `${age(born.date)} tahun` : '—'),
+    row('Nomor urut', serial)
+  );
+}
+
+tk.live([input], render);
+render();
