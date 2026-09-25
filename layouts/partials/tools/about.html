@@ -1,0 +1,21 @@
+{{- /* The prose block under a tool: what it does, how it works, what it will not
+       do. This is the part a search engine actually has something to read, so
+       it only renders for tools that have written content — no generated
+       filler. */ -}}
+{{- $slug := . -}}
+{{- $guide := partial "tools/guide.html" $slug -}}
+{{- with $guide.about }}
+<section class="tool-about">
+  <h2>About this tool</h2>
+  <p>{{ . }}</p>
+  {{- with $guide.faq }}
+  <h2>Questions</h2>
+  <dl class="tool-faq">
+    {{- range . }}
+    <dt>{{ .q }}</dt>
+    <dd>{{ .a }}</dd>
+    {{- end }}
+  </dl>
+  {{- end }}
+</section>
+{{- end }}

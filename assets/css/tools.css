@@ -254,6 +254,27 @@ textarea.tool-input { min-height: 96px; }
 }
 .tool-sort-text { display: block; }
 
+/* Long-form prose under a tool. Kept narrow so it reads as an aside to the
+   tool rather than competing with it. */
+.tool-about {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  max-width: 68ch;
+}
+.tool-about h2 {
+  font-size: 15px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.tool-about h2 + p { margin: 0 0 26px; color: var(--text); line-height: 1.65; }
+.tool-faq { margin: 0; }
+.tool-faq dt { font-weight: 650; color: var(--text); margin-bottom: 4px; }
+.tool-faq dd { margin: 0 0 18px; color: var(--muted); line-height: 1.65; }
+
 .tool-text {
   padding: 8px 10px;
   border: 1px solid var(--border-strong);

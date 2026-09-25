@@ -1,4 +1,6 @@
-{{- /* Structured data. One small graph per page is enough. */ -}}
+{{- /* Structured data. One small graph per page is enough.
+       Tools get SoftwareApplication (so they can be understood as free web apps),
+       a breadcrumb trail, and a FAQPage when the tool has written questions. */ -}}
 {{- $author := site.Params.author -}}
 {{- $home := site.BaseURL -}}
 {{- $lang := site.LanguageCode | default "en" -}}
@@ -8,14 +10,78 @@
 {{- with .Params.images }}{{ $image = index . 0 | absURL }}{{ end -}}
 {{- $person := dict "@type" "Person" "name" $author "url" $home -}}
 {{- with site.Params.github }}{{ $person = merge $person (dict "sameAs" .) }}{{ end -}}
+{{- $graph := slice -}}
+
 {{- if .IsHome -}}
-{{- $data := dict "@context" "https://schema.org" "@type" "WebSite" "name" site.Title "url" $home "description" $desc "inLanguage" $lang "author" $person -}}
-<script type="application/ld+json">{{ $data | jsonify | safeJS }}</script>
+  {{- $graph = $graph | append (dict
+      "@type" "WebSite" "name" site.Title "url" $home
+      "description" $desc "inLanguage" $lang "author" $person) -}}
+
 {{- else if and .IsPage (eq .Section "posts") -}}
-{{- $modified := .Date }}{{ if not .Lastmod.IsZero }}{{ $modified = .Lastmod }}{{ end -}}
-{{- $data := dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" .Title "description" $desc "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00") "dateModified" ($modified.Format "2006-01-02T15:04:05Z07:00") "inLanguage" $lang "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink) "image" $image "author" $person "publisher" $person -}}
-<script type="application/ld+json">{{ $data | jsonify | safeJS }}</script>
+  {{- $modified := .Date }}{{ if not .Lastmod.IsZero }}{{ $modified = .Lastmod }}{{ end -}}
+  {{- $graph = $graph | append (dict
+      "@type" "BlogPosting" "headline" .Title "description" $desc
+      "datePublished" (.Date.Format "2006-01-02T15:04:05Z07:00")
+      "dateModified" ($modified.Format "2006-01-02T15:04:05Z07:00")
+      "inLanguage" $lang "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+      "image" $image "author" $person "publisher" $person) -}}
+
+{{- else if eq .Section "tools" -}}
+  {{- $toolsURL := printf "%stools/" $home -}}
+  {{- $crumbs := slice (dict "@type" "ListItem" "position" 1 "name" "Tools" "item" $toolsURL) -}}
+  {{- if .IsPage -}}
+    {{- $slug := .File.ContentBaseName -}}
+    {{- $meta := partial "tools/meta.html" $slug -}}
+    {{- $guide := partial "tools/guide.html" $slug -}}
+    {{- $crumbs = $crumbs | append (dict "@type" "ListItem" "position" 2 "name" .Title "item" .Permalink) -}}
+    {{- $graph = $graph | append (dict
+        "@type" "SoftwareApplication"
+        "name" .Title
+        "alternateName" (printf "%s — %s" .Title site.Title)
+        "description" $desc
+        "url" .Permalink
+        "applicationCategory" "UtilitiesApplication"
+        "operatingSystem" "Any"
+        "browserRequirements" "Requires JavaScript"
+        "isAccessibleForFree" true
+        "inLanguage" $lang
+        "author" $person
+        "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")) -}}
+    {{- with $guide.faq -}}
+      {{- $questions := slice -}}
+      {{- range . -}}
+        {{- $questions = $questions | append (dict
+            "@type" "Question" "name" .q
+            "acceptedAnswer" (dict "@type" "Answer" "text" .a)) -}}
+      {{- end -}}
+      {{- $graph = $graph | append (dict "@type" "FAQPage" "mainEntity" $questions) -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $parts := slice -}}
+    {{- range site.Data.tools -}}
+      {{- range .tools -}}
+        {{- $parts = $parts | append (dict
+            "@type" "SoftwareApplication" "name" .name
+            "description" .desc
+            "url" (printf "%stools/%s/" $home .slug)
+            "applicationCategory" "UtilitiesApplication"
+            "operatingSystem" "Any"
+            "isAccessibleForFree" true
+            "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")) -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $graph = $graph | append (dict
+        "@type" "CollectionPage" "name" .Title "description" $desc
+        "url" .Permalink "inLanguage" $lang
+        "isPartOf" (dict "@type" "WebSite" "name" site.Title "url" $home)
+        "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $parts) "itemListElement" $parts)) -}}
+  {{- end -}}
+  {{- $graph = $graph | append (dict "@type" "BreadcrumbList" "itemListElement" $crumbs) -}}
+
 {{- else -}}
-{{- $data := dict "@context" "https://schema.org" "@type" "WebPage" "name" .Title "description" $desc "url" .Permalink "inLanguage" $lang -}}
-<script type="application/ld+json">{{ $data | jsonify | safeJS }}</script>
+  {{- $graph = $graph | append (dict
+      "@type" "WebPage" "name" .Title "description" $desc
+      "url" .Permalink "inLanguage" $lang) -}}
 {{- end -}}
+
+<script type="application/ld+json">{{ dict "@context" "https://schema.org" "@graph" $graph | jsonify | safeJS }}</script>

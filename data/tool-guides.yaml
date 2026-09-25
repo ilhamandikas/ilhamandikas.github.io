@@ -1,0 +1,514 @@
+# Long-form content for tool pages, keyed by slug.
+#
+# This is the part of a tool page a search engine has something to read. A tool
+# page is otherwise just a form and some labels, which gives a crawler almost
+# nothing to match a query against.
+#
+# Only tools listed here get an "About" + "Questions" section. There is no
+# generated fallback on purpose: padding every page with near-identical filler
+# would be worse than leaving it out.
+#
+# Fields:
+#   about: one honest paragraph — what it does, how, and what it will not do
+#   faq:   questions people actually ask, answered properly
+
+qr-code-generator:
+  about: >-
+    This builds a QR code in your browser from any text or URL, with a choice of
+    error-correction level and an adjustable margin. The code is produced locally
+    by a bundled encoder, so the text you type is never sent anywhere. You can
+    take the result as a PNG for a chat message or as an SVG, which is drawn as
+    vector paths and therefore stays sharp at any print size.
+  faq:
+    - q: "Do I need an account, or is there a limit?"
+      a: "No account, no API key and no quota. The generator runs entirely in the page."
+    - q: "Which error-correction level should I choose?"
+      a: "H is the most robust and survives roughly 30% of the pattern being damaged, at the cost of a denser code. Use L for short URLs on a screen, and H for anything printed on a sticker, a label or packaging that might get scuffed."
+    - q: "Why did the PNG download fail?"
+      a: "Drawing to a canvas can be blocked in some environments. The SVG download is pure vector, works everywhere and scales better for print anyway."
+
+wifi-qr-generator:
+  about: >-
+    Enter a network name, password and security type and this builds the standard
+    WIFI: payload that Android and iOS understand, then renders it as a QR code.
+    Scanning it joins the network without anyone typing a password, which is what
+    makes it useful for guests, an office wall or a rental. The credentials stay
+    in the page and are never put in the URL.
+  faq:
+    - q: "Does it work on an iPhone?"
+      a: "Yes. The Camera app on iOS 11 and later reads Wi-Fi QR codes directly, with no extra app installed."
+    - q: "Is it safe to print the password in a QR code?"
+      a: "Treat a printed code exactly like the password itself — anyone who can photograph it can join the network. If you hand one out and later change your mind, change the password."
+    - q: "Which security type should I pick?"
+      a: "WPA/WPA2 for essentially every modern network, including WPA3 routers that still accept WPA2 clients. Use WEP only for genuinely old hardware, and 'no password' only for an open network."
+
+json-formatter:
+  about: >-
+    Paste JSON and this validates it, pretty-prints it at the indentation you
+    choose, or minifies it back down. The optional sort control reorders object
+    keys at every level, ascending or descending, while leaving array order
+    alone — which is exactly what you want when two API responses differ only in
+    key order. Parsing uses the browser's own JSON parser, so it fails on exactly
+    what a real parser fails on.
+  faq:
+    - q: "Does sorting also reorder arrays?"
+      a: "No, and that is deliberate. Only object keys are reordered. Array order is data, so changing it would change the meaning of the document."
+    - q: "What is the difference between this and the JSON Viewer?"
+      a: "This one gives you text you can copy and paste. The viewer renders a collapsible tree, which is better for finding your way around a document whose shape you do not know yet."
+    - q: "Is my data uploaded anywhere?"
+      a: "No. Parsing happens locally with JSON.parse and nothing leaves the browser."
+
+json-viewer:
+  about: >-
+    A collapsible tree view of a JSON document, with a count of the nested values
+    on each branch and buttons to expand or collapse everything at once. It is
+    built for finding your way around a payload you have not seen before — an API
+    response, a config file, a webhook body. The document is parsed locally.
+  faq:
+    - q: "Can it open a large file?"
+      a: "It handles documents in the megabytes. The browser still has to lay out every visible node, so very large files are easier to explore with the deep branches left collapsed."
+    - q: "Can I get a single value out?"
+      a: "Yes. The tree is there for reading, and the JSON Formatter is the tool for copying the whole document back out as text."
+
+json-diff:
+  about: >-
+    Compare two JSON documents and see what was added, removed or changed, key by
+    key. Because both sides are parsed first, differences in whitespace and key
+    order are ignored and only real changes are reported — which makes it far
+    more useful than eyeballing two formatted blobs.
+  faq:
+    - q: "Does key order count as a difference?"
+      a: "No. Both documents are parsed and compared as structures, so reordering keys is not a change."
+    - q: "Can it merge the two documents?"
+      a: "No. It reports differences. Merging is a separate decision that depends on which side should win, and that is a judgement the tool cannot make for you."
+
+base64-string-converter:
+  about: >-
+    Encode UTF-8 text to Base64, or decode it back, with an optional URL-safe
+    alphabet where + and / become - and _ and the padding is dropped. Multi-byte
+    characters are handled correctly because the text is encoded to UTF-8 bytes
+    first, so accented letters and emoji round-trip without corruption.
+  faq:
+    - q: "What is URL-safe Base64 for?"
+      a: "Standard Base64 uses + and /, both of which have to be escaped inside a URL. The URL-safe variant swaps them for - and _ so the value can sit in a query string or a filename untouched."
+    - q: "Is Base64 a form of encryption?"
+      a: "No. It is a reversible encoding with no key, and anyone can decode it. Use the AES tool if you need actual confidentiality."
+
+base64-file-converter:
+  about: >-
+    Turn any file into a Base64 string, or a Base64 string back into a file. It
+    is most useful for embedding a small image or font directly in a stylesheet
+    as a data URI, or for working out what a data URI you were handed actually
+    contains. The file is read locally through the File API.
+  faq:
+    - q: "Is there a size limit?"
+      a: "Whatever your browser can hold in memory. Base64 inflates a file by about a third, so a 3 MB image becomes roughly 4 MB of text."
+    - q: "Should I embed images as data URIs?"
+      a: "Only for small files. A data URI cannot be cached separately from the stylesheet it lives in and it has to be parsed along with it, so anything past a few kilobytes is usually better served as an ordinary file."
+
+hash-text:
+  about: >-
+    Compute MD5, SHA-1, SHA-256 and SHA-512 digests of any text. SHA-256 and
+    SHA-512 use the browser's WebCrypto implementation; MD5 and SHA-1 are here
+    because they still turn up in checksums and older protocols, not because
+    they are safe for anything that matters.
+  faq:
+    - q: "Can I use MD5 for passwords?"
+      a: "No. MD5 and SHA-1 are broken for anything security-related — both have practical collision attacks, and neither is designed to be slow. Use bcrypt or Argon2 for passwords."
+    - q: "Why is there no SHA-3?"
+      a: "WebCrypto does not expose it. Adding it would mean shipping a JavaScript implementation, which would be slower than native code and easy to get subtly wrong."
+
+uuid-generator:
+  about: >-
+    Generate version 4 UUIDs, one at a time or in bulk, using the browser's
+    cryptographic random number generator. They are suitable for database keys,
+    request IDs and anything else that has to be unique without coordinating with
+    a central authority.
+  faq:
+    - q: "Can two generated UUIDs collide?"
+      a: "A v4 UUID carries 122 random bits. You would need to generate around 2.7×10^18 of them before a collision became likely, which is far beyond any realistic workload."
+    - q: "Are these UUIDs predictable?"
+      a: "No. They come from crypto.getRandomValues rather than Math.random, so earlier values tell you nothing about later ones."
+
+ulid-generator:
+  about: >-
+    ULIDs are 128-bit identifiers like UUIDs, except the first 48 bits are a
+    millisecond timestamp. That makes them sortable by creation time while
+    staying unique, which is handy as a primary key when you want insertion order
+    without keeping a separate timestamp column.
+  faq:
+    - q: "Should I use a ULID or a UUID?"
+      a: "ULIDs if you want keys that sort by creation time and stay roughly chronological. UUIDs if you need the widest possible support, or must not reveal when a record was created."
+    - q: "Are ULIDs case-sensitive?"
+      a: "The canonical form is uppercase Crockford Base32, and that is what this tool produces."
+
+token-generator:
+  about: >-
+    Generate random tokens and passwords of a chosen length from a chosen
+    character set, drawn from the browser's cryptographic random source. Useful
+    for API keys, session secrets and share links.
+  faq:
+    - q: "How long should a token be?"
+      a: "For a machine-generated secret, 32 characters from a mixed alphabet is about 190 bits of entropy, which is far past brute force. Length buys you more than character variety does."
+    - q: "Is Math.random good enough for this?"
+      a: "No. Math.random is a fast seeded generator whose output can be predicted from previous values. This tool uses crypto.getRandomValues instead."
+
+password-strength:
+  about: >-
+    Estimate how much work a password represents by measuring its entropy,
+    assuming a specific number of guesses per second, and reporting how long a
+    cracking rig would need. It is an estimate with stated assumptions rather
+    than a verdict, which is the honest way to present this.
+  faq:
+    - q: "Why does my password score badly?"
+      a: "Usually because it is short, or built from a predictable pattern. Length adds entropy far faster than swapping letters for symbols, so a long passphrase nearly always beats a short complicated string."
+    - q: "Is my password sent anywhere?"
+      a: "No. The estimate is computed in the page and nothing is transmitted."
+
+jwt-parser:
+  about: >-
+    Decode the header, payload and claims of a JSON Web Token. It shows the
+    signing algorithm, the registered claims and when the token expires, and
+    flags the pitfalls worth noticing — an alg: none header, or an exp that has
+    already passed.
+  faq:
+    - q: "Does this verify the signature?"
+      a: "No, and that distinction matters. Decoding is not verification. Anyone can read a JWT payload; only the signature proves the token came from the party you expect, and checking it needs the key. Never trust a token just because it decodes cleanly."
+    - q: "Is it safe to paste a token here?"
+      a: "The decoding happens in your browser and nothing is uploaded. Even so, a token is a live credential — use a throwaway one when you are testing."
+
+timestamp-converter:
+  about: >-
+    Convert between Unix timestamps, ISO 8601 strings and local time, in both
+    directions. It handles seconds and milliseconds, which is the mix-up that
+    produces dates in 1970 or in the year 55000.
+  faq:
+    - q: "Is my timestamp in seconds or milliseconds?"
+      a: "A ten-digit number is seconds; a thirteen-digit number is milliseconds. JavaScript's Date.now() returns milliseconds, while most Unix tooling works in seconds."
+    - q: "Why is my date off by a day?"
+      a: "Almost always a timezone issue. The converter shows UTC and your local zone side by side so you can see which one you were reading."
+
+crontab-generator:
+  about: >-
+    Build a cron expression from its five fields and read it back in plain
+    English, so you can check a schedule before it quietly does the wrong thing
+    at 3am. It also covers the special strings like @daily and @reboot.
+  faq:
+    - q: "Why does 0 0 * * * run at midnight UTC?"
+      a: "Cron uses the server's timezone. On most servers that is UTC unless the crontab sets CRON_TZ, or the machine itself is configured otherwise."
+    - q: "Does this schedule the job?"
+      a: "No. It only builds and explains the expression. Nothing is scheduled and nothing runs."
+
+regex-tester:
+  about: >-
+    Test a regular expression against sample text and see every match highlighted
+    as you type, with the capture groups listed separately. It uses JavaScript's
+    own regex engine, so what you see here is what you get in a script.
+  faq:
+    - q: "Why does my pattern behave differently in Python or grep?"
+      a: "The dialects differ. JavaScript has no atomic groups or possessive quantifiers, and lookbehind support is comparatively recent. The tool shows which flags it is applying."
+    - q: "Why does .* match more than I expected?"
+      a: "Greedy quantifiers take as much as they can and then backtrack. Append ? to make it lazy — .*? stops at the first opportunity."
+
+regex-cheatsheet:
+  about: >-
+    A searchable reference for regular-expression syntax: character classes,
+    anchors, quantifiers, groups, lookarounds and the flags that change how
+    matching behaves.
+  faq:
+    - q: "Which dialect does this describe?"
+      a: "The syntax is common to most engines. Where JavaScript, PCRE and POSIX diverge, the entry says so explicitly."
+
+color-converter:
+  about: >-
+    Convert a colour between HEX, RGB, RGBA, HSL, HSLA and CMYK, with a live
+    preview. It accepts shorthand hex and alpha channels, and reports the nearest
+    CSS colour name when there is one.
+  faq:
+    - q: "Why is the CMYK value approximate?"
+      a: "CMYK describes ink on paper and depends on the printer profile. The value here is the standard naive conversion, which is a reasonable starting point but not something to send to a print house."
+    - q: "Does HSL use degrees?"
+      a: "Yes. Hue is 0–360 degrees, while saturation and lightness are percentages."
+
+chmod-calculator:
+  about: >-
+    Convert between octal permissions and symbolic ones, toggling read, write and
+    execute for owner, group and others. It shows the resulting chmod command
+    and the rwxr-xr-x string side by side, so you can check one against the
+    other before running anything.
+  faq:
+    - q: "What is the difference between 644 and 755?"
+      a: "644 gives the owner read and write and everyone else read, which is the normal choice for files. 755 adds execute for everyone, which is what directories and scripts need."
+    - q: "What does a leading digit mean?"
+      a: "It carries the setuid, setgid and sticky bits — 1777 for a shared directory like /tmp, for example."
+
+ip-lookup:
+  about: >-
+    Show the public IP address you are connecting from, or look up any address,
+    along with its country, region, city, coordinates, timezone and ISP. This is
+    one of the few tools on this site that talks to the internet: it uses free,
+    key-less services and falls back to a second one if the first is unavailable.
+  faq:
+    - q: "Why does it show a different city than where I am?"
+      a: "Geolocation is based on the address your ISP has registered, not on your physical position, so it usually lands on the nearest city where the provider has infrastructure."
+    - q: "Which services does it use?"
+      a: "ipwho.is first, then freeipapi.com. Both are free and need no API key, and the tool tells you which one answered."
+    - q: "Does this site store my address?"
+      a: "No. The request goes from your browser straight to the provider and the result is rendered here. Nothing is logged by this site."
+
+dns-lookup:
+  about: >-
+    Resolve A, AAAA, CNAME, MX, TXT, NS, SOA, CAA and SRV records over
+    DNS-over-HTTPS, so the query travels over an encrypted connection instead of
+    plain UDP on port 53. It asks Cloudflare first, falls back to Google, and
+    reports which resolver answered.
+  faq:
+    - q: "Why is there no ANY query?"
+      a: "Both Cloudflare and Google refuse ANY over DoH and return NOTIMP. Querying each record type individually is what the resolvers actually support."
+    - q: "Is this the same as dig?"
+      a: "Same records, different transport. dig speaks DNS on port 53; this uses HTTPS, so it works from networks that block port 53 and cannot be tampered with in transit."
+    - q: "Why do I get a different answer than my own resolver?"
+      a: "You are asking a public resolver with its own cache. A different answer usually means a different cache state, or a CDN handing back the node nearest to the resolver rather than to you."
+
+whois-lookup:
+  about: >-
+    Show the registrar, registration and expiry dates, status codes and
+    nameservers for a domain. It reads the registry's own RDAP service,
+    discovered from the IANA bootstrap directory, so there is no third-party
+    proxy in the middle. When a registry publishes no RDAP service at all, the
+    tool says so instead of guessing.
+  faq:
+    - q: "Why do some domains return nothing?"
+      a: "A few registries publish no RDAP endpoint at all — .io, .co, .de and several other ccTLDs among them. Without one there is no machine-readable record to fetch."
+    - q: "Why is the registrant hidden?"
+      a: "Since GDPR, most registries redact personal details on private registrations. The tool tells you when the response has been redacted rather than showing blanks."
+    - q: "What is the difference between RDAP and WHOIS?"
+      a: "RDAP is the structured HTTPS replacement for the old port-43 WHOIS protocol. It returns JSON instead of free text, so the fields can be labelled reliably rather than pattern-matched."
+
+ipv4-subnet-calculator:
+  about: >-
+    Given an address and a prefix length, work out the network address, broadcast
+    address, netmask, wildcard mask and usable host range, along with the total
+    and usable host counts.
+  faq:
+    - q: "Why is the usable host count two less than the total?"
+      a: "The first address in a subnet is the network address and the last is the broadcast address, and neither can be assigned to a host. The exceptions are /31 and /32, which the tool handles separately."
+    - q: "Can it plan a VLSM layout?"
+      a: "Not directly. Use it to check one block at a time, or the range expander to see which CIDR blocks cover an arbitrary range exactly."
+
+ipv4-address-converter:
+  about: >-
+    Convert an IPv4 address between dotted-decimal, a single 32-bit integer,
+    hexadecimal, octal and binary, and show the four octets broken out.
+  faq:
+    - q: "Why does 127.0.0.1 become 2130706433?"
+      a: "The four octets are the bytes of one 32-bit number: 127×256³ + 0×256² + 0×256 + 1. That is why some sites accept the decimal form as the same address."
+    - q: "Why would I need the integer form?"
+      a: "Firewalls, access rules and some APIs store addresses as integers because they are cheaper to compare and range-check than strings."
+
+ipv4-range-expander:
+  about: >-
+    Given a start and end address, list the CIDR blocks that cover the range
+    exactly, so you can turn an arbitrary range into something a firewall or a
+    route table will accept.
+  faq:
+    - q: "Why does it return several blocks instead of one?"
+      a: "CIDR blocks are always powers of two, so an arbitrary range almost never lands on one. The tool finds the smallest set of blocks that covers it without going over."
+
+markdown-to-html:
+  about: >-
+    Render Markdown to HTML in the browser, with the generated markup shown as
+    text so you can copy it straight into a template. It handles headings, lists,
+    tables, code fences, links and inline formatting.
+  faq:
+    - q: "Is the output sanitised?"
+      a: "The renderer follows Markdown rules and passes raw HTML through. If you are rendering Markdown written by strangers, sanitise the result before putting it on a page."
+    - q: "Which flavour of Markdown is this?"
+      a: "CommonMark with the usual table and strikethrough extensions — GitHub-flavoured in practice."
+
+text-diff:
+  about: >-
+    Compare two blocks of text line by line and see exactly which lines were
+    added, removed or left alone. Useful for checking what actually changed
+    between two versions of a config, a query or a paragraph.
+  faq:
+    - q: "Does it compare word by word?"
+      a: "It compares line by line, which is the right granularity for configs and code. A whitespace-only change still shows up as a change."
+    - q: "Is there a version for structured data?"
+      a: "Yes. The JSON Diff tool compares two documents structurally, so it ignores formatting and key order and reports only real differences."
+
+slugify:
+  about: >-
+    Turn any text into a URL-safe slug: lowercased, accents folded to ASCII,
+    punctuation dropped and words joined with a separator you choose. Non-Latin
+    scripts are transliterated where that is possible.
+  faq:
+    - q: "Why should a slug be ASCII?"
+      a: "Percent-encoded characters are hard to read, easy to mangle when copied and awkward in analytics. A plain ASCII slug survives every tool it passes through."
+    - q: "Should I use dashes or underscores?"
+      a: "Dashes. Search engines treat a hyphen as a word separator and an underscore as joining two words, so my-post reads as two words and my_post as one."
+
+url-encoder:
+  about: >-
+    Percent-encode and decode URL components, either the whole string or one
+    component at a time. The distinction matters more than it looks: encoding a
+    full URL turns its own ? and & into data, which is usually not what you want.
+  faq:
+    - q: "Should I encode the whole URL or just a parameter?"
+      a: "Almost always just the parameter. Use component mode when the value goes inside a query string, and whole-URL mode only when the URL itself is the data being passed along."
+
+lorem-ipsum:
+  about: >-
+    Generate placeholder text as paragraphs, sentences or words, starting from
+    the classic Latin passage or a shuffled word pool. It is for filling a layout
+    before the real copy exists.
+  faq:
+    - q: "Why not just write the real copy first?"
+      a: "Because placeholder text makes it obvious what is a layout problem and what is a content problem, and it stops a review turning into an edit of the words instead of the design."
+    - q: "Is the Latin real?"
+      a: "It is a mangled excerpt of Cicero, which is the traditional joke. It is not meaningful Latin."
+
+otp-generator:
+  about: >-
+    Generate time-based one-time passwords (TOTP, RFC 6238) from a shared secret,
+    and verify a code you have been given. It shows the current code, the seconds
+    until it rolls over and the next code, so you can compare against a device
+    that may have drifted.
+  faq:
+    - q: "Is my secret sent anywhere?"
+      a: "No. The HMAC is computed locally with WebCrypto. That said, do not paste a production secret into any page you do not control — including this one."
+    - q: "Why does the code not match my authenticator app?"
+      a: "Almost always clock drift. TOTP depends on both sides agreeing which 30-second window it is; the tool shows the remaining seconds so you can see the disagreement."
+
+meta-tag-generator:
+  about: >-
+    Generate the meta tags a page needs for search and for social sharing: title,
+    description, canonical, Open Graph and Twitter card tags, with a preview of
+    how the result will look.
+  faq:
+    - q: "How long should a meta description be?"
+      a: "Around 150–160 characters. Search engines truncate past that, and they will sometimes replace your description with text lifted from the page."
+    - q: "Do Open Graph tags affect ranking?"
+      a: "Not directly. They affect how a shared link looks, which affects whether people click it — and clicks are a signal."
+
+http-status-codes:
+  about: >-
+    A searchable reference of HTTP response status codes, what each one means and
+    when a server should return it.
+  faq:
+    - q: "When should I return 401 instead of 403?"
+      a: "401 means the request is unauthenticated — the client should try again with credentials. 403 means it is authenticated but not allowed, and trying again will not help."
+    - q: "Does 200 always mean success?"
+      a: "For a GET, usually. For an API, a 200 carrying an error object is a common and unhelpful habit. Prefer a status code that matches the outcome."
+
+svg-placeholder:
+  about: >-
+    Create a placeholder image as an SVG: pick the size, background and text
+    colour and get a small vector file to drop into a layout while the real image
+    is being produced.
+  faq:
+    - q: "Why SVG rather than a PNG?"
+      a: "It is a few hundred bytes, stays sharp at any size and can be edited in a text editor. There is no reason to ship a bitmap for a solid rectangle."
+
+roman-numeral:
+  about: >-
+    Convert between Roman numerals and decimal numbers, using the subtractive
+    notation for 4, 9, 40, 90, 400 and 900. It covers 1 to 3999, which is the
+    range the plain notation reaches without an overline.
+  faq:
+    - q: "Why does it stop at 3999?"
+      a: "Standard Roman notation has no zero and no way to write larger numbers without an overline or a different convention. 3999 is MMMCMXCIX, the largest value the plain form expresses."
+
+percentage-calculator:
+  about: >-
+    Work out percentages in the forms that actually come up: what X% of Y is,
+    what percentage X is of Y, and the increase or decrease between two values.
+  faq:
+    - q: "Why do a percentage rise and fall not cancel out?"
+      a: "Because they are relative to different bases. A 50% rise followed by a 50% fall leaves you at 75% of where you started, not back at the beginning."
+
+temperature-converter:
+  about: >-
+    Convert between Celsius, Fahrenheit and Kelvin, with the formulas shown so
+    you can check the arithmetic rather than trusting it.
+  faq:
+    - q: "Is there a temperature where Celsius and Fahrenheit agree?"
+      a: "Yes, at −40 degrees. It is the single point where the two scales cross."
+
+math-evaluator:
+  about: >-
+    Evaluate a mathematical expression with the usual operators, parentheses,
+    functions and constants, and assign variables to reuse an intermediate
+    result.
+  faq:
+    - q: "Is it safe to paste an expression in?"
+      a: "Yes. The expression is parsed and evaluated as arithmetic. It is not handed to eval, so it cannot run arbitrary code."
+
+docker-run-to-compose:
+  about: >-
+    Turn a docker run command into a docker-compose.yml service, mapping ports,
+    volumes, environment variables, restart policy and the command into their
+    Compose equivalents.
+  faq:
+    - q: "Does it understand every flag?"
+      a: "It covers the common ones — ports, volumes, environment, restart, network, command and entrypoint. Anything it does not recognise is reported rather than silently dropped."
+
+text-statistics:
+  about: >-
+    Count characters, words, sentences, paragraphs and lines, with and without
+    spaces, plus an estimated reading time. Useful for checking a draft against a
+    length limit.
+  faq:
+    - q: "How is the reading time worked out?"
+      a: "Words divided by a fixed reading speed. It is a rough figure — technical material with code reads considerably slower than prose."
+
+mime-types:
+  about: >-
+    Look up the MIME type for a file extension, or work backwards from a type to
+    the extensions it covers.
+  faq:
+    - q: "Why does one extension have two types?"
+      a: "Because of history. .js is text/javascript today, but application/javascript still appears in older configurations, and servers generally accept both."
+
+mac-address-lookup:
+  about: >-
+    Look up the vendor registered to a MAC address's OUI — its first three
+    octets — against the bundled IEEE registry.
+  faq:
+    - q: "Why does a lookup return nothing?"
+      a: "Virtual machines and randomised addresses do not come from a registered OUI. Most phones now randomise their MAC per network, so a vendor lookup is often meaningless on modern hardware."
+
+iban-validator:
+  about: >-
+    Validate an IBAN with the MOD-97 checksum, and read back the country, the
+    check digits and the domestic account part.
+  faq:
+    - q: "Does a valid IBAN mean the account exists?"
+      a: "No. The checksum only proves the string was not mistyped. It says nothing about whether the account is real or still open."
+
+phone-parser:
+  about: >-
+    Parse and format a phone number by country, showing the international and
+    national forms, the country calling code and whether the number is valid for
+    that region.
+  faq:
+    - q: "Why does a number I know is real show as invalid?"
+      a: "Validation checks the length and prefix rules for the selected region. A number can be genuinely in service and still fail those rules, for example if it was issued before a numbering plan change."
+
+case-converter:
+  about: >-
+    Switch text between camelCase, PascalCase, snake_case, kebab-case,
+    CONSTANT_CASE, Title Case and sentence case, with word boundaries inferred
+    from the separators and capitalisation already present.
+  faq:
+    - q: "How does it split words that are already joined together?"
+      a: "It splits on separators and on the case boundaries it can see, so getHTTPResponse becomes get, HTTP, Response. Where the input is ambiguous it can only ever be a guess."
+
+ascii-text-drawer:
+  about: >-
+    Render text as large ASCII-art banners using a bundled FIGlet-compatible
+    font, and copy the result as plain text. It is for README headers, code
+    comments and terminal output.
+  faq:
+    - q: "Will the banner line up everywhere?"
+      a: "Only in a monospaced font. In a proportional font the columns collapse, which is why the preview here is monospaced."

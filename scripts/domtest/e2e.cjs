@@ -422,6 +422,47 @@ const check = (label, actual, expected) => {
     check('wiring: feeds are excluded from prerendering', JSON.stringify(parsed).includes('/*.xml'), true);
   }
 
+  console.log('\n=== seo ===');
+  {
+    const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
+    const ld = (html) => JSON.parse(html.match(/<script type=application\/ld\+json>([\s\S]*?)<\/script>/)[1]);
+    const types = (html) => ld(html)['@graph'].map((n) => n['@type']);
+
+    const qr = read('tools/qr-code-generator/index.html');
+    const head = qr.slice(0, qr.indexOf('</head>'));
+    check('seo: canonical is the page url', /<link rel=canonical href=https:\/\/ilham\.dev\/tools\/qr-code-generator\/>/.test(head), true);
+    check('seo: robots asks for the full snippet', /name=robots content="index, follow, max-snippet:-1/.test(head), true);
+    check('seo: nothing is noindex', /noindex/i.test(qr), false);
+    check('seo: exactly one h1 on the page', (qr.match(/<h1[ >]/g) || []).length, 1);
+
+    check('seo: a tool is declared as a SoftwareApplication', types(qr).includes('SoftwareApplication'), true);
+    check('seo: a tool carries a breadcrumb trail', types(qr).includes('BreadcrumbList'), true);
+    check('seo: a tool with written questions gets an FAQPage', types(qr).includes('FAQPage'), true);
+    const app = ld(qr)['@graph'].find((n) => n['@type'] === 'SoftwareApplication');
+    check('seo: the tool is declared free to use', app.offers.price, '0');
+    check('seo: the breadcrumb points back at the catalog', ld(qr)['@graph'].find((n) => n['@type'] === 'BreadcrumbList').itemListElement[0].item, 'https://ilham.dev/tools/');
+
+    const bare = read('tools/benchmark-builder/index.html');
+    check('seo: a tool with no written questions has no FAQPage', types(bare).includes('FAQPage'), false);
+    check('seo: it is still a SoftwareApplication', types(bare).includes('SoftwareApplication'), true);
+
+    const catalog = read('tools/index.html');
+    check('seo: the catalog is a CollectionPage', types(catalog).includes('CollectionPage'), true);
+    const slugs = [...catalog.matchAll(/class=tool-card href=\/tools\/([^/]+)\//g)].map((m) => m[1]);
+    check('seo: the catalog links every tool', slugs.length, 90);
+
+    const sitemap = read('sitemap.xml');
+    const dated = new Set([...sitemap.matchAll(/<loc>https:\/\/ilham\.dev\/tools\/([^/]+)\/<\/loc><lastmod>/g)].map((m) => m[1]));
+    check('seo: every tool has a dated sitemap entry', slugs.filter((s) => !dated.has(s)), []);
+
+    const robots = read('robots.txt');
+    check('seo: robots.txt allows crawling', /^Allow: \/$/m.test(robots), true);
+    check('seo: robots.txt advertises the sitemap', robots.includes('Sitemap: https://ilham.dev/sitemap.xml'), true);
+
+    const prose = qr.replace(/<(script|style)\b[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    check('seo: a tool with a guide has real prose to read', prose.split(' ').length > 400, true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [
