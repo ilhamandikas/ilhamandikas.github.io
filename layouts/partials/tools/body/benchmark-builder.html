@@ -1,0 +1,14 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="bench-code">JavaScript to run</label>
+    <textarea id="bench-code" class="tool-input" rows="5" spellcheck="false">let sum = 0; for (let i = 0; i &lt; 1000; i++) sum += i;</textarea>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Iterations
+      <input type="number" id="bench-iter" class="tool-number" min="1" max="10000000" value="10000">
+    </label>
+    <button class="btn primary" type="button" id="bench-run">Run benchmark</button>
+    <span class="tool-status" id="bench-status"></span>
+  </div>
+  <dl id="bench-results" class="tool-results"></dl>
+</div>

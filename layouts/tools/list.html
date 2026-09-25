@@ -1,0 +1,41 @@
+{{ define "main" }}
+<section class="page tools-catalog-page">
+  <div class="container">
+    <div class="page-header">
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="updated">{{ . }}</p>{{ end }}
+    </div>
+
+    <div class="tools-search">
+      <label class="tools-search-field">
+        <span class="tools-search-icon" aria-hidden="true">&#9906;</span>
+        <input type="search" id="tools-search" placeholder="Search tools…" autocomplete="off" aria-label="Search tools">
+      </label>
+    </div>
+
+    <div id="tools-catalog">
+      {{- range site.Data.tools }}
+      <section class="tools-group" data-tools-group>
+        <h2 class="tools-group-title">{{ .name }}</h2>
+        <div class="tools-grid">
+          {{- range .tools }}
+          <a class="tool-card" href="{{ printf "/tools/%s/" .slug | relURL }}"
+             data-tool-card
+             data-search="{{ .name | lower }} {{ .desc | lower }} {{ delimit .keywords " " | lower }}">
+            <span class="tool-card-name">{{ .name }}{{ if ne .status "done" }} <span class="tool-soon">soon</span>{{ end }}</span>
+            <span class="tool-card-desc">{{ .desc }}</span>
+          </a>
+          {{- end }}
+        </div>
+      </section>
+      {{- end }}
+    </div>
+    <p class="subtitle" id="tools-empty" hidden>No tools match that search.</p>
+  </div>
+</section>
+{{ end }}
+
+{{ define "scripts" }}
+{{- $js := resources.Get "js/tools-catalog.js" | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
+{{ end }}

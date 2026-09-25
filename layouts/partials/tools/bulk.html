@@ -1,0 +1,13 @@
+{{- /* "Generate many values" panel. Params: id, label, rows, filename, controls. */ -}}
+<div class="tool-panel">
+  <div class="tool-row">{{ .controls | safeHTML }}</div>
+  <div class="tool-field">
+    <label for="{{ .id }}-output">{{ .label | default "Output" }}</label>
+    <textarea id="{{ .id }}-output" class="tool-input" rows="{{ .rows | default "12" }}" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#{{ .id }}-output" data-status="#{{ .id }}-status">Copy all</button>
+    <button class="btn" type="button" data-download="#{{ .id }}-output" data-filename="{{ .filename | default "output.txt" }}">Download</button>
+    <span class="tool-status" id="{{ .id }}-status"></span>
+  </div>
+</div>

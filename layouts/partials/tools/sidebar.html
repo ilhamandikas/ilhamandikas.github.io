@@ -1,0 +1,16 @@
+{{- $current := .current -}}
+<nav class="tool-nav" aria-label="Tools">
+  {{- range site.Data.tools }}
+  <div class="tool-nav-group">
+    <span class="tool-nav-title">{{ .name }}</span>
+    <ul>
+      {{- range .tools }}
+      <li>
+        <a href="{{ printf "/tools/%s/" .slug | relURL }}"
+           {{ if eq .slug $current }}class="active" aria-current="page"{{ end }}>{{ .name }}{{ if ne .status "done" }} <span class="tool-soon">soon</span>{{ end }}</a>
+      </li>
+      {{- end }}
+    </ul>
+  </div>
+  {{- end }}
+</nav>

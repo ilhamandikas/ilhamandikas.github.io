@@ -1,0 +1,28 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="atd-text">Text</label>
+    <input type="text" id="atd-text" class="tool-input" value="Hello" spellcheck="false">
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Font
+      <select id="atd-font" class="tool-select">
+        <option>Standard</option>
+        <option>Big</option>
+        <option>Slant</option>
+        <option>Small</option>
+        <option>Banner</option>
+      </select>
+    </label>
+    <label class="tool-inline">Width
+      <input type="number" id="atd-width" class="tool-number" min="20" max="200" value="80">
+    </label>
+  </div>
+  <div class="tool-field">
+    <label>Result</label>
+    <pre id="atd-output" class="tool-pre"></pre>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#atd-output" data-status="#atd-status">Copy</button>
+    <span class="tool-status" id="atd-status"></span>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+{{ partial "tools/bulk.html" (dict
+  "id" "mac"
+  "label" "MAC addresses"
+  "filename" "mac-addresses.txt"
+  "controls" `<label class="tool-inline">How many
+      <input type="number" id="mac-count" class="tool-number" min="1" max="500" value="5">
+    </label>
+    <label class="tool-inline">Prefix
+      <input type="text" id="mac-prefix" class="tool-text" placeholder="optional, e.g. 00:1A:2B">
+    </label>
+    <label class="tool-inline">Separator
+      <select id="mac-sep" class="tool-select">
+        <option value=":">:</option>
+        <option value="-">-</option>
+        <option value=".">.</option>
+      </select>
+    </label>
+    <label class="tool-check"><input type="checkbox" id="mac-upper"> Uppercase</label>
+    <button class="btn primary" type="button" id="mac-generate">Generate</button>`) }}

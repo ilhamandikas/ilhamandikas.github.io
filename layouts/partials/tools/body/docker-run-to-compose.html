@@ -1,0 +1,15 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="drc-input">docker run command</label>
+    <textarea id="drc-input" class="tool-input" rows="5" spellcheck="false">docker run -d --name web -p 8080:80 -v ./site:/usr/share/nginx/html -e TZ=UTC --restart unless-stopped nginx:alpine</textarea>
+  </div>
+  <div class="tool-field">
+    <label for="drc-output">docker-compose.yml</label>
+    <textarea id="drc-output" class="tool-input" rows="14" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#drc-output" data-status="#drc-status">Copy</button>
+    <button class="btn" type="button" data-download="#drc-output" data-filename="docker-compose.yml" data-mime="text/yaml">Download</button>
+    <span class="tool-status" id="drc-status"></span>
+  </div>
+</div>

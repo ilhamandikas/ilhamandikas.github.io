@@ -1,0 +1,15 @@
+{{ partial "tools/bulk.html" (dict
+  "id" "port"
+  "label" "Ports"
+  "filename" "ports.txt"
+  "controls" `<label class="tool-inline">How many
+      <input type="number" id="port-count" class="tool-number" min="1" max="1000" value="10">
+    </label>
+    <label class="tool-inline">Min
+      <input type="number" id="port-min" class="tool-number" min="0" max="65535" value="1024">
+    </label>
+    <label class="tool-inline">Max
+      <input type="number" id="port-max" class="tool-number" min="0" max="65535" value="65535">
+    </label>
+    <label class="tool-check"><input type="checkbox" id="port-unique" checked> Unique</label>
+    <button class="btn primary" type="button" id="port-generate">Generate</button>`) }}

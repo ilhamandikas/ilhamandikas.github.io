@@ -1,0 +1,12 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="pdf-file">Signed PDF</label>
+    <input type="file" id="pdf-file" class="tool-input" accept="application/pdf,.pdf">
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="pdf-check">Check signatures</button>
+    <span class="tool-status" id="pdf-status"></span>
+  </div>
+  <div id="pdf-results" class="tool-signatures"></div>
+  <p class="tool-hint">The file never leaves your browser. The check hashes the signed byte ranges and compares them with the digest sealed inside each signature.</p>
+</div>

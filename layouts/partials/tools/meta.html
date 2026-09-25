@@ -1,0 +1,9 @@
+{{- /* Look up a tool's metadata in data/tools.yaml by slug. */ -}}
+{{- $slug := . -}}
+{{- $found := dict -}}
+{{- range site.Data.tools -}}
+  {{- range .tools -}}
+    {{- if eq .slug $slug -}}{{- $found = . -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $found -}}

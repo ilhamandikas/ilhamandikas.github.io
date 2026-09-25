@@ -1,0 +1,25 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Amount
+      <input type="number" id="lorem-count" class="tool-number" min="1" max="100" value="3">
+    </label>
+    <label class="tool-inline">Unit
+      <select id="lorem-unit" class="tool-select">
+        <option value="paragraphs">Paragraphs</option>
+        <option value="sentences">Sentences</option>
+        <option value="words">Words</option>
+      </select>
+    </label>
+    <label class="tool-check"><input type="checkbox" id="lorem-classic" checked> Start with “Lorem ipsum…”</label>
+    <button class="btn primary" type="button" id="lorem-generate">Generate</button>
+  </div>
+  <div class="tool-field">
+    <label for="lorem-output">Output</label>
+    <textarea id="lorem-output" class="tool-input" rows="12" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#lorem-output" data-status="#lorem-status">Copy</button>
+    <button class="btn" type="button" data-download="#lorem-output" data-filename="lorem.txt">Download</button>
+    <span class="tool-status" id="lorem-status"></span>
+  </div>
+</div>

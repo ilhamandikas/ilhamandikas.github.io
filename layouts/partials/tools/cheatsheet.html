@@ -1,0 +1,9 @@
+{{- /* Generic searchable cheatsheet. Params: id, placeholder. */ -}}
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="{{ .id }}-search">Filter</label>
+    <input type="text" id="{{ .id }}-search" class="tool-input" placeholder="{{ .placeholder | default "Filter…" }}" spellcheck="false" autocomplete="off">
+  </div>
+  <div id="{{ .id }}-list" class="tool-cheat"></div>
+  <p class="tool-status" id="{{ .id }}-status"></p>
+</div>

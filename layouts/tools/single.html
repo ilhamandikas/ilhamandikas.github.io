@@ -1,0 +1,39 @@
+{{ define "main" }}
+{{- $slug := .File.ContentBaseName -}}
+{{- $meta := partial "tools/meta.html" $slug -}}
+<article class="page tool-page">
+  <div class="container tool-layout">
+    <aside class="tool-aside">
+      <input type="checkbox" id="tool-nav-toggle" class="nav-toggle" aria-label="Toggle tool list">
+      <label for="tool-nav-toggle" class="tool-nav-toggle-label">Browse all tools</label>
+      {{ partial "tools/sidebar.html" (dict "current" $slug) }}
+    </aside>
+
+    <div class="tool-main">
+      <div class="page-header tool-header">
+        <p class="tool-crumb"><a href="{{ "/tools/" | relURL }}">Tools</a></p>
+        <h1>{{ .Title }}</h1>
+        {{ with .Description }}<p class="updated">{{ . }}</p>{{ end }}
+      </div>
+      <div class="tool-body">
+        {{- if eq $meta.status "done" -}}
+          {{ partial (printf "tools/body/%s.html" $slug) . }}
+        {{- else -}}
+          <div class="tool-panel">
+            <p class="tool-hint">This tool is on the list but hasn't been built yet. The catalog and menu are ready — the implementation comes next.</p>
+          </div>
+        {{- end -}}
+      </div>
+    </div>
+  </div>
+</article>
+{{ end }}
+
+{{ define "scripts" }}
+{{- $toolkit := resources.Get "js/toolkit.js" | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $toolkit.RelPermalink }}" integrity="{{ $toolkit.Data.Integrity }}"></script>
+{{- with .Params.js }}
+{{- $js := resources.Get . | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
+{{- end }}
+{{ end }}

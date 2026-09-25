@@ -1,0 +1,30 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Mode
+      <select id="bc-mode" class="tool-select">
+        <option value="hash">Hash</option>
+        <option value="compare">Compare</option>
+      </select>
+    </label>
+    <label class="tool-inline">Cost
+      <input type="number" id="bc-rounds" class="tool-number" min="4" max="15" value="10">
+    </label>
+    <button class="btn primary" type="button" id="bc-run">Run</button>
+    <span class="tool-status" id="bc-status"></span>
+  </div>
+  <div class="tool-field">
+    <label for="bc-input">Text</label>
+    <textarea id="bc-input" class="tool-input" rows="3" spellcheck="false"></textarea>
+  </div>
+  <div class="tool-field">
+    <label for="bc-hash">Hash to compare</label>
+    <input type="text" id="bc-hash" class="tool-input" spellcheck="false" placeholder="$2a$10$…" autocomplete="off">
+  </div>
+  <div class="tool-field">
+    <label for="bc-output">Result</label>
+    <textarea id="bc-output" class="tool-input" rows="4" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#bc-output" data-status="#bc-status">Copy</button>
+  </div>
+</div>

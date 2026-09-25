@@ -1,0 +1,8 @@
+{{ partial "tools/bulk.html" (dict
+  "id" "ula"
+  "label" "ULA prefixes (/48)"
+  "filename" "ipv6-ula.txt"
+  "controls" `<label class="tool-inline">How many
+      <input type="number" id="ula-count" class="tool-number" min="1" max="100" value="5">
+    </label>
+    <button class="btn primary" type="button" id="ula-generate">Generate</button>`) }}

@@ -1,0 +1,15 @@
+{{ partial "tools/io.html" (dict
+  "id" "jcsv"
+  "inputLabel" "JSON array of objects"
+  "outputLabel" "CSV"
+  "rows" "8"
+  "filename" "data.csv"
+  "mime" "text/csv"
+  "inputPlaceholder" `[{ "name": "Ada", "role": "engineer" }]`
+  "controls" `<label class="tool-inline">Delimiter
+      <select id="jcsv-delim" class="tool-select">
+        <option value=",">Comma</option>
+        <option value=";">Semicolon</option>
+        <option value="&#9;">Tab</option>
+      </select>
+    </label>`) }}

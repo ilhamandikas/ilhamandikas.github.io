@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Width <input type="number" id="svg-w" class="tool-number" min="16" max="4000" value="600"></label>
+    <label class="tool-inline">Height <input type="number" id="svg-h" class="tool-number" min="16" max="4000" value="400"></label>
+    <label class="tool-inline">Background <input type="text" id="svg-bg" class="tool-text" value="#e2e8f0"></label>
+    <label class="tool-inline">Text colour <input type="text" id="svg-fg" class="tool-text" value="#64748b"></label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Text <input type="text" id="svg-text" class="tool-text" value="600 × 400"></label>
+  </div>
+  <div class="tool-field">
+    <label>Preview</label>
+    <div id="svg-preview" class="tool-preview"></div>
+  </div>
+  <div class="tool-field">
+    <label for="svg-output">SVG</label>
+    <textarea id="svg-output" class="tool-input" rows="6" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#svg-output" data-status="#svg-status">Copy</button>
+    <button class="btn" type="button" data-download="#svg-output" data-filename="placeholder.svg" data-mime="image/svg+xml">Download</button>
+    <span class="tool-status" id="svg-status"></span>
+  </div>
+</div>

@@ -70,6 +70,54 @@ SITE_DIR=/srv/www/ilham.dev SUDO=sudo OWNER=www-data:www-data ./deploy.sh
 CSS is minified and fingerprinted by Hugo (hashed filename), so caches are bypassed
 automatically on every build.
 
+## Tools (`/tools/`)
+
+A catalog of small browser-side utilities. Everything runs locally — no data is ever
+sent anywhere.
+
+The list of tools lives in `data/tools.yaml` (grouped by category). It is the single
+source of truth for the catalog page, the sidebar menu, search and the "soon" badges.
+
+```
+├── data/tools.yaml                     # catalog: slug, name, description, keywords, status
+├── content/tools/<slug>.md             # front matter only (title, description, js)
+├── layouts/tools/list.html             # catalog + search
+├── layouts/tools/single.html           # one tool page (sidebar + body partial)
+├── layouts/partials/tools/body/*.html  # the UI for each tool (one partial per tool)
+├── assets/js/toolkit.js                # shared helpers exposed as window.tk
+├── assets/js/tools/<slug>.js           # the logic for each tool
+└── assets/js/vendor/*.js               # pre-bundled third-party libraries (committed)
+```
+
+A tool is "done" once it has a body partial under
+`layouts/partials/tools/body/`. After adding or removing one, run:
+
+```bash
+python3 scripts/sync-tools.py     # flips `status` in data/tools.yaml, normalises front matter
+rm -rf public && hugo --gc --minify
+```
+
+Shared building blocks keep the per-tool code small:
+
+- `layouts/partials/tools/io.html` — the standard input → output panel
+- `layouts/partials/tools/bulk.html` — "generate many" panel
+- `layouts/partials/tools/cheatsheet.html` — searchable reference panel
+- `assets/js/toolkit.js` — `tk.transform()`, `tk.live()`, clipboard, downloads, Base64
+
+### Vendored libraries
+
+Most tools are written from scratch on top of browser APIs (WebCrypto, `DOMParser`,
+`MediaRecorder`, …). A few need a library, and those are bundled ahead of time:
+
+```bash
+npm install          # once
+npm run vendor       # rebuilds assets/js/vendor/*.js with esbuild
+```
+
+The generated bundles are **committed**, so the Hugo build and the CI workflow stay
+npm-free. Only the MIT-licensed sources in `package.json` are bundled; the tools,
+markup, styling and copy are original.
+
 ## Configuration notes
 
 - **Gravatar**: the profile picture is derived from `params.email` in `hugo.toml`

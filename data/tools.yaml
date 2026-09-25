@@ -1,0 +1,473 @@
+# Tool catalog — single source of truth for the /tools/ menu, catalog and search.
+# Fields: slug, name, desc, keywords, status (done | planned)
+# Grouped by our own taxonomy (not the upstream project's).
+
+- name: Encoding
+  slug: encoding
+  tools:
+    - slug: base64-string-converter
+      name: Base64 Text
+      desc: Encode and decode UTF-8 text to and from Base64, URL-safe optional.
+      keywords: [base64, encode, decode, text, string]
+      status: done
+    - slug: base64-file-converter
+      name: Base64 File
+      desc: Turn any file into a Base64 data string, or decode one back to a file.
+      keywords: [base64, file, encode, decode, data uri]
+      status: done
+    - slug: url-encoder
+      name: URL Encoder
+      desc: Percent-encode and decode URL components.
+      keywords: [url, uri, encode, decode, percent, escape]
+      status: done
+    - slug: html-entities
+      name: HTML Entities
+      desc: Escape and unescape HTML special characters.
+      keywords: [html, entities, escape, unescape, xss]
+      status: done
+    - slug: text-to-binary
+      name: Text to Binary
+      desc: Convert text to its binary representation and back.
+      keywords: [binary, bits, text, encode, decode]
+      status: done
+    - slug: text-to-unicode
+      name: Text to Unicode
+      desc: Show the Unicode code points of a string, and rebuild a string from them.
+      keywords: [unicode, codepoint, utf8, escape]
+      status: done
+    - slug: text-to-nato-alphabet
+      name: NATO Alphabet
+      desc: Spell out text using the NATO phonetic alphabet.
+      keywords: [nato, phonetic, alphabet, spell]
+      status: done
+    - slug: string-obfuscator
+      name: String Obfuscator
+      desc: Obfuscate part of a string while keeping it readable.
+      keywords: [obfuscate, mask, redact, string]
+      status: done
+    - slug: safelink-decoder
+      name: SafeLink Decoder
+      desc: Extract the real destination behind an Outlook SafeLink.
+      keywords: [safelink, outlook, decode, url]
+      status: done
+    - slug: basic-auth-generator
+      name: Basic Auth Header
+      desc: Build an HTTP Basic Authorization header from a user and password.
+      keywords: [basic auth, http, header, authorization, base64]
+      status: done
+
+- name: Formats
+  slug: formats
+  tools:
+    - slug: json-formatter
+      name: JSON Formatter
+      desc: Validate, pretty-print and minify JSON, with optional key sorting.
+      keywords: [json, format, pretty, minify, validate, beautify]
+      status: done
+    - slug: json-minifier
+      name: JSON Minifier
+      desc: Strip all whitespace from JSON to shrink it.
+      keywords: [json, minify, compress, compact]
+      status: done
+    - slug: json-to-yaml
+      name: JSON to YAML
+      desc: Convert JSON documents to YAML.
+      keywords: [json, yaml, convert]
+      status: done
+    - slug: yaml-to-json
+      name: YAML to JSON
+      desc: Convert YAML documents to JSON.
+      keywords: [yaml, json, convert]
+      status: done
+    - slug: yaml-to-toml
+      name: YAML to TOML
+      desc: Convert YAML documents to TOML.
+      keywords: [yaml, toml, convert]
+      status: done
+    - slug: toml-to-yaml
+      name: TOML to YAML
+      desc: Convert TOML documents to YAML.
+      keywords: [toml, yaml, convert]
+      status: done
+    - slug: json-to-toml
+      name: JSON to TOML
+      desc: Convert JSON documents to TOML.
+      keywords: [json, toml, convert]
+      status: done
+    - slug: toml-to-json
+      name: TOML to JSON
+      desc: Convert TOML documents to JSON.
+      keywords: [toml, json, convert]
+      status: done
+    - slug: xml-formatter
+      name: XML Formatter
+      desc: Pretty-print and minify XML.
+      keywords: [xml, format, pretty, minify]
+      status: done
+    - slug: xml-to-json
+      name: XML to JSON
+      desc: Convert XML documents to JSON.
+      keywords: [xml, json, convert]
+      status: done
+    - slug: json-to-xml
+      name: JSON to XML
+      desc: Convert JSON documents to XML.
+      keywords: [json, xml, convert]
+      status: done
+    - slug: json-to-csv
+      name: JSON to CSV
+      desc: Flatten a JSON array of objects into CSV.
+      keywords: [json, csv, convert, export]
+      status: done
+    - slug: sql-prettify
+      name: SQL Prettify
+      desc: Reformat SQL queries so they are readable.
+      keywords: [sql, format, pretty, query]
+      status: done
+    - slug: markdown-to-html
+      name: Markdown to HTML
+      desc: Render Markdown to HTML in the browser.
+      keywords: [markdown, html, render, convert]
+      status: done
+    - slug: yaml-viewer
+      name: YAML Viewer
+      desc: Validate and explore a YAML document.
+      keywords: [yaml, viewer, validate, tree]
+      status: done
+    - slug: list-converter
+      name: List Converter
+      desc: Convert between line lists, CSV, JSON arrays and other list formats.
+      keywords: [list, csv, json, lines, convert]
+      status: done
+
+- name: Crypto
+  slug: crypto
+  tools:
+    - slug: hash-text
+      name: Hash Text
+      desc: Compute MD5, SHA-1, SHA-256 and SHA-512 digests of text.
+      keywords: [hash, md5, sha1, sha256, sha512, digest, checksum]
+      status: done
+    - slug: hmac-generator
+      name: HMAC Generator
+      desc: Compute keyed HMAC signatures with a choice of digest.
+      keywords: [hmac, signature, key, sha256, mac]
+      status: done
+    - slug: uuid-generator
+      name: UUID Generator
+      desc: Generate v4 UUIDs, single or in bulk.
+      keywords: [uuid, guid, v4, random, id]
+      status: done
+    - slug: ulid-generator
+      name: ULID Generator
+      desc: Generate sortable ULIDs, single or in bulk.
+      keywords: [ulid, id, sortable, random]
+      status: done
+    - slug: token-generator
+      name: Token Generator
+      desc: Generate random tokens and passwords of a chosen length and charset.
+      keywords: [token, random, password, secret, string]
+      status: done
+    - slug: bcrypt
+      name: bcrypt
+      desc: Hash a password with bcrypt, or verify one against a hash.
+      keywords: [bcrypt, password, hash, verify, salt]
+      status: done
+    - slug: aes-encryption
+      name: AES Encryption
+      desc: Encrypt and decrypt text with AES.
+      keywords: [aes, encrypt, decrypt, cipher, crypto]
+      status: done
+    - slug: rsa-key-pair
+      name: RSA Key Pair
+      desc: Generate an RSA public and private key pair in the browser.
+      keywords: [rsa, keypair, public, private, pem, crypto]
+      status: done
+    - slug: bip39
+      name: BIP39 Mnemonic
+      desc: Generate a BIP39 mnemonic phrase and derive its seed.
+      keywords: [bip39, mnemonic, seed, wallet, crypto]
+      status: done
+    - slug: password-strength
+      name: Password Strength
+      desc: Estimate how long a password would take to crack.
+      keywords: [password, strength, entropy, crack, security]
+      status: done
+    - slug: pdf-signature-checker
+      name: PDF Signature Checker
+      desc: Inspect the digital signatures embedded in a PDF.
+      keywords: [pdf, signature, certificate, verify]
+      status: done
+
+- name: Network
+  slug: network
+  tools:
+    - slug: ipv4-subnet-calculator
+      name: IPv4 Subnet Calculator
+      desc: Work out the network, broadcast, mask and host range for a CIDR block.
+      keywords: [ipv4, subnet, cidr, netmask, network, broadcast]
+      status: done
+    - slug: ipv4-address-converter
+      name: IPv4 Address Converter
+      desc: Convert between dotted, decimal, hex and binary IPv4 forms.
+      keywords: [ipv4, ip, decimal, hex, binary, convert]
+      status: done
+    - slug: ipv4-range-expander
+      name: IPv4 Range Expander
+      desc: Expand an IP range into the CIDR blocks that cover it.
+      keywords: [ipv4, range, cidr, expand]
+      status: done
+    - slug: ipv6-ula-generator
+      name: IPv6 ULA Generator
+      desc: Generate a random IPv6 unique local address prefix.
+      keywords: [ipv6, ula, local, prefix, random]
+      status: done
+    - slug: mac-address-lookup
+      name: MAC Address Lookup
+      desc: Look up the vendor behind a MAC address OUI.
+      keywords: [mac, oui, vendor, lookup, network]
+      status: done
+    - slug: mac-address-generator
+      name: MAC Address Generator
+      desc: Generate random MAC addresses, with optional prefix.
+      keywords: [mac, address, random, generate, network]
+      status: done
+    - slug: random-port-generator
+      name: Random Port Generator
+      desc: Pick one or more unused-looking port numbers.
+      keywords: [port, random, network, tcp, udp]
+      status: done
+
+- name: Web
+  slug: web
+  tools:
+    - slug: jwt-parser
+      name: JWT Parser
+      desc: Decode and inspect the header, payload and claims of a JSON Web Token.
+      keywords: [jwt, token, decode, claims, auth]
+      status: done
+    - slug: url-parser
+      name: URL Parser
+      desc: Break a URL into its parts and query parameters.
+      keywords: [url, parse, query, parameters, uri]
+      status: done
+    - slug: user-agent-parser
+      name: User Agent Parser
+      desc: Read the browser, engine, OS and device from a user-agent string.
+      keywords: [user agent, browser, os, device, parse]
+      status: done
+    - slug: mime-types
+      name: MIME Types
+      desc: Look up the MIME type for a file extension.
+      keywords: [mime, content type, extension, file]
+      status: done
+    - slug: http-status-codes
+      name: HTTP Status Codes
+      desc: Reference list of HTTP response status codes and their meaning.
+      keywords: [http, status, code, response, reference]
+      status: done
+    - slug: meta-tag-generator
+      name: Meta Tag Generator
+      desc: Generate HTML meta tags for a page.
+      keywords: [meta, tag, seo, open graph, html]
+      status: done
+    - slug: keycode-info
+      name: Keycode Info
+      desc: Press a key to see its code, key and modifier state.
+      keywords: [keycode, key, keyboard, event, code]
+      status: done
+    - slug: slugify
+      name: Slugify
+      desc: Turn any text into a clean URL slug.
+      keywords: [slug, url, seo, kebab, case]
+      status: done
+    - slug: otp-generator
+      name: OTP Generator
+      desc: Generate and verify time-based one-time passwords.
+      keywords: [otp, totp, 2fa, authenticator, code]
+      status: done
+    - slug: device-information
+      name: Device Information
+      desc: Show what the browser reports about the current device.
+      keywords: [device, browser, screen, platform, info]
+      status: done
+    - slug: qr-code-generator
+      name: QR Code Generator
+      desc: Generate a QR code from text or a URL.
+      keywords: [qr, code, barcode, generate]
+      status: done
+    - slug: wifi-qr-generator
+      name: Wi-Fi QR Code
+      desc: Build a QR code that joins a Wi-Fi network.
+      keywords: [wifi, qr, network, ssid, password]
+      status: done
+    - slug: svg-placeholder
+      name: SVG Placeholder
+      desc: Create a placeholder image as an SVG.
+      keywords: [svg, placeholder, image, mockup]
+      status: done
+    - slug: camera-recorder
+      name: Camera Recorder
+      desc: Record a short video from the webcam in the browser.
+      keywords: [camera, recorder, webcam, video, mediarecorder]
+      status: done
+    - slug: html-wysiwyg-editor
+      name: HTML Editor
+      desc: A small rich-text editor that exports clean HTML.
+      keywords: [html, editor, wysiwyg, rich text]
+      status: done
+
+- name: Workflow
+  slug: workflow
+  tools:
+    - slug: crontab-generator
+      name: Crontab Generator
+      desc: Build a cron expression and read it back in plain language.
+      keywords: [cron, crontab, schedule, expression]
+      status: done
+    - slug: chmod-calculator
+      name: chmod Calculator
+      desc: Convert between octal and symbolic Unix file permissions.
+      keywords: [chmod, permissions, unix, octal, symbolic]
+      status: done
+    - slug: docker-run-to-compose
+      name: Docker Run to Compose
+      desc: Turn a docker run command into a docker-compose service.
+      keywords: [docker, compose, run, convert, yaml]
+      status: done
+    - slug: git-cheatsheet
+      name: Git Cheatsheet
+      desc: A quick reference of the Git commands I keep forgetting.
+      keywords: [git, cheatsheet, reference, commands]
+      status: done
+    - slug: regex-tester
+      name: Regex Tester
+      desc: Test a regular expression against sample text with live matches.
+      keywords: [regex, regexp, test, match, pattern]
+      status: done
+    - slug: regex-cheatsheet
+      name: Regex Cheatsheet
+      desc: A quick reference of regular-expression syntax.
+      keywords: [regex, cheatsheet, reference, syntax]
+      status: done
+    - slug: json-diff
+      name: JSON Diff
+      desc: Compare two JSON documents and highlight the differences.
+      keywords: [json, diff, compare, difference]
+      status: done
+    - slug: text-diff
+      name: Text Diff
+      desc: Compare two blocks of text line by line.
+      keywords: [text, diff, compare, difference]
+      status: done
+    - slug: timestamp-converter
+      name: Timestamp Converter
+      desc: Convert between Unix timestamps, ISO strings and local time.
+      keywords: [timestamp, unix, epoch, date, time, iso]
+      status: done
+
+- name: Text
+  slug: text
+  tools:
+    - slug: lorem-ipsum
+      name: Lorem Ipsum
+      desc: Generate placeholder paragraphs, sentences or words.
+      keywords: [lorem, ipsum, placeholder, dummy, text]
+      status: done
+    - slug: text-statistics
+      name: Text Statistics
+      desc: Count characters, words, sentences, lines and reading time.
+      keywords: [text, statistics, count, words, characters]
+      status: done
+    - slug: emoji-picker
+      name: Emoji Picker
+      desc: Search emoji by name and copy them.
+      keywords: [emoji, search, picker, unicode]
+      status: done
+    - slug: numeronym
+      name: Numeronym
+      desc: Turn long words into numeronyms like i18n.
+      keywords: [numeronym, abbreviation, i18n, word]
+      status: done
+    - slug: ascii-text-drawer
+      name: ASCII Text
+      desc: Render text as large ASCII-art banners.
+      keywords: [ascii, art, banner, figlet, text]
+      status: done
+    - slug: case-converter
+      name: Case Converter
+      desc: Switch text between camelCase, snake_case, kebab-case and more.
+      keywords: [case, camel, snake, kebab, pascal, convert]
+      status: done
+
+- name: Convert
+  slug: convert
+  tools:
+    - slug: base-converter
+      name: Number Base Converter
+      desc: Convert integers between binary, octal, decimal and hex.
+      keywords: [base, binary, octal, decimal, hex, convert]
+      status: done
+    - slug: roman-numeral
+      name: Roman Numerals
+      desc: Convert between Roman numerals and decimal numbers.
+      keywords: [roman, numeral, convert, number]
+      status: done
+    - slug: temperature-converter
+      name: Temperature Converter
+      desc: Convert between Celsius, Fahrenheit and Kelvin.
+      keywords: [temperature, celsius, fahrenheit, kelvin, convert]
+      status: done
+    - slug: color-converter
+      name: Color Converter
+      desc: Convert colors between HEX, RGB, HSL and more.
+      keywords: [color, hex, rgb, hsl, convert]
+      status: done
+
+- name: Math
+  slug: math
+  tools:
+    - slug: math-evaluator
+      name: Math Evaluator
+      desc: Evaluate a mathematical expression, with variables and functions.
+      keywords: [math, evaluate, expression, calculator]
+      status: done
+    - slug: eta-calculator
+      name: ETA Calculator
+      desc: Estimate a finish time from progress, elapsed time and remaining work.
+      keywords: [eta, estimate, progress, time]
+      status: done
+    - slug: percentage-calculator
+      name: Percentage Calculator
+      desc: Work out percentages, increases and decreases.
+      keywords: [percentage, percent, increase, decrease, calculator]
+      status: done
+    - slug: chronometer
+      name: Chronometer
+      desc: A simple stopwatch with laps.
+      keywords: [stopwatch, timer, chronometer, laps]
+      status: done
+    - slug: benchmark-builder
+      name: Benchmark Builder
+      desc: Compare a set of measured values and their ratios.
+      keywords: [benchmark, compare, ratio, performance]
+      status: done
+
+- name: Data
+  slug: data
+  tools:
+    - slug: email-normalizer
+      name: Email Normalizer
+      desc: Normalize email addresses to a canonical form.
+      keywords: [email, normalize, canonical, address]
+      status: done
+    - slug: phone-parser
+      name: Phone Parser
+      desc: Parse and format phone numbers by country.
+      keywords: [phone, number, format, country, parse]
+      status: done
+    - slug: iban-validator
+      name: IBAN Validator
+      desc: Validate an IBAN and read its country and check digits.
+      keywords: [iban, validate, bank, account]
+      status: done

@@ -1,0 +1,9 @@
+{{ partial "tools/io.html" (dict
+  "id" "jmin"
+  "inputLabel" "JSON"
+  "outputLabel" "Minified JSON"
+  "rows" "8"
+  "filename" "minified.json"
+  "mime" "application/json"
+  "inputPlaceholder" `{ "hello": "world" }`
+  "controls" `<span class="tool-hint">Removes all insignificant whitespace. Invalid JSON is reported below.</span>`) }}

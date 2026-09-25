@@ -1,0 +1,13 @@
+{{ partial "tools/io.html" (dict
+  "id" "nato"
+  "inputLabel" "Text or NATO words"
+  "outputLabel" "Result"
+  "rows" "6"
+  "filename" "nato.txt"
+  "inputPlaceholder" "SOS   ·or·   Sierra Oscar Sierra"
+  "controls" `<label class="tool-inline">Direction
+      <select id="nato-dir" class="tool-select">
+        <option value="encode">Text → NATO</option>
+        <option value="decode">NATO → text</option>
+      </select>
+    </label>`) }}

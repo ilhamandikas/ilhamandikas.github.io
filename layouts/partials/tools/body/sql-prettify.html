@@ -1,0 +1,8 @@
+{{ partial "tools/io.html" (dict
+  "id" "sql"
+  "inputLabel" "SQL"
+  "outputLabel" "Formatted SQL"
+  "rows" "10"
+  "filename" "query.sql"
+  "inputPlaceholder" "select id, name from users where active = 1 order by name"
+  "controls" `<span class="tool-hint">Uppercases keywords and breaks major clauses onto their own lines.</span>`) }}

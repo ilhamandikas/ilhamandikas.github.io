@@ -1,0 +1,15 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Username <input type="text" id="ba-user" class="tool-text" value="user"></label>
+    <label class="tool-inline">Password <input type="text" id="ba-pass" class="tool-text" value="pass"></label>
+  </div>
+  <div class="tool-field">
+    <label for="ba-output">Authorization header</label>
+    <textarea id="ba-output" class="tool-input" rows="3" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#ba-output" data-status="#ba-status">Copy</button>
+    <button class="btn" type="button" data-copy-text="Basic " data-status="#ba-status">Copy prefix</button>
+    <span class="tool-status" id="ba-status"></span>
+  </div>
+</div>

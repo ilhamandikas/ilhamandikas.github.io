@@ -1,0 +1,18 @@
+{{ partial "tools/io.html" (dict
+  "id" "list"
+  "inputLabel" "List — one item per line"
+  "outputLabel" "Converted"
+  "rows" "10"
+  "filename" "list.txt"
+  "controls" `<label class="tool-inline">Format
+  <select id="list-format" class="tool-select">
+    <option value="json">JSON array</option>
+    <option value="csv">CSV</option>
+    <option value="quoted">Quoted, comma-separated</option>
+    <option value="lines">Plain lines</option>
+    <option value="numbered">Numbered lines</option>
+    <option value="sql">SQL IN (…)</option>
+  </select>
+</label>
+<label class="tool-check"><input type="checkbox" id="list-trim" checked> Trim items</label>
+<label class="tool-check"><input type="checkbox" id="list-dropempty" checked> Drop empty</label>`) }}

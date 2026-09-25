@@ -1,0 +1,15 @@
+{{ partial "tools/bulk.html" (dict
+  "id" "token"
+  "label" "Tokens"
+  "filename" "tokens.txt"
+  "controls" `<label class="tool-inline">How many
+      <input type="number" id="token-count" class="tool-number" min="1" max="500" value="5">
+    </label>
+    <label class="tool-inline">Length
+      <input type="number" id="token-length" class="tool-number" min="4" max="256" value="32">
+    </label>
+    <label class="tool-check"><input type="checkbox" id="token-lower" checked> a-z</label>
+    <label class="tool-check"><input type="checkbox" id="token-upper" checked> A-Z</label>
+    <label class="tool-check"><input type="checkbox" id="token-digits" checked> 0-9</label>
+    <label class="tool-check"><input type="checkbox" id="token-symbols"> symbols</label>
+    <button class="btn primary" type="button" id="token-generate">Generate</button>`) }}

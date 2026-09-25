@@ -1,0 +1,36 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Network name (SSID)
+      <input type="text" id="wqr-ssid" class="tool-text" value="MyNetwork">
+    </label>
+    <label class="tool-inline">Password
+      <input type="text" id="wqr-pass" class="tool-text" value="">
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Security
+      <select id="wqr-type" class="tool-select">
+        <option value="WPA">WPA / WPA2 / WPA3</option>
+        <option value="WEP">WEP</option>
+        <option value="nopass">Open (no password)</option>
+      </select>
+    </label>
+    <label class="tool-inline"><input type="checkbox" id="wqr-hidden" class="tool-check"> Hidden network</label>
+    <label class="tool-inline">Size
+      <input type="number" id="wqr-size" class="tool-number" min="128" max="1024" value="320">
+    </label>
+  </div>
+  <div class="tool-field">
+    <label>Preview</label>
+    <div id="wqr-preview" class="tool-preview"></div>
+  </div>
+  <div class="tool-field">
+    <label for="wqr-payload">Payload</label>
+    <input type="text" id="wqr-payload" class="tool-input" readonly spellcheck="false">
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="wqr-png">Download PNG</button>
+    <button class="btn" type="button" id="wqr-svg">Download SVG</button>
+    <span class="tool-status" id="wqr-status"></span>
+  </div>
+</div>

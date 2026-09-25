@@ -1,0 +1,23 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="bc-input">Value</label>
+    <textarea id="bc-input" class="tool-input" rows="3" spellcheck="false" placeholder="255   ·or·   0xff   ·or·   11111111"></textarea>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">From base
+      <input type="number" id="bc-from" class="tool-number" min="2" max="36" value="10">
+    </label>
+    <label class="tool-inline">To base
+      <input type="number" id="bc-to" class="tool-number" min="2" max="36" value="2">
+    </label>
+    <button class="btn" type="button" id="bc-swap">Swap</button>
+  </div>
+  <div class="tool-field">
+    <label for="bc-output">Result</label>
+    <textarea id="bc-output" class="tool-input" rows="3" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#bc-output" data-status="#bc-status">Copy</button>
+    <span class="tool-status" id="bc-status"></span>
+  </div>
+</div>

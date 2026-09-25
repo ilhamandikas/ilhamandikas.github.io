@@ -51,6 +51,6 @@
 
   {{ partial "schema.html" . }}
 
-  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") | resources.Concat "css/bundle.css" | minify | fingerprint }}
+  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") (resources.Get "css/tools.css") | resources.Concat "css/bundle.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 </head>
