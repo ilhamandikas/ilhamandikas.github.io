@@ -261,25 +261,28 @@
 .tool-crumb { margin: 0 0 8px; font-size: 13.5px; font-family: var(--mono); }
 .tool-crumb a { color: var(--muted); }
 .tool-crumb a:hover { color: var(--accent); }
-.tool-body { max-width: 780px; }
+.tool-body { max-width: 840px; }
 
 /* ---------- tool UI kit ---------- */
 
 .tool-panel {
-  padding: 22px;
+  padding: 24px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
 }
-.tool-panel + .tool-panel { margin-top: 18px; }
+.tool-panel + .tool-panel { margin-top: 20px; }
 .tool-panel > h2,
 .tool-panel > h3 {
-  margin: 0 0 16px;
-  font-size: 1.02rem;
+  margin: 0 0 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 1.03rem;
+  line-height: 1.25;
   letter-spacing: -0.01em;
 }
 
-.tool-field { display: block; margin-bottom: 16px; }
+.tool-field { display: block; min-width: 0; margin-bottom: 16px; }
 .tool-field:last-child { margin-bottom: 0; }
 .tool-field > label,
 .tool-field > span:first-child,
@@ -308,13 +311,22 @@
 .tool-input:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .tool-input[readonly] { background: var(--bg-soft); }
 textarea.tool-input { min-height: 96px; }
+.tool-field code,
+.tool-hint code {
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg-soft);
+  font-family: var(--mono);
+  font-size: 0.92em;
+}
 
 .tool-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin: 14px 0;
+  margin: 16px 0;
 }
 .tool-row:first-child { margin-top: 0; }
 .tool-row:last-child { margin-bottom: 0; }
@@ -323,15 +335,17 @@ textarea.tool-input { min-height: 96px; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
   font-size: 14.5px;
   color: var(--muted);
 }
 .tool-check { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; }
-.tool-check input { accent-color: var(--accent); }
-.tool-range { width: 140px; accent-color: var(--accent); }
+.tool-check input { flex: none; accent-color: var(--accent); }
+.tool-range { width: 160px; max-width: 100%; accent-color: var(--accent); }
 
 .tool-number,
 .tool-select {
+  min-height: 40px;
   padding: 8px 10px;
   border: 1px solid var(--border-strong);
   border-radius: 8px;
@@ -340,7 +354,21 @@ textarea.tool-input { min-height: 96px; }
   font: inherit;
   font-size: 14px;
 }
-.tool-number { width: 84px; }
+.tool-select {
+  appearance: none;
+  padding-right: 34px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 17px, calc(100% - 13px) 17px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.tool-number { width: 96px; }
+.tool-affix {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
 
 /* Single button that cycles the key sort: off -> ↑ -> ↓. The box is a fixed
    size in both axes and the weight never changes, so swapping the label cannot
@@ -610,15 +638,19 @@ textarea.tool-input { min-height: 96px; }
 #tool-history-clear:hover { border-color: var(--accent); background: var(--surface); color: var(--accent); }
 
 .tool-text {
-  padding: 8px 10px;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 9px 11px;
   border: 1px solid var(--border-strong);
   border-radius: 8px;
   background: var(--surface);
   color: var(--text);
   font-family: var(--mono);
   font-size: 13.5px;
-  min-width: 150px;
+  line-height: 1.55;
 }
+textarea.tool-text { resize: vertical; }
 .tool-field > .tool-text,
 .tool-field > .tool-select { width: 100%; }
 .tool-text:focus { outline: 0; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
@@ -772,9 +804,31 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 
 .tool-muted { color: var(--muted); }
 
-/* A request URL wants every pixel the row has left. */
-.hrt-url { flex: 1 1 260px; }
-.hrt-url .tool-text { width: 100%; }
+/* HTTP request tester */
+.hrt-request-grid {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+}
+.hrt-request-grid .tool-field,
+.hrt-options-grid .tool-field { margin: 0; }
+.hrt-send-actions { display: flex; gap: 8px; align-items: center; }
+.hrt-options-grid {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(150px, 0.8fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin: 16px 0;
+}
+.hrt-check-card {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+}
+.hrt-url { min-width: 0; }
 
 /* Config output reads as code: monospace, and it scrolls in both directions rather
    than hiding the right-hand end of a long line. */
@@ -1109,6 +1163,9 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   .tool-history-preview { white-space: normal; }
   .qre-settings-grid { grid-template-columns: minmax(0, 1fr); }
   .random-stage { grid-template-columns: minmax(0, 1fr); }
+  .hrt-request-grid,
+  .hrt-options-grid,
   .ws-connection-grid { grid-template-columns: minmax(0, 1fr); }
+  .hrt-send-actions { align-items: stretch; }
   .ngx-form-grid { grid-template-columns: minmax(0, 1fr); }
 }

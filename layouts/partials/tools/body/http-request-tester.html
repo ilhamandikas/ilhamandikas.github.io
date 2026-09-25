@@ -1,7 +1,8 @@
 <div class="tool-panel">
   <h2>Request</h2>
-  <div class="tool-row">
-    <label class="tool-inline">Method
+  <div class="hrt-request-grid">
+    <label class="tool-field">
+      <span>Method</span>
       <select id="hrt-method" class="tool-select">
         <option>GET</option>
         <option>POST</option>
@@ -12,17 +13,21 @@
         <option>OPTIONS</option>
       </select>
     </label>
-    <label class="tool-inline hrt-url">URL
+    <label class="tool-field hrt-url">
+      <span>URL</span>
       <input type="text" id="hrt-url" class="tool-text" placeholder="https://api.example.com/v1/things"
              spellcheck="false" autocomplete="off" autocapitalize="off">
     </label>
-    <button class="btn primary" type="button" id="hrt-send">Send</button>
-    <button class="btn" type="button" id="hrt-cancel" hidden>Cancel</button>
-    <span class="tool-status" id="hrt-status"></span>
+    <div class="hrt-send-actions">
+      <button class="btn primary" type="button" id="hrt-send">Send</button>
+      <button class="btn" type="button" id="hrt-cancel" hidden>Cancel</button>
+    </div>
   </div>
+  <p class="tool-status" id="hrt-status"></p>
 
-  <div class="tool-row">
-    <label class="tool-inline">Body
+  <div class="hrt-options-grid">
+    <label class="tool-field">
+      <span>Body</span>
       <select id="hrt-body-type" class="tool-select">
         <option value="none">No body</option>
         <option value="json">JSON</option>
@@ -30,10 +35,11 @@
         <option value="text">Plain text</option>
       </select>
     </label>
-    <label class="tool-inline">Time out after
-      <input type="number" id="hrt-timeout" class="tool-number" min="500" max="120000" step="500" value="15000">ms
+    <label class="tool-field">
+      <span>Timeout</span>
+      <span class="tool-affix"><input type="number" id="hrt-timeout" class="tool-number" min="500" max="120000" step="500" value="15000"> ms</span>
     </label>
-    <label class="tool-check">
+    <label class="tool-check hrt-check-card">
       <input type="checkbox" id="hrt-credentials"> Send cookies
     </label>
   </div>

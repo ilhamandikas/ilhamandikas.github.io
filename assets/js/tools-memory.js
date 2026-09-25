@@ -109,6 +109,14 @@ function restore() {
   return data ? apply(data) : 0;
 }
 
+function focusRestoredField(data) {
+  const first = fields().find((el) => el.id in data);
+  if (!first) return;
+  first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (typeof first.focus === 'function') first.focus({ preventScroll: true });
+  if ((first.tagName === 'TEXTAREA' || first.tagName === 'INPUT') && typeof first.select === 'function') first.select();
+}
+
 function clearFields() {
   for (const el of fields()) {
     if (el.tagName === 'SELECT') {
@@ -282,6 +290,7 @@ if (bar && slug) {
     put.textContent = 'Restore';
     put.addEventListener('click', () => {
       const count = apply(entry.data);
+      focusRestoredField(entry.data);
       note.textContent = `Put ${count} field${count === 1 ? '' : 's'} from that entry back into the form.`;
     });
 
