@@ -298,6 +298,12 @@ textarea.tool-input { min-height: 96px; }
 .tree-type { color: var(--muted); }
 .tree-leaf { padding: 1px 0; }
 
+.tool-ip-json { display: none; }
+.ip-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.ip-flag { font-size: 34px; line-height: 1; }
+.ip-ip { font-family: var(--mono); font-size: 1.35rem; font-weight: 600; overflow-wrap: anywhere; }
+.ip-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
 .tool-status { font-size: 13.5px; font-family: var(--mono); color: var(--muted); }
 .tool-status.ok { color: #15803d; }
 .tool-status.err { color: #b91c1c; }

@@ -202,6 +202,11 @@
 - name: Network
   slug: network
   tools:
+    - slug: ip-lookup
+      name: IP & Geolocation Lookup
+      desc: Show your public IP (or any address) with its country, city, coordinates and ISP.
+      keywords: [ip, geolocation, geo, my ip, public ip, location, isp, asn, country, city, map]
+      status: done
     - slug: ipv4-subnet-calculator
       name: IPv4 Subnet Calculator
       desc: Work out the network, broadcast, mask and host range for a CIDR block.

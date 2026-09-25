@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">IP address
+      <input type="text" id="ip-input" class="tool-text" placeholder="Leave empty to detect your own IP" spellcheck="false" autocomplete="off" autocapitalize="off">
+    </label>
+    <button class="btn primary" type="button" id="ip-lookup-btn">Look up</button>
+    <span class="tool-status" id="ip-status"></span>
+  </div>
+
+  <p class="tool-hint">
+    This is the only tool on this site that talks to the internet. The address is sent to a
+    public geolocation service — <strong>ipwho.is</strong>, falling back to
+    <strong>freeipapi.com</strong> — both free and used without an API key. Nothing else
+    leaves your browser.
+  </p>
+
+  <div id="ip-result"></div>
+  <textarea id="ip-json" class="tool-ip-json" readonly aria-hidden="true" tabindex="-1"></textarea>
+</div>
