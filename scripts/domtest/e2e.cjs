@@ -454,8 +454,27 @@ const check = (label, actual, expected) => {
     check('search: keywords are searched too ("jwt verify")', top('jwt verify'), 'JWT Parser');
     check('search: keywords are searched too ("hs256")', top('hs256'), 'JWT Parser');
 
-    // Nonsense has to keep finding nothing, or fuzzy is just a random generator.
-    for (const nonsense of ['asdfgh', 'xyz', 'qqq', 'nonsense', 'kubernetes']) {
+    // Typed the way people actually type: run together, abbreviated, inflected,
+    // and with "2" for "to".
+    check('search: "qt generater" finds the QR tool', top('qt generater'), 'QR Code Generator');
+    check('search: "qrcode" finds the QR tool', top('qrcode'), 'QR Code Generator');
+    check('search: "qrgenerator" finds the QR tool', top('qrgenerator'), 'QR Code Generator');
+    check('search: "jsonformatter" finds the formatter', top('jsonformatter'), 'JSON Formatter');
+    check('search: "json 2 yaml" finds the converter', top('json 2 yaml'), 'JSON to YAML');
+    check('search: "md 2 html" finds the markdown tool', top('md 2 html'), 'Markdown to HTML');
+    check('search: "screen sz" finds device information', top('screen sz'), 'Device Information');
+    check('search: "pwd gen" finds a generator', top('pwd gen'), 'Token Generator');
+    check('search: "html entity" finds the entities tool', top('html entity'), 'HTML Entities');
+    check('search: "status code" finds the status codes', top('status code'), 'HTTP Status Codes');
+    check('search: "mime type" finds the MIME types', top('mime type'), 'MIME Types');
+    // The shorthand map must not touch a token that only looks like one.
+    check('search: "sha 256" is not read as "sha to56"', top('sha 256'), 'Hash Text');
+    check('search: "ip 4" is not read as "ip for"', top('ip 4'), 'IPv4 Subnet Calculator');
+
+    // Nonsense, and real terms the catalog has no tool for, have to keep finding
+    // nothing, or fuzzy matching is just a random generator. "imei" is the
+    // interesting one: it sits inside "date time iso" once the spaces go.
+    for (const nonsense of ['asdfgh', 'xyz', 'qqq', 'nonsense', 'kubernetes', 'imei', 'utm']) {
       check(`search: "${nonsense}" finds nothing`, rank(nonsense).length, 0);
     }
     check('search: the empty state is shown when nothing matches', empty.hidden, false);
@@ -463,6 +482,8 @@ const check = (label, actual, expected) => {
     // The UI has to admit when the match was not something the user typed.
     rank('json formater');
     check('search: a fuzzy match says so', fuzzy.hidden, false);
+    rank('qt generater');
+    check('search: two typos in one query still say so', fuzzy.hidden, false);
     rank('json formatter');
     check('search: an exact match does not', fuzzy.hidden, true);
 
@@ -525,6 +546,15 @@ const check = (label, actual, expected) => {
 
     type('generatr');
     check('sidebar: typos work here too', shown().length > 0, true);
+
+    // The sidebar uses the same matcher as the catalog, so the shorthand and
+    // multi-token shapes have to work here too — Enter follows the top row.
+    type('qt generater');
+    check('sidebar: two typos in one query work here too', name(shown()[0]), 'QR Code Generator');
+    type('json 2 yaml');
+    check('sidebar: the "2" shorthand works here too', name(shown()[0]), 'JSON to YAML');
+    type('html entity');
+    check('sidebar: singular finds the plural here too', name(shown()[0]), 'HTML Entities');
 
     type('qqqqq');
     check('sidebar: nothing matches', shown().length, 0);

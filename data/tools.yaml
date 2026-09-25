@@ -132,7 +132,7 @@
     - slug: markdown-to-html
       name: Markdown to HTML
       desc: Render Markdown to HTML in the browser.
-      keywords: [markdown, html, render, convert]
+      keywords: [markdown, md, html, render, convert]
       status: done
     - slug: yaml-viewer
       name: YAML Viewer

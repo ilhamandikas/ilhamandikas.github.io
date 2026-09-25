@@ -165,21 +165,42 @@ load.
 
 ### Finding a tool
 
-`assets/js/tools-search.js` is the whole matcher — about 150 lines, no
+`assets/js/tools-search.js` is the whole matcher — about 300 lines, no
 `fuse.js`. It scores instead of filtering, because plain substring matching ranks
 badly: `haystack.includes('ip')` puts JSON Minifier first (`str-IP`),
 AES Encryption second (`c-IP-her`) and the actual IP tool fourth.
 
 Each query token is scored against the name, the keywords and the description,
-and keeps its best tier — `word` (+40), `prefix` (+25), `substring` (+10), `typo`
-(+5) or `subsequence` (0) — with the field deciding the base (name 100, keywords
-60, description 30). **Every token must match something**, so `json yaml` cannot
-quietly degrade into "anything mentioning json". Two guards keep the fuzzy tiers
-from becoming noise, and both were found by trying the obvious version first:
+and keeps its best tier — `word` (+40), `stem` (+35), `prefix` (+25), `substring`
+(+10), `typo` (+5) or `subsequence` (0) — with the field deciding the base (name
+100, keywords 60, description 30). **Every token must match something**, so
+`json yaml` cannot quietly degrade into "anything mentioning json". Four guards
+keep the fuzzy tiers from becoming noise, and every one of them was found by
+trying the obvious version first and watching it fail:
 
 - a typo must agree on the first letter, or `time` matches `mime`
 - a subsequence must start a word and cover 45% of it, or `hash` matches
   `cheatsheet` (`h-a-s-h` in order) and every search returns rubbish
+- a token may not fuzzy-match at all until the query has more than one token to
+  agree on it, or `ean` finds `expander`
+- the run-together comparison is not a substring comparison, or `imei` finds
+  Timestamp Converter — it sits inside `date time iso` once the spaces go
+
+Singular and plural meet in the middle, so `html entity` finds HTML Entities and
+`status code` finds HTTP Status Codes. Two fallbacks cover the rest, and both are
+fallbacks rather than extra scores, so neither can displace a match that already
+worked:
+
+- the query with its spaces removed is compared against the field with its spaces
+  removed, which is how `qrcode`, `qrgenerator` and `jsonformatter` find their
+  tools
+- if the strict pass finds nothing at all *and* the query has more than one token,
+  it is scored again with the guards loosened. That is how `qt generater` finds
+  QR Code Generator: `generater` pins the entry down, so `qt` is allowed to be
+  one edit from `qr` even though it is also one edit from `js`, `go` and `os`
+
+A bare `2` is read as `to` at token level, which unlocks all ten "X to Y" tools
+at once; whole tokens only, so `sha 256` is left alone.
 
 Ranking is applied with CSS `order` rather than by moving nodes, so the
 prerendered markup stays put and no DOM is rebuilt on each keystroke.
