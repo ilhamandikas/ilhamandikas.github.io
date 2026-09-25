@@ -7,9 +7,13 @@ const bottomText = document.querySelector('#stk-bottom');
 const textStyle = document.querySelector('#stk-text-style');
 const textColor = document.querySelector('#stk-text-color');
 const accent = document.querySelector('#stk-accent');
+const zoom = document.querySelector('#stk-zoom');
+const imageY = document.querySelector('#stk-y');
+const textSize = document.querySelector('#stk-text-size');
 const removeBg = document.querySelector('#stk-remove-bg');
 const tolerance = document.querySelector('#stk-tolerance');
 const outline = document.querySelector('#stk-outline');
+const transparent = document.querySelector('#stk-transparent');
 const canvas = document.querySelector('#stk-canvas');
 const status = document.querySelector('#stk-status');
 const ctx = canvas.getContext('2d');
@@ -45,8 +49,13 @@ function drawFrame() {
   else if (shape.value === 'square') ctx.rect(pad, pad, 884, 884);
   else ctx.rect(0, 0, 1024, 1024);
   ctx.clip();
-  ctx.fillStyle = accent.value || '#2563eb';
-  ctx.fillRect(0, 0, 1024, 1024);
+  if (!transparent.checked) {
+    const grad = ctx.createLinearGradient(140, 80, 900, 920);
+    grad.addColorStop(0, accent.value || '#2563eb');
+    grad.addColorStop(1, '#111827');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1024, 1024);
+  }
   ctx.restore();
 
   if (outline.checked && shape.value !== 'none') {
@@ -86,14 +95,15 @@ function removeBackground(source) {
 function drawImageLayer() {
   if (!image) return;
   const src = removeBg.checked ? removeBackground(image) : image;
-  const max = 720;
+  const max = 720 * (Number(zoom.value) / 100);
   const scale = Math.min(max / src.width, max / src.height);
   const w = src.width * scale;
   const h = src.height * scale;
   ctx.save();
-  ctx.shadowColor = 'rgba(0,0,0,.25)';
-  ctx.shadowBlur = 24;
-  ctx.drawImage(src, (1024 - w) / 2, (1024 - h) / 2, w, h);
+  ctx.shadowColor = 'rgba(0,0,0,.28)';
+  ctx.shadowBlur = 26;
+  ctx.shadowOffsetY = 12;
+  ctx.drawImage(src, (1024 - w) / 2, (1024 - h) / 2 + Number(imageY.value), w, h);
   ctx.restore();
 }
 
@@ -110,7 +120,7 @@ function fitText(text, max, start) {
 function drawStickerText(text, y) {
   if (!text.trim()) return;
   const value = text.trim().toUpperCase();
-  const size = fitText(value, 900, 92);
+  const size = fitText(value, 900, Number(textSize.value) || 92);
   ctx.save();
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -120,6 +130,12 @@ function drawStickerText(text, y) {
     ctx.lineWidth = 28;
     ctx.strokeStyle = accent.value || '#2563eb';
     ctx.strokeText(value, 512, y);
+  } else if (textStyle.value === 'ribbon') {
+    const metrics = ctx.measureText(value);
+    const width = Math.min(930, metrics.width + 90);
+    ctx.fillStyle = accent.value || '#2563eb';
+    roundRect(ctx, (1024 - width) / 2, y - size * .62, width, size * 1.24, 30);
+    ctx.fill();
   } else if (textStyle.value === 'neon') {
     ctx.shadowColor = accent.value || '#2563eb';
     ctx.shadowBlur = 28;
@@ -162,5 +178,5 @@ document.querySelector('#stk-download').addEventListener('click', () => {
   a.click();
 });
 
-tk.live([shape, topText, bottomText, textStyle, textColor, accent, removeBg, tolerance, outline], render);
+tk.live([shape, topText, bottomText, textStyle, textColor, accent, zoom, imageY, textSize, removeBg, tolerance, outline, transparent], render);
 render();

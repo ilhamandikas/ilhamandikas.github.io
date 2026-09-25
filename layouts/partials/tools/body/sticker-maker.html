@@ -26,14 +26,22 @@
     </label>
   </div>
   <div class="sticker-grid sticker-grid-3">
-    <label class="tool-field"><span>Text style</span><select id="stk-text-style" class="tool-select"><option value="meme">Meme bold</option><option value="bubble">Bubble</option><option value="neon">Neon</option><option value="clean">Clean</option></select></label>
+    <label class="tool-field"><span>Text style</span><select id="stk-text-style" class="tool-select"><option value="meme">Meme bold</option><option value="bubble">Bubble</option><option value="neon">Neon</option><option value="ribbon">Ribbon</option><option value="clean">Clean</option></select></label>
     <label class="tool-field"><span>Text color</span><input id="stk-text-color" class="tool-input" type="text" value="#ffffff"></label>
     <label class="tool-field"><span>Accent</span><input id="stk-accent" class="tool-input" type="text" value="#2563eb"></label>
   </div>
+  <div class="sticker-grid sticker-grid-3">
+    <label class="tool-field"><span>Image zoom</span><input id="stk-zoom" class="tool-range" type="range" min="40" max="140" value="100"></label>
+    <label class="tool-field"><span>Image Y</span><input id="stk-y" class="tool-range" type="range" min="-220" max="220" value="0"></label>
+    <label class="tool-field"><span>Text size</span><input id="stk-text-size" class="tool-range" type="range" min="48" max="132" value="92"></label>
+  </div>
+  <div class="sticker-grid sticker-grid-3">
+    <label class="tool-check sticker-option"><input type="checkbox" id="stk-remove-bg"> Remove background</label>
+    <label class="tool-check sticker-option"><input type="checkbox" id="stk-outline" checked> Sticker outline</label>
+    <label class="tool-check sticker-option"><input type="checkbox" id="stk-transparent"> Transparent frame</label>
+  </div>
   <div class="tool-row">
-    <label class="tool-check"><input type="checkbox" id="stk-remove-bg"> Remove background</label>
     <label class="tool-inline">Tolerance <input id="stk-tolerance" class="tool-range" type="range" min="5" max="90" value="34"></label>
-    <label class="tool-check"><input type="checkbox" id="stk-outline" checked> White sticker outline</label>
     <button class="btn primary" type="button" id="stk-download">Download PNG</button>
     <span class="tool-status" id="stk-status"></span>
   </div>
