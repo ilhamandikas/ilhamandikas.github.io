@@ -317,8 +317,8 @@ if (bar && slug) {
   function renderHistory() {
     if (!panel || !listEl) return;
     const list = readHistory();
-    listEl.replaceChildren(...(list.length ? list.map((entry, index) => row(entry, index)) : [emptyRow()]));
-    panel.hidden = consent() !== 'yes' && list.length === 0;
+    listEl.replaceChildren(...list.map((entry, index) => row(entry, index)));
+    panel.hidden = list.length === 0;
   }
 
   function forgetEverything() {

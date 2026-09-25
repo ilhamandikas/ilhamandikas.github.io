@@ -169,12 +169,11 @@ password-strength:
 
 jwt-parser:
   about: >-
-    Decode the header, payload and claims of a JSON Web Token, and check its
-    signature. It shows the signing algorithm, the registered claims and when the
-    token expires, and flags the pitfalls worth noticing — an alg: none header, or
-    an exp that has already passed. Signature checking covers HMAC (HS256/384/512),
-    RSASSA-PKCS1-v1_5 (RS256/384/512), RSA-PSS (PS256/384/512) and ECDSA
-    (ES256/384/512).
+    Decode, live-edit and verify JSON Web Tokens. Paste an existing token to
+    inspect it, click the header or payload to edit the JSON and rebuild the token
+    live, then check whether the signature still matches. Signature checking covers
+    HMAC (HS256/384/512), RSASSA-PKCS1_v1_5 (RS256/384/512), RSA-PSS
+    (PS256/384/512) and ECDSA (ES256/384/512).
   faq:
     - q: "Does this verify the signature?"
       a: "Yes, in the Check the signature panel, for HS, RS, PS and ES algorithms. Paste the shared secret for HMAC tokens or the PEM public key for the rest, and it recomputes the signature over the header and payload exactly as they arrived. That is why editing the payload by even one character flips the answer to a mismatch."

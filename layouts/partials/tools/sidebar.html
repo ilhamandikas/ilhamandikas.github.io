@@ -9,7 +9,6 @@
   </div>
   <p class="tool-nav-empty" id="tool-nav-empty" hidden>No tools match.</p>
   <div class="tool-nav-list">
-    {{ partial "tools/recent.html" . }}
     {{- range site.Data.tools }}
     <div class="tool-nav-group">
       <span class="tool-nav-title">{{ .name }}</span>

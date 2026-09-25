@@ -103,6 +103,7 @@ payloadEdit.addEventListener('input', () => rewriteTokenFromEditor('payload'));
 headerEdit.addEventListener('blur', () => setEditor('header', false));
 payloadEdit.addEventListener('blur', () => setEditor('payload', false));
 
+
 document.querySelector('#jwt-verify').addEventListener('click', async () => {
   const token = input.value.trim();
   if (token === '') {

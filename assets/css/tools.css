@@ -598,6 +598,16 @@ textarea.tool-input { min-height: 96px; }
   white-space: nowrap;
 }
 .tool-history-link:hover { color: var(--text); }
+#tool-history-clear {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--muted);
+  text-decoration: none;
+  line-height: 1;
+}
+#tool-history-clear:hover { border-color: var(--accent); background: var(--surface); color: var(--accent); }
 
 .tool-text {
   padding: 8px 10px;
@@ -956,6 +966,17 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
 .fhc-verdict.err { border-left-color: #c0392b; }
 .fhc-row .tool-code { word-break: break-all; white-space: pre-wrap; }
 
+/* ---------- websocket tester ---------- */
+
+.ws-connection-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(180px, 260px);
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+.ws-connection-grid .tool-field { margin: 0; }
+
 /* ---------- websocket log ---------- */
 
 .ws-log {
@@ -1056,5 +1077,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   .tool-history-item .tool-history-link { grid-column: 2; }
   .tool-history-preview { white-space: normal; }
   .random-stage { grid-template-columns: minmax(0, 1fr); }
+  .ws-connection-grid { grid-template-columns: minmax(0, 1fr); }
   .ngx-form-grid { grid-template-columns: minmax(0, 1fr); }
 }

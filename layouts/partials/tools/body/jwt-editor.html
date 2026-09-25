@@ -1,7 +1,7 @@
 <div class="tool-panel">
-  <h2>Token</h2>
+  <h2>JWT Encode</h2>
   <div class="tool-field">
-    <label for="jwe-token">Paste a token to edit</label>
+    <label for="jwe-token">Optional: paste a token to edit/re-sign</label>
     <textarea id="jwe-token" class="tool-input" rows="4" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.…"></textarea>
   </div>
   <div class="tool-row">
@@ -62,7 +62,7 @@
     <textarea id="jwe-key" class="tool-input" rows="3" spellcheck="false" placeholder="a long random string"></textarea>
   </div>
   <div class="tool-row">
-    <button class="btn primary" type="button" id="jwe-sign">Sign</button>
+    <button class="btn primary" type="button" id="jwe-sign">Encode / sign</button>
     <span class="tool-status" id="jwe-status"></span>
   </div>
   <p class="tool-hint">
@@ -73,7 +73,7 @@
 </div>
 
 <div class="tool-panel">
-  <h2>Signed token</h2>
+  <h2>Encoded JWT</h2>
   <div class="tool-field">
     <label for="jwe-output">Result</label>
     <textarea id="jwe-output" class="tool-input" rows="6" readonly spellcheck="false"></textarea>

@@ -283,13 +283,13 @@
   tools:
     - slug: jwt-parser
       name: JWT Parser
-      desc: Decode and inspect the header, payload and claims of a JSON Web Token.
-      keywords: [jwt, token, decode, claims, auth, bearer, verify, signature, validate, hs256, rs256]
+      desc: Decode, live-edit and verify JSON Web Tokens.
+      keywords: [jwt, token, decode, parser, claims, auth, bearer, verify, signature, validate, hs256, rs256]
       status: done
     - slug: jwt-editor
-      name: JWT Token Editor
-      desc: Edit a token's header and claims, then sign it again with HMAC, RSA or ECDSA.
-      keywords: [jwt, token, editor, sign, create, encode, forge, generate, claims, hs256, rs256, es256, none]
+      name: JWT Encode
+      desc: Create, edit and sign JSON Web Tokens from header and payload JSON.
+      keywords: [jwt, token, encode, editor, sign, create, generate, claims, hs256, rs256, es256, none]
       status: done
     - slug: url-parser
       name: URL Parser

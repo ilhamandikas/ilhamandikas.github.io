@@ -1,5 +1,5 @@
 <div class="tool-panel">
-  <h2>Decode</h2>
+  <h2>Decode / live edit</h2>
   <div class="tool-field">
     <label for="jwt-input">JWT</label>
     <textarea id="jwt-input" class="tool-input" rows="4" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMifQ.signature"></textarea>
@@ -16,8 +16,9 @@
   </div>
   <div class="tool-field"><label>Signature</label><pre id="jwt-signature" class="tool-pre"></pre></div>
   <p class="tool-status" id="jwt-status"></p>
-  <p class="tool-hint">Decoding is not verifying. The header and payload are plain base64url, so anyone can read or edit them — only the signature can show that the token has not been tampered with.</p>
+  <p class="tool-hint">Click Header or Payload to edit the JSON. The JWT text updates live; if you edit a signed token, the old signature will no longer match until you sign again below.</p>
 </div>
+
 
 <div class="tool-panel">
   <h2>Check the signature</h2>
