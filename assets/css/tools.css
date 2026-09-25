@@ -586,6 +586,28 @@ textarea.tool-input { min-height: 96px; }
   white-space: nowrap;
 }
 .tool-history-link:hover { color: var(--text); }
+.tool-mini-action,
+.jwt-edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--muted);
+  font: inherit;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+.tool-mini-action:hover,
+.jwt-edit:hover { border-color: var(--accent); background: var(--surface); color: var(--accent); }
 #tool-history-clear {
   padding: 7px 10px;
   border: 1px solid var(--border);
@@ -938,7 +960,6 @@ input[type="file"].tool-text:hover::file-selector-button { background: var(--acc
   justify-content: space-between;
   gap: 10px;
 }
-.jwt-edit { font-family: var(--font); text-transform: none; letter-spacing: 0; }
 .jwt-click-edit { cursor: text; }
 .jwt-click-edit:hover { border-color: var(--accent); background: var(--accent-soft); }
 .jwt-json-editor { margin-top: 0; }
