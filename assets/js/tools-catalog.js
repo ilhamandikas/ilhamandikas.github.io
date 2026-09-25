@@ -24,6 +24,31 @@ if (input) {
     if (empty) empty.hidden = visible !== 0;
   };
 
+  // The hint has to name the key people actually have on their keyboard.
+  const kbd = document.querySelector('#tools-search-kbd');
+  if (kbd) {
+    const platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || navigator.userAgent || '';
+    kbd.textContent = /mac|iphone|ipad|ipod/i.test(platform) ? '⌘K' : 'Ctrl K';
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      input.focus();
+      input.select();
+      return;
+    }
+    // Escape clears the query first, then hands focus back to the page.
+    if (event.key === 'Escape' && document.activeElement === input) {
+      if (input.value === '') {
+        input.blur();
+      } else {
+        input.value = '';
+        apply();
+      }
+    }
+  });
+
   input.addEventListener('input', apply);
   apply();
 }

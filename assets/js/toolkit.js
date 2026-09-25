@@ -68,6 +68,56 @@ const tk = {
     return run;
   },
 
+  // Reduce user input to a bare host: no scheme, no path, no trailing dot.
+  domain(value) {
+    return String(value || '')
+      .trim()
+      .replace(/^[a-z][a-z0-9+.-]*:\/\//i, '')
+      .split(/[/?#]/)[0]
+      .replace(/\.$/, '')
+      .toLowerCase();
+  },
+
+  // Loose hostname check — enough to catch typos before spending a request.
+  looksLikeDomain(value) {
+    return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(value);
+  },
+
+  // Drive the single sort button from partials/tools/sort.html. Each click cycles
+  // off -> A → Z -> Z → A -> off, and a 'change' event lets tk.live/tk.transform
+  // re-render. Returns a reader for the current direction.
+  sortControl(id) {
+    const button = document.getElementById(id);
+    if (!button) return () => 'off';
+    const cycle = [
+      { value: 'off', icon: '⇅', text: 'off', action: 'Sort keys A → Z' },
+      { value: 'asc', icon: '↑', text: 'A → Z', action: 'Sort keys Z → A' },
+      { value: 'desc', icon: '↓', text: 'Z → A', action: 'Turn sorting off' },
+    ];
+    const label = button.dataset.sortLabel || 'Sort keys';
+    const iconEl = button.querySelector('.tool-sort-icon');
+    const textEl = button.querySelector('.tool-sort-text');
+    let index = Math.max(0, cycle.findIndex((s) => s.value === (button.dataset.sort || 'off')));
+
+    const paint = () => {
+      const state = cycle[index];
+      button.dataset.sort = state.value;
+      button.setAttribute('aria-pressed', String(state.value !== 'off'));
+      button.setAttribute('aria-label', `${label}: ${state.text}`);
+      button.title = state.action;
+      if (iconEl) iconEl.textContent = state.icon;
+      if (textEl) textEl.textContent = `${label}: ${state.text}`;
+    };
+
+    button.addEventListener('click', () => {
+      index = (index + 1) % cycle.length;
+      paint();
+      button.dispatchEvent(new Event('change'));
+    });
+    paint();
+    return () => cycle[index].value;
+  },
+
   // Deep-sort object keys, leaving array order untouched. direction: asc | desc.
   sortDeep(value, direction = 'asc') {
     if (direction !== 'asc' && direction !== 'desc') return value;

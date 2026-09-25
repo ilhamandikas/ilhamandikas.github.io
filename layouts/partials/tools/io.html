@@ -1,6 +1,6 @@
 {{- /* Standard "input -> output" tool panel (partial form of the pattern).
    Params: id, inputLabel, outputLabel, rows, inputPlaceholder,
-   outputPlaceholder, filename, mime, controls (raw HTML). */ -}}
+   outputPlaceholder, filename, mime, controls (raw HTML), sort (button id). */ -}}
 {{- $id := .id -}}
 {{- $rows := .rows | default "8" -}}
 <div class="tool-panel">
@@ -8,8 +8,8 @@
     <label for="{{ $id }}-input">{{ .inputLabel | default "Input" }}</label>
     <textarea id="{{ $id }}-input" class="tool-input" rows="{{ $rows }}" spellcheck="false" autocapitalize="off" autocomplete="off"{{ with .inputPlaceholder }} placeholder="{{ . }}"{{ end }}></textarea>
   </div>
-  {{- with .controls }}
-  <div class="tool-row">{{ . | safeHTML }}</div>
+  {{- if or .controls .sort }}
+  <div class="tool-row">{{ with .sort }}{{ partial "tools/sort.html" (dict "id" .) }}{{ end }}{{ with .controls }}{{ . | safeHTML }}{{ end }}</div>
   {{- end }}
   <div class="tool-field">
     <label for="{{ $id }}-output">{{ .outputLabel | default "Output" }}</label>

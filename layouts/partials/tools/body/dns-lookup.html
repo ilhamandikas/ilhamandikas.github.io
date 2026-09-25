@@ -1,0 +1,33 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Domain
+      <input type="text" id="dns-input" class="tool-text" placeholder="example.com" spellcheck="false" autocomplete="off" autocapitalize="off">
+    </label>
+    <label class="tool-inline">Record
+      <select id="dns-type" class="tool-select">
+        <option value="all">All common</option>
+        <option value="A">A</option>
+        <option value="AAAA">AAAA</option>
+        <option value="CNAME">CNAME</option>
+        <option value="MX">MX</option>
+        <option value="TXT">TXT</option>
+        <option value="NS">NS</option>
+        <option value="SOA">SOA</option>
+        <option value="CAA">CAA</option>
+        <option value="SRV">SRV</option>
+      </select>
+    </label>
+    <button class="btn primary" type="button" id="dns-lookup-btn">Look up</button>
+    <button class="btn" type="button" id="dns-copy">Copy as JSON</button>
+    <span class="tool-status" id="dns-status"></span>
+  </div>
+
+  <p class="tool-hint">
+    Queries go straight to a public DNS-over-HTTPS resolver — <strong>Cloudflare</strong>,
+    falling back to <strong>Google</strong>. Both are free and need no API key or account.
+    The name you type is the only thing sent.
+  </p>
+
+  <div id="dns-results"></div>
+  <textarea id="dns-json" class="tool-ip-json" readonly aria-hidden="true" tabindex="-1"></textarea>
+</div>

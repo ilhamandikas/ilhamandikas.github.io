@@ -212,6 +212,16 @@
       desc: Show your public IP (or any address) with its country, city, coordinates and ISP.
       keywords: [ip, geolocation, geo, my ip, public ip, location, isp, asn, country, city, map]
       status: done
+    - slug: dns-lookup
+      name: DNS Lookup
+      desc: Resolve A, AAAA, MX, TXT, NS, SOA, CAA and SRV records over DNS-over-HTTPS.
+      keywords: [dns, lookup, resolve, a, aaaa, mx, txt, ns, soa, caa, srv, nameserver, doh, dig, nslookup]
+      status: done
+    - slug: whois-lookup
+      name: WHOIS Lookup
+      desc: Show registrar, registration and expiry dates, status and nameservers for a domain.
+      keywords: [whois, rdap, domain, registrar, expiry, expiration, registration, nameserver, owner, lookup]
+      status: done
     - slug: ipv4-subnet-calculator
       name: IPv4 Subnet Calculator
       desc: Work out the network, broadcast, mask and host range for a CIDR block.

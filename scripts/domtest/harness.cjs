@@ -79,9 +79,14 @@ function installGlobals(w) {
   Object.defineProperty(w.navigator, 'clipboard', { value: { writeText: () => Promise.resolve() }, configurable: true });
 }
 
-// Boot one tool page. Returns the window plus anything that threw at load time.
-function loadPage(slug, { onConsole } = {}) {
-  const html = fs.readFileSync(path.join(TOOLS, slug, 'index.html'), 'utf8');
+// Boot one built tool page. Returns the window plus anything that threw at load time.
+function loadPage(slug, options) {
+  return loadFile(path.join(TOOLS, slug, 'index.html'), `https://ilham.dev/tools/${slug}/`, options);
+}
+
+// Same, for any built page (the catalog, the home page, ...).
+function loadFile(htmlPath, url, { onConsole } = {}) {
+  const html = fs.readFileSync(htmlPath, 'utf8');
   const entries = [];
   const vc = new VirtualConsole();
   vc.on('jsdomError', (e) => entries.push({ kind: 'jsdomError', text: e.detail ? String(e.detail.message || e.detail) : String(e.message) }));
@@ -89,7 +94,7 @@ function loadPage(slug, { onConsole } = {}) {
   vc.on('warn', (...a) => entries.push({ kind: 'warn', text: a.map(String).join(' ') }));
 
   const dom = new JSDOM(html, {
-    url: `https://ilham.dev/tools/${slug}/`,
+    url,
     runScripts: 'outside-only',
     pretendToBeVisual: true,
     virtualConsole: vc,
@@ -147,6 +152,14 @@ function fire(w, sel, type) {
 function set(w, sel, value) {
   const el = w.document.querySelector(sel);
   if (!el) throw new Error(`no element for ${sel}`);
+  // The sort control is a cycling button, so "set" means click until it matches.
+  if (el.classList.contains('tool-sort-btn')) {
+    for (let i = 0; i < 4 && el.dataset.sort !== value; i += 1) {
+      el.dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
+    }
+    if (el.dataset.sort !== value) throw new Error(`could not cycle ${sel} to ${value}`);
+    return;
+  }
   if (el.type === 'checkbox' || el.type === 'radio') el.checked = Boolean(value);
   else el.value = value;
   el.dispatchEvent(new w.Event('input', { bubbles: true }));
@@ -168,4 +181,4 @@ function errorStatuses(w) {
   return [...w.document.querySelectorAll('.tool-status.err')].map((el) => el.textContent.trim()).filter(Boolean);
 }
 
-module.exports = { ROOT, TOOLS, sleep, resolveScripts, installGlobals, loadPage, read, fire, set, click, bodyText, errorStatuses };
+module.exports = { ROOT, TOOLS, sleep, resolveScripts, installGlobals, loadPage, loadFile, read, fire, set, click, bodyText, errorStatuses };

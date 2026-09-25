@@ -1,0 +1,5 @@
+{{- /* One button that cycles key sorting: off -> A → Z -> Z → A -> off.
+   Params: id (required), label (default "Sort keys"). The button keeps the
+   current direction in data-sort; tk.sortControl() drives the label and icon. */ -}}
+{{- $label := .label | default "Sort keys" -}}
+<button class="tool-sort-btn" type="button" id="{{ .id }}" data-sort="off" data-sort-label="{{ $label }}" aria-pressed="false"><span class="tool-sort-icon" aria-hidden="true">⇅</span> <span class="tool-sort-text">{{ $label }}: off</span></button>

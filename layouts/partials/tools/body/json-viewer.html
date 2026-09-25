@@ -4,13 +4,7 @@
     <textarea id="jv-input" class="tool-input" rows="10" spellcheck="false" placeholder='{"hello":"world","items":[1,2,3]}'></textarea>
   </div>
   <div class="tool-row">
-    <label class="tool-inline">Sort keys
-      <select id="jv-sort" class="tool-select">
-        <option value="off">Off</option>
-        <option value="asc">A → Z</option>
-        <option value="desc">Z → A</option>
-      </select>
-    </label>
+    {{ partial "tools/sort.html" (dict "id" "jv-sort") }}
     <button class="btn" type="button" id="jv-expand">Expand all</button>
     <button class="btn" type="button" id="jv-collapse">Collapse all</button>
     <span class="tool-status" id="jv-status"></span>

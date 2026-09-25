@@ -2,9 +2,10 @@
 const { tk } = window;
 
 const input = document.querySelector('#jv-input');
-const sort = document.querySelector('#jv-sort');
+const sortButton = document.querySelector('#jv-sort');
 const tree = document.querySelector('#jv-tree');
 const status = document.querySelector('#jv-status');
+const getSort = tk.sortControl('jv-sort');
 
 function count(value) {
   if (value === null || typeof value !== 'object') return 0;
@@ -19,7 +20,7 @@ function render() {
     return;
   }
   try {
-    const data = tk.sortDeep(JSON.parse(raw), sort.value);
+    const data = tk.sortDeep(JSON.parse(raw), getSort());
     tk.tree(tree, data, { openDepth: 1 });
     const nodes = count(data);
     tk.setStatus(status, `Valid JSON — ${nodes} nested value${nodes === 1 ? '' : 's'}`, 'ok');
@@ -32,4 +33,4 @@ function render() {
 document.querySelector('#jv-expand').addEventListener('click', () => tk.treeOpenAll(tree, true));
 document.querySelector('#jv-collapse').addEventListener('click', () => tk.treeOpenAll(tree, false));
 
-tk.live([input, sort], render);
+tk.live([input, sortButton], render);

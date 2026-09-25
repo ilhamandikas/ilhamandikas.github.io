@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Domain
+      <input type="text" id="whois-input" class="tool-text" placeholder="example.com" spellcheck="false" autocomplete="off" autocapitalize="off">
+    </label>
+    <button class="btn primary" type="button" id="whois-lookup-btn">Look up</button>
+    <button class="btn" type="button" id="whois-copy">Copy as JSON</button>
+    <span class="tool-status" id="whois-status"></span>
+  </div>
+
+  <p class="tool-hint">
+    Registration data comes from <strong>RDAP</strong>, the registry standard that replaced
+    plain WHOIS. We ask the IANA bootstrap directory which registry to query, so the request
+    goes to the registry itself; <strong>rdap.org</strong> is the fallback. Free, no API key.
+  </p>
+
+  <div id="whois-result"></div>
+  <textarea id="whois-json" class="tool-ip-json" readonly aria-hidden="true" tabindex="-1"></textarea>
+</div>
