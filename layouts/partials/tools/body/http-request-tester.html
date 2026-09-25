@@ -1,0 +1,105 @@
+<div class="tool-panel">
+  <h2>Request</h2>
+  <div class="tool-row">
+    <label class="tool-inline">Method
+      <select id="hrt-method" class="tool-select">
+        <option>GET</option>
+        <option>POST</option>
+        <option>PUT</option>
+        <option>PATCH</option>
+        <option>DELETE</option>
+        <option>HEAD</option>
+        <option>OPTIONS</option>
+      </select>
+    </label>
+    <label class="tool-inline hrt-url">URL
+      <input type="text" id="hrt-url" class="tool-text" placeholder="https://api.example.com/v1/things"
+             spellcheck="false" autocomplete="off" autocapitalize="off">
+    </label>
+    <button class="btn primary" type="button" id="hrt-send">Send</button>
+    <button class="btn" type="button" id="hrt-cancel" hidden>Cancel</button>
+    <span class="tool-status" id="hrt-status"></span>
+  </div>
+
+  <div class="tool-row">
+    <label class="tool-inline">Body
+      <select id="hrt-body-type" class="tool-select">
+        <option value="none">No body</option>
+        <option value="json">JSON</option>
+        <option value="form">Form URL-encoded</option>
+        <option value="text">Plain text</option>
+      </select>
+    </label>
+    <label class="tool-inline">Time out after
+      <input type="number" id="hrt-timeout" class="tool-number" min="500" max="120000" step="500" value="15000">ms
+    </label>
+    <label class="tool-check">
+      <input type="checkbox" id="hrt-credentials"> Send cookies
+    </label>
+  </div>
+
+  <label class="tool-field">
+    <span>Headers — one per line, as <code>Name: value</code></span>
+    <textarea id="hrt-headers" class="tool-text" rows="4" spellcheck="false"
+              placeholder="Accept: application/json"></textarea>
+  </label>
+
+  <label class="tool-field" id="hrt-body-field">
+    <span>Request body</span>
+    <textarea id="hrt-body" class="tool-text" rows="6" spellcheck="false"
+              placeholder="{&quot;name&quot;: &quot;a thing&quot;}"></textarea>
+  </label>
+
+  <p class="tool-hint">
+    The request goes from <em>your</em> browser straight to the address you type — nothing is
+    relayed through this site, and no server of ours ever sees it. That also means the
+    browser's own rules apply: the target has to allow cross-origin reads with
+    <code>Access-Control-Allow-Origin</code>, or the reply is blocked before any page could
+    read it. A blocked reply shows up as a failed request with no status, which is the
+    browser refusing, not the API being down.
+  </p>
+</div>
+
+<div class="tool-panel">
+  <h2>curl</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" id="hrt-import">Import into the form above</button>
+    <button class="btn" type="button" id="hrt-copy-curl">Copy as curl</button>
+    <span class="tool-status" id="hrt-curl-status"></span>
+  </div>
+
+  <label class="tool-field">
+    <span>Paste a curl command</span>
+    <textarea id="hrt-curl-in" class="tool-text" rows="5" spellcheck="false"
+              placeholder="curl -X POST https://api.example.com/v1/things -H 'Content-Type: application/json' -d '{&quot;name&quot;: &quot;a thing&quot;}'"></textarea>
+  </label>
+
+  <label class="tool-field">
+    <span>Equivalent curl for the form above</span>
+    <textarea id="hrt-curl-out" class="tool-text" rows="5" readonly spellcheck="false"></textarea>
+  </label>
+
+  <p class="tool-hint">
+    Parsing and building curl happens in the page and never touches the network. Options that
+    have no browser equivalent — <code>-F</code> file uploads, <code>-T</code>,
+    <code>--connect-timeout</code> — are listed after an import instead of being dropped
+    quietly, and the generated command is written to be pasted back in.
+  </p>
+</div>
+
+<div class="tool-panel">
+  <h2>Response</h2>
+  <div class="tool-row">
+    <span class="tool-note" id="hrt-meta"></span>
+    <button class="btn" type="button" id="hrt-copy-body">Copy body</button>
+    <button class="btn" type="button" id="hrt-copy-headers">Copy headers</button>
+  </div>
+  <label class="tool-field">
+    <span>Headers</span>
+    <textarea id="hrt-res-headers" class="tool-text" rows="5" readonly spellcheck="false"></textarea>
+  </label>
+  <label class="tool-field">
+    <span>Body <span class="tool-muted">— pretty-printed when it is JSON</span></span>
+    <textarea id="hrt-res-body" class="tool-text" rows="14" readonly spellcheck="false"></textarea>
+  </label>
+</div>

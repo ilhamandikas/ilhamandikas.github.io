@@ -73,7 +73,9 @@ function poke(w, slug) {
     try {
       poke(page.w, slug);
     } catch (error) {
-      pokeError = error.message;
+      // The stack matters here: a bare message from minified code names variables
+      // like `l[n.value]` and says nothing about which tool step threw.
+      pokeError = error.stack || error.message;
     }
     await sleep(120);
 
@@ -82,6 +84,13 @@ function poke(w, slug) {
     const result = page.finish();
     if (pokeError) result.thrown.push(`poke: ${pokeError}`);
 
+    // A status still ending in an ellipsis means the tool was still working when
+    // the wait ran out — usually an async step that never finished, which would
+    // otherwise show up as nothing at all.
+    const pending = [...page.w.document.querySelectorAll('.tool-status')]
+      .map((el) => el.textContent.trim())
+      .filter((text) => text.endsWith('…'));
+
     report.push({
       slug,
       scripts: page.scripts.length,
@@ -89,6 +98,7 @@ function poke(w, slug) {
       outputBytes: after.length,
       pristineErr,
       errStatus,
+      pending,
       ...result,
     });
 
@@ -124,6 +134,11 @@ function poke(w, slug) {
   if (pristine.length) {
     console.log(`\n--- error shown before any interaction (${pristine.length}) ---`);
     for (const r of pristine) console.log(`  ${r.slug}: ${r.pristineErr.join(' | ').slice(0, 160)}`);
+  }
+  const pending = report.filter((r) => r.pending.length);
+  if (pending.length) {
+    console.log(`\n--- still working when the wait ran out (${pending.length}) ---`);
+    for (const r of pending) console.log(`  ${r.slug}: ${r.pending.join(' | ').slice(0, 160)}`);
   }
 
   process.exit(bad.length || noload.length ? 1 : 0);

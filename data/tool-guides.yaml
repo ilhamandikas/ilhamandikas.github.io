@@ -26,6 +26,8 @@ qr-code-generator:
       a: "H is the most robust and survives roughly 30% of the pattern being damaged, at the cost of a denser code. Use L for short URLs on a screen, and H for anything printed on a sticker, a label or packaging that might get scuffed."
     - q: "Why did the PNG download fail?"
       a: "Drawing to a canvas can be blocked in some environments. The SVG download is pure vector, works everywhere and scales better for print anyway."
+    - q: "How large can a logo be before the code stops scanning?"
+      a: "Smaller than the error-correction percentage suggests, because correction works per block rather than across the whole symbol — a centred logo destroys one or two blocks outright while the overall average still looks healthy. Measured with an independent decoder over three payload lengths, the largest logo that still scanned was 12% of the code's width at L, 16% at M, 18% at Q and 24% at H, with the default white box behind it taken into account. Those numbers come from testing, not from arithmetic, and the page's hint turns red once you pass the limit for the level you chose."
 
 wifi-qr-generator:
   about: >-
@@ -939,3 +941,149 @@ email-normalizer:
   faq:
     - q: "Is removing dots always safe?"
       a: "No. Dots are only ignorable at specific providers — Gmail and a few others. At most providers first.last and firstlast are genuinely different mailboxes, so only apply this when you know the domain."
+
+qr-editor:
+  about: >-
+    A QR code generator with the full set of style controls: module shape,
+    finder-corner shape, a two-colour gradient, a transparent background, and a
+    logo with its own size, padding, corner radius and background box. Six presets
+    set the whole look at once if you would rather not tune each part. The encoder
+    runs in the page, so the text and any logo you load stay on your machine. The
+    hint under the Logo heading tracks the error-correction budget as you resize
+    the logo and tells you when the code is likely to stop scanning.
+  faq:
+    - q: "How big can the logo be before the code stops scanning?"
+      a: "That depends on the error-correction level, and the answer is smaller than the percentage suggests. Error correction works per block, not across the whole symbol, so a centred logo wipes out one or two blocks outright while the overall average still looks fine. Measured with an independent decoder, the largest logo that still scanned was 12% of the code's width at L, 16% at M, 18% at Q and 24% at H — with the default white box behind it, which erases modules of its own. The hint turns red past that number for the level you picked."
+    - q: "Why is the round finder corner called a dot rather than a circle?"
+      a: "Because the outer ring stays a rounded square. A fully circular outer ring broke detection outright in testing — the symbol stopped decoding with either a square or a round centre. A rounded square ring decoded with both. The dot style therefore rounds the ring and draws the inner 3x3 as a dot, which is the look people are after without the part that does not work."
+    - q: "What is the difference between this and the plain QR Code Generator?"
+      a: "They share the same encoder and both export PNG and SVG. This one adds the style controls — module and corner shapes, gradients, transparency and the logo panel with a live budget warning — and the presets. If you only need a plain black-and-white code, the simpler generator gets you there in one step."
+    - q: "Can I use an SVG file as the logo?"
+      a: "No, and the page says so rather than failing quietly. The logo is drawn into a canvas for the PNG export, and an SVG image loaded into a canvas taints it, which makes the export fail. PNG, JPEG, GIF, WebP and BMP all work."
+
+jwt-editor:
+  about: >-
+    Build and sign a JSON Web Token in the browser. You edit the header and the
+    payload as JSON, and the token line at the top is rebuilt as you type. Signing
+    happens locally with WebCrypto, using a secret for HS256/384/512 or a PEM
+    private key for RS, PS and ES algorithms — the key never leaves the page. The
+    alg field in the header is rewritten to match the algorithm you choose, so the
+    token cannot claim one algorithm while being signed with another.
+  faq:
+    - q: "Does this verify a token, or only create one?"
+      a: "Only create. Verification — including the checks that a token claiming alg: none is refused and that an RSA key cannot be used to forge an HMAC — is what the JWT Parser tool does. Splitting them keeps each page honest about what it is doing: this one will happily sign whatever you give it, which is exactly what a forgery would look like, so it must never be mistaken for a check."
+    - q: "Which key formats can I paste in?"
+      a: "PEM. For RSA, both PKCS#8 (BEGIN PRIVATE KEY) and PKCS#1 (BEGIN RSA PRIVATE KEY) are accepted, because tools still emit both. For EC, PKCS#8 is required — an SEC1 EC PRIVATE KEY block is refused with an explanation rather than being half-parsed, because the curve is not named inside it and guessing it is how you sign with the wrong one."
+    - q: "Why are the payload dates not shown as readable times?"
+      a: "Because the payload is yours, not a schema. exp and iat are only numbers if you put them there, and an editor that rewrites your payload to show a date is an editor that changes what you are about to sign. The JWT Parser does annotate the registered claims, because reading a token that already exists is a different job."
+    - q: "Is a token I sign here safe to use?"
+      a: "Only for testing. The token is as good as the key you paste in, and this page has no idea whether that key belongs to your production system. Never paste a real signing key into a page you do not control, and treat any token built here as a throwaway."
+
+http-request-tester:
+  about: >-
+    A request builder that also speaks curl. Paste a curl command and it is parsed
+    into method, URL, headers and body; fill the form in and you can copy the
+    equivalent curl command back out. The request itself is sent from your browser
+    with fetch, straight to the address you type — nothing is relayed through this
+    site, and no server of ours sees it. That also means the browser's own rules
+    apply, which is the one thing this page cannot work around.
+  faq:
+    - q: "Why did a request fail with a CORS error instead of returning a response?"
+      a: "Because a page cannot ignore the same-origin policy. The target has to allow cross-origin reads by answering with Access-Control-Allow-Origin, and if it does not, the browser blocks the reply before any script can read it. This is a rule of the browser, not a bug in the tool, and a static site has no server to proxy the request through — a proxy would also mean your headers, cookies and body passing through somebody else's machine. The page says this in the error rather than pretending the server is down."
+    - q: "Which curl flags are supported?"
+      a: "The ones that describe a request: -X, -H, -d, --data-raw, --data-binary, --data-urlencode, --json, -G, -I, -u, -b, -A, -e, -m, --url and the common clusters such as -sSL. Flags that ask for something a page cannot do — -k, -o, --http2, --cert, --limit-rate — are named in a \"Left out\" list rather than silently dropped, and flags that ask for something the browser already does, such as --compressed or -L, are reported as adjustments instead. The two lists are kept separate on purpose: mixing them teaches you to ignore the one that matters."
+    - q: "Is the curl command I export the same as the one I pasted?"
+      a: "For the parts that describe the request, yes — and where it differs, the page says so. Two examples it will tell you about: --data-binary sends no Content-Type at all in curl, while this form always sends one; and --data-urlencode encodes its value as a whole, where curl encodes only the part after the first =. Everything else, including -G moving data into the query string with the values percent-encoded, round-trips unchanged."
+    - q: "Can I send cookies to another site?"
+      a: "Only if the request is same-origin or the target explicitly allows credentials. Cross-origin fetch with credentials requires the server to answer with Access-Control-Allow-Credentials as well as a specific origin, and never a wildcard. The credentials dropdown lets you ask; the browser decides."
+
+nginx-config-generator:
+  about: >-
+    Build an nginx server block by answering a few questions: which hostnames,
+    static files or a reverse proxy, TLS or plain HTTP, caching, compression,
+    security headers and logging. The output is a complete file you can drop into
+    sites-available, and every line of a nested block is indented so it reads as
+    the block it is. Anything the tool could not do properly is written into the
+    output as a # !! comment rather than left in a status line, so a config that
+    would not load cannot be mistaken for one that will.
+  faq:
+    - q: "Is the generated config checked against a real nginx?"
+      a: "No, and that is worth being clear about. nginx is not installed on the machine this was built on, so the output is checked structurally — every server_name is validated against the hostname pattern, braces are balanced, indentation is consistent — and not with nginx -t. Read it before you reload, which is good practice with any generated config."
+    - q: "Why is the www redirect written out as two server blocks?"
+      a: "Because nginx has no variable that means \"this host without the leading www\". There is no way to derive one hostname from another inside a server block, so the only correct output is one redirect block per literal pair you typed. A single clever regex would silently fail for the domains it did not match."
+    - q: "Why is http2 on; mentioned in the notes?"
+      a: "Because that directive only exists from nginx 1.25.1 onwards; older versions used the http2 parameter on the listen line. The generated file uses the current form and the notes say which version it needs, so you find out before the reload fails rather than after."
+    - q: "Why are the security headers repeated inside the cache location?"
+      a: "Because add_header does not merge. A location block that sets any header of its own discards every add_header inherited from the parent, so the asset-cache block would quietly lose the security headers — on exactly the responses that are cached and served most often. Repeating them is the standard workaround, and the notes say why they are there twice."
+
+image-metadata:
+  about: >-
+    Drop in a JPEG, PNG, GIF or WebP and read the metadata the file actually
+    carries: camera make and model, exposure settings, orientation, dimensions,
+    colour profile, PNG text chunks and, where present, GPS coordinates with a
+    link that opens the location on OpenStreetMap. The parsing happens in the
+    page, so the picture is never uploaded. A raw JSON panel shows every tag that
+    was read, which is what you want when a field looks wrong.
+  faq:
+    - q: "Why does my image show no EXIF at all?"
+      a: "Because most images no longer have any. Messaging apps, social networks and screenshot tools strip metadata on purpose, and any image that has been through an editor and re-exported usually loses it too. \"Read, but there is no EXIF in this file\" is a normal result, not an error — it does not mean the file carries nothing."
+    - q: "Is the GPS location exact?"
+      a: "It is exactly what the file says, to as many decimal places as the file stores. Many cameras write a rounded position, and some write a position that was never fixed at all, so a coordinate in a file is a claim by the camera rather than a measurement you can rely on. The page shows the degrees, minutes and seconds it read alongside the decimal pair so you can check the conversion yourself."
+    - q: "Can it remove metadata?"
+      a: "No. It only reads. Stripping metadata means re-encoding the image, which is a different tool and a lossy one — and it is worth knowing that the reliable way to remove EXIF is to re-export the picture from an editor, or to use a dedicated metadata stripper, rather than to trust a viewer."
+    - q: "Which formats are supported, and why those four?"
+      a: "JPEG, PNG, GIF and WebP — the four whose metadata can be read from the file structure alone without a decoder. TIFF shares EXIF's structure with JPEG and is read where it appears inside one of these, but a standalone .tif is not accepted, because supporting it properly means supporting every TIFF variant including the ones that are not images at all."
+
+file-hash-checker:
+  about: >-
+    Compute MD5, SHA-1, SHA-256 and SHA-512 for a file in your browser, then check
+    the result against a hash you were given. The file is read locally and never
+    uploaded. Pasting a published digest — including a whole sha256sum line — turns
+    the result into a verdict rather than a row of hex for you to compare by eye,
+    and re-pasting a different digest re-compares without reading the file again.
+  faq:
+    - q: "Is MD5 still worth using?"
+      a: "For checking that a download arrived intact, yes, and it is still what a lot of publishers list. For anything where someone might have a reason to give you a file that differs from the one you asked for, no — MD5 and SHA-1 are both broken for that purpose and collisions can be constructed deliberately. Use SHA-256 for anything security-related. The page offers all four because the digest you were given decides which one you need, not the other way round."
+    - q: "Why is SHA-512 off by default?"
+      a: "Because it is rarely the one published, and every algorithm you tick is another pass over the file. All four can be ticked at once if you want them; the checkboxes only control which rows are computed."
+    - q: "What happens with a very large file?"
+      a: "It is hashed in chunks, so memory does not grow with the file — but there is a 256 MB ceiling, and the page states it up front rather than failing halfway. Beyond that, use sha256sum on the command line, which is faster and has no such limit."
+    - q: "I pasted a hash and it said the lengths are not comparable. What does that mean?"
+      a: "That the digest you pasted is a different length from every algorithm currently ticked, so the two cannot be compared at all. Calling that a mismatch would be a false accusation against the file, so the page says which of the two situations you are in and tells you to tick the matching algorithm."
+
+ssh-key-generator:
+  about: >-
+    Generate an SSH key pair in the browser — Ed25519, ECDSA on P-256, P-384 or
+    P-521, or RSA at 2048, 3072 or 4096 bits — and download the private key in the
+    format your own ssh reads. The private key is OpenSSH's native
+    openssh-key-v1 container, which is what ssh-keygen writes and what ssh accepts,
+    with a PKCS#8 PEM copy offered beside it for tools that want one. Keys are
+    generated locally with WebCrypto and are never sent anywhere.
+  faq:
+    - q: "Why is the private key in OpenSSH format instead of PKCS#8?"
+      a: "Because PKCS#8 Ed25519 is not readable by OpenSSH. Measured on OpenSSH 9.6, ssh-keygen -y on a PKCS#8 Ed25519 key fails with \"invalid format\", while the same key in the openssh-key-v1 container works. PKCS#8 is convenient and widely supported by other tools, so it is offered as a second, clearly labelled panel — but the file you download for ssh is the one ssh can actually open. Claiming the wrong one is portable would be worse than the extra panel."
+    - q: "How do I use the key once I have downloaded it?"
+      a: "Save the private key, then chmod 600 it — ssh refuses to read a private key that anyone else can open, and that refusal is a feature. Copy the public key into ~/.ssh/authorized_keys on the server, or hand it to whatever service you are setting up. The public key is the one-line ssh-ed25519 or ssh-rsa form that starts with the key type."
+    - q: "Which key type should I pick?"
+      a: "Ed25519 unless you have a reason not to: it is small, fast, and has no parameter choices to get wrong. Use RSA if you have to talk to something old — 3072 bits or more, since 2048 is the floor rather than a recommendation. ECDSA is there for compatibility with systems that expect it; it is fine, but there is no advantage over Ed25519 on a modern system."
+    - q: "Are the fingerprints real, or does the page just make them up?"
+      a: "They are computed from the same wire format ssh uses, and they were checked against ssh-keygen as an independent oracle — both the SHA-256 and the MD5 form, for every key type the page offers. The private key was checked further: a real ssh-keygen -Y sign and -Y verify round trip, plus openssl pkey -check on the PKCS#8 copy. That is stronger evidence than the page agreeing with itself, but it was measured on Linux OpenSSH 9.6 — older OpenSSH and Windows tools such as puttygen are untested here."
+
+websocket-tester:
+  about: >-
+    Open a WebSocket from your browser, send text or binary frames, and watch
+    everything that arrives in a timestamped log. The connection is made by the
+    page itself, so it goes from your machine to the server you name and through
+    nothing else. Binary frames can be typed as hex and are converted for you, and
+    JSON that comes back is indented so it is readable. Close codes are explained
+    rather than just printed.
+  faq:
+    - q: "Why can I not connect to a ws:// address from this page?"
+      a: "Because the page is served over https, and a browser refuses to open an insecure WebSocket from a secure page — it would be a hole in the padlock. This is a mixed-content rule enforced by the browser, not a setting here. Use wss://, or run the test from a page served over plain http, or use a command-line client such as websocat for a local ws:// endpoint. The page allows ws:// to localhost, which browsers treat as trustworthy."
+    - q: "What does close code 1006 mean?"
+      a: "That the connection closed without a close frame — no proper handshake, no reason string. It is what you see when the server process died, a proxy dropped the connection, or the network went away, and it is deliberately not a code a server can send you. The log spells this out because 1006 on its own looks like a mystery number."
+    - q: "Can I send binary data?"
+      a: "Yes. Tick \"Send as binary\" and type the bytes as hex, and the page converts them to an ArrayBuffer before sending. Anything that is not valid hex is refused with a message rather than being sent as something else. Replies are labelled as text or binary in the log, and binary replies are shown as hex."
+    - q: "How do I connect with a subprotocol?"
+      a: "Type them in the subprotocol field, comma separated — for example chat, superchat. The server picks one and the log records which one it chose, which is the part people actually need to see when a handshake succeeds but the application protocol is wrong."
+

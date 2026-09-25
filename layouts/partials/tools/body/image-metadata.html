@@ -1,0 +1,29 @@
+<div class="tool-panel">
+  <h2>File</h2>
+  <div class="tool-field tool-drop" id="img-drop">
+    <label for="img-file">Image</label>
+    <input class="tool-input" type="file" id="img-file" accept="image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp">
+    <p class="tool-hint">Drop a file here, or choose one. JPEG, PNG, GIF and WebP. The file is read in this page and is never uploaded — which matters here, because the question the tool answers is what a file carries besides the picture.</p>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="img-copy">Copy as JSON</button>
+    <button class="btn" type="button" id="img-download">Download JSON</button>
+    <span class="tool-status" id="img-status" role="status" aria-live="polite"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>What is in the file</h2>
+  <div class="tool-preview" id="img-preview"></div>
+  <p class="tool-note" id="img-summary"></p>
+  <div class="img-report" id="img-results"></div>
+  <p class="tool-hint">Photos from a phone usually carry EXIF: the camera, the exposure, the software that touched it, and often the GPS position. Photos that came from a screenshot, a chat app or an export for the web usually carry none of it — a missing block is not a hidden block.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Raw JSON</h2>
+  <div class="tool-field">
+    <label for="img-json">Everything that was found</label>
+    <textarea class="tool-input tool-code" id="img-json" rows="12" readonly spellcheck="false"></textarea>
+  </div>
+</div>

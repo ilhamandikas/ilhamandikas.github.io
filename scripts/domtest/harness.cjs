@@ -39,6 +39,72 @@ function resolveScripts(html) {
     .map((src) => path.join(ROOT, src));
 }
 
+// jsdom has no WebSocket and Node has one that talks to the real network, which a
+// test must not do. This stub stands in for both: it records what was constructed,
+// lets a test drive open/message/close by hand, and never opens a socket.
+function makeWebSocket() {
+  const instances = [];
+
+  class FakeWebSocket {
+    constructor(url, protocols) {
+      this.url = url;
+      this.protocols = protocols === undefined ? [] : [].concat(protocols);
+      this.protocol = '';
+      this.extensions = '';
+      this.binaryType = 'blob';
+      this.readyState = 0; // CONNECTING
+      this.sent = [];
+      this.listeners = { open: [], message: [], error: [], close: [] };
+      instances.push(this);
+    }
+
+    addEventListener(type, fn) {
+      (this.listeners[type] || (this.listeners[type] = [])).push(fn);
+    }
+
+    removeEventListener(type, fn) {
+      this.listeners[type] = (this.listeners[type] || []).filter((each) => each !== fn);
+    }
+
+    send(data) {
+      if (this.readyState !== 1) throw new Error('WebSocket is not open');
+      this.sent.push(data);
+    }
+
+    close(code = 1000, reason = '') {
+      this.readyState = 3;
+      this.emit('close', { code, reason, wasClean: code !== 1006 });
+    }
+
+    emit(type, event) {
+      for (const fn of [...(this.listeners[type] || [])]) fn(event);
+    }
+
+    /* the three things a test needs to act like a server */
+    serverOpen(protocol = '') {
+      this.protocol = protocol;
+      this.readyState = 1;
+      this.emit('open', {});
+    }
+
+    serverMessage(data) {
+      this.emit('message', { data });
+    }
+
+    serverClose(code, reason = '') {
+      this.readyState = 3;
+      this.emit('close', { code, reason, wasClean: code !== 1006 });
+    }
+  }
+
+  FakeWebSocket.CONNECTING = 0;
+  FakeWebSocket.OPEN = 1;
+  FakeWebSocket.CLOSING = 2;
+  FakeWebSocket.CLOSED = 3;
+  FakeWebSocket.instances = instances;
+  return FakeWebSocket;
+}
+
 function installGlobals(w) {
   globalThis.window = w;
 
@@ -66,8 +132,10 @@ function installGlobals(w) {
   }
   if (!w.getComputedStyle) w.getComputedStyle = () => ({ getPropertyValue: () => '' });
 
-  // No real network in tests: tools must cope with a failing fetch.
+  // No real network in tests: tools must cope with a failing fetch, and the
+  // WebSocket stub replaces both jsdom's absence of one and Node's real one.
   globalThis.fetch = () => Promise.reject(new Error('offline (harness)'));
+  globalThis.WebSocket = makeWebSocket();
   globalThis.URL.createObjectURL = () => 'blob:harness';
   globalThis.URL.revokeObjectURL = () => {};
   globalThis.alert = () => {};
@@ -90,8 +158,9 @@ function loadPage(slug, options) {
 
 // Same, for any built page (the catalog, the home page, ...).
 // `session` seeds sessionStorage before any script runs, which is how a test
-// pretends to be the *next* page after a navigation.
-function loadFile(htmlPath, url, { onConsole, prerendering = false, session = null } = {}) {
+// pretends to be the *next* page after a navigation. `store` does the same for
+// localStorage, which is how a test pretends to be the same page after a reload.
+function loadFile(htmlPath, url, { onConsole, prerendering = false, session = null, store = null } = {}) {
   const html = fs.readFileSync(htmlPath, 'utf8');
   const entries = [];
   const vc = new VirtualConsole();
@@ -110,6 +179,9 @@ function loadFile(htmlPath, url, { onConsole, prerendering = false, session = nu
 
   if (session) {
     for (const [key, value] of Object.entries(session)) w.sessionStorage.setItem(key, value);
+  }
+  if (store) {
+    for (const [key, value] of Object.entries(store)) w.localStorage.setItem(key, value);
   }
 
   // Pretend the browser is building this page in the background ahead of a
@@ -148,7 +220,24 @@ function loadFile(htmlPath, url, { onConsole, prerendering = false, session = nu
     };
   };
 
-  return { w, dom, scripts, thrown, finish, read: (sel) => read(w, sel), fire: (sel, type) => fire(w, sel, type), set: (sel, value) => set(w, sel, value) };
+  // Captured here, not read from the global at call time: every page load replaces
+  // globalThis.WebSocket, so a lazily-read list would hand back the *next* page's
+  // sockets and quietly make an earlier page's test check the wrong object.
+  const socketList = globalThis.WebSocket.instances;
+
+  return {
+    w,
+    dom,
+    scripts,
+    thrown,
+    finish,
+    // Every WebSocket the page constructed, newest last, so a test can act like
+    // the server: open it, push a frame, close it.
+    sockets: () => socketList,
+    read: (sel) => read(w, sel),
+    fire: (sel, type) => fire(w, sel, type),
+    set: (sel, value) => set(w, sel, value),
+  };
 }
 
 function read(w, sel) {

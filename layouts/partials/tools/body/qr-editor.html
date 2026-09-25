@@ -1,0 +1,99 @@
+<div class="tool-panel">
+  <h2>Content</h2>
+  <div class="tool-field">
+    <label for="qre-text">Text or URL</label>
+    <textarea id="qre-text" class="tool-input" rows="3" spellcheck="false" placeholder="https://example.com">https://ilham.dev</textarea>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Error correction
+      <select id="qre-ecc" class="tool-select">
+        <option value="L">L · 7%</option>
+        <option value="M">M · 15%</option>
+        <option value="Q">Q · 25%</option>
+        <option value="H" selected>H · 30%</option>
+      </select>
+    </label>
+    <label class="tool-inline">Size
+      <input type="number" id="qre-size" class="tool-number" min="128" max="1024" value="512">
+    </label>
+    <label class="tool-inline">Quiet zone
+      <input type="number" id="qre-margin" class="tool-number" min="0" max="10" value="2">
+    </label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Style</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-preset="classic">Classic</button>
+    <button class="btn" type="button" data-preset="rounded">Rounded</button>
+    <button class="btn" type="button" data-preset="dots">Dots</button>
+    <button class="btn" type="button" data-preset="sunset">Sunset</button>
+    <button class="btn" type="button" data-preset="ocean">Ocean</button>
+    <button class="btn" type="button" data-preset="sticker">Sticker</button>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Modules
+      <select id="qre-shape" class="tool-select">
+        <option value="square">Square</option>
+        <option value="rounded">Rounded</option>
+        <option value="dot">Dots</option>
+      </select>
+    </label>
+    <label class="tool-inline">Corners
+      <select id="qre-finder" class="tool-select">
+        <option value="square">Square</option>
+        <option value="rounded">Rounded</option>
+        <option value="dot">Dot</option>
+      </select>
+    </label>
+    <label class="tool-inline">Foreground <input type="text" id="qre-dark" class="tool-text" value="#0f172a"></label>
+    <label class="tool-inline"><input type="checkbox" id="qre-gradient" class="tool-check"> Gradient</label>
+  </div>
+  <div class="tool-row" id="qre-gradient-row" hidden>
+    <label class="tool-inline">Second colour <input type="text" id="qre-dark2" class="tool-text" value="#0ea5e9"></label>
+    <label class="tool-inline">Angle
+      <input type="range" id="qre-angle" class="tool-range" min="0" max="360" step="15" value="135">
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline" id="qre-light-row">Background <input type="text" id="qre-light" class="tool-text" value="#ffffff"></label>
+    <label class="tool-inline"><input type="checkbox" id="qre-transparent" class="tool-check"> Transparent background</label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Logo</h2>
+  <p class="tool-hint" id="qre-hint"></p>
+  <div class="tool-row">
+    <label class="tool-inline">Image
+      <input type="file" id="qre-logo" accept="image/png,image/jpeg,image/gif,image/webp,image/bmp">
+    </label>
+    <label class="tool-inline">Size
+      <input type="number" id="qre-logo-size" class="tool-number" min="8" max="40" value="22">%
+    </label>
+    <label class="tool-inline">Padding
+      <input type="number" id="qre-logo-pad" class="tool-number" min="0" max="50" value="12">%
+    </label>
+    <button class="btn" type="button" id="qre-logo-clear">Remove</button>
+    <span class="tool-status" id="qre-logo-status"></span>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Corner radius
+      <input type="number" id="qre-logo-radius" class="tool-number" min="0" max="50" value="25">%
+    </label>
+    <label class="tool-inline">Logo background <input type="text" id="qre-logo-bg" class="tool-text" value="#ffffff"></label>
+    <label class="tool-inline"><input type="checkbox" id="qre-logo-nobox" class="tool-check"> No background box</label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Preview</h2>
+  <div id="qre-preview" class="tool-preview"></div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="qre-png">Download PNG</button>
+    <button class="btn" type="button" id="qre-svg">Download SVG</button>
+    <span class="tool-status" id="qre-status"></span>
+    <span class="tool-note" id="qre-meta"></span>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+<div class="tool-memory" id="tool-memory" hidden>
+  <div class="tool-memory-ask" id="tool-memory-ask" hidden>
+    <p>
+      <strong>Save what you type here, on this device?</strong>
+      Your work would go into this browser's local storage, so a refresh or a trip to another
+      tool does not wipe it. It is never uploaded, and there is no account.
+    </p>
+    <p>
+      Being straight about the trade-off: anything kept there can be read by anyone who can
+      use this browser profile, and by any script that later runs on this site. A tool page
+      can hold a private key, a password or a signed token. Saving is convenient; it is not
+      private.
+    </p>
+    <div class="tool-row">
+      <button class="btn primary" type="button" id="tool-memory-yes">Save on this device</button>
+      <button class="btn" type="button" id="tool-memory-no">Never on this device</button>
+    </div>
+  </div>
+
+  <p class="tool-memory-line" id="tool-memory-on" hidden>
+    <span class="tool-memory-dot" aria-hidden="true"></span>
+    Saved on this device.
+    <button class="tool-memory-link" type="button" id="tool-memory-forget">Clear and forget this tool</button>
+    <button class="tool-memory-link" type="button" id="tool-memory-forget-all">Forget every tool</button>
+  </p>
+
+  <p class="tool-memory-line" id="tool-memory-off" hidden>
+    <span class="tool-memory-dot off" aria-hidden="true"></span>
+    Not saved — this page forgets your work when you leave it.
+    <button class="tool-memory-link" type="button" id="tool-memory-enable">Start saving</button>
+  </p>
+
+  <p class="tool-memory-note" id="tool-memory-note" role="status" aria-live="polite"></p>
+</div>

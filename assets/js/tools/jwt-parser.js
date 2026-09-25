@@ -1,5 +1,5 @@
 // Decode a JWT, and check its signature with WebCrypto.
-import { ecdsaToRaw, fromBase64, pemBytes, spkiFromPkcs1 } from '../pem.js';
+import { ALGORITHMS, decodePart, unb64url, verify } from '../jws.js';
 
 const { tk } = window;
 
@@ -11,33 +11,6 @@ const status = document.querySelector('#jwt-status');
 
 const keyInput = document.querySelector('#jwt-key');
 const verifyStatus = document.querySelector('#jwt-verify-status');
-
-// JWS algorithm names, mapped onto what WebCrypto needs. HS* take the shared
-// secret as raw UTF-8 bytes; everything else takes a PEM public key.
-const ALGORITHMS = {
-  HS256: { kind: 'hmac', hash: 'SHA-256' },
-  HS384: { kind: 'hmac', hash: 'SHA-384' },
-  HS512: { kind: 'hmac', hash: 'SHA-512' },
-  RS256: { kind: 'rsa', name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
-  RS384: { kind: 'rsa', name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-384' },
-  RS512: { kind: 'rsa', name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-512' },
-  PS256: { kind: 'rsa', name: 'RSA-PSS', hash: 'SHA-256', saltLength: 32 },
-  PS384: { kind: 'rsa', name: 'RSA-PSS', hash: 'SHA-384', saltLength: 48 },
-  PS512: { kind: 'rsa', name: 'RSA-PSS', hash: 'SHA-512', saltLength: 64 },
-  ES256: { kind: 'ec', namedCurve: 'P-256', hash: 'SHA-256', size: 32 },
-  ES384: { kind: 'ec', namedCurve: 'P-384', hash: 'SHA-384', size: 48 },
-  ES512: { kind: 'ec', namedCurve: 'P-521', hash: 'SHA-512', size: 66 },
-};
-
-// JWS base64url, not plain base64, and usually unpadded.
-const b64url = (value) => {
-  const v = value.replace(/-/g, '+').replace(/_/g, '/');
-  return fromBase64(v + '='.repeat((4 - (v.length % 4)) % 4));
-};
-
-function decodePart(part) {
-  return JSON.parse(tk.b64decode(part, { urlSafe: true }));
-}
 
 function withDates(claims) {
   const clone = { ...claims };
@@ -136,46 +109,7 @@ document.querySelector('#jwt-verify').addEventListener('click', async () => {
     // The signature covers the header and payload exactly as they arrived, so
     // they are signed as text rather than re-encoded from the parsed objects.
     const signed = new TextEncoder().encode(`${parts[0]}.${parts[1]}`);
-    const sig = b64url(parts[2]);
-    let ok;
-
-    if (spec.kind === 'hmac') {
-      const secret = await crypto.subtle.importKey(
-        'raw',
-        new TextEncoder().encode(keyInput.value),
-        { name: 'HMAC', hash: spec.hash },
-        false,
-        ['verify'],
-      );
-      ok = await crypto.subtle.verify('HMAC', secret, sig, signed);
-    } else if (spec.kind === 'rsa') {
-      const { kind, bytes } = pemBytes(keyInput.value, 'PUBLIC KEY');
-      const publicKey = await crypto.subtle.importKey(
-        'spki',
-        kind === 'RSA PUBLIC KEY' ? spkiFromPkcs1(bytes) : bytes,
-        { name: spec.name, hash: spec.hash },
-        false,
-        ['verify'],
-      );
-      const params = spec.name === 'RSA-PSS' ? { name: 'RSA-PSS', saltLength: spec.saltLength } : spec.name;
-      ok = await crypto.subtle.verify(params, publicKey, sig, signed);
-    } else {
-      const { bytes } = pemBytes(keyInput.value, 'PUBLIC KEY');
-      const publicKey = await crypto.subtle.importKey(
-        'spki',
-        bytes,
-        { name: 'ECDSA', namedCurve: spec.namedCurve },
-        false,
-        ['verify'],
-      );
-      ok = await crypto.subtle.verify(
-        { name: 'ECDSA', hash: spec.hash },
-        publicKey,
-        ecdsaToRaw(sig, spec.size),
-        signed,
-      );
-    }
-
+    const ok = await verify(spec, keyInput.value, unb64url(parts[2]), signed);
     tk.setStatus(
       verifyStatus,
       ok

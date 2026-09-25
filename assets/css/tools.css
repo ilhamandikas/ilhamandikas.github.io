@@ -7,6 +7,27 @@
 
 .tools-search { margin: 0 0 34px; }
 
+/* The recently-used list again, on the catalog page where there is no sidebar to
+   hold it. Same markup, different furniture. */
+.tools-catalog-page .tool-nav-recent {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.tools-catalog-page .tool-recent-list {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tools-catalog-page .tool-recent-list li + li { margin-top: 6px; }
+.tools-catalog-page .tool-recent-list a {
+  color: var(--text);
+  text-decoration: none;
+}
+.tools-catalog-page .tool-recent-list a:hover { color: var(--accent); }
+
 .tools-search-field {
   display: flex;
   align-items: center;
@@ -192,6 +213,41 @@
 
 .tool-nav-empty { margin: 0 0 12px; color: var(--muted); font-size: 13.5px; }
 
+/* Recently used. Sits inside the scrolling list so it moves with the tools, and
+   holds no state the server could render — the list is per device. */
+.tool-nav-recent { margin-bottom: 18px; }
+.tool-nav-recent-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.tool-recent-clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-family: var(--mono);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.tool-recent-clear:hover { color: var(--accent); }
+.tool-recent-list a {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.tool-recent-when {
+  flex: none;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-family: var(--mono);
+}
+
 /* The arrow-key selection. Deliberately not bold, so the row cannot change
    width as the selection moves. */
 .tool-nav a.selected {
@@ -271,6 +327,7 @@ textarea.tool-input { min-height: 96px; }
 }
 .tool-check { display: inline-flex; align-items: center; gap: 8px; font-size: 14.5px; }
 .tool-check input { accent-color: var(--accent); }
+.tool-range { width: 140px; accent-color: var(--accent); }
 
 .tool-number,
 .tool-select {
@@ -467,6 +524,118 @@ textarea.tool-input { min-height: 96px; }
 .ip-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 
 .tool-status { font-size: 13.5px; font-family: var(--mono); color: var(--muted); }
+.tool-note { font-size: 13.5px; font-family: var(--mono); color: var(--muted); margin-left: auto; }
+
+.tool-muted { color: var(--muted); }
+
+/* A request URL wants every pixel the row has left. */
+.hrt-url { flex: 1 1 260px; }
+.hrt-url .tool-text { width: 100%; }
+
+/* Config output reads as code: monospace, and it scrolls in both directions rather
+   than hiding the right-hand end of a long line. */
+.tool-code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre;
+  overflow: auto;
+}
+
+/* ---------- drop zones ---------- */
+
+.tool-drop {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.tool-drop.over { border-color: var(--accent); background: var(--surface); }
+
+/* ---------- image metadata report ---------- */
+
+.img-report { margin-top: 18px; }
+.img-group { margin-bottom: 22px; }
+.img-group h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-family: var(--mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+/* Name and value in two columns, with the value allowed to be long and to wrap. */
+.img-group dl {
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) 1fr;
+  gap: 2px 18px;
+  margin: 0;
+  font-size: 14px;
+}
+.img-group dt { color: var(--muted); }
+.img-group dd { margin: 0; overflow-wrap: anywhere; }
+.img-group dt, .img-group dd { padding: 5px 0; border-bottom: 1px solid var(--border); }
+.img-warning {
+  margin: 0 0 20px;
+  padding: 12px 16px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  font-size: 14px;
+}
+.img-warning a { color: var(--accent); }
+
+/* ---------- file hash verdict ---------- */
+
+.fhc-verdict:empty { display: none; }
+.fhc-verdict {
+  margin: 14px 0 0;
+  padding: 12px 16px;
+  border-left: 3px solid var(--border);
+  font-size: 14px;
+}
+.fhc-verdict.ok { border-left-color: var(--accent); background: var(--surface); }
+.fhc-verdict.err { border-left-color: #c0392b; }
+.fhc-row .tool-code { word-break: break-all; white-space: pre-wrap; }
+
+/* ---------- websocket log ---------- */
+
+.ws-log {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+.ws-log:empty::after {
+  content: 'Nothing yet. Connect to see the handshake.';
+  display: block;
+  padding: 16px;
+  color: var(--muted);
+  font-family: var(--sans, inherit);
+}
+.ws-entry {
+  display: grid;
+  grid-template-columns: 62px 72px 1fr;
+  gap: 0 10px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.ws-entry:last-child { border-bottom: 0; }
+.ws-time { color: var(--muted); }
+.ws-kind { font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
+.ws-sent .ws-kind { color: var(--accent); }
+.ws-received .ws-kind { color: #1e7a4f; }
+.ws-error .ws-kind { color: #c0392b; }
+.ws-system .ws-kind { color: var(--muted); }
+.ws-text {
+  margin: 0;
+  font: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 .tool-status.ok { color: #15803d; }
 .tool-status.err { color: #b91c1c; }
 

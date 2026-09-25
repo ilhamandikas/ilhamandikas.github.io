@@ -1,4 +1,5 @@
 <div class="tool-panel">
+  <h2>Code</h2>
   <div class="tool-field">
     <label for="qr-text">Text or URL</label>
     <textarea id="qr-text" class="tool-input" rows="3" spellcheck="false" placeholder="https://example.com">https://ilham.dev</textarea>
@@ -23,10 +24,26 @@
     <label class="tool-inline">Foreground <input type="text" id="qr-fg" class="tool-text" value="#0f172a"></label>
     <label class="tool-inline">Background <input type="text" id="qr-bg" class="tool-text" value="#ffffff"></label>
   </div>
-  <div class="tool-field">
-    <label>Preview</label>
-    <div id="qr-preview" class="tool-preview"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Logo</h2>
+  <p class="tool-hint" id="qr-logo-hint"></p>
+  <div class="tool-row">
+    <label class="tool-inline">Image
+      <input type="file" id="qr-logo" accept="image/png,image/jpeg,image/gif,image/webp,image/bmp">
+    </label>
+    <label class="tool-inline">Size
+      <input type="number" id="qr-logo-size" class="tool-number" min="8" max="40" value="16">%
+    </label>
+    <button class="btn" type="button" id="qr-logo-clear">Remove</button>
+    <span class="tool-status" id="qr-logo-status"></span>
   </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Preview</h2>
+  <div id="qr-preview" class="tool-preview"></div>
   <div class="tool-row">
     <button class="btn" type="button" id="qr-png">Download PNG</button>
     <button class="btn" type="button" id="qr-svg">Download SVG</button>

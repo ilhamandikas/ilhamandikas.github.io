@@ -66,10 +66,17 @@ def main() -> None:
     (ROOT / "data/tools.yaml").write_text("".join(lines))
 
     # 2) content front matter
+    missing = [slug for slug in meta if not (ROOT / f"content/tools/{slug}.md").exists()]
+    if missing:
+        # A catalog entry with no page renders as a dead link in the menu and the
+        # catalog. It is easy to create one by adding the partial and forgetting the
+        # page, so it stops the build rather than shipping a 404.
+        sys.exit(
+            "these catalog entries have no content page: " + ", ".join(sorted(missing))
+        )
+
     for slug, (name, desc) in meta.items():
         path = ROOT / f"content/tools/{slug}.md"
-        if not path.exists():
-            continue
         name = name.replace('"', '\\"')
         desc = desc.replace('"', '\\"')
         front = f'title: "{name}"\ndescription: "{desc}"'
@@ -93,9 +100,28 @@ def main() -> None:
                 "data/tool-guides.yaml has entries for tools that do not exist: "
                 + ", ".join(unknown)
             )
+        # The other direction matters too: a tool page with a form and some labels
+        # is nearly empty as far as a crawler is concerned, so a tool that ships is
+        # a tool that has something written about it. Checked here rather than left
+        # to memory, because "I will write it later" is how a page ends up with no
+        # prose at all.
+        undoc = sorted(slug for slug in meta if slug in bodies and slug not in guides)
+        if undoc:
+            sys.exit(
+                "these tools are done but have no entry in data/tool-guides.yaml: "
+                + ", ".join(undoc)
+            )
 
     total = len(meta)
-    print(f"synced {total} tools — {len(bodies)} done, {total - len(bodies)} planned")
+    implemented = bodies & set(meta)
+    # A partial for a tool that is not in the catalog is unreachable: nothing links
+    # to it and no page renders it. That is always a mistake, never a state to sit in.
+    orphans = sorted(bodies - set(meta))
+    if orphans:
+        sys.exit(
+            "these body partials belong to no catalog entry: " + ", ".join(orphans)
+        )
+    print(f"synced {total} tools — {len(implemented)} done, {total - len(implemented)} planned")
 
 
 if __name__ == "__main__":

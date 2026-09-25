@@ -1,0 +1,90 @@
+<div class="tool-panel">
+  <h2>Token</h2>
+  <div class="tool-field">
+    <label for="jwe-token">Paste a token to edit</label>
+    <textarea id="jwe-token" class="tool-input" rows="4" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.…"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="jwe-reset">Reload from the token</button>
+    <span class="tool-status" id="jwe-load-status"></span>
+  </div>
+  <p class="tool-hint">
+    A token is three base64url parts: header, claims and signature. Pasting one fills the two boxes
+    below so you can change it and sign it again. Nothing is sent anywhere and no key is kept.
+  </p>
+</div>
+
+<div class="tool-panel">
+  <h2>Header</h2>
+  <div class="tool-field">
+    <label for="jwe-header">Header as JSON — <code>alg</code> is rewritten to match the algorithm you pick</label>
+    <textarea id="jwe-header" class="tool-input" rows="5" spellcheck="false">{ "typ": "JWT" }</textarea>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Payload</h2>
+  <div class="tool-field">
+    <label for="jwe-payload">Claims as JSON</label>
+    <textarea id="jwe-payload" class="tool-input" rows="10" spellcheck="false"></textarea>
+  </div>
+  <p class="tool-hint">
+    Whatever is in this box goes into the token exactly as written — this page does not add anything to
+    it, so a readable date helper never ends up inside your claims. <code>exp</code>, <code>iat</code>
+    and <code>nbf</code> are seconds since the epoch, not milliseconds.
+  </p>
+</div>
+
+<div class="tool-panel">
+  <h2>Sign</h2>
+  <div class="tool-row">
+    <label class="tool-inline">Algorithm
+      <select id="jwe-alg" class="tool-select">
+        <option value="HS256" selected>HS256 · HMAC-SHA256</option>
+        <option value="HS384">HS384 · HMAC-SHA384</option>
+        <option value="HS512">HS512 · HMAC-SHA512</option>
+        <option value="RS256">RS256 · RSA PKCS#1 v1.5</option>
+        <option value="RS384">RS384 · RSA PKCS#1 v1.5</option>
+        <option value="RS512">RS512 · RSA PKCS#1 v1.5</option>
+        <option value="PS256">PS256 · RSA-PSS</option>
+        <option value="PS384">PS384 · RSA-PSS</option>
+        <option value="PS512">PS512 · RSA-PSS</option>
+        <option value="ES256">ES256 · ECDSA P-256</option>
+        <option value="ES384">ES384 · ECDSA P-384</option>
+        <option value="ES512">ES512 · ECDSA P-521</option>
+        <option value="none">none · no signature</option>
+      </select>
+    </label>
+    <label class="tool-inline" id="jwe-secret-b64-row"><input type="checkbox" id="jwe-secret-b64" class="tool-check"> The secret is base64</label>
+  </div>
+  <div class="tool-field" id="jwe-key-row">
+    <label for="jwe-key" id="jwe-key-label">Shared secret</label>
+    <textarea id="jwe-key" class="tool-input" rows="3" spellcheck="false" placeholder="a long random string"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="jwe-sign">Sign</button>
+    <span class="tool-status" id="jwe-status"></span>
+  </div>
+  <p class="tool-hint">
+    The signature covers the header and payload exactly as they are written here, so the JSON you see is
+    the JSON that gets signed. RS, PS and ES take a PKCS#8 private key
+    (<code>-----BEGIN PRIVATE KEY-----</code>); a PKCS#1 <code>RSA PRIVATE KEY</code> is accepted too.
+  </p>
+</div>
+
+<div class="tool-panel">
+  <h2>Signed token</h2>
+  <div class="tool-field">
+    <label for="jwe-output">Result</label>
+    <textarea id="jwe-output" class="tool-input" rows="6" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#jwe-output" data-status="#jwe-status">Copy</button>
+    <button class="btn" type="button" data-download="#jwe-output" data-filename="token.txt">Download</button>
+    <span class="tool-note" id="jwe-note"></span>
+  </div>
+  <p class="tool-hint">
+    This page makes signatures; it does not check them. Paste the result into the
+    <a href="/tools/jwt-parser/">JWT Parser</a> to confirm it verifies with the matching key.
+  </p>
+</div>

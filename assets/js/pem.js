@@ -42,12 +42,12 @@ export function pemBytes(text, expect) {
   return { kind, bytes };
 }
 
-export function toPem(value, label) {
+export function toPem(value, label, width = 64) {
   let binary = '';
   new Uint8Array(value).forEach((b) => {
     binary += String.fromCharCode(b);
   });
-  const lines = btoa(binary).match(/.{1,64}/g) || [];
+  const lines = btoa(binary).match(new RegExp(`.{1,${width}}`, 'g')) || [];
   return `-----BEGIN ${label}-----\n${lines.join('\n')}\n-----END ${label}-----`;
 }
 

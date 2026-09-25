@@ -1,0 +1,44 @@
+<div class="tool-panel">
+  <h2>File</h2>
+  <div class="tool-field tool-drop" id="fhc-drop">
+    <label for="fhc-file">File</label>
+    <input class="tool-input" type="file" id="fhc-file">
+    <p class="tool-hint">Drop a file here, or choose one. Nothing is uploaded, so there is no server-side size limit — the only limit is this browser's memory, because WebCrypto has no way to hash a stream.</p>
+  </div>
+  <p class="tool-note" id="fhc-name"></p>
+  <div class="tool-row">
+    <span class="tool-status" id="fhc-status" role="status" aria-live="polite"></span>
+    <span class="tool-note" id="fhc-summary"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Algorithms</h2>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="fhc-md5" checked> MD5</label>
+    <label class="tool-check"><input type="checkbox" id="fhc-sha1" checked> SHA-1</label>
+    <label class="tool-check"><input type="checkbox" id="fhc-sha256" checked> SHA-256</label>
+    <label class="tool-check"><input type="checkbox" id="fhc-sha512"> SHA-512</label>
+    <label class="tool-check"><input type="checkbox" id="fhc-upper"> Uppercase</label>
+  </div>
+  <p class="tool-hint">MD5 and SHA-1 are here because publishers still print them, not because they are safe. Both have practical collision attacks — someone can build a second file with the same digest. Use them to check that a download arrived intact, never to decide that a file is trustworthy.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Check against a published hash</h2>
+  <div class="tool-field">
+    <label for="fhc-expected">Expected hash</label>
+    <textarea class="tool-input" id="fhc-expected" rows="2" spellcheck="false" placeholder="Paste the digest from the download page"></textarea>
+    <p class="tool-hint">Any of the usual shapes works: a bare digest, a <code>sha256sum</code> line, or the <code>SHA256 (file.iso) = …</code> form. The comparison is case-insensitive.</p>
+  </div>
+  <p class="fhc-verdict" id="fhc-verdict" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Hashes</h2>
+  <div id="fhc-results"></div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="fhc-copy-all">Copy all</button>
+    <button class="btn" type="button" id="fhc-download">Download as text</button>
+  </div>
+</div>

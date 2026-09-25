@@ -12,6 +12,11 @@ const CSS = fs
   .map((f) => fs.readFileSync(path.join(ROOT, 'css', f), 'utf8'))
   .join('\n');
 
+// Counted from the files that define the tools rather than typed in, so adding a
+// tool does not need a test edit — while a sidebar, catalog or sitemap that
+// disagrees with those files is still caught.
+const TOOL_COUNT = fs.readdirSync(path.join(ROOT, '..', 'content', 'tools')).filter((f) => f.endsWith('.md') && f !== '_index.md').length;
+
 async function run(slug, fields = {}, { clicks = [], wait = 150 } = {}) {
   const page = loadPage(slug);
   for (const [sel, value] of Object.entries(fields)) set(page.w, sel, value);
@@ -518,7 +523,7 @@ const check = (label, actual, expected) => {
     const key = (key_) => input.dispatchEvent(new page.w.KeyboardEvent('keydown', { key: key_, bubbles: true, cancelable: true }));
 
     check('sidebar: the field is there', Boolean(input), true);
-    check('sidebar: every tool is listed', links.length, 90);
+    check('sidebar: every tool is listed', links.length, TOOL_COUNT);
     // The field must not share a flex container with the ranked groups: a flex
     // item's default `order` is 0 and ranked groups use negative values, so
     // sharing one sorted the field to the bottom of the sidebar.
@@ -584,7 +589,7 @@ const check = (label, actual, expected) => {
     type('qqqqq');
     key('Escape');
     check('sidebar: Escape clears the query', input.value, '');
-    check('sidebar: Escape restores every tool', shown().length, 90);
+    check('sidebar: Escape restores every tool', shown().length, TOOL_COUNT);
     check('sidebar: the categories come back', nav.hasAttribute('data-searching'), false);
 
     const result = page.finish();
@@ -628,7 +633,7 @@ const check = (label, actual, expected) => {
     type('jso');
     check('sidebar nav: typing more narrows it again', visibleLinks() <= narrowed, true);
     type('');
-    check('sidebar nav: an empty query brings every tool back', visibleLinks(), 90);
+    check('sidebar nav: an empty query brings every tool back', visibleLinks(), TOOL_COUNT);
     check('sidebar nav: ...and the categories with them', next.w.document.querySelector('.tool-nav').hasAttribute('data-searching'), false);
 
     // A cleared field must be remembered as cleared, or the old query returns.
@@ -636,7 +641,7 @@ const check = (label, actual, expected) => {
     check('sidebar nav: a cleared field is remembered as cleared', JSON.parse(next.w.sessionStorage.getItem(KEY)).q, '');
     const fresh = loadPage('uuid-generator', { session: { [KEY]: next.w.sessionStorage.getItem(KEY) } });
     check('sidebar nav: ...so the next page starts unfiltered', fresh.w.document.querySelector('#tool-nav-search').value, '');
-    check('sidebar nav: ...and shows every tool', [...fresh.w.document.querySelectorAll('.tool-nav a')].filter((a) => !a.hidden).length, 90);
+    check('sidebar nav: ...and shows every tool', [...fresh.w.document.querySelectorAll('.tool-nav a')].filter((a) => !a.hidden).length, TOOL_COUNT);
 
     const result = next.finish();
     check('sidebar nav: no uncaught errors', result.thrown.length + result.errors.length, 0);
@@ -888,12 +893,16 @@ const check = (label, actual, expected) => {
     const catalog = read('tools/index.html');
     check('seo: the catalog is a CollectionPage', types(catalog).includes('CollectionPage'), true);
     const slugs = [...catalog.matchAll(/class=tool-card href=\/tools\/([^/]+)\//g)].map((m) => m[1]);
-    check('seo: the catalog links every tool', slugs.length, 90);
+    check('seo: the catalog links every tool', slugs.length, TOOL_COUNT);
 
     // Structured data has to describe what is actually on the page. Walk every
     // tool and check the schema agrees with the markup.
     const pages = slugs.map((slug) => read(`tools/${slug}/index.html`));
-    check('seo: every tool page has written content', pages.filter((h) => /class=tool-about/.test(h)).length, 90);
+    // Every tool is written up, so this is TOOL_COUNT and not a number that has to be
+    // remembered and updated — sync-tools.py already refuses to build a tool without
+    // a guide, and this checks the guide actually reached the page.
+    check('seo: every tool page has written content',
+      pages.filter((h) => /class=tool-about/.test(h)).length, TOOL_COUNT);
     const withFaq = pages.filter((h) => types(h).includes('FAQPage'));
     check('seo: an FAQPage never appears without written questions', withFaq.filter((h) => !/class=tool-about/.test(h)).length, 0);
     check('seo: the FAQPage lists exactly the questions on the page',
@@ -911,6 +920,1053 @@ const check = (label, actual, expected) => {
 
     const prose = qr.replace(/<(script|style)\b[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
     check('seo: a tool page has real prose to read', prose.split(' ').length > 400, true);
+  }
+
+
+  console.log('\n=== qr rendering ===');
+
+  // The renderer is checked against a real decoder, not against itself. The SVG the
+  // page produced is rasterised here by a second, independent implementation — one
+  // that paints shapes in document order and samples module cell centres, the way a
+  // scanner reads — and handed to jsQR. Reusing the renderer's own geometry would
+  // make this test agree with whatever bug it had.
+  {
+    const jsQR = require('jsqr');
+    const QRCode = (await import('file:///opt/ilham-dev/assets/js/vendor/qrcode.js')).default;
+
+    const covers = (node, x, y) => {
+      const tag = node.tagName.toLowerCase();
+      if (tag === 'image') {
+        const x0 = Number(node.getAttribute('x'));
+        const y0 = Number(node.getAttribute('y'));
+        return x >= x0 && x <= x0 + Number(node.getAttribute('width')) && y >= y0 && y <= y0 + Number(node.getAttribute('height'));
+      }
+      if (tag === 'circle') {
+        const dist = Math.hypot(x - Number(node.getAttribute('cx')), y - Number(node.getAttribute('cy')));
+        const r = Number(node.getAttribute('r'));
+        if (node.getAttribute('stroke')) return Math.abs(dist - r) <= Number(node.getAttribute('stroke-width')) / 2;
+        return dist <= r;
+      }
+      const x0 = Number(node.getAttribute('x'));
+      const y0 = Number(node.getAttribute('y'));
+      const w = Number(node.getAttribute('width'));
+      const hh = Number(node.getAttribute('height'));
+      if (node.getAttribute('fill') === 'none' && node.getAttribute('stroke')) {
+        const sw = Number(node.getAttribute('stroke-width')) / 2;
+        const inside = x >= x0 - sw && x <= x0 + w + sw && y >= y0 - sw && y <= y0 + hh + sw;
+        const hole = x > x0 + sw && x < x0 + w - sw && y > y0 + sw && y < y0 + hh - sw;
+        return inside && !hole;
+      }
+      return x >= x0 && x <= x0 + w && y >= y0 && y <= y0 + hh;
+    };
+
+    // Paint in document order so a later shape overwrites an earlier one — that is
+    // how the white box behind a logo erases modules. A cell centre is the sample
+    // a scanner reads, so each module becomes one k-by-k block of pixels.
+    const raster = (svg, count, margin) => {
+      const size = Number(svg.getAttribute('width'));
+      const scale = size / (count + 2 * margin);
+      const layers = [];
+      const walk = (node) => {
+        for (const child of node.children) {
+          const tag = child.tagName.toLowerCase();
+          if (tag === 'defs') continue;
+          if (tag === 'rect' && Number(child.getAttribute('width')) === size && Number(child.getAttribute('height')) === size) {
+            layers.push({ node: child, colour: 255 });
+            continue;
+          }
+          if (tag === 'image') layers.push({ node: child, colour: 128 });
+          else if (tag === 'rect' || tag === 'circle') layers.push({ node: child, colour: child.parentNode === svg ? 255 : 0 });
+          walk(child);
+        }
+      };
+      walk(svg);
+
+      const k = 6;
+      const dim = count * k;
+      const data = new Uint8ClampedArray(dim * dim * 4).fill(255);
+      for (let row = 0; row < count; row += 1) {
+        for (let col = 0; col < count; col += 1) {
+          const x = (col + margin + 0.5) * scale;
+          const y = (row + margin + 0.5) * scale;
+          let value = 255;
+          for (const layer of layers) if (covers(layer.node, x, y)) value = layer.colour;
+          if (value === 255) continue;
+          for (let py = row * k; py < row * k + k; py += 1)
+            for (let px = col * k; px < col * k + k; px += 1) {
+              const at = (py * dim + px) * 4;
+              data[at] = data[at + 1] = data[at + 2] = value;
+            }
+        }
+      }
+      return { data, dim };
+    };
+
+    const decode = (svg, text, ecc, margin = 2) => {
+      const count = QRCode.create(text, { errorCorrectionLevel: ecc }).modules.size;
+      const { data, dim } = raster(svg, count, margin);
+      const found = jsQR(data, dim, dim);
+      return found ? found.data : null;
+    };
+
+    const editor = loadPage('qr-editor');
+    const svgOf = () => editor.w.document.querySelector('#qre-preview svg');
+    const style = async (fields) => {
+      for (const [sel, value] of Object.entries(fields)) set(editor.w, sel, value);
+      await sleep(60);
+      return svgOf();
+    };
+
+    // Every combination of module shape and corner style, because a round corner
+    // ring is the one that silently produces a code nothing can read.
+    const combinations = [];
+    for (const shape of ['square', 'rounded', 'dot'])
+      for (const finder of ['square', 'rounded', 'dot']) {
+        const svg = await style({ '#qre-shape': shape, '#qre-finder': finder, '#qre-ecc': 'H' });
+        if (decode(svg, 'https://ilham.dev', 'H') !== 'https://ilham.dev') combinations.push(`${shape}+${finder}`);
+      }
+    check('qr: every shape and corner style still decodes', combinations, []);
+
+    const gradient = await style({ '#qre-gradient': true, '#qre-transparent': false });
+    check('qr: a gradient still decodes', decode(gradient, 'https://ilham.dev', 'H'), 'https://ilham.dev');
+
+    const clear = await style({ '#qre-gradient': false, '#qre-transparent': true });
+    check('qr: a transparent background still decodes', decode(clear, 'https://ilham.dev', 'H'), 'https://ilham.dev');
+    check('qr: a transparent background draws no backing rectangle',
+      clear.querySelectorAll(':scope > rect').length, 0);
+
+    // A logo at the measured limit for each level. The white box behind it is drawn
+    // by the page only when a logo is set, so the test places both the way the
+    // renderer would and then asks a decoder whether the result is still readable.
+    const LIMITS = [['L', 12], ['M', 16], ['Q', 18], ['H', 24]];
+    const TEXTS = ['hi', 'https://ilham.dev', 'https://ilham.dev/tools/qr-editor/?a=1&b=2&c=three&d=four&e=five'];
+    const failedLogos = [];
+    for (const [ecc, ratio] of LIMITS) {
+      for (const text of TEXTS) {
+        const svg = await style({ '#qre-text': text, '#qre-ecc': ecc, '#qre-logo-size': String(ratio) });
+        const size = Number(svg.getAttribute('width'));
+        const side = size * (ratio / 100);
+        const box = side * 1.24;
+        const at = (size - box) / 2;
+        const white = editor.w.document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        for (const [name, value] of Object.entries({ x: at, y: at, width: box, height: box, fill: '#ffffff' })) white.setAttribute(name, value);
+        const img = editor.w.document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        for (const [name, value] of Object.entries({ x: (size - side) / 2, y: (size - side) / 2, width: side, height: side })) img.setAttribute(name, value);
+        svg.append(white, img);
+        if (decode(svg, text, ecc) !== text) failedLogos.push(`${ecc} at ${ratio}%, ${text.length} chars`);
+      }
+    }
+    check('qr: a logo at the measured limit for each level still decodes', failedLogos, []);
+
+    const generator = await run('qr-code-generator', { '#qr-text': 'https://ilham.dev', '#qr-ecc': 'H' });
+    const gsvg = generator.w.document.querySelector('#qr-preview svg');
+    check('qr: the generator decodes too', decode(gsvg, 'https://ilham.dev', 'H'), 'https://ilham.dev');
+    check('qr: the generator draws a quiet zone', Number(gsvg.getAttribute('width')) > 0, true);
+
+    const wifi = await run('wifi-qr-generator', { '#wqr-type': 'WPA', '#wqr-ssid': 'ilham-dev', '#wqr-pass': 'secret' });
+    const wsvg = wifi.w.document.querySelector('#wqr-preview svg');
+    check('qr: the wifi tool builds the standard payload',
+      decode(wsvg, 'WIFI:T:WPA;S:ilham-dev;P:secret;;', 'M'), 'WIFI:T:WPA;S:ilham-dev;P:secret;;');
+
+    // Structure, so a silent change in what gets emitted is caught even when the
+    // code still happens to decode.
+    const styled = await style({ '#qre-text': 'https://ilham.dev', '#qre-shape': 'dot', '#qre-finder': 'dot' });
+    check('qr: dot modules are circles', styled.querySelectorAll('g > circle').length > 0, true);
+    check('qr: no corner ring is drawn as a circle',
+      [...styled.querySelectorAll('g > circle')].filter((c) => c.getAttribute('fill') === 'none').length, 0);
+    check('qr: the corner ring is a stroked rect',
+      [...styled.querySelectorAll('g > rect')].filter((r) => r.getAttribute('fill') === 'none' && r.getAttribute('stroke')).length, 3);
+
+    const meta = editor.w.document.querySelector('#qre-meta').textContent;
+    check('qr: the meta line reports the version and the module grid', /^Version \d+ · \d+ × \d+ modules$/.test(meta), true);
+  }
+
+  console.log('\n=== jwt editor ===');
+  {
+    // Node's crypto is the oracle: a token this page signed has to verify somewhere
+    // that has never seen this page.
+    const { generateKeyPairSync, createHmac, createVerify, createPublicKey } = require('crypto');
+    const b64 = (input) => Buffer.from(input).toString('base64url');
+
+    const rsa = generateKeyPairSync('rsa', {
+      modulusLength: 2048,
+      publicKeyEncoding: { type: 'spki', format: 'pem' },
+      privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+    });
+    const ec = generateKeyPairSync('ec', {
+      namedCurve: 'P-256',
+      publicKeyEncoding: { type: 'spki', format: 'pem' },
+      privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+    });
+
+    const editor = loadPage('jwt-editor');
+    check('jwt editor: starts with a header and a payload to edit',
+      editor.w.document.querySelector('#jwe-header').value.includes('"alg"'), true);
+
+    const produced = async (alg, key) => {
+      set(editor.w, '#jwe-alg', alg);
+      set(editor.w, '#jwe-key', key);
+      set(editor.w, '#jwe-header', JSON.stringify({ alg, typ: 'JWT' }));
+      click(editor.w, '#jwe-sign');
+      await sleep(80);
+      return editor.w.document.querySelector('#jwe-output').value;
+    };
+
+    // HMAC: recompute the signature with Node's own HMAC.
+    for (const alg of ['HS256', 'HS384', 'HS512']) {
+      const token = await produced(alg, 'a-long-enough-secret-for-testing');
+      const [head, body, sig] = token.split('.');
+      const digest = { HS256: 'sha256', HS384: 'sha384', HS512: 'sha512' }[alg];
+      check(`jwt editor: ${alg} matches Node's HMAC`, sig, createHmac(digest, 'a-long-enough-secret-for-testing').update(`${head}.${body}`).digest('base64url'));
+      check(`jwt editor: ${alg} rewrites the header algorithm`, JSON.parse(Buffer.from(head, 'base64url')).alg, alg);
+    }
+
+    // RSA and PSS: verify with the matching public key.
+    for (const [alg, options] of [['RS256', {}], ['PS256', { padding: require('crypto').constants.RSA_PKCS1_PSS_PADDING, saltLength: 32 }]]) {
+      const token = await produced(alg, rsa.privateKey);
+      const [head, body, sig] = token.split('.');
+      const verifier = createVerify('sha256');
+      verifier.update(`${head}.${body}`);
+      verifier.end();
+      check(`jwt editor: ${alg} verifies with Node's public key`,
+        verifier.verify({ key: rsa.publicKey, ...options }, Buffer.from(sig, 'base64url')), true);
+    }
+
+    // ECDSA: Node wants P1363 (raw r||s) rather than the DER that openssl emits.
+    {
+      const token = await produced('ES256', ec.privateKey);
+      const [head, body, sig] = token.split('.');
+      const raw = Buffer.from(sig, 'base64url');
+      check('jwt editor: ES256 signs a 64-byte raw signature, not DER', raw.length, 64);
+      const verifier = createVerify('sha256');
+      verifier.update(`${head}.${body}`);
+      verifier.end();
+      check('jwt editor: ES256 verifies with Node\'s public key',
+        verifier.verify({ key: ec.publicKey, dsaEncoding: 'ieee-p1363' }, raw), true);
+    }
+
+    // alg none is written honestly and reported as what it is.
+    {
+      const token = await produced('none', '');
+      check('jwt editor: alg none leaves an empty signature', token.split('.').length, 3);
+      check('jwt editor: alg none writes an empty third part', token.endsWith('.'), true);
+      check('jwt editor: alg none is flagged as a problem',
+        editor.w.document.querySelector('#jwe-status').classList.contains('err'), true);
+      check('jwt editor: alg none says so in the note',
+        editor.w.document.querySelector('#jwe-note').textContent, 'unsigned');
+    }
+
+    // The algorithm select has to win over a stale header, on change as well as on
+    // sign — otherwise "signed with HS256, labelled RS256" tokens get made.
+    set(editor.w, '#jwe-header', JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
+    set(editor.w, '#jwe-alg', 'HS256');
+    await sleep(50);
+    check('jwt editor: changing the algorithm rewrites the header',
+      JSON.parse(editor.w.document.querySelector('#jwe-header').value).alg, 'HS256');
+
+    // Failures that must not silently produce a token.
+    const failures = [
+      ['#jwe-payload', 'not json', 'payload'],
+      ['#jwe-payload', '[1,2,3]', 'object'],
+      ['#jwe-header', '"a string"', 'object'],
+    ];
+    const missed = [];
+    for (const [sel, value, word] of failures) {
+      set(editor.w, '#jwe-alg', 'HS256');
+      set(editor.w, '#jwe-key', 'a-long-enough-secret-for-testing');
+      set(editor.w, sel, value);
+      click(editor.w, '#jwe-sign');
+      await sleep(60);
+      if (!editor.w.document.querySelector('#jwe-status').textContent.toLowerCase().includes(word)) missed.push(`${sel} = ${value}`);
+      if (editor.w.document.querySelector('#jwe-output').value !== '') missed.push(`${sel} = ${value} still wrote a token`);
+    }
+    check('jwt editor: refuses to sign a header or payload that is not an object', missed, []);
+
+    // A SEC1 EC key cannot be read by WebCrypto, so it has to be refused with a way out.
+    set(editor.w, '#jwe-payload', '{"sub":"user_42"}');
+    set(editor.w, '#jwe-header', '{"alg":"ES256"}');
+    set(editor.w, '#jwe-alg', 'ES256');
+    set(editor.w, '#jwe-key', '-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIB1n\n-----END EC PRIVATE KEY-----');
+    click(editor.w, '#jwe-sign');
+    await sleep(80);
+    check('jwt editor: a SEC1 EC key is refused with the conversion command',
+      editor.w.document.querySelector('#jwe-status').textContent.includes('openssl pkcs8'), true);
+
+    // The secret-is-base64 switch has to change the bytes that get signed.
+    set(editor.w, '#jwe-header', '{"alg":"HS256"}');
+    set(editor.w, '#jwe-payload', '{"sub":"user_42"}');
+    set(editor.w, '#jwe-key', b64('binary-secret'));
+    set(editor.w, '#jwe-alg', 'HS256');
+    set(editor.w, '#jwe-secret-b64', true);
+    click(editor.w, '#jwe-sign');
+    await sleep(80);
+    {
+      const [head, body, sig] = editor.w.document.querySelector('#jwe-output').value.split('.');
+      check('jwt editor: a base64 secret is decoded before it is used',
+        sig, createHmac('sha256', Buffer.from('binary-secret')).update(`${head}.${body}`).digest('base64url'));
+    }
+  }
+
+  /* ---------------------------------------------------------------- ssh keys */
+
+  console.log('\n=== ssh key generator ===');
+  {
+    // ssh-keygen is the oracle, and it is the program these files exist for. It is
+    // strict about the container: a wrong length prefix, a missing pad byte, or a
+    // wrong RSA CRT coefficient all make it refuse the key or fail to sign with it.
+    // Nothing here is checked against this page's own code.
+    const cp = require('child_process');
+    const os = require('os');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ilham-ssh-'));
+    const sh = (cmd) => cp.execSync(cmd, { cwd: dir, stdio: ['ignore', 'pipe', 'pipe'] }).toString();
+    const attempt = (cmd) => {
+      try {
+        return { out: sh(cmd), failed: false };
+      } catch (error) {
+        return { out: `${error.stdout || ''}${error.stderr || ''}`, failed: true };
+      }
+    };
+    const haveSshKeygen = !attempt('command -v ssh-keygen').failed;
+
+    if (!haveSshKeygen) {
+      // Not a pass and not a failure: this assertion genuinely did not run, and
+      // printing nothing would make the suite look stronger than it is.
+      console.log('SKIP  ssh: ssh-keygen is not installed, so no key can be verified against it');
+    } else {
+      // Every code path: ed25519 keeps its secret as a plain string, ECDSA as a
+      // curve point plus an mpint, RSA as six mpints. P-521 and 4096 are included
+      // because they are the sizes where an off-by-one in a length prefix shows up.
+      const types = [
+        ['ed25519', 'ssh-ed25519'],
+        ['ecdsa-p256', 'ecdsa-sha2-nistp256'],
+        ['ecdsa-p521', 'ecdsa-sha2-nistp521'],
+        ['rsa-2048', 'ssh-rsa'],
+        ['rsa-4096', 'ssh-rsa'],
+      ];
+
+      for (const [type, sshName] of types) {
+        const page = loadPage('ssh-key-generator');
+        set(page.w, '#ssh-type', type);
+        set(page.w, '#ssh-comment', 'probe@test');
+        click(page.w, '#ssh-generate');
+        for (let i = 0; i < 60 && !/ready/.test(read(page.w, '#ssh-status')); i += 1) await sleep(250);
+        check(`ssh ${type}: the page finished generating`, /ready/.test(read(page.w, '#ssh-status')), true);
+
+        const pub = read(page.w, '#ssh-public').trim();
+        const priv = read(page.w, '#ssh-private');
+        const pkcs8 = read(page.w, '#ssh-pkcs8');
+        check(`ssh ${type}: the public line names the algorithm ssh-keygen knows`, pub.split(' ')[0], sshName);
+        check(`ssh ${type}: the comment is carried into the public line`, pub.split(' ')[2], 'probe@test');
+        check(`ssh ${type}: the private key is in OpenSSH's own container, not PKCS#8`,
+          priv.split('\n')[0], '-----BEGIN OPENSSH PRIVATE KEY-----');
+        check(`ssh ${type}: the PKCS#8 copy is a separate field, not the same text`,
+          pkcs8.split('\n')[0], '-----BEGIN PRIVATE KEY-----');
+        const body = priv.split('\n').slice(1, -2);
+        check(`ssh ${type}: the OpenSSH body is wrapped at 70 columns, the way ssh-keygen writes it`,
+          body.slice(0, -1).every((line) => line.length === 70), true);
+        check(`ssh ${type}: no line of the container is over 70 columns`, body.every((line) => line.length <= 70), true);
+
+        // A directory per type: ssh-keygen will not overwrite an existing signature,
+        // so a leftover msg.txt.sig would be verified against the next key and the
+        // check would fail for a reason that has nothing to do with the key.
+        const here = path.join(dir, type);
+        fs.mkdirSync(here);
+        const base = path.join(here, 'key');
+        fs.writeFileSync(`${base}.pub`, `${pub}\n`, { mode: 0o644 });
+        // 0600, because ssh-keygen refuses to read a private key anyone else can open.
+        fs.writeFileSync(base, priv, { mode: 0o600 });
+        fs.writeFileSync(`${base}.pkcs8`, pkcs8, { mode: 0o600 });
+
+        check(`ssh ${type}: ssh-keygen reads the private key and derives the same public key`,
+          attempt(`ssh-keygen -y -f ${base}`).out.trim(), pub);
+        check(`ssh ${type}: the page's SHA256 fingerprint is the one ssh-keygen prints`,
+          attempt(`ssh-keygen -lf ${base}.pub`).out.split(/\s+/)[1], read(page.w, '#ssh-fingerprint'));
+        check(`ssh ${type}: the page's MD5 fingerprint is the one ssh-keygen prints`,
+          attempt(`ssh-keygen -E md5 -lf ${base}.pub`).out.split(/\s+/)[1], read(page.w, '#ssh-md5'));
+
+        // A real signature round trip. Loading the key only exercises the parser;
+        // signing with it exercises the private half, including RSA's CRT
+        // coefficient — which is the field a key can load with and still fail to use.
+        const message = path.join(here, 'msg.txt');
+        fs.writeFileSync(message, 'a message the key signs\n');
+        fs.writeFileSync(path.join(here, 'allowed'), `probe@test ${pub}\n`);
+        check(`ssh ${type}: ssh-keygen signs with the key`,
+          attempt(`ssh-keygen -Y sign -f ${base} -n file ${message}`).failed, false);
+        check(`ssh ${type}: the signature verifies against the public key the page printed`,
+          attempt(`ssh-keygen -Y verify -f ${path.join(here, 'allowed')} -I probe@test -n file -s ${message}.sig < ${message}`).out.includes('Good "file" signature'), true);
+
+        check(`ssh ${type}: openssl agrees the PKCS#8 copy is a valid key`,
+          /Key is valid/.test(attempt(`openssl pkey -in ${base}.pkcs8 -check -noout 2>&1`).out), true);
+
+        // The page makes a specific claim about what OpenSSH will and will not read.
+        // A claim in the interface is a thing to check, not a thing to trust.
+        const pkcs8Read = !attempt(`ssh-keygen -y -f ${base}.pkcs8`).failed;
+        if (type === 'ed25519') {
+          check('ssh ed25519: OpenSSH really does refuse the PKCS#8 copy, which is what the page says',
+            pkcs8Read, false);
+        }
+        if (type === 'rsa-2048') {
+          check('ssh rsa: OpenSSH really does read the PKCS#8 copy, which is what the page says',
+            attempt(`ssh-keygen -y -f ${base}.pkcs8`).out.trim().split(' ').slice(0, 2).join(' '), pub.split(' ').slice(0, 2).join(' '));
+        }
+      }
+    }
+  }
+
+  /* ------------------------------------------------------------ file hashes */
+
+  console.log('\n=== file hashes ===');
+  {
+    const crypto = require('crypto');
+    // Bytes that are not valid UTF-8 and contain a NUL, so a tool that hashes text
+    // instead of bytes cannot pass by accident.
+    const bytes = new Uint8Array([0, 1, 2, 250, 255, 128, 65, 10, 13, 0, 66]);
+    const oracle = (algorithm) => crypto.createHash(algorithm).update(Buffer.from(bytes)).digest('hex');
+    const digests = (page) => [...page.w.document.querySelectorAll('#fhc-results textarea')].map((el) => el.value);
+
+    const page = loadPage('file-hash-checker');
+    const file = new page.w.File([bytes], 'sample.bin', { type: 'application/octet-stream' });
+    const input = page.w.document.querySelector('#fhc-file');
+    Object.defineProperty(input, 'files', { value: [file], configurable: true });
+    input.dispatchEvent(new page.w.Event('change', { bubbles: true }));
+    await sleep(700);
+
+    check('hashes: the three algorithms asked for are on by default',
+      ['#fhc-md5', '#fhc-sha1', '#fhc-sha256', '#fhc-sha512'].map((id) => page.w.document.querySelector(id).checked),
+      [true, true, true, false]);
+    check('hashes: MD5 matches node', digests(page)[0], oracle('md5'));
+    check('hashes: SHA-1 matches node', digests(page)[1], oracle('sha1'));
+    check('hashes: SHA-256 matches node', digests(page)[2], oracle('sha256'));
+    check('hashes: the file is named and sized in the summary', read(page.w, '#fhc-name'), 'sample.bin · 11 bytes');
+
+    // The expected-hash field has to find a digest inside whatever a publisher
+    // printed, and it must not care about case.
+    set(page.w, '#fhc-expected', `SHA256 (sample.bin) = ${oracle('sha256').toUpperCase()}`);
+    await sleep(300);
+    check('hashes: a sha256sum line is understood', read(page.w, '#fhc-verdict'), "Match. The file's SHA-256 is the one you pasted.");
+    check('hashes: a match is marked as a match', page.w.document.querySelector('#fhc-verdict').classList.contains('ok'), true);
+
+    // A digest for an algorithm that is switched off cannot be compared, and saying
+    // "no match" would be a false accusation against the file. The tool says which
+    // of the two it is and tells you how to fix it.
+    set(page.w, '#fhc-expected', oracle('sha512'));
+    await sleep(300);
+    check('hashes: a digest nobody computed is reported as not comparable, not as a mismatch',
+      read(page.w, '#fhc-verdict'),
+      'No match — but the hash you pasted is a different length from every one computed here, so the two are not comparable. Tick the matching algorithm above.');
+
+    set(page.w, '#fhc-expected', 'deadbeef');
+    await sleep(300);
+    check('hashes: something that is not a digest is refused rather than reported as a mismatch',
+      read(page.w, '#fhc-verdict'), 'That does not look like a hash — a digest is a run of 32 or more hex characters.');
+    check('hashes: ...and is not marked as a match', page.w.document.querySelector('#fhc-verdict').classList.contains('ok'), false);
+
+    set(page.w, '#fhc-expected', '0'.repeat(32));
+    await sleep(300);
+    check('hashes: a real digest of the right length that does not match is called a mismatch',
+      read(page.w, '#fhc-verdict'),
+      "No match. MD5 came out different, so this file is not the one that hash was published for.");
+    check('hashes: a mismatch is marked as a problem',
+      page.w.document.querySelector('#fhc-verdict').classList.contains('err'), true);
+
+    // A digest buried in a publisher's line is still found, and being surrounded by
+    // words does not turn a match into a mismatch.
+    set(page.w, '#fhc-expected', `SHA256 (sample.bin) = ${oracle('sha256')}`);
+    await sleep(300);
+    check('hashes: the digest is found inside the line, and the words around it are ignored',
+      read(page.w, '#fhc-verdict'), "Match. The file's SHA-256 is the one you pasted.");
+
+    set(page.w, '#fhc-sha512', true);
+    set(page.w, '#fhc-upper', true);
+    await sleep(700);
+    check('hashes: switching on SHA-512 adds a row without re-reading the file', digests(page).length, 4);
+    check('hashes: SHA-512 matches node', digests(page)[3].toLowerCase(), oracle('sha512'));
+    check('hashes: uppercase really is uppercase', digests(page)[3], oracle('sha512').toUpperCase());
+  }
+
+  /* -------------------------------------------------------- image metadata */
+
+  console.log('\n=== image metadata ===');
+  {
+    // A hand-built EXIF block, because the parser's job is to follow offsets and
+    // the inline-versus-out-of-line rule — and a fixture that avoids those rules
+    // would pass while the real thing failed. Big-endian on purpose: the little-
+    // endian path is the one everybody writes, so it is the one that gets tested.
+    const T = { BYTE: 1, ASCII: 2, SHORT: 3, LONG: 4, RATIONAL: 5 };
+    const UNIT = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8 };
+    const join = (...parts) => {
+      const out = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0));
+      let at = 0;
+      for (const part of parts) {
+        out.set(part, at);
+        at += part.length;
+      }
+      return out;
+    };
+    const raw = (type, values) => {
+      if (type === T.ASCII) return join(new TextEncoder().encode(values.join('')), new Uint8Array([0]));
+      const out = new Uint8Array(values.length * UNIT[type]);
+      const view = new DataView(out.buffer);
+      values.forEach((value, i) => {
+        if (type === T.SHORT) view.setUint16(i * 2, value);
+        else if (type === T.LONG) view.setUint32(i * 4, value);
+        else if (type === T.RATIONAL) {
+          view.setUint32(i * 8, value[0]);
+          view.setUint32(i * 8 + 4, value[1]);
+        } else out[i] = value;
+      });
+      return out;
+    };
+    const buildTiff = (ifds) => {
+      const size = (ifd) => 2 + ifd.entries.length * 12 + 4;
+      const tail = (ifd) => ifd.entries.reduce((sum, e) => sum + (raw(e.type, e.values).length > 4 ? raw(e.type, e.values).length : 0), 0);
+      let at = 8;
+      for (const ifd of ifds) {
+        ifd.start = at;
+        at += size(ifd) + tail(ifd);
+      }
+      for (const ifd of ifds) for (const e of ifd.entries) if (e.ref) e.values[0] = e.ref.start;
+      const out = new Uint8Array(at);
+      const view = new DataView(out.buffer);
+      out[0] = 0x4d;
+      out[1] = 0x4d;
+      view.setUint16(2, 0x2a);
+      view.setUint32(4, ifds[0].start);
+      for (const ifd of ifds) {
+        view.setUint16(ifd.start, ifd.entries.length);
+        let valueAt = ifd.start + size(ifd);
+        ifd.entries.forEach((e, i) => {
+          const bytes = raw(e.type, e.values);
+          const o = ifd.start + 2 + i * 12;
+          view.setUint16(o, e.tag);
+          view.setUint16(o + 2, e.type);
+          view.setUint32(o + 4, e.type === T.ASCII ? bytes.length : e.values.length);
+          if (bytes.length <= 4) out.set(bytes, o + 8);
+          else {
+            view.setUint32(o + 8, valueAt);
+            out.set(bytes, valueAt);
+            valueAt += bytes.length;
+          }
+        });
+      }
+      return out;
+    };
+
+    const exif = { entries: [] };
+    const gps = { entries: [] };
+    const ifd0 = {
+      entries: [
+        { tag: 0x010f, type: T.ASCII, values: ['Example Camera Co'] },
+        { tag: 0x0110, type: T.ASCII, values: ['Model X'] },
+        { tag: 0x0112, type: T.SHORT, values: [6] },
+        { tag: 0x011a, type: T.RATIONAL, values: [[72, 1]] },
+        { tag: 0x8769, type: T.LONG, values: [0], ref: exif },
+        { tag: 0x8825, type: T.LONG, values: [0], ref: gps },
+      ],
+    };
+    exif.entries = [
+      { tag: 0x829a, type: T.RATIONAL, values: [[1, 250]] },
+      { tag: 0x829d, type: T.RATIONAL, values: [[28, 10]] },
+      { tag: 0x9003, type: T.ASCII, values: ['2024:05:06 07:08:09'] },
+      { tag: 0x920a, type: T.RATIONAL, values: [[35, 1]] },
+      { tag: 0x9286, type: T.BYTE, values: [0x41, 0x53, 0x43, 0x49, 0x49, 0, 0, 0, ...new TextEncoder().encode('a private note')] },
+    ];
+    gps.entries = [
+      { tag: 0x0001, type: T.ASCII, values: ['S'] },
+      { tag: 0x0002, type: T.RATIONAL, values: [[51, 1], [30, 1], [0, 1]] },
+      { tag: 0x0003, type: T.ASCII, values: ['E'] },
+      { tag: 0x0004, type: T.RATIONAL, values: [[0, 1], [7, 1], [3000, 100]] },
+    ];
+    const tiff = buildTiff([ifd0, exif, gps]);
+    const app1 = join(
+      new Uint8Array([0xff, 0xe1]),
+      new Uint8Array([((tiff.length + 8) >> 8) & 255, (tiff.length + 8) & 255]),
+      new TextEncoder().encode('Exif\0\0'),
+      tiff,
+    );
+    const jpeg = join(new Uint8Array([0xff, 0xd8]), app1, new Uint8Array([0xff, 0xda]));
+
+    const page = loadPage('image-metadata');
+    const load = async (data, name, type) => {
+      const file = new page.w.File([data], name, { type });
+      const field = page.w.document.querySelector('#img-file');
+      Object.defineProperty(field, 'files', { value: [file], configurable: true });
+      field.dispatchEvent(new page.w.Event('change', { bubbles: true }));
+      await sleep(400);
+    };
+
+    await load(jpeg, 'photo.jpg', 'image/jpeg');
+    const report = read(page.w, '#img-results');
+    const dump = JSON.parse(read(page.w, '#img-json'));
+    check('image: the block count is reported', read(page.w, '#img-summary'), 'JPEG · 3 blocks of metadata');
+    check('image: the camera make is read from the IFD0 ASCII tag', dump.Image['Camera make'], 'Example Camera Co');
+    check('image: a SHORT that fits in four bytes is read from the entry itself', dump.Image.Orientation, 'Rotated 90° clockwise');
+    check('image: a RATIONAL that does not fit is read from the offset it points at', dump['Exposure and camera']['Exposure time'], '1/250 s');
+    check('image: the user comment is decoded past its 8-byte encoding header', dump['Exposure and camera']['User comment'], 'a private note');
+    check('image: the GPS sub-IFD is followed', dump.Location.Latitude, '51° 30′ 0″');
+
+    // The coordinates are spread over six tags across two IFDs, and the sign lives
+    // in a separate ref tag. This is where a NaN used to reach the map link.
+    const warning = page.w.document.querySelector('.img-warning');
+    check('image: a photo with a location says so', Boolean(warning), true);
+    const link = warning.querySelector('a');
+    check('image: the south and east refs decide the signs', link.textContent, '-51.50000, 0.12500');
+    check('image: the map link carries numbers, not NaN',
+      link.getAttribute('href'), 'https://www.openstreetmap.org/?mlat=-51.5&mlon=0.125#map=15/-51.5/0.125');
+
+    // A PNG has no EXIF, so this is the other reader and the other block layout.
+    const chunk = (type, body) => join(new Uint8Array([(body.length >>> 24) & 255, (body.length >>> 16) & 255, (body.length >>> 8) & 255, body.length & 255]), new TextEncoder().encode(type), body, new Uint8Array([0, 0, 0, 0]));
+    const be32 = (n) => new Uint8Array([(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255]);
+    const png = join(
+      new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+      chunk('IHDR', join(be32(800), be32(600), new Uint8Array([8, 2, 0, 0, 0]))),
+      chunk('pHYs', join(be32(2835), be32(2835), new Uint8Array([1]))),
+      chunk('tEXt', new TextEncoder().encode('Title\0A test picture')),
+      chunk('IEND', new Uint8Array(0)),
+    );
+    await load(png, 'shot.png', 'image/png');
+    const pngDump = JSON.parse(read(page.w, '#img-json'));
+    check('image: a PNG header is read', [pngDump['PNG image'].Width, pngDump['PNG image'].Height], ['800 px', '600 px']);
+    check('image: the pixel density is converted from pixels per metre', pngDump['PNG image']['Pixel size'], '72 × 72 dots per inch');
+    check('image: a tEXt chunk is split into its keyword and value', pngDump['Text chunks'].Title, 'A test picture');
+    check('image: a file with no location shows no location warning', page.w.document.querySelectorAll('.img-warning').length, 0);
+
+    await load(new Uint8Array([1, 2, 3, 4]), 'notes.txt', 'text/plain');
+    check('image: a file that is not an image is refused by name',
+      read(page.w, '#img-status'), 'This does not look like a JPEG, PNG, GIF or WebP. Those are the four this page can read.');
+    check('image: ...and nothing from the previous file is left on screen', read(page.w, '#img-results'), '');
+  }
+
+  /* --------------------------------------------------------- websocket tester */
+
+  console.log('\n=== websocket tester ===');
+  {
+    const page = loadPage('websocket-tester');
+    set(page.w, '#ws-url', 'api.example.com/socket');
+    click(page.w, '#ws-connect');
+    await sleep(60);
+    const socket = page.sockets()[0];
+    check('websocket: a bare host is given a scheme and the guess is stated',
+      read(page.w, '#ws-status'), 'Opening wss://api.example.com/socket… (no scheme given, so wss:// was assumed)');
+    check('websocket: ...and the guess stays in the log after the status line moves on',
+      read(page.w, '#ws-log').includes('no scheme given, so wss:// was assumed'), true);
+    check('websocket: the page opened the address the user typed', socket.url, 'wss://api.example.com/socket');
+    check('websocket: send is disabled while the socket is still connecting', page.w.document.querySelector('#ws-send').disabled, true);
+
+    socket.serverOpen('chat');
+    await sleep(40);
+    check('websocket: opening enables send', page.w.document.querySelector('#ws-send').disabled, false);
+    check('websocket: the open line reports the negotiated subprotocol', read(page.w, '#ws-log').includes('protocol: chat'), true);
+    check('websocket: the state is shown as a word, not just a colour', page.w.document.querySelector('#ws-note').dataset.state, 'Open');
+
+    set(page.w, '#ws-message', '{"hello":"world"}');
+    click(page.w, '#ws-send');
+    check('websocket: what was typed is what was sent, byte for byte', socket.sent, ['{"hello":"world"}']);
+    check('websocket: the input is cleared after sending', read(page.w, '#ws-message'), '');
+
+    socket.serverMessage('{"a":1,"b":[2,3]}');
+    await sleep(40);
+    check('websocket: JSON from the server is indented so it can be read', read(page.w, '#ws-log').includes('"a": 1'), true);
+    socket.serverMessage('not json at all');
+    await sleep(40);
+    check('websocket: something that is not JSON is shown as it arrived', read(page.w, '#ws-log').includes('not json at all'), true);
+
+    set(page.w, '#ws-binary', true);
+    set(page.w, '#ws-message', '48 69');
+    click(page.w, '#ws-send');
+    const binary = socket.sent[1];
+    check('websocket: hex is turned into real bytes', [binary instanceof Uint8Array, [...(binary || [])]], [true, [0x48, 0x69]]);
+    set(page.w, '#ws-message', 'zz');
+    click(page.w, '#ws-send');
+    check('websocket: bad hex is refused rather than sending something else', socket.sent.length, 2);
+    check('websocket: ...and the reason names the format', read(page.w, '#ws-status').includes('pairs of hex digits'), true);
+    set(page.w, '#ws-binary', false);
+
+    socket.serverClose(1006, '');
+    await sleep(40);
+    check('websocket: an unclean close is explained instead of just numbered',
+      read(page.w, '#ws-log').includes('1006 means the connection was closed without a close frame'), true);
+    check('websocket: the status carries the close code', read(page.w, '#ws-status'), 'Closed with code 1006.');
+    check('websocket: the buttons go back to their resting state',
+      [page.w.document.querySelector('#ws-send').disabled, page.w.document.querySelector('#ws-connect').disabled], [true, false]);
+
+    click(page.w, '#ws-clear');
+    check('websocket: clear empties the log', read(page.w, '#ws-log'), '');
+
+    // The rule that surprises people: this is the browser, not a bug in the page.
+    const mixed = loadPage('websocket-tester');
+    set(mixed.w, '#ws-url', 'ws://plain.example.com/socket');
+    click(mixed.w, '#ws-connect');
+    await sleep(60);
+    check('websocket: a plain ws:// socket on an https page is never opened', mixed.sockets().length, 0);
+    check('websocket: ...and the reason is named as a browser rule',
+      read(mixed.w, '#ws-status'), 'Blocked by the browser: this page is https and the socket is ws.');
+
+    const local = loadPage('websocket-tester');
+    set(local.w, '#ws-url', 'ws://localhost:8080/socket');
+    click(local.w, '#ws-connect');
+    await sleep(60);
+    check('websocket: localhost is still allowed to be plain, which is how people test', local.sockets().length, 1);
+
+    const protos = loadPage('websocket-tester');
+    set(protos.w, '#ws-url', 'wss://chat.example.com/');
+    set(protos.w, '#ws-protocol', 'chat, superchat');
+    click(protos.w, '#ws-connect');
+    await sleep(60);
+    check('websocket: a subprotocol list is split on commas', protos.sockets()[0].protocols, ['chat', 'superchat']);
+
+    const bad = loadPage('websocket-tester');
+    set(bad.w, '#ws-url', 'ftp://files.example.com');
+    click(bad.w, '#ws-connect');
+    await sleep(60);
+    check('websocket: an address that is not a socket is handed to the browser rather than guessed at',
+      bad.sockets()[0].url, 'ftp://files.example.com');
+
+    const empty = loadPage('websocket-tester');
+    click(empty.w, '#ws-connect');
+    await sleep(40);
+    check('websocket: an empty address is refused before anything is opened', empty.sockets().length, 0);
+    check('websocket: ...with a message that says what to type', read(empty.w, '#ws-status'), 'Enter a ws:// or wss:// address first.');
+  }
+
+  /* ------------------------------------------------------------ nginx config */
+
+  console.log('\n=== nginx config ===');
+  {
+    // nginx is not installed here, so this is a structural check rather than a real
+    // `nginx -t`: every server_name has to be a bare name, every brace has to close,
+    // and the two halves of a redirect have to agree. A config that would not load
+    // is caught by the generator itself and written into the output as a comment.
+    const NAME = /^(\*\.)?[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)*$/;
+    const names = (out) => [...out.matchAll(/^\s*server_name (.+);$/gm)].flatMap((m) => m[1].split(/\s+/)).filter(Boolean);
+
+    const page = loadPage('nginx-config-generator');
+    set(page.w, '#ngx-names', 'example.com, www.example.com');
+    set(page.w, '#ngx-mode', 'proxy');
+    set(page.w, '#ngx-proxy', 'http://127.0.0.1:3000');
+    set(page.w, '#ngx-www', 'to-apex');
+    set(page.w, '#ngx-tls', true);
+    set(page.w, '#ngx-cache', true);
+    await sleep(300);
+    const out = read(page.w, '#ngx-out');
+
+    check('nginx: a comma-separated name list does not leave a comma in server_name',
+      names(out).filter((name) => !NAME.test(name)), []);
+    check('nginx: the www host gets its own server that redirects to the apex',
+      out.includes('server_name www.example.com;') && out.includes('return 301 $scheme://example.com$request_uri;'), true);
+    check('nginx: the apex server does not also claim the www host',
+      out.includes('server_name example.com;') && !out.includes('server_name example.com www.example.com;'), true);
+    check('nginx: braces balance', (out.match(/\{/g) || []).length, (out.match(/\}/g) || []).length);
+    check('nginx: nothing is left at column 0 inside a block',
+      out.split('\n').filter((line) => /^\s*(location|proxy_pass|add_header|ssl_)/.test(line) && !/^\s{4}/.test(line)), []);
+    check('nginx: a plain http upstream gets a named upstream block with keepalive',
+      out.includes('upstream example-com-app {') && out.includes('keepalive 32;') && out.includes('proxy_pass http://example-com-app;'), true);
+    check('nginx: the upgrade map is written exactly once',
+      (out.match(/map \$http_upgrade \$connection_upgrade/g) || []).length, 1);
+    check('nginx: the security headers are repeated inside the asset-cache block, because nginx will not inherit them',
+      (out.match(/X-Content-Type-Options/g) || []).length, 2);
+    check('nginx: the certificate paths are used for the apex, not the www host',
+      out.includes('/etc/letsencrypt/live/example.com/fullchain.pem'), true);
+    check('nginx: the ACME challenge is answered on port 80 before the redirect',
+      out.includes('location /.well-known/acme-challenge/ { root /var/www/html; }'), true);
+    check('nginx: the notes say which nginx version http2 on needs',
+      read(page.w, '#ngx-notes').includes('1.25.1'), true);
+    check('nginx: the notes say why the headers are duplicated',
+      read(page.w, '#ngx-notes').includes('does not merge add_header'), true);
+
+    set(page.w, '#ngx-hsts', false);
+    await sleep(200);
+    check('nginx: HSTS is left out when it is switched off', read(page.w, '#ngx-out').includes('Strict-Transport-Security'), false);
+    set(page.w, '#ngx-hsts', true);
+
+    // An https target cannot keep a connection pool, so it must not be given one.
+    const remote = loadPage('nginx-config-generator');
+    set(remote.w, '#ngx-mode', 'proxy');
+    set(remote.w, '#ngx-proxy', 'https://backend.example.com');
+    set(remote.w, '#ngx-www', 'off');
+    await sleep(200);
+    const rout = read(remote.w, '#ngx-out');
+    check('nginx: an https upstream gets no upstream block, because keepalive cannot work over it',
+      [rout.includes('upstream '), rout.includes('proxy_pass https://backend.example.com;')], [false, true]);
+
+    const bad = loadPage('nginx-config-generator');
+    set(bad.w, '#ngx-names', 'not a name!');
+    await sleep(200);
+    check('nginx: a name that is not a host is reported',
+      errorStatuses(bad.w).some((text) => text.toLowerCase().includes('not a valid server name')), true);
+    check('nginx: ...and the warning is written into the file, not only into the status line',
+      read(bad.w, '#ngx-out').includes('# !!'), true);
+    check('nginx: the bad name never reaches a server_name line',
+      read(bad.w, '#ngx-out').includes('server_name name!;'), false);
+
+    const spa = loadPage('nginx-config-generator');
+    set(spa.w, '#ngx-mode', 'spa');
+    set(spa.w, '#ngx-root', '/var/www/site/dist');
+    await sleep(200);
+    const sout = read(spa.w, '#ngx-out');
+    check('nginx: a single-page app falls back to its shell instead of 404ing',
+      sout.includes('try_files $uri $uri/ /index.html;'), true);
+    check('nginx: an app mode gets no upstream block', sout.includes('upstream '), false);
+  }
+
+  /* --------------------------------------------------- remembering what was typed */
+
+  console.log('\n=== remembering what was typed ===');
+  {
+    const CONSENT = 'ilham:memory-consent';
+    const MEM = 'ilham:memory:json-formatter';
+    const store = (slug) => `ilham:memory:${slug}`;
+    const load = (slug, seed) => loadFile(path.join(TOOLS, slug, 'index.html'), `https://ilham.dev/tools/${slug}/`, { store: seed });
+
+    // 1. Nothing at all is written before the question is answered.
+    const first = load('json-formatter');
+    check('memory: the question is asked on a first visit',
+      [first.w.document.querySelector('#tool-memory-ask').hidden, first.w.document.querySelector('#tool-memory-on').hidden],
+      [false, true]);
+    set(first.w, '#jf-input', '{"typed":"before consent"}');
+    await sleep(600);
+    check('memory: typing writes nothing before the question is answered', first.w.localStorage.getItem(MEM), null);
+
+    // 2. Yes stores the fields, and says where they are.
+    click(first.w, '#tool-memory-yes');
+    await sleep(60);
+    check('memory: yes records the answer itself', first.w.localStorage.getItem(CONSENT), 'yes');
+    check("memory: yes stores the tool's own fields",
+      JSON.parse(first.w.localStorage.getItem(MEM))['jf-input'], '{"typed":"before consent"}');
+    check('memory: the bar says where the data is kept',
+      first.w.document.querySelector('#tool-memory-note').textContent, 'Saved on this device. It will be here when you come back.');
+
+    // 3. A reload restores the fields and the tool redraws from them.
+    const second = load('json-formatter', {
+      [MEM]: first.w.localStorage.getItem(MEM),
+      [CONSENT]: 'yes',
+    });
+    check('memory: a reload puts the text back', read(second.w, '#jf-input'), '{"typed":"before consent"}');
+    check('memory: ...and the tool re-rendered from what was restored, rather than leaving stale output',
+      read(second.w, '#jf-output'), '{\n  "typed": "before consent"\n}');
+    check('memory: the bar says how many fields came back',
+      second.w.document.querySelector('#tool-memory-note').textContent,
+      'Picked up where you left off — 2 fields restored from this device.');
+
+    // 4. No writes nothing, ever.
+    const third = load('json-formatter');
+    set(third.w, '#jf-input', '{"nope":1}');
+    click(third.w, '#tool-memory-no');
+    await sleep(600);
+    check('memory: no stores nothing, even after typing', third.w.localStorage.getItem(MEM), null);
+    check('memory: no is remembered as an answer', third.w.localStorage.getItem(CONSENT), 'no');
+    check('memory: the off state offers a way back on', third.w.document.querySelector('#tool-memory-off').hidden, false);
+
+    // 5. A tool page can hold a password, so a password field is never written down.
+    const aes = load('aes-encryption', { [CONSENT]: 'yes' });
+    set(aes.w, '#aes-pass', 'hunter2');
+    set(aes.w, '#aes-input', 'a secret message');
+    await sleep(600);
+    const aesSaved = JSON.parse(aes.w.localStorage.getItem(store('aes-encryption')) || '{}');
+    check('memory: a password field is never written to storage', 'aes-pass' in aesSaved, false);
+    check('memory: an ordinary field beside it still is', aesSaved['aes-input'], 'a secret message');
+
+    // 6. A private key is the worst thing to leave lying around, so it is marked.
+    const ssh = load('ssh-key-generator', { [CONSENT]: 'yes' });
+    set(ssh.w, '#ssh-comment', 'me@laptop');
+    await sleep(600);
+    const sshSaved = JSON.parse(ssh.w.localStorage.getItem(store('ssh-key-generator')) || '{}');
+    check('memory: the comment is saved', sshSaved['ssh-comment'], 'me@laptop');
+    check('memory: a field marked data-no-memory is not, even though it is not a password',
+      '#ssh-private' in sshSaved, false);
+
+    // 7. The regression that made a select hold the literal string "undefined".
+    const list = load('list-converter', { [CONSENT]: 'yes' });
+    set(list.w, '#list-format', 'sql');
+    set(list.w, '#list-input', 'a\nb');
+    await sleep(600);
+    click(list.w, '#tool-memory-forget');
+    await sleep(100);
+    check("memory: forget clears this tool's store", list.w.localStorage.getItem(store('list-converter')), null);
+    check('memory: forget puts a select back on a real option, not on "undefined"',
+      list.w.document.querySelector('#list-format').value, 'json');
+    check('memory: ...and the tool still works afterwards', read(list.w, '#list-output'), '[]');
+    check('memory: ...with no error from a lookup that no longer exists', errorStatuses(list.w), []);
+
+    // 8. Forget-everything is a different promise from forget-this-tool.
+    const all = load('json-formatter', {
+      [CONSENT]: 'yes',
+      'ilham:memory:other-tool': '{"x":1}',
+      'ilham:recent-tools': '[]',
+    });
+    click(all.w, '#tool-memory-forget-all');
+    await sleep(100);
+    check('memory: forget-all removes every tool store and the answer itself',
+      [all.w.localStorage.getItem('ilham:memory:other-tool'), all.w.localStorage.getItem(CONSENT)], [null, null]);
+    // The sidebar records the current tool on every load, so the exact contents are
+    // not the point here — the point is that forget-all did not delete the key.
+    check('memory: forget-all leaves the recently-used list alone, because that is a separate promise',
+      all.w.localStorage.getItem('ilham:recent-tools') === null, false);
+  }
+
+  /* -------------------------------------------------------- recently used tools */
+
+  console.log('\n=== recently used tools ===');
+  {
+    const RECENT = 'ilham:recent-tools';
+    const catalog = (seed) => loadFile(path.join(ROOT, 'tools', 'index.html'), 'https://ilham.dev/tools/', { store: seed });
+    const entries = (page) => JSON.parse(page.w.localStorage.getItem(RECENT) || '[]');
+
+    const blank = catalog(null);
+    check('recent: nothing is listed before anything has been opened', blank.w.document.querySelector('#tool-recent').hidden, true);
+
+    // Recorded by the real navigation script, not by writing the key here.
+    const opened = loadPage('uuid-generator');
+    await sleep(60);
+    check('recent: opening a tool records its slug', entries(opened).map((entry) => entry.slug), ['uuid-generator']);
+    check('recent: ...and nothing else — no input, no output, no title',
+      Object.keys(entries(opened)[0]).sort(), ['at', 'slug']);
+
+    const shown = catalog({ [RECENT]: JSON.stringify([{ slug: 'uuid-generator', at: Date.now() - 5000 }]) });
+    check('recent: the sidebar shows it', shown.w.document.querySelector('#tool-recent').hidden, false);
+    check('recent: ...as a link to the tool',
+      shown.w.document.querySelector('#tool-recent .tool-recent-list a').getAttribute('href'), '/tools/uuid-generator/');
+    check('recent: ...named the way the sidebar names it, not by its slug',
+      shown.w.document.querySelector('#tool-recent .tool-recent-list a').textContent, 'UUID Generator');
+    check('recent: ...with a time a person can read',
+      shown.w.document.querySelector('#tool-recent .tool-recent-when').textContent, 'just now');
+
+    click(shown.w, '#tool-recent-clear');
+    check('recent: clear empties the list', shown.w.localStorage.getItem(RECENT), null);
+    check('recent: ...and hides the block', shown.w.document.querySelector('#tool-recent').hidden, true);
+
+    // Re-opening moves an entry to the front instead of appending it.
+    const revisited = loadFile(path.join(TOOLS, 'uuid-generator', 'index.html'), 'https://ilham.dev/tools/uuid-generator/', {
+      store: { [RECENT]: JSON.stringify([{ slug: 'base64-string-converter', at: 1 }, { slug: 'uuid-generator', at: 2 }]) },
+    });
+    await sleep(60);
+    check('recent: re-opening a tool moves it to the front rather than adding it again',
+      entries(revisited).map((entry) => entry.slug), ['uuid-generator', 'base64-string-converter']);
+
+    const full = loadFile(path.join(TOOLS, 'uuid-generator', 'index.html'), 'https://ilham.dev/tools/uuid-generator/', {
+      store: { [RECENT]: JSON.stringify(Array.from({ length: 8 }, (_, i) => ({ slug: `tool-${i}`, at: i }))) },
+    });
+    await sleep(60);
+    check('recent: the list is capped at eight', entries(full).length, 8);
+    check('recent: ...and the one that fell off is the oldest', entries(full).some((entry) => entry.slug === 'tool-7'), false);
+
+    const junk = catalog({ [RECENT]: 'not json at all' });
+    check('recent: a corrupt store is ignored instead of breaking the sidebar', junk.w.document.querySelector('#tool-recent').hidden, true);
+    check('recent: ...and the page still lists the tools',
+      junk.w.document.querySelectorAll('[data-tool-card]').length, TOOL_COUNT);
+  }
+
+  /* ------------------------------------------------------ http request tester */
+
+  console.log('\n=== http request tester ===');
+  {
+    const page = loadPage('http-request-tester');
+    set(page.w, '#hrt-curl-in', "curl -X POST 'https://api.example.com/v1/items?a=1' -H 'X-Token: abc' -d 'name=one&tag=two'");
+    click(page.w, '#hrt-import');
+    await sleep(150);
+    check('http: the method, the address and the query survive a paste', [read(page.w, '#hrt-method'), read(page.w, '#hrt-url')],
+      ['POST', 'https://api.example.com/v1/items?a=1']);
+    check('http: the header survives a paste', read(page.w, '#hrt-headers'), 'X-Token: abc\nContent-Type: application/x-www-form-urlencoded');
+    check('http: -d is sent as a form body, which is what curl does', read(page.w, '#hrt-body'), 'name=one&tag=two');
+    // curl adds that Content-Type itself, and a note says so rather than the import
+    // quietly producing a different request than the one pasted.
+    check('http: the filled-in Content-Type is explained rather than silent',
+      read(page.w, '#hrt-curl-status'), 'Imported. curl sends -d as application/x-www-form-urlencoded, so that Content-Type was filled in.');
+    check('http: ...and a harmless note is not dressed up as an error',
+      page.w.document.querySelector('#hrt-curl-status').classList.contains('err'), false);
+
+    const exported = read(page.w, '#hrt-curl-out');
+    check('http: the exported curl keeps the method', exported.includes("-X POST 'https://api.example.com/v1/items?a=1'"), true);
+    check('http: the export panel is rebuilt after an import instead of showing the old request',
+      exported.includes("-d 'name=one&tag=two'"), true);
+
+    set(page.w, '#hrt-curl-in', exported);
+    click(page.w, '#hrt-import');
+    await sleep(150);
+    check('http: importing the export gives the same command back, so the round trip is stable',
+      read(page.w, '#hrt-curl-out'), exported);
+
+    // Flags with no browser equivalent are named, not dropped.
+    set(page.w, '#hrt-curl-in', 'curl -k --compressed -o out.bin --http2 https://x.test/f');
+    click(page.w, '#hrt-import');
+    await sleep(150);
+    const refused = read(page.w, '#hrt-curl-status');
+    // -k, -o and --http2 ask for something a page cannot do. --compressed asks for
+    // something the browser already does, so it is an adjustment and must NOT be
+    // listed as left out — that list is only worth reading if it is accurate.
+    check('http: a flag the browser cannot honour is named as left out',
+      ['-k', '-o', '--http2'].every((flag) => refused.includes(flag)), true);
+    check('http: ...and a flag that only asks for what the browser already does is not called left out',
+      refused.includes('--compressed'), false);
+    check('http: ...and the status is marked as a problem', page.w.document.querySelector('#hrt-curl-status').classList.contains('err'), true);
+
+    // The opposite case: a flag that asks for something this page already does.
+    set(page.w, '#hrt-curl-in', 'curl -sSL https://y.test/');
+    click(page.w, '#hrt-import');
+    await sleep(150);
+    check('http: flags that ask for nothing are explained, not reported as lost',
+      read(page.w, '#hrt-curl-status'), 'Imported. quiet mode; showing errors, which this page always does; redirects, which this page always follows.');
+    check('http: ...and that status is not an error', page.w.document.querySelector('#hrt-curl-status').classList.contains('err'), false);
+
+    set(page.w, '#hrt-curl-in', 'curl -G -d "q=hello world" https://search.example.com/');
+    click(page.w, '#hrt-import');
+    await sleep(150);
+    check('http: -G moves the data into the query string, encoded',
+      read(page.w, '#hrt-url'), 'https://search.example.com/?q=hello%20world');
+    check('http: -G means no request body', read(page.w, '#hrt-body'), '');
+
+    set(page.w, '#hrt-curl-in', 'curl -u user:pa:ss -H "X-A: b" https://api.example.com/');
+    click(page.w, '#hrt-import');
+    await sleep(150);
+    check('http: -u becomes a Basic header, and a password with a colon survives',
+      read(page.w, '#hrt-headers'), `Authorization: Basic ${Buffer.from('user:pa:ss').toString('base64')}\nX-A: b`);
+
+    // A real send, with fetch replaced. The reply is built by hand so the parsing
+    // of it is what is being checked, not the network.
+    const realFetch = globalThis.fetch;
+    let seen = null;
+    globalThis.fetch = async (url, options) => {
+      seen = { url, options };
+      return {
+        ok: true,
+        status: 201,
+        statusText: 'Created',
+        headers: { forEach: (fn) => fn('application/json', 'content-type') },
+        text: async () => '{"created":true,"id":7}',
+      };
+    };
+    try {
+      set(page.w, '#hrt-url', 'https://api.example.com/v1/items');
+      set(page.w, '#hrt-method', 'POST');
+      set(page.w, '#hrt-body-type', 'json');
+      set(page.w, '#hrt-body', '{"name":"one"}');
+      click(page.w, '#hrt-send');
+      await sleep(200);
+      check('http: the request that is sent carries the chosen method', seen.options.method, 'POST');
+      check('http: ...and the body', seen.options.body, '{"name":"one"}');
+      check('http: ...and the JSON content type the body type implies',
+        seen.options.headers.some(([name, value]) => name.toLowerCase() === 'content-type' && value === 'application/json'), true);
+      check('http: the status line reports what came back', read(page.w, '#hrt-status'), 'Done');
+      check('http: the response headers are listed', read(page.w, '#hrt-res-headers'), 'content-type: application/json');
+      check('http: a JSON reply is indented for reading', read(page.w, '#hrt-res-body'), '{\n  "created": true,\n  "id": 7\n}');
+      // The size is the UTF-8 length of the body that actually came back, so the
+      // number is derived here rather than copied out of the page.
+      check('http: the timing and size are reported',
+        read(page.w, '#hrt-meta'),
+        `201 Created · ${read(page.w, '#hrt-meta').split(' · ')[1]} · ${Buffer.byteLength('{"created":true,"id":7}')} bytes`);
+
+      // A failure has to say the browser rule out loud, because a missing
+      // Access-Control-Allow-Origin looks exactly like a dead server.
+      globalThis.fetch = async () => {
+        throw new TypeError('Failed to fetch');
+      };
+      click(page.w, '#hrt-send');
+      await sleep(200);
+      check('http: a reply the browser would not hand over is explained as a CORS rule',
+        read(page.w, '#hrt-status').includes('did not send Access-Control-Allow-Origin'), true);
+    } finally {
+      globalThis.fetch = realFetch;
+    }
   }
 
   console.log('\n=== actual output (review by eye) ===');

@@ -1,5 +1,6 @@
-// Build a Wi-Fi join QR code.
-import QRCode from '../vendor/qrcode.js';
+// Build a Wi-Fi join QR code. The drawing lives in ../qr.js, shared with the QR
+// Code Generator and the QR Editor.
+import * as qr from '../qr.js';
 const { tk } = window;
 
 const ssid = document.querySelector('#wqr-ssid');
@@ -21,41 +22,53 @@ function build() {
   return `WIFI:${parts.join(';')};;`;
 }
 
-let currentSvg = '';
+const options = () => ({ ecc: 'M', margin: 2, size: Number(size.value) || 320 });
 
-async function render() {
+let currentSvg = null;
+
+function render() {
   const value = build();
   payload.value = value;
-  if (ssid.value.trim() === '') { preview.replaceChildren(); currentSvg = ''; tk.setStatus(status, 'Enter a network name'); return; }
+  if (ssid.value.trim() === '') {
+    preview.replaceChildren();
+    currentSvg = null;
+    tk.setStatus(status, 'Enter a network name');
+    return;
+  }
   try {
-    const opts = { errorCorrectionLevel: 'M', margin: 2, width: Math.max(128, Math.min(1024, Number(size.value) || 320)) };
-    currentSvg = await QRCode.toString(value, { ...opts, type: 'svg' });
-    preview.innerHTML = currentSvg;
+    currentSvg = qr.renderSvg(value, options());
+    preview.replaceChildren(currentSvg);
     tk.setStatus(status, 'Ready', 'ok');
   } catch (error) {
     preview.replaceChildren();
-    currentSvg = '';
+    currentSvg = null;
     tk.setStatus(status, 'Could not build the QR code — try a shorter network name or password.', 'err');
   }
 }
 
 document.querySelector('#wqr-png').addEventListener('click', async () => {
-  if (ssid.value.trim() === '') { tk.setStatus(status, 'Enter a network name first', 'err'); return; }
+  if (ssid.value.trim() === '') {
+    tk.setStatus(status, 'Enter a network name first', 'err');
+    return;
+  }
   try {
-    const url = await QRCode.toDataURL(build(), { width: Math.max(128, Math.min(1024, Number(size.value) || 320)), margin: 2 });
+    const canvas = await qr.renderCanvas(build(), options());
     const a = document.createElement('a');
-    a.href = url;
+    a.href = qr.canvasToPng(canvas);
     a.download = 'wifi-qr.png';
     a.click();
     tk.setStatus(status, 'PNG downloaded', 'ok');
   } catch (error) {
-    tk.setStatus(status, 'Could not build the PNG here — the SVG download works everywhere.', 'err');
+    tk.setStatus(status, error.message, 'err');
   }
 });
 
 document.querySelector('#wqr-svg').addEventListener('click', () => {
-  if (!currentSvg) { tk.setStatus(status, 'Nothing to download yet', 'err'); return; }
-  tk.download('wifi-qr.svg', currentSvg, 'image/svg+xml');
+  if (!currentSvg) {
+    tk.setStatus(status, 'Nothing to download yet', 'err');
+    return;
+  }
+  tk.download('wifi-qr.svg', qr.svgToString(currentSvg), 'image/svg+xml');
   tk.setStatus(status, 'SVG downloaded', 'ok');
 });
 

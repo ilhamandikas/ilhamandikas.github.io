@@ -1,0 +1,41 @@
+<div class="tool-panel">
+  <h2>Connection</h2>
+  <div class="tool-row">
+    <div class="tool-field hrt-url">
+      <label for="ws-url">Address</label>
+      <input class="tool-input" type="text" id="ws-url" placeholder="wss://echo.websocket.org" spellcheck="false" autocomplete="off">
+    </div>
+    <div class="tool-field">
+      <label for="ws-protocol">Subprotocol</label>
+      <input class="tool-input" type="text" id="ws-protocol" placeholder="chat, superchat" spellcheck="false" autocomplete="off">
+    </div>
+  </div>
+  <p class="tool-hint">A bare host is accepted — <code>example.com/socket</code> becomes <code>wss://example.com/socket</code> on this page, because an https page cannot open anything else. The subprotocol field takes a comma-separated list; leave it empty unless the server asks for one.</p>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="ws-connect">Connect</button>
+    <button class="btn" type="button" id="ws-disconnect">Disconnect</button>
+    <span class="tool-status" id="ws-status" role="status" aria-live="polite"></span>
+    <span class="tool-note" id="ws-note"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Messages</h2>
+  <div class="tool-field">
+    <label for="ws-message">Frame</label>
+    <textarea class="tool-input" id="ws-message" rows="3" spellcheck="false" placeholder='{&quot;type&quot;:&quot;subscribe&quot;,&quot;channel&quot;:&quot;trades&quot;}' disabled></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="ws-send" disabled>Send</button>
+    <label class="tool-check"><input type="checkbox" id="ws-binary"> Send as binary (hex)</label>
+    <button class="btn" type="button" id="ws-clear">Clear log</button>
+  </div>
+  <p class="tool-hint">Enter sends, Shift+Enter makes a newline. Incoming text that happens to be JSON is pretty-printed for reading; incoming binary is shown as its length and the first 64 bytes in hex.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Log</h2>
+  <div class="ws-log" id="ws-log"></div>
+  <p class="tool-hint">The socket is the browser's own, opened straight from this tab. There is no proxy in between, so the server sees your real address and whatever <code>Origin</code> this site sends — that is worth knowing before pointing it at a private service.</p>
+  <p class="tool-hint">A close code of 1006 means no close frame arrived. The browser cannot tell you why: a refused port, a wrong path and a rejected handshake all produce it. If you need something to connect to, <code>wss://echo.websocket.org</code> and <code>wss://ws.postman-echo.com/raw</code> are third-party echo servers that may or may not be up.</p>
+</div>

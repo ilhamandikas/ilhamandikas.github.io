@@ -153,6 +153,16 @@
       desc: Compute MD5, SHA-1, SHA-256 and SHA-512 digests of text.
       keywords: [hash, md5, sha1, sha256, sha512, digest, checksum]
       status: done
+    - slug: file-hash-checker
+      name: File Hash Checker
+      desc: Hash a file with MD5, SHA-1, SHA-256 and SHA-512, and check it against a published digest.
+      keywords: [file, hash, checksum, md5, sha1, sha256, sha512, verify, integrity, iso, download, digest, verify download]
+      status: done
+    - slug: ssh-key-generator
+      name: SSH Key Generator
+      desc: Generate an Ed25519, ECDSA or RSA key pair, with the OpenSSH public key and fingerprints.
+      keywords: [ssh, key, keygen, key pair, ed25519, rsa, ecdsa, openssh, authorized_keys, fingerprint, id_rsa, id_ed25519, pem, pkcs8]
+      status: done
     - slug: hmac-generator
       name: HMAC Generator
       desc: Compute keyed HMAC signatures with a choice of digest.
@@ -212,6 +222,11 @@
       desc: Show your public IP (or any address) with its country, city, coordinates and ISP.
       keywords: [ip, geolocation, geo, my ip, public ip, location, isp, asn, country, city, map]
       status: done
+    - slug: http-request-tester
+      name: HTTP Request Tester
+      desc: Send an HTTP request from the page, import it from curl and export it back to curl.
+      keywords: [http, request, api, rest, curl, postman, fetch, headers, post, get, debug, client, endpoint, test api]
+      status: done
     - slug: dns-lookup
       name: DNS Lookup
       desc: Resolve A, AAAA, MX, TXT, NS, SOA, CAA and SRV records over DNS-over-HTTPS.
@@ -257,6 +272,11 @@
       desc: Pick one or more unused-looking port numbers.
       keywords: [port, random, network, tcp, udp]
       status: done
+    - slug: websocket-tester
+      name: WebSocket Tester
+      desc: Open a WebSocket from the page, send frames and watch what the server sends back.
+      keywords: [websocket, ws, wss, socket, test, client, realtime, frames, subscribe, debug, postman]
+      status: done
 
 - name: Web
   slug: web
@@ -265,6 +285,11 @@
       name: JWT Parser
       desc: Decode and inspect the header, payload and claims of a JSON Web Token.
       keywords: [jwt, token, decode, claims, auth, bearer, verify, signature, validate, hs256, rs256]
+      status: done
+    - slug: jwt-editor
+      name: JWT Token Editor
+      desc: Edit a token's header and claims, then sign it again with HMAC, RSA or ECDSA.
+      keywords: [jwt, token, editor, sign, create, encode, forge, generate, claims, hs256, rs256, es256, none]
       status: done
     - slug: url-parser
       name: URL Parser
@@ -321,6 +346,11 @@
       desc: Build a QR code that joins a Wi-Fi network.
       keywords: [wifi, qr, network, ssid, password]
       status: done
+    - slug: qr-editor
+      name: QR Code Editor
+      desc: Restyle a QR code — module shapes, gradient colours, logo, transparent background.
+      keywords: [qr, editor, style, design, logo, gradient, custom, rounded, dots, transparent]
+      status: done
     - slug: svg-placeholder
       name: SVG Placeholder
       desc: Create a placeholder image as an SVG.
@@ -331,6 +361,11 @@
       desc: Record a short video from the webcam in the browser.
       keywords: [camera, recorder, webcam, video, mediarecorder]
       status: done
+    - slug: image-metadata
+      name: Image Metadata Viewer
+      desc: Read the EXIF, GPS, comments and colour data hidden inside a photo, without uploading it.
+      keywords: [exif, metadata, image, photo, gps, location, camera, jpeg, png, webp, gif, xmp, iptc, hidden data, geotag]
+      status: done
     - slug: html-wysiwyg-editor
       name: HTML Editor
       desc: A small rich-text editor that exports clean HTML.
@@ -340,6 +375,11 @@
 - name: Workflow
   slug: workflow
   tools:
+    - slug: nginx-config-generator
+      name: nginx Config Generator
+      desc: Build an nginx server block for a static site, a single-page app, PHP or a reverse proxy.
+      keywords: [nginx, config, server block, reverse proxy, vhost, tls, ssl, spa, php, gzip, upstream, webserver]
+      status: done
     - slug: crontab-generator
       name: Crontab Generator
       desc: Build a cron expression and read it back in plain language.
