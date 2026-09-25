@@ -1,7 +1,7 @@
 // QR Editor — build the same QR code as the generator, then shape it: module and
 // finder style, a two-stop gradient, a transparent background and a logo. The
 // renderer is ../qr.js, shared with the generator and the Wi-Fi tool.
-import jsQR from 'jsqr';
+import jsQR from '../vendor/jsqr.js';
 import * as qr from '../qr.js';
 const { tk } = window;
 
