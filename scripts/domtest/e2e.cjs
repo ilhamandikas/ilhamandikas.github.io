@@ -2135,6 +2135,97 @@ const check = (label, actual, expected) => {
     check('typing: a new test resets the result panel', doc.querySelectorAll('#ty-result .tool-result-row').length, 0);
   }
 
+  /* ------------------------------------------------------ dockerfile builder */
+
+  console.log('\n=== dockerfile builder ===');
+  {
+    const page = loadPage('dockerfile-builder');
+    set(page.w, '#df-preset', 'node');
+    await sleep(40);
+    const node = read(page.w, '#df-output');
+    check('dockerfile: the node preset starts with a syntax line', node.startsWith('# syntax=docker/dockerfile:1'), true);
+    check('dockerfile: the node preset is multi-stage', node.includes('FROM node:20-alpine AS build'), true);
+    check('dockerfile: artifacts are copied from the build stage', node.includes('COPY --from=build /app/dist ./dist'), true);
+    check('dockerfile: the base field is filled by the preset', read(page.w, '#df-base'), 'node:20-alpine');
+
+    set(page.w, '#df-run-join', true);
+    await sleep(40);
+    check('dockerfile: joining runs uses &&', read(page.w, '#df-output').includes('&& npm run build'), true);
+  }
+
+  /* ------------------------------------------------------ log parser */
+
+  console.log('\n=== log parser ===');
+  {
+    const page = loadPage('log-parser');
+    set(page.w, '#lp-input', [
+      '{"time":"2026-09-26T00:24:18Z","level":"info","msg":"listening on :3000"}',
+      '{"time":"2026-09-26T00:24:20Z","level":"error","msg":"db timeout"}',
+      '{"time":"2026-09-26T00:24:21Z","level":"warn","msg":"slow request"}',
+    ].join('\n'));
+    await sleep(40);
+    check('log parser: JSON Lines is detected', read(page.w, '#lp-summary').includes('json'), true);
+    check('log parser: all entries are listed', read(page.w, '#lp-meta').startsWith('3 of 3 entries'), true);
+
+    set(page.w, '#lp-level', 'error');
+    await sleep(40);
+    check('log parser: the level filter narrows the table', read(page.w, '#lp-meta').startsWith('1 of 3 entries'), true);
+  }
+
+  /* ------------------------------------------------------ date calculator */
+
+  console.log('\n=== date calculator ===');
+  {
+    const page = loadPage('date-calculator');
+    set(page.w, '#dc-start', '2026-01-31');
+    set(page.w, '#dc-end', '2026-03-01');
+    await sleep(40);
+    check('date: a calendar difference keeps whole months', read(page.w, '#dc-result').includes('1 month, 1 day'), true);
+    check('date: total days are counted', read(page.w, '#dc-result').includes('29'), true);
+
+    set(page.w, '#dc-mode', 'add');
+    set(page.w, '#dc-base', '2026-01-31');
+    set(page.w, '#dc-amount', '1');
+    set(page.w, '#dc-unit', 'months');
+    await sleep(40);
+    check('date: adding a month clamps to the last day', read(page.w, '#dc-result').includes('2026-02-28'), true);
+  }
+
+  /* ------------------------------------------------ nginx reverse proxy wizard */
+
+  console.log('\n=== nginx reverse proxy wizard ===');
+  {
+    const page = loadPage('nginx-reverse-proxy-wizard');
+    set(page.w, '#nrp-names', 'app.example.com');
+    set(page.w, '#nrp-target', 'http://127.0.0.1:3000');
+    await sleep(40);
+    const out = read(page.w, '#nrp-out');
+    check('nrp: the server name is emitted', out.includes('server_name app.example.com;'), true);
+    check('nrp: the upstream pool is emitted', out.includes('upstream'), true);
+    check('nrp: proxy_pass points at the upstream', out.includes('proxy_pass http://'), true);
+
+    set(page.w, '#nrp-tls', false);
+    await sleep(40);
+    check('nrp: turning TLS off drops the redirect block', read(page.w, '#nrp-out').includes('return 301'), false);
+  }
+
+  /* ------------------------------------------------------ json schema validator */
+
+  console.log('\n=== json schema validator ===');
+  {
+    const page = loadPage('json-schema-validator');
+    const schema = { type: 'object', required: ['id'], properties: { id: { type: 'integer' }, email: { type: 'string', format: 'email' } } };
+    set(page.w, '#jsv-schema', JSON.stringify(schema));
+    set(page.w, '#jsv-doc', JSON.stringify({ id: 3, email: 'ada@example.com' }));
+    await sleep(40);
+    check('json schema: a matching document is valid', read(page.w, '#jsv-status'), 'Valid');
+
+    set(page.w, '#jsv-doc', JSON.stringify({ id: 'x', email: 'nope' }));
+    await sleep(40);
+    check('json schema: a bad document reports errors', read(page.w, '#jsv-summary').startsWith('2 problem'), true);
+    check('json schema: the error path is a JSON Pointer', read(page.w, '#jsv-errors').includes('#/id'), true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

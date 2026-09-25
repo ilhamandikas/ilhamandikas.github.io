@@ -636,3 +636,8 @@
       desc: Parse Indonesian NIK into region codes, birth date, gender and serial number.
       keywords: [nik, ktp, indonesia, parse, region, wilayah, dukcapil]
       status: done
+    - slug: json-schema-validator
+      name: JSON Schema Validator
+      desc: Validate a JSON document against a JSON Schema (draft-07 subset) and list every problem with its JSON Pointer path.
+      keywords: [json, schema, validate, draft-07, jsonschema, pointer, api, contract]
+      status: done

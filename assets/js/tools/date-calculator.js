@@ -68,18 +68,17 @@ function countBusinessDays(from, to) {
 }
 
 function calendarDiff(from, to) {
-  let years = to.getFullYear() - from.getFullYear();
-  let months = to.getMonth() - from.getMonth();
-  let days = to.getDate() - from.getDate();
-  if (days < 0) {
+  // Walk whole months from the start, clamping at month ends, then count the
+  // leftover days. Jan 31 to Mar 1 is one month and one day, because Jan 31 +
+  // one month clamps to Feb 28 and the extra day lands on Mar 1.
+  let months = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth());
+  let anchor = addMonths(from, months);
+  if (anchor > to) {
     months -= 1;
-    days += new Date(to.getFullYear(), to.getMonth(), 0).getDate();
+    anchor = addMonths(from, months);
   }
-  if (months < 0) {
-    years -= 1;
-    months += 12;
-  }
-  return { years, months, days };
+  const days = Math.round((to - anchor) / DAY);
+  return { years: Math.floor(months / 12), months: ((months % 12) + 12) % 12, days };
 }
 
 function isoWeek(date) {

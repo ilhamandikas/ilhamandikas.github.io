@@ -28,6 +28,10 @@ const SAMPLES = {
     ].join('\n'),
   },
   'typing-speed-test': { '#ty-input': 'the quick brown fox jumps over the lazy dog' },
+  'json-schema-validator': {
+    '#jsv-schema': JSON.stringify({ type: 'object', required: ['id'], properties: { id: { type: 'integer' }, email: { type: 'string', format: 'email' } } }),
+    '#jsv-doc': JSON.stringify({ id: 3, email: 'ada@example.com' }),
+  },
 };
 
 // A placeholder is a usable example only if it isn't a prose hint.

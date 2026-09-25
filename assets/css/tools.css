@@ -1105,7 +1105,8 @@ textarea.tool-text { resize: vertical; }
 .utm-grid,
 .tz-grid,
 .dlg-grid,
-.int-grid {
+.int-grid,
+.df-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
@@ -1116,9 +1117,12 @@ textarea.tool-text { resize: vertical; }
 .utm-grid .tool-field,
 .tz-grid .tool-field,
 .dlg-grid .tool-field,
-.int-grid .tool-field { margin-bottom: 0; }
+.int-grid .tool-field,
+.df-grid .tool-field { margin-bottom: 0; }
 .rr-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 .dlg-options { align-items: center; margin-top: 14px; }
+.df-grid + .df-grid { margin-top: 14px; }
+.df-options { align-items: center; margin-top: 14px; }
 .int-grid + .int-grid { margin-top: 14px; }
 .int-inline { display: flex; gap: 8px; }
 .int-inline .tool-number { flex: 1 1 auto; min-width: 0; }
@@ -1276,3 +1280,10 @@ textarea.tool-text { resize: vertical; }
   cursor: text;
 }
 .ty-input:focus { outline: none; }
+
+/* JSON Schema validator */
+.jsv-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.jsv-grid .tool-panel { margin: 0; }
+.jsv-error dt { font-family: var(--mono); color: var(--accent); }
+.jsv-error dd { color: #b91c1c; }
+@media (max-width: 760px) { .jsv-grid { grid-template-columns: minmax(0, 1fr); } }

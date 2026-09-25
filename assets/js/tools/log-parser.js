@@ -348,15 +348,22 @@ function renderTable() {
   metaEl.textContent = `${shown.length} of ${entries.length} entries${columns.length > MAX_FIELDS ? ` · showing ${MAX_FIELDS} of ${columns.length} fields` : ''}`;
 }
 
+function optionEl(text, value) {
+  const option = document.createElement('option');
+  option.textContent = text;
+  option.value = value;
+  return option;
+}
+
 function render() {
   entries.forEach((entry, index) => { entry.__n = index + 1; });
   renderSummary();
   const levels = [...new Set(entries.map((entry) => entry.level || 'other'))];
   const previous = levelSel.value;
-  levelSel.replaceChildren(new Option('All levels', ''));
+  levelSel.replaceChildren(optionEl('All levels', ''));
   for (const level of LEVEL_ORDER) {
     const key = level || 'other';
-    if (levels.includes(key)) levelSel.appendChild(new Option(key, key));
+    if (levels.includes(key)) levelSel.appendChild(optionEl(key, key));
   }
   levelSel.value = levels.includes(previous) ? previous : '';
   renderTable();
