@@ -1,0 +1,166 @@
+<div class="tool-panel">
+  <h2>Dockerfile Builder</h2>
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>Preset</span>
+      <select id="df-preset" class="tool-select">
+        <option value="">Start from scratch</option>
+        <option value="node">Node.js (build + run)</option>
+        <option value="python">Python (pip)</option>
+        <option value="go">Go (static binary)</option>
+        <option value="nginx">Static site on Nginx</option>
+        <option value="php">PHP + Apache</option>
+        <option value="java">Java (Maven, multi-stage)</option>
+      </select>
+    </label>
+    <label class="tool-inline"><input type="checkbox" id="df-multistage" class="tool-check"> Multi-stage build</label>
+  </div>
+
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>ARG (one KEY=value per line)</span>
+      <textarea id="df-arg" class="tool-input tool-code" rows="2" spellcheck="false" placeholder="NODE_VERSION=20"></textarea>
+    </label>
+  </div>
+
+  <div id="df-build" hidden>
+    <h3 class="tool-group">Build stage</h3>
+    <div class="df-grid">
+      <label class="tool-field">
+        <span>Builder image</span>
+        <input id="df-builder-image" class="tool-input" type="text" list="df-images" spellcheck="false" autocomplete="off" placeholder="node:20-alpine">
+      </label>
+      <label class="tool-field">
+        <span>Builder workdir</span>
+        <input id="df-builder-workdir" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="/app">
+      </label>
+    </div>
+    <div class="df-grid">
+      <label class="tool-field">
+        <span>Builder COPY (one "src dest" per line)</span>
+        <textarea id="df-builder-copy" class="tool-input tool-code" rows="3" spellcheck="false" placeholder="package*.json ./&#10;."></textarea>
+      </label>
+      <label class="tool-field">
+        <span>Builder RUN (one command per line)</span>
+        <textarea id="df-builder-run" class="tool-input tool-code" rows="3" spellcheck="false" placeholder="npm ci&#10;npm run build"></textarea>
+      </label>
+    </div>
+    <label class="tool-field">
+      <span>Artifacts to copy into the runtime image (one "src dest" per line)</span>
+      <textarea id="df-artifact" class="tool-input tool-code" rows="2" spellcheck="false" placeholder="/app/dist ./dist"></textarea>
+    </label>
+  </div>
+
+  <h3 class="tool-group">Runtime stage</h3>
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>Base image</span>
+      <input id="df-base" class="tool-input" type="text" list="df-images" spellcheck="false" autocomplete="off" placeholder="node:20-alpine">
+    </label>
+    <label class="tool-field">
+      <span>Stage name (optional)</span>
+      <input id="df-stage" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="app">
+    </label>
+    <label class="tool-field">
+      <span>WORKDIR</span>
+      <input id="df-workdir" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="/app">
+    </label>
+  </div>
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>ENV (one KEY=value per line)</span>
+      <textarea id="df-env" class="tool-input tool-code" rows="3" spellcheck="false" placeholder="NODE_ENV=production"></textarea>
+    </label>
+    <label class="tool-field">
+      <span>COPY (one "src dest" per line)</span>
+      <textarea id="df-copy" class="tool-input tool-code" rows="3" spellcheck="false" placeholder=". ."></textarea>
+    </label>
+  </div>
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>RUN (one command per line)</span>
+      <textarea id="df-run" class="tool-input tool-code" rows="3" spellcheck="false" placeholder="apk add --no-cache curl"></textarea>
+    </label>
+    <label class="tool-field">
+      <span>LABEL (one key=value per line)</span>
+      <textarea id="df-label" class="tool-input tool-code" rows="3" spellcheck="false" placeholder="org.opencontainers.image.title=My app"></textarea>
+    </label>
+  </div>
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>EXPOSE (space or comma separated)</span>
+      <input id="df-expose" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="3000">
+    </label>
+    <label class="tool-field">
+      <span>VOLUME (space or comma separated)</span>
+      <input id="df-volume" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="/data">
+    </label>
+    <label class="tool-field">
+      <span>USER</span>
+      <input id="df-user" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="node">
+    </label>
+  </div>
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>HEALTHCHECK command (optional)</span>
+      <input id="df-healthcheck" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="curl -f http://localhost:3000/health || exit 1">
+    </label>
+    <label class="tool-field">
+      <span>Interval (seconds)</span>
+      <input id="df-health-interval" class="tool-number" type="number" min="1" step="1" value="30">
+    </label>
+  </div>
+  <div class="df-grid">
+    <label class="tool-field">
+      <span>ENTRYPOINT</span>
+      <input id="df-entrypoint" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder='["node","server.js"]'>
+    </label>
+    <label class="tool-field">
+      <span>CMD</span>
+      <input id="df-cmd" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder='["node","server.js"]'>
+    </label>
+  </div>
+  <label class="tool-field">
+    <span>Extra instructions (appended verbatim)</span>
+    <textarea id="df-extra" class="tool-input tool-code" rows="2" spellcheck="false" placeholder="STOPSIGNAL SIGTERM"></textarea>
+  </label>
+
+  <div class="df-grid df-options">
+    <label class="tool-inline"><input type="checkbox" id="df-run-join" class="tool-check"> Join RUN commands with &amp;&amp;</label>
+    <label class="tool-inline"><input type="checkbox" id="df-comments" class="tool-check" checked> Add section comments</label>
+  </div>
+
+  <div class="tool-row">
+    <button class="btn" type="button" id="df-reset">Reset</button>
+    <span class="tool-status" id="df-status"></span>
+  </div>
+</div>
+
+<datalist id="df-images">
+  <option value="node:20-alpine"></option>
+  <option value="python:3.12-slim"></option>
+  <option value="golang:1.22-alpine"></option>
+  <option value="nginx:alpine"></option>
+  <option value="php:8.3-apache"></option>
+  <option value="maven:3.9-eclipse-temurin-17"></option>
+  <option value="eclipse-temurin:17-jre-alpine"></option>
+  <option value="gcr.io/distroless/static-debian12"></option>
+  <option value="alpine:3.19"></option>
+  <option value="ubuntu:24.04"></option>
+  <option value="debian:bookworm-slim"></option>
+  <option value="redis:7-alpine"></option>
+  <option value="postgres:16-alpine"></option>
+</datalist>
+
+<div class="tool-panel">
+  <h2>Dockerfile</h2>
+  <label class="tool-field">
+    <span>Generated output</span>
+    <textarea id="df-output" class="tool-input tool-code" rows="20" readonly spellcheck="false"></textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#df-output" data-status="#df-status">Copy</button>
+    <button class="btn" type="button" data-download="#df-output" data-filename="Dockerfile" data-mime="text/plain">Download</button>
+    <span class="tool-note" id="df-meta"></span>
+  </div>
+</div>

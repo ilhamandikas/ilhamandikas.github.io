@@ -2,7 +2,7 @@
 {{- $slug := .File.ContentBaseName -}}
 {{- $meta := partial "tools/meta.html" $slug -}}
 <article class="page tool-page">
-  <div class="container tool-layout">
+  <div class="container tool-layout{{ if .Params.wide }} tool-layout-wide{{ end }}">
     <aside class="tool-aside">
       <input type="checkbox" id="tool-nav-toggle" class="nav-toggle" aria-label="Toggle tool list">
       <label for="tool-nav-toggle" class="tool-nav-toggle-label">Browse all tools</label>

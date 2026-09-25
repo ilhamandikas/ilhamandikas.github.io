@@ -1,0 +1,55 @@
+<div class="tool-panel">
+  <h2>Docker Logs Grep</h2>
+  <label class="tool-field">
+    <span>Paste docker compose logs output</span>
+    <textarea id="dlg-input" class="tool-input tool-code" rows="10" spellcheck="false" placeholder="Paste the output of: docker compose logs --tail=500 api"></textarea>
+  </label>
+  <div class="dlg-grid">
+    <label class="tool-field">
+      <span>Search pattern</span>
+      <input id="dlg-pattern" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="error|timeout">
+    </label>
+    <label class="tool-field">
+      <span>Grep type</span>
+      <select id="dlg-mode" class="tool-select">
+        <option value="context">Match with context (grep -C)</option>
+        <option value="only">Matching lines only (grep)</option>
+        <option value="invert">Lines that do not match (grep -v)</option>
+        <option value="count">Count matches (grep -c)</option>
+        <option value="unique">Unique matching lines (sort -u)</option>
+      </select>
+    </label>
+  </div>
+  <div class="dlg-grid dlg-options">
+    <label class="tool-field">
+      <span>Lines before</span>
+      <input id="dlg-before" class="tool-number" type="number" min="0" max="200" value="10">
+    </label>
+    <label class="tool-field">
+      <span>Lines after</span>
+      <input id="dlg-after" class="tool-number" type="number" min="0" max="200" value="5">
+    </label>
+    <label class="tool-inline"><input type="checkbox" id="dlg-regex" class="tool-check" checked> Regex</label>
+    <label class="tool-inline"><input type="checkbox" id="dlg-icase" class="tool-check" checked> Ignore case</label>
+    <label class="tool-inline"><input type="checkbox" id="dlg-word" class="tool-check"> Whole word</label>
+    <label class="tool-inline"><input type="checkbox" id="dlg-numbers" class="tool-check" checked> Line numbers</label>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="dlg-clear">Clear</button>
+    <span class="tool-status" id="dlg-status"></span>
+  </div>
+  <p class="tool-hint">The context counts are like <code>grep -B</code> and <code>-A</code>: matching groups are separated by <code>--</code>, and line numbers use <code>:</code> for a match and <code>-</code> for a context line, the same as <code>grep -n -C</code>.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Filtered output</h2>
+  <label class="tool-field">
+    <span>Result</span>
+    <textarea id="dlg-output" class="tool-input tool-code" rows="14" readonly spellcheck="false"></textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#dlg-output" data-status="#dlg-status">Copy</button>
+    <button class="btn" type="button" data-download="#dlg-output" data-filename="filtered.log" data-mime="text/plain">Download</button>
+    <span class="tool-note" id="dlg-meta"></span>
+  </div>
+</div>

@@ -1,31 +1,19 @@
 // Search and keyboard navigation for the tool sidebar, so Cmd+K can jump to
 // another tool from anywhere instead of only working on the catalog page.
 import { bindFocusShortcut, buildIndex, search, shortcutLabel } from './tools-search.js';
-import { mount as mountRecent, record } from './tools-recent.js';
 
 const input = document.querySelector('#tool-nav-search');
 const nav = document.querySelector('.tool-nav');
 
 if (input && nav) {
   // The sidebar holds nothing but tool links, so the classes and the anchor tag
-  // are the whole selection — no per-link data attributes needed. The recently
-  // used block is left out on purpose: those links are already in the list below,
-  // and indexing them twice would put the same tool in the results twice.
+  // are the whole selection — no per-link data attributes needed.
   const groups = Array.from(nav.querySelectorAll('.tool-nav-group'));
   const links = Array.from(nav.querySelectorAll('.tool-nav-group a'));
   const rows = new Map(links.map((link) => [link, link.parentElement]));
   const empty = document.querySelector('#tool-nav-empty');
   const kbd = document.querySelector('#tool-nav-kbd');
   const aside = document.querySelector('.tool-aside');
-  const recent = document.querySelector('#tool-recent');
-
-  // Remembering which tool was opened is the whole point of the list, and it has
-  // to happen here because this is the one script every tool page runs.
-  const current = links.find((link) => link.getAttribute('aria-current') === 'page');
-  if (current) {
-    const slug = /\/tools\/([^/]+)\//.exec(current.getAttribute('href'));
-    if (slug) record(slug[1]);
-  }
 
   // Every navigation replaces this whole document, so a query that only lives in
   // this script would vanish and the list would snap back to its full length.
@@ -52,7 +40,6 @@ if (input && nav) {
   );
 
   let selected = -1;
-  let refreshRecent = null;
 
   // Visual order, not DOM order: rows are ranked with CSS `order`, so the arrow
   // keys have to follow the ranking. With no query every order is 0 and the
@@ -78,7 +65,6 @@ if (input && nav) {
 
   const reset = () => {
     nav.removeAttribute('data-searching');
-    if (refreshRecent) refreshRecent();
     links.forEach((link) => {
       link.hidden = false;
       rows.get(link).style.order = '';
@@ -106,9 +92,6 @@ if (input && nav) {
     // preselected row is then the best match rather than whichever tool happens
     // to come first in the menu.
     nav.setAttribute('data-searching', '');
-    // A search replaces the whole list, so the recent block steps aside rather
-    // than sitting above a ranked list that no longer relates to it.
-    if (recent) recent.hidden = true;
     links.forEach((link) => {
       const score = scores.get(link);
       link.hidden = score === undefined;
@@ -160,20 +143,6 @@ if (input && nav) {
 
   if (kbd) kbd.textContent = shortcutLabel();
   bindFocusShortcut(input);
-
-  // Only rendered once the page is interactive: the list is per-device, so there
-  // is nothing for the server to render and nothing to show without JavaScript.
-  if (recent) {
-    // The slug is the key and the link text is the label, so a tool that gets
-    // renamed never leaves a stale title behind in the list.
-    const names = new Map();
-    for (const link of links) {
-      const slug = /\/tools\/([^/]+)\//.exec(link.getAttribute('href'));
-      if (slug) names.set(slug[1], link.textContent.trim());
-    }
-    const here = current ? /\/tools\/([^/]+)\//.exec(current.getAttribute('href')) : null;
-    refreshRecent = mountRecent(recent, { names, current: here ? here[1] : null });
-  }
 
   // Restored before the first paint, so a cross-document view transition
   // snapshots the sidebar as it was left rather than empty and unscrolled.

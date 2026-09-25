@@ -11,6 +11,23 @@ const SAMPLES = {
   'json-viewer': { '#jv-input': '{"a":1,"b":[1,2,{"c":true}],"d":null}' },
   'markdown-to-html': { '#md-input': '# Hello\n\nSome **bold** text.\n' },
   'benchmark-builder': { '#bb-input': '1 + 1' },
+  'docker-logs-grep': {
+    '#dlg-input': [
+      'api  | 2026-09-26T00:24:18Z listening on :3000',
+      'api  | 2026-09-26T00:24:19Z GET /health 200',
+      'api  | 2026-09-26T00:24:20Z error connecting to db',
+      'api  | 2026-09-26T00:24:20Z retrying in 1s',
+      'api  | 2026-09-26T00:24:21Z GET /items 500',
+    ].join('\n'),
+  },
+  'log-parser': {
+    '#lp-input': [
+      '{"time":"2026-09-26T00:24:18Z","level":"info","msg":"listening on :3000"}',
+      '{"time":"2026-09-26T00:24:20Z","level":"error","msg":"db timeout","attempt":3}',
+      '{"time":"2026-09-26T00:24:21Z","level":"warn","msg":"slow request","ms":1820}',
+    ].join('\n'),
+  },
+  'typing-speed-test': { '#ty-input': 'the quick brown fox jumps over the lazy dog' },
 };
 
 // A placeholder is a usable example only if it isn't a prose hint.

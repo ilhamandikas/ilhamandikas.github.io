@@ -1,0 +1,69 @@
+<div class="tool-panel">
+  <h2>Date Calculator</h2>
+  <label class="tool-field">
+    <span>Mode</span>
+    <select id="dc-mode" class="tool-select">
+      <option value="diff" selected>Difference between two dates</option>
+      <option value="add">Add or subtract from a date</option>
+    </select>
+  </label>
+
+  <div id="dc-diff">
+    <div class="dc-grid">
+      <label class="tool-field">
+        <span>Start date</span>
+        <input id="dc-start" class="tool-input" type="date">
+      </label>
+      <label class="tool-field">
+        <span>End date</span>
+        <input id="dc-end" class="tool-input" type="date">
+      </label>
+    </div>
+    <div class="dc-options">
+      <label class="tool-inline"><input type="checkbox" id="dc-include-end" class="tool-check"> Include the end date</label>
+      <label class="tool-inline"><input type="checkbox" id="dc-business" class="tool-check"> Count business days (Mon–Fri)</label>
+    </div>
+  </div>
+
+  <div id="dc-add" hidden>
+    <div class="dc-grid">
+      <label class="tool-field">
+        <span>Start date</span>
+        <input id="dc-base" class="tool-input" type="date">
+      </label>
+      <label class="tool-field">
+        <span>Operation</span>
+        <select id="dc-op" class="tool-select">
+          <option value="add" selected>Add</option>
+          <option value="sub">Subtract</option>
+        </select>
+      </label>
+    </div>
+    <div class="dc-grid">
+      <label class="tool-field">
+        <span>Amount</span>
+        <input id="dc-amount" class="tool-number" type="number" min="0" step="1" value="30">
+      </label>
+      <label class="tool-field">
+        <span>Unit</span>
+        <select id="dc-unit" class="tool-select">
+          <option value="days" selected>Days</option>
+          <option value="weeks">Weeks</option>
+          <option value="months">Months</option>
+          <option value="years">Years</option>
+          <option value="business">Business days</option>
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="dc-today">Today</button>
+    <span class="tool-status" id="dc-status"></span>
+  </div>
+  <p class="tool-hint">Calendar months and years keep the day of the month and clamp to the last day when needed, so 31 Jan + 1 month is 28 or 29 Feb. Business days skip Saturdays and Sundays.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <div id="dc-result" class="tool-results"></div>
+</div>

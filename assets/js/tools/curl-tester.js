@@ -72,6 +72,12 @@ function build(req) {
 }
 function row(k, v) { const div = document.createElement('div'); div.className = 'tool-result-row'; const dt = document.createElement('dt'); const dd = document.createElement('dd'); dt.textContent = k; dd.textContent = v || '—'; div.append(dt, dd); return div; }
 function run() {
+  if (input.value.trim() === '') {
+    output.value = '';
+    summary.replaceChildren();
+    tk.setStatus(status, '');
+    return;
+  }
   try {
     const req = parse(input.value);
     output.value = build(req);

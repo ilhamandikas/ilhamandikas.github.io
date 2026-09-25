@@ -1,0 +1,33 @@
+<div class="tool-panel">
+  <h2>UTM Builder</h2>
+  <label class="tool-field">
+    <span>Base URL</span>
+    <input id="utm-url" class="tool-input" type="url" placeholder="https://example.com/promo">
+  </label>
+  <div class="utm-grid">
+    <label class="tool-field"><span>Source (utm_source)</span><input id="utm-source" class="tool-input" type="text" placeholder="newsletter"></label>
+    <label class="tool-field"><span>Medium (utm_medium)</span><input id="utm-medium" class="tool-input" type="text" placeholder="email"></label>
+    <label class="tool-field"><span>Campaign (utm_campaign)</span><input id="utm-campaign" class="tool-input" type="text" placeholder="launch"></label>
+    <label class="tool-field"><span>Term (utm_term)</span><input id="utm-term" class="tool-input" type="text" placeholder="running shoes"></label>
+    <label class="tool-field"><span>Content (utm_content)</span><input id="utm-content" class="tool-input" type="text" placeholder="hero button"></label>
+    <label class="tool-field"><span>ID (utm_id)</span><input id="utm-id" class="tool-input" type="text" placeholder="abc123"></label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" data-copy="#utm-output" data-status="#utm-status">Copy URL</button>
+    <span class="tool-status" id="utm-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <textarea id="utm-output" class="tool-input tool-code" rows="3" readonly spellcheck="false"></textarea>
+</div>
+
+<div class="tool-panel">
+  <h2>Parse a URL</h2>
+  <label class="tool-field">
+    <span>URL to inspect</span>
+    <input id="utm-parse" class="tool-input" type="url" placeholder="https://example.com/?utm_source=...">
+  </label>
+  <div id="utm-parsed" class="tool-results"></div>
+</div>

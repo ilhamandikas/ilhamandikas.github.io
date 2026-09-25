@@ -124,7 +124,16 @@ function writeHistory(list) {
   else writeStore(historyKey(), JSON.stringify(list));
 }
 
-const sameSnapshot = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+// Text fields are compared without surrounding whitespace so a stray space does
+// not push a real entry off the end of the list.
+function signature(data) {
+  const out = {};
+  for (const key of Object.keys(data).sort()) {
+    const value = data[key];
+    out[key] = typeof value === 'string' ? value.trim() : value;
+  }
+  return JSON.stringify(out);
+}
 
 function commit() {
   const data = snapshot();
@@ -132,7 +141,7 @@ function commit() {
   const text = JSON.stringify(data);
   if (text.length > MAX_ENTRY_BYTES) return false;
   const list = readHistory();
-  if (list.length > 0 && sameSnapshot(list[0].data, data)) return false;
+  if (list.length > 0 && signature(list[0].data) === signature(data)) return false;
   list.unshift({ at: Date.now(), data });
   writeHistory(list.slice(0, MAX_ENTRIES));
   return true;
@@ -242,6 +251,9 @@ if (bar && slug) {
     put.textContent = 'Restore';
     put.addEventListener('click', () => {
       const count = apply(entry.data);
+      clearTimeout(timer);
+      clearTimeout(historyTimer);
+      save();
       focusRestoredField(entry.data);
       note.textContent = `Put ${count} field${count === 1 ? '' : 's'} from that entry back into the form.`;
     });

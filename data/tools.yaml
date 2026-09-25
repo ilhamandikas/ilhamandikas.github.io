@@ -311,6 +311,16 @@
       desc: Create, edit and sign JSON Web Tokens from header and payload JSON.
       keywords: [jwt, token, encode, editor, sign, create, generate, claims, hs256, rs256, es256, none]
       status: done
+    - slug: jwt-expiry-editor
+      name: JWT Expiry Editor
+      desc: Edit iat, nbf and exp claims on a JWT and re-sign it without touching JSON by hand.
+      keywords: [jwt, expiry, exp, iat, nbf, token, claims, extend, refresh, sign]
+      status: done
+    - slug: utm-builder
+      name: UTM Builder
+      desc: Build and parse UTM campaign URLs with source, medium, campaign, term, content and id.
+      keywords: [utm, campaign, marketing, analytics, url, source, medium, tracking]
+      status: done
     - slug: url-parser
       name: URL Parser
       desc: Break a URL into its parts and query parameters.
@@ -405,6 +415,11 @@
       desc: Build an nginx server block for a static site, a single-page app, PHP or a reverse proxy.
       keywords: [nginx, config, server block, reverse proxy, vhost, tls, ssl, spa, php, gzip, upstream, webserver]
       status: done
+    - slug: nginx-reverse-proxy-wizard
+      name: nginx Reverse Proxy Wizard
+      desc: Step through domain, upstream, TLS and extras to get a reverse proxy server block.
+      keywords: [nginx, reverse proxy, wizard, upstream, load balancing, websocket, sse, tls, ssl, keepalive]
+      status: done
     - slug: crontab-generator
       name: Crontab Generator
       desc: Build a cron expression and read it back in plain language.
@@ -420,6 +435,21 @@
       desc: Turn a docker run command into a docker-compose service.
       keywords: [docker, compose, run, convert, yaml]
       status: done
+    - slug: docker-logs-grep
+      name: Docker Logs Grep
+      desc: Filter docker compose logs with grep-style context, invert and dedupe modes.
+      keywords: [docker, compose, logs, grep, filter, context, log]
+      status: done
+    - slug: log-parser
+      name: Log Parser
+      desc: Parse JSON Lines, Apache/Nginx access logs, syslog, logfmt and plain logs into a searchable table.
+      keywords: [log, parser, json lines, syslog, logfmt, nginx, apache, access log, structured, level]
+      status: done
+    - slug: dockerfile-builder
+      name: Dockerfile Builder
+      desc: Build a Dockerfile from a form, with multi-stage presets for Node, Python, Go, Nginx and more.
+      keywords: [docker, dockerfile, builder, container, image, multi-stage, node, python, go, nginx, entrypoint, cmd]
+      status: done
     - slug: git-cheatsheet
       name: Git Cheatsheet
       desc: A quick reference of the Git commands I keep forgetting.
@@ -429,6 +459,16 @@
       name: Regex Tester
       desc: Test a regular expression against sample text with live matches.
       keywords: [regex, regexp, test, match, pattern]
+      status: done
+    - slug: regex-replace-tester
+      name: Regex Replace Tester
+      desc: Preview regex find-and-replace results with capture group references and live highlighting.
+      keywords: [regex, replace, substitute, find and replace, capture group, preview]
+      status: done
+    - slug: cron-next-runs
+      name: Cron Next Runs
+      desc: Preview the next scheduled runs of a cron expression in local time or UTC.
+      keywords: [cron, crontab, next runs, schedule, preview, utc]
       status: done
     - slug: regex-cheatsheet
       name: Regex Cheatsheet
@@ -449,6 +489,11 @@
       name: Timestamp Converter
       desc: Convert between Unix timestamps, ISO strings and local time.
       keywords: [timestamp, unix, epoch, date, time, iso]
+      status: done
+    - slug: time-zone-converter
+      name: Time Zone Converter
+      desc: Read a log timestamp in one zone and see the same moment in UTC, Jakarta and others.
+      keywords: [timezone, time zone, utc, jakarta, convert, offset, log, timestamp]
       status: done
 
 - name: Text
@@ -488,6 +533,11 @@
       name: Line Comma Formatter
       desc: Add commas, quotes, arrays or SQL IN formatting to one-item-per-line lists.
       keywords: [list, comma, lines, quote, array, sql in, csv, formatter]
+      status: done
+    - slug: typing-speed-test
+      name: Typing Speed Test
+      desc: Measure WPM and accuracy with live per-character feedback and a restartable test.
+      keywords: [typing, speed, wpm, accuracy, test, words per minute, keyboard, practice]
       status: done
 
 - name: Convert
@@ -532,6 +582,16 @@
       desc: Work out percentages, increases and decreases.
       keywords: [percentage, percent, increase, decrease, calculator]
       status: done
+    - slug: interest-calculator
+      name: Interest Calculator
+      desc: Calculate deposit or loan interest after tax, with flat, effective, annuity, compound, tiered, step-up and floating methods.
+      keywords: [interest, bunga, deposito, obligasi, pajak, compound, anuitas, flat, efektif, tiered, step-up, floating, kredit, pinjaman]
+      status: done
+    - slug: date-calculator
+      name: Date Calculator
+      desc: Add or subtract days, weeks, months and years, or measure the duration and business days between two dates.
+      keywords: [date, calculator, duration, difference, add, subtract, business days, working days, age, weeks, months, years]
+      status: done
     - slug: chronometer
       name: Chronometer
       desc: A simple stopwatch with laps.
@@ -551,6 +611,11 @@
 - name: Data
   slug: data
   tools:
+    - slug: sql-insert-generator
+      name: SQL Insert Generator
+      desc: Turn JSON or CSV rows into SQL INSERT statements for MySQL, PostgreSQL, SQLite or SQL Server.
+      keywords: [sql, insert, json, csv, mysql, postgres, sqlite, database, query, generator]
+      status: done
     - slug: email-normalizer
       name: Email Normalizer
       desc: Normalize email addresses to a canonical form.

@@ -1,0 +1,118 @@
+<div class="tool-split">
+  <div class="tool-split-form">
+    <div class="tool-panel">
+      <div class="nrp-steps" id="nrp-steps">
+        <button class="nrp-step-btn" type="button" data-step="1">1 · Domain</button>
+        <button class="nrp-step-btn" type="button" data-step="2">2 · Upstream</button>
+        <button class="nrp-step-btn" type="button" data-step="3">3 · TLS</button>
+        <button class="nrp-step-btn" type="button" data-step="4">4 · Extras</button>
+      </div>
+
+      <section class="nrp-step" data-step="1">
+        <h2>What domain points here?</h2>
+        <label class="tool-field">
+          <span>Server names — comma or space separated</span>
+          <input type="text" id="nrp-names" class="tool-text" value="app.example.com" spellcheck="false" autocomplete="off">
+        </label>
+        <label class="tool-field">
+          <span>Canonical host</span>
+          <select id="nrp-www" class="tool-select">
+            <option value="none" selected>Keep every name as typed</option>
+            <option value="to-apex">Redirect www → no www</option>
+            <option value="to-www">Redirect no www → www</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="nrp-step" data-step="2" hidden>
+        <h2>Where should the traffic go?</h2>
+        <label class="tool-field">
+          <span>Upstream target</span>
+          <input type="text" id="nrp-target" class="tool-text" value="http://127.0.0.1:3000" spellcheck="false" autocomplete="off">
+        </label>
+        <label class="tool-field">
+          <span>Extra upstream servers (one host per line, optional)</span>
+          <textarea id="nrp-extra" class="tool-input tool-code" rows="3" spellcheck="false" placeholder="127.0.0.1:3001&#10;127.0.0.1:3002"></textarea>
+        </label>
+        <div class="nrp-grid">
+          <label class="tool-field">
+            <span>Balancing</span>
+            <select id="nrp-balance" class="tool-select">
+              <option value="round-robin" selected>Round robin</option>
+              <option value="least_conn">Least connections</option>
+              <option value="ip_hash">Sticky by IP (ip_hash)</option>
+            </select>
+          </label>
+          <label class="tool-field">
+            <span>Keepalive connections</span>
+            <input type="number" id="nrp-keepalive" class="tool-number" min="0" max="512" value="32">
+          </label>
+        </div>
+      </section>
+
+      <section class="nrp-step" data-step="3" hidden>
+        <h2>How is TLS terminated?</h2>
+        <label class="tool-check ngx-check-card">
+          <input type="checkbox" id="nrp-tls" checked> Serve HTTPS and redirect plain HTTP
+        </label>
+        <div class="nrp-grid" id="nrp-tls-row">
+          <label class="tool-field">
+            <span>Certificate</span>
+            <input type="text" id="nrp-cert" class="tool-text" value="/etc/letsencrypt/live/app.example.com/fullchain.pem" spellcheck="false">
+          </label>
+          <label class="tool-field">
+            <span>Key</span>
+            <input type="text" id="nrp-key" class="tool-text" value="/etc/letsencrypt/live/app.example.com/privkey.pem" spellcheck="false">
+          </label>
+        </div>
+        <label class="tool-check ngx-check-card" id="nrp-hsts-card">
+          <input type="checkbox" id="nrp-hsts" checked> Send HSTS
+        </label>
+      </section>
+
+      <section class="nrp-step" data-step="4" hidden>
+        <h2>Anything the app needs?</h2>
+        <div class="nrp-grid">
+          <label class="tool-check ngx-check-card"><input type="checkbox" id="nrp-websocket" checked> WebSocket / SSE upgrade</label>
+          <label class="tool-check ngx-check-card"><input type="checkbox" id="nrp-stream"> Disable buffering (streaming)</label>
+          <label class="tool-check ngx-check-card"><input type="checkbox" id="nrp-headers" checked> Security headers</label>
+          <label class="tool-check ngx-check-card"><input type="checkbox" id="nrp-tokens" checked> Hide the nginx version</label>
+          <label class="tool-check ngx-check-card"><input type="checkbox" id="nrp-logs" checked> Write access and error logs</label>
+        </div>
+        <div class="nrp-grid">
+          <label class="tool-field">
+            <span>Largest upload (MB)</span>
+            <input type="number" id="nrp-body" class="tool-number" min="1" max="4096" value="32">
+          </label>
+          <label class="tool-field">
+            <span>Read timeout (seconds)</span>
+            <input type="number" id="nrp-timeout" class="tool-number" min="1" max="3600" value="60">
+          </label>
+        </div>
+      </section>
+
+      <div class="tool-row nrp-nav">
+        <button class="btn" type="button" id="nrp-prev">Back</button>
+        <button class="btn primary" type="button" id="nrp-next">Next</button>
+        <span class="tool-status" id="nrp-status"></span>
+      </div>
+      <p class="tool-hint">The wizard writes a reverse proxy server block: upstream pool, WebSocket map, TLS, headers and a dotfile guard. Check it with <code>nginx -t</code> before reloading.</p>
+    </div>
+  </div>
+
+  <div class="tool-split-out">
+    <div class="tool-panel">
+      <h2>Config</h2>
+      <div class="tool-row ngx-output-actions">
+        <span class="tool-note" id="nrp-meta"></span>
+        <button class="btn" type="button" data-copy="#nrp-out" data-status="#nrp-status">Copy</button>
+        <button class="btn" type="button" data-download="#nrp-out" data-filename="reverse-proxy.conf" data-mime="text/plain">Download</button>
+      </div>
+      <label class="tool-field">
+        <span>Generated output</span>
+        <textarea id="nrp-out" class="tool-input tool-code" rows="30" readonly spellcheck="false"></textarea>
+      </label>
+      <p class="tool-hint" id="nrp-notes"></p>
+    </div>
+  </div>
+</div>

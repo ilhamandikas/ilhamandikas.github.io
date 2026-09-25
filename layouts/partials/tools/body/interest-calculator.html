@@ -1,0 +1,106 @@
+<div class="tool-panel">
+  <h2>Interest Calculator</h2>
+  <div class="int-grid">
+    <label class="tool-field">
+      <span>Jenis produk</span>
+      <select id="int-product" class="tool-select">
+        <option value="deposit">Deposito bank</option>
+        <option value="savings">Tabungan</option>
+        <option value="bond">Obligasi / SBN</option>
+        <option value="moneymarket">Reksa dana pasar uang</option>
+        <option value="loan">Kredit / pinjaman</option>
+        <option value="custom">Kustom</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Metode bunga</span>
+      <select id="int-method" class="tool-select">
+        <optgroup label="Simpanan">
+          <option value="simple">Bunga sederhana (flat)</option>
+          <option value="compound">Bunga majemuk (compound)</option>
+          <option value="tiered">Berjenjang (tiered)</option>
+          <option value="stepup">Naik bertahap (step-up)</option>
+          <option value="floating">Mengambang (floating)</option>
+        </optgroup>
+        <optgroup label="Pinjaman">
+          <option value="flat">Flat</option>
+          <option value="effective">Efektif (saldo menurun)</option>
+          <option value="annuity">Anuitas</option>
+        </optgroup>
+      </select>
+    </label>
+  </div>
+  <div class="int-grid">
+    <label class="tool-field">
+      <span>Pokok / plafon</span>
+      <input id="int-principal" class="tool-input" type="text" inputmode="decimal" value="10000000" spellcheck="false" autocomplete="off">
+    </label>
+    <label class="tool-field">
+      <span>Bunga per tahun (%)</span>
+      <input id="int-rate" class="tool-number" type="number" min="0" max="100" step="0.01" value="8">
+    </label>
+    <label class="tool-field">
+      <span>Tenor</span>
+      <div class="int-inline">
+        <input id="int-tenor" class="tool-number" type="number" min="0" step="1" value="1">
+        <select id="int-unit" class="tool-select">
+          <option value="months" selected>bulan</option>
+          <option value="days">hari</option>
+          <option value="years">tahun</option>
+        </select>
+      </div>
+    </label>
+    <label class="tool-field">
+      <span>Pajak bunga (%)</span>
+      <input id="int-tax" class="tool-number" type="number" min="0" max="100" step="0.1" value="20">
+    </label>
+  </div>
+  <div class="int-grid">
+    <label class="tool-field">
+      <span>Basis hari</span>
+      <select id="int-basis" class="tool-select">
+        <option value="actual365" selected>Actual/365</option>
+        <option value="actual360">Actual/360</option>
+        <option value="30/360">30/360</option>
+      </select>
+    </label>
+    <label class="tool-field" id="int-freq-field" hidden>
+      <span>Frekuensi compounding</span>
+      <select id="int-freq" class="tool-select">
+        <option value="1">Tahunan</option>
+        <option value="2">Semesteran</option>
+        <option value="4">Triwulanan</option>
+        <option value="12" selected>Bulanan</option>
+        <option value="365">Harian</option>
+      </select>
+    </label>
+    <label class="tool-inline" id="int-aro-field" hidden><input type="checkbox" id="int-aro" class="tool-check" checked> Bunga di-rollover (ARO)</label>
+  </div>
+  <div class="tool-field" id="int-schedule-field" hidden>
+    <span id="int-schedule-label">Jadwal bunga per periode</span>
+    <textarea id="int-schedule" class="tool-input tool-code" rows="4" spellcheck="false" placeholder="6&#10;7&#10;8"></textarea>
+    <p class="tool-hint">Satu baris per periode (mis. per tahun): <code>6</code>, lalu <code>7</code>, lalu <code>8</code>. Angka dalam persen per tahun. Kalau periode lebih banyak dari baris, baris terakhir dipakai lagi.</p>
+  </div>
+  <div class="tool-field" id="int-tiers-field" hidden>
+    <span>Bracket saldo</span>
+    <textarea id="int-tiers" class="tool-input tool-code" rows="4" spellcheck="false" placeholder="10000000 3&#10;50000000 4&#10;* 5"></textarea>
+    <p class="tool-hint">Satu bracket per baris: <code>batas_atas rate</code>. Pakai <code>*</code> untuk sisa saldo tanpa batas. Contoh di atas: 10 juta pertama 3%, 40 juta berikutnya 4%, sisanya 5%.</p>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="int-calc">Hitung</button>
+    <button class="btn" type="button" id="int-copy">Copy hasil</button>
+    <span class="tool-status" id="int-status"></span>
+  </div>
+  <p class="tool-hint">Pilih jenis produk untuk mengisi pajak dan basis hari secara otomatis — deposito 20%, obligasi/SBN 10%, reksa dana pasar uang 0% — lalu ubah kalau perlu. Tenor dalam bulan dihitung 30 hari; tahun dihitung 365 atau 360 sesuai basis.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Hasil</h2>
+  <div id="int-summary" class="tool-results"></div>
+  <div id="int-schedule-out"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Penjelasan metode</h2>
+  <div id="int-explain" class="int-explain"></div>
+</div>

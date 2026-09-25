@@ -15,7 +15,15 @@
         <option value="sql-in">SQL IN list</option>
       </select>
     </label>
-    <label class="tool-check"><input type="checkbox" id="lcf-trim" checked> Trim lines</label>
+    <label class="tool-inline">Sort
+      <select id="lcf-sort" class="tool-select">
+        <option value="none">Original</option>
+        <option value="asc">A → Z</option>
+        <option value="desc">Z → A</option>
+      </select>
+    </label>
+    <label class="tool-check"><input type="checkbox" id="lcf-unique"> Remove duplicates</label>
+    <label class="tool-check"><input type="checkbox" id="lcf-trim" checked> Trim</label>
     <label class="tool-check"><input type="checkbox" id="lcf-skip-empty" checked> Skip empty</label>
     <button class="btn" type="button" data-copy="#lcf-output" data-status="#lcf-status">Copy</button>
     <span class="tool-status" id="lcf-status"></span>

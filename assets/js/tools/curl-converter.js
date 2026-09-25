@@ -69,6 +69,11 @@ function convert(req) {
   return lines.join('\n');
 }
 function run() {
+  if (!input.value.trim()) {
+    output.value = '';
+    tk.setStatus(status, '');
+    return;
+  }
   try { output.value = convert(parse(input.value)); tk.setStatus(status, 'Converted', 'ok'); }
   catch (e) { output.value = ''; tk.setStatus(status, e.message, 'err'); }
 }

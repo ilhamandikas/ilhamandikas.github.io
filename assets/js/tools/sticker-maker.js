@@ -75,6 +75,7 @@ function removeBackground(source) {
   temp.width = source.width;
   temp.height = source.height;
   const c = temp.getContext('2d');
+  if (!c) return source;
   c.drawImage(source, 0, 0);
   const data = c.getImageData(0, 0, temp.width, temp.height);
   const d = data.data;
@@ -153,6 +154,11 @@ function drawStickerText(text, y) {
 }
 
 function render() {
+  const hasContent = Boolean(image) || topText.value.trim() !== '' || bottomText.value.trim() !== '';
+  if (!ctx) {
+    tk.setStatus(status, hasContent ? 'This browser cannot draw the sticker canvas' : '', hasContent ? 'err' : '');
+    return;
+  }
   ctx.clearRect(0, 0, 1024, 1024);
   drawFrame();
   drawImageLayer();

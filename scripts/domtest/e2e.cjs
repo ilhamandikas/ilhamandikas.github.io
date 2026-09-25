@@ -429,7 +429,7 @@ const check = (label, actual, expected) => {
     // Ranking, which matters more than fuzziness. With a plain substring filter
     // "ip" put JSON Minifier first (str-IP) and the IP tool fourth.
     check('search: "ip" ranks the IP tool first', top('ip'), 'IP & Geolocation Lookup');
-    check('search: "time" ranks the timestamp tool first', top('time'), 'Timestamp Converter');
+    check('search: "time" ranks a time tool first', ['Time Zone Converter', 'Timestamp Converter'].includes(top('time')), true);
     check('search: "password" ranks password strength first', top('password'), 'Password Strength');
 
     // One edit away.
@@ -479,7 +479,7 @@ const check = (label, actual, expected) => {
     // Nonsense, and real terms the catalog has no tool for, have to keep finding
     // nothing, or fuzzy matching is just a random generator. "imei" is the
     // interesting one: it sits inside "date time iso" once the spaces go.
-    for (const nonsense of ['asdfgh', 'xyz', 'qqq', 'nonsense', 'kubernetes', 'imei', 'utm']) {
+    for (const nonsense of ['asdfgh', 'xyz', 'qqq', 'nonsense', 'kubernetes', 'imei']) {
       check(`search: "${nonsense}" finds nothing`, rank(nonsense).length, 0);
     }
     check('search: the empty state is shown when nothing matches', empty.hidden, false);
@@ -1793,7 +1793,6 @@ const check = (label, actual, expected) => {
       [CONSENT]: 'yes',
       'ilham:memory:other-tool': '{"x":1}',
       'ilham:history:other-tool': '[{"at":1,"data":{"x":1}}]',
-      'ilham:recent-tools': '[]',
     });
     click(all.w, '#tool-memory-forget-all');
     await sleep(100);
@@ -1801,10 +1800,6 @@ const check = (label, actual, expected) => {
       [all.w.localStorage.getItem('ilham:memory:other-tool'),
         all.w.localStorage.getItem('ilham:history:other-tool'),
         all.w.localStorage.getItem(CONSENT)], [null, null, null]);
-    // The sidebar records the current tool on every load, so the exact contents are
-    // not the point here — the point is that forget-all did not delete the key.
-    check('memory: forget-all leaves the recently-used list alone, because that is a separate promise',
-      all.w.localStorage.getItem('ilham:recent-tools') === null, false);
   }
 
   /* -------------------------------------------------------- previous entries */
@@ -1829,8 +1824,8 @@ const check = (label, actual, expected) => {
 
     // 2. Consent on: an entry appears after a pause, and the panel opens itself.
     const page = load('json-formatter', { [CONSENT]: 'yes' });
-    check('history: the empty panel is visible after consent, so the feature is discoverable',
-      page.w.document.querySelector('#tool-history').hidden, false);
+    check('history: the panel stays hidden after consent while there is nothing in it',
+      page.w.document.querySelector('#tool-history').hidden, true);
     set(page.w, '#jf-input', '{"first":true}');
     await sleep(2400);
     check('history: a pause records one entry', entries(page).length, 1);
@@ -1925,122 +1920,11 @@ const check = (label, actual, expected) => {
     check('history: ...and the page is still usable', errorStatuses(junk.w), []);
   }
 
-  /* -------------------------------------------------------- recently used tools */
-
-  console.log('\n=== recently used tools ===');
-  {
-    const RECENT = 'ilham:recent-tools';
-    const catalog = (seed) => loadFile(path.join(ROOT, 'tools', 'index.html'), 'https://ilham.dev/tools/', { store: seed });
-    const entries = (page) => JSON.parse(page.w.localStorage.getItem(RECENT) || '[]');
-
-    const blank = catalog(null);
-    check('recent: nothing is listed before anything has been opened', blank.w.document.querySelector('#tool-recent').hidden, true);
-
-    // Recorded by the real navigation script, not by writing the key here.
-    const opened = loadPage('uuid-generator');
-    await sleep(60);
-    check('recent: opening a tool records its slug', entries(opened).map((entry) => entry.slug), ['uuid-generator']);
-    check('recent: ...and nothing else — no input, no output, no title',
-      Object.keys(entries(opened)[0]).sort(), ['at', 'slug']);
-
-    const shown = catalog({ [RECENT]: JSON.stringify([{ slug: 'uuid-generator', at: Date.now() - 5000 }]) });
-    check('recent: the sidebar shows it', shown.w.document.querySelector('#tool-recent').hidden, false);
-    check('recent: ...as a link to the tool',
-      shown.w.document.querySelector('#tool-recent .tool-recent-list a').getAttribute('href'), '/tools/uuid-generator/');
-    check('recent: ...named the way the sidebar names it, not by its slug',
-      shown.w.document.querySelector('#tool-recent .tool-recent-list a').textContent, 'UUID Generator');
-    check('recent: ...with a time a person can read',
-      shown.w.document.querySelector('#tool-recent .tool-recent-when').textContent, 'just now');
-
-    click(shown.w, '#tool-recent-clear');
-    check('recent: clear empties the list', shown.w.localStorage.getItem(RECENT), null);
-    check('recent: ...and hides the block', shown.w.document.querySelector('#tool-recent').hidden, true);
-
-    // Re-opening moves an entry to the front instead of appending it.
-    const revisited = loadFile(path.join(TOOLS, 'uuid-generator', 'index.html'), 'https://ilham.dev/tools/uuid-generator/', {
-      store: { [RECENT]: JSON.stringify([{ slug: 'base64-string-converter', at: 1 }, { slug: 'uuid-generator', at: 2 }]) },
-    });
-    await sleep(60);
-    check('recent: re-opening a tool moves it to the front rather than adding it again',
-      entries(revisited).map((entry) => entry.slug), ['uuid-generator', 'base64-string-converter']);
-
-    const full = loadFile(path.join(TOOLS, 'uuid-generator', 'index.html'), 'https://ilham.dev/tools/uuid-generator/', {
-      store: { [RECENT]: JSON.stringify(Array.from({ length: 8 }, (_, i) => ({ slug: `tool-${i}`, at: i }))) },
-    });
-    await sleep(60);
-    check('recent: the list is capped at eight', entries(full).length, 8);
-    check('recent: ...and the one that fell off is the oldest', entries(full).some((entry) => entry.slug === 'tool-7'), false);
-
-    const junk = catalog({ [RECENT]: 'not json at all' });
-    check('recent: a corrupt store is ignored instead of breaking the sidebar', junk.w.document.querySelector('#tool-recent').hidden, true);
-    check('recent: ...and the page still lists the tools',
-      junk.w.document.querySelectorAll('[data-tool-card]').length, TOOL_COUNT);
-  }
-
   /* ------------------------------------------------------ http request tester */
 
   console.log('\n=== http request tester ===');
   {
     const page = loadPage('http-request-tester');
-    set(page.w, '#hrt-curl-in', "curl -X POST 'https://api.example.com/v1/items?a=1' -H 'X-Token: abc' -d 'name=one&tag=two'");
-    click(page.w, '#hrt-import');
-    await sleep(150);
-    check('http: the method, the address and the query survive a paste', [read(page.w, '#hrt-method'), read(page.w, '#hrt-url')],
-      ['POST', 'https://api.example.com/v1/items?a=1']);
-    check('http: the header survives a paste', read(page.w, '#hrt-headers'), 'X-Token: abc\nContent-Type: application/x-www-form-urlencoded');
-    check('http: -d is sent as a form body, which is what curl does', read(page.w, '#hrt-body'), 'name=one&tag=two');
-    // curl adds that Content-Type itself, and a note says so rather than the import
-    // quietly producing a different request than the one pasted.
-    check('http: the filled-in Content-Type is explained rather than silent',
-      read(page.w, '#hrt-curl-status'), 'Imported. curl sends -d as application/x-www-form-urlencoded, so that Content-Type was filled in.');
-    check('http: ...and a harmless note is not dressed up as an error',
-      page.w.document.querySelector('#hrt-curl-status').classList.contains('err'), false);
-
-    const exported = read(page.w, '#hrt-curl-out');
-    check('http: the exported curl keeps the method', exported.includes("-X POST 'https://api.example.com/v1/items?a=1'"), true);
-    check('http: the export panel is rebuilt after an import instead of showing the old request',
-      exported.includes("-d 'name=one&tag=two'"), true);
-
-    set(page.w, '#hrt-curl-in', exported);
-    click(page.w, '#hrt-import');
-    await sleep(150);
-    check('http: importing the export gives the same command back, so the round trip is stable',
-      read(page.w, '#hrt-curl-out'), exported);
-
-    // Flags with no browser equivalent are named, not dropped.
-    set(page.w, '#hrt-curl-in', 'curl -k --compressed -o out.bin --http2 https://x.test/f');
-    click(page.w, '#hrt-import');
-    await sleep(150);
-    const refused = read(page.w, '#hrt-curl-status');
-    // -k, -o and --http2 ask for something a page cannot do. --compressed asks for
-    // something the browser already does, so it is an adjustment and must NOT be
-    // listed as left out — that list is only worth reading if it is accurate.
-    check('http: a flag the browser cannot honour is named as left out',
-      ['-k', '-o', '--http2'].every((flag) => refused.includes(flag)), true);
-    check('http: ...and a flag that only asks for what the browser already does is not called left out',
-      refused.includes('--compressed'), false);
-    check('http: ...and the status is marked as a problem', page.w.document.querySelector('#hrt-curl-status').classList.contains('err'), true);
-
-    // The opposite case: a flag that asks for something this page already does.
-    set(page.w, '#hrt-curl-in', 'curl -sSL https://y.test/');
-    click(page.w, '#hrt-import');
-    await sleep(150);
-    check('http: flags that ask for nothing are explained, not reported as lost',
-      read(page.w, '#hrt-curl-status'), 'Imported. quiet mode; showing errors, which this page always does; redirects, which this page always follows.');
-    check('http: ...and that status is not an error', page.w.document.querySelector('#hrt-curl-status').classList.contains('err'), false);
-
-    set(page.w, '#hrt-curl-in', 'curl -G -d "q=hello world" https://search.example.com/');
-    click(page.w, '#hrt-import');
-    await sleep(150);
-    check('http: -G moves the data into the query string, encoded',
-      read(page.w, '#hrt-url'), 'https://search.example.com/?q=hello%20world');
-    check('http: -G means no request body', read(page.w, '#hrt-body'), '');
-
-    set(page.w, '#hrt-curl-in', 'curl -u user:pa:ss -H "X-A: b" https://api.example.com/');
-    click(page.w, '#hrt-import');
-    await sleep(150);
-    check('http: -u becomes a Basic header, and a password with a colon survives',
-      read(page.w, '#hrt-headers'), `Authorization: Basic ${Buffer.from('user:pa:ss').toString('base64')}\nX-A: b`);
 
     // A real send, with fetch replaced. The reply is built by hand so the parsing
     // of it is what is being checked, not the network.
@@ -2088,6 +1972,167 @@ const check = (label, actual, expected) => {
     } finally {
       globalThis.fetch = realFetch;
     }
+  }
+
+  /* ----------------------------------------------------------- curl tester */
+
+  console.log('\n=== curl tester ===');
+  {
+    const page = loadPage('curl-tester');
+    set(page.w, '#curl-in', "curl -X POST 'https://api.example.com/v1/items?a=1' -H 'X-Token: abc' -d 'name=one&tag=two'");
+    await sleep(80);
+    const out = read(page.w, '#curl-out');
+    check('curl: the method and URL survive a paste', out.includes('--request POST') && out.includes('https://api.example.com/v1/items?a=1'), true);
+    check('curl: the header survives a paste', out.includes("--header 'X-Token: abc'"), true);
+    check('curl: the body becomes --data-raw', out.includes('--data-raw name=one&tag=two'), true);
+
+    set(page.w, '#curl-in', out);
+    await sleep(80);
+    check('curl: parsing the rebuilt command gives the same command back', read(page.w, '#curl-out'), out);
+
+    set(page.w, '#curl-in', 'curl -d \'{"a": 1, "b": 2}\' https://x.test/');
+    await sleep(80);
+    check('curl: a JSON body is compacted', read(page.w, '#curl-out').includes("--data-raw '{\"a\":1,\"b\":2}'"), true);
+
+    set(page.w, '#curl-in', 'curl -k https://x.test/f');
+    await sleep(80);
+    check('curl: an unsupported flag is noted instead of dropped', read(page.w, '#curl-summary').includes('-k'), true);
+    check('curl: ...and the status is not dressed up as an error', page.w.document.querySelector('#curl-status').classList.contains('err'), false);
+  }
+
+  /* ----------------------------------------------------- interest calculator */
+
+  console.log('\n=== interest calculator ===');
+  {
+    const page = loadPage('interest-calculator');
+    const cell = (key) => {
+      const rows = [...page.w.document.querySelectorAll('#int-summary .tool-result-row')];
+      const hit = rows.find((r) => r.querySelector('dt').textContent === key);
+      return hit ? hit.querySelector('dd').textContent : null;
+    };
+
+    // Deposit shortcut: 8%/year, one month, 20% tax, Actual/365.
+    check('interest: the deposit shortcut sets the 20% deposit tax', read(page.w, '#int-tax'), '20');
+    check('interest: the gross interest for one month is the Actual/365 figure', cell('Bunga bruto'), 'Rp 65.753');
+    check('interest: the tax is 20% of the gross', cell('Pajak 20%'), '− Rp 13.151');
+    check('interest: the net is the gross minus tax', cell('Bunga net'), 'Rp 52.603');
+    check('interest: a full year of net interest is 8% × 80% of the principal', cell('Net per tahun'), 'Rp 640.000');
+
+    // Bond shortcut: 10% tax.
+    set(page.w, '#int-product', 'bond');
+    await sleep(60);
+    check('interest: the bond shortcut sets the 10% bond tax', read(page.w, '#int-tax'), '10');
+
+    // 30/360 makes a month exactly a twelfth.
+    set(page.w, '#int-product', 'deposit');
+    set(page.w, '#int-basis', '30/360');
+    await sleep(60);
+    check('interest: a 30/360 month is exactly 8% ÷ 12', cell('Bunga bruto'), 'Rp 66.667');
+
+    // Compound: tax is withheld each period, so the net EAY is below the gross.
+    set(page.w, '#int-basis', 'actual365');
+    set(page.w, '#int-method', 'compound');
+    set(page.w, '#int-tenor', '1');
+    set(page.w, '#int-unit', 'years');
+    set(page.w, '#int-freq', '12');
+    await sleep(60);
+    check('interest: monthly compounding lifts the gross EAY above the nominal rate', cell('EAY bruto'), '8.30%');
+    check('interest: ...and withholding tax each period leaves a lower net EAY', cell('EAY net'), '6.59%');
+
+    // Annuity: the amortisation formula for 10 million over 12 months at 8%.
+    set(page.w, '#int-method', 'annuity');
+    set(page.w, '#int-unit', 'months');
+    set(page.w, '#int-tenor', '12');
+    await sleep(60);
+    check('interest: the annuity payment matches the amortisation formula', cell('Angsuran per bulan'), 'Rp 869.884');
+    check('interest: the total interest is the sum of the schedule', cell('Total bunga'), 'Rp 438.611');
+    check('interest: an annuity shows an instalment table', page.w.document.querySelectorAll('#int-schedule-out tbody tr').length, 12);
+  }
+
+  /* -------------------------------------------------------- time zone converter */
+
+  console.log('\n=== time zone converter ===');
+  {
+    const page = loadPage('time-zone-converter');
+    const value = (label) => {
+      const rows = [...page.w.document.querySelectorAll('#tz-result .tool-result-row')];
+      const hit = rows.find((r) => r.querySelector('dt').textContent === label);
+      return hit ? hit.querySelector('dd').textContent : null;
+    };
+    set(page.w, '#tz-input', 'Sep 26, 2026 @ 00:24:20.437');
+    set(page.w, '#tz-zone', 'UTC');
+    await sleep(60);
+    check('timezone: the default source is UTC', read(page.w, '#tz-zone'), 'UTC');
+    check('timezone: the UTC instant matches the input', value('UTC'), '2026-09-26 00:24:20 · Sat · UTC+00:00');
+    check('timezone: Jakarta is seven hours ahead', value('Jakarta · WIB'), '2026-09-26 07:24:20 · Sat · UTC+07:00');
+    check('timezone: New York is behind UTC', String(value('New York')).startsWith('2026-09-25 20:24:20'), true);
+
+    // A value with its own offset is an absolute instant; the source is ignored.
+    set(page.w, '#tz-zone', 'Asia/Jakarta');
+    set(page.w, '#tz-input', '2026-09-26T00:24:20+07:00');
+    await sleep(60);
+    check('timezone: an explicit offset is taken as the instant, not the source zone', value('UTC'), '2026-09-25 17:24:20 · Fri · UTC+00:00');
+  }
+
+  /* ----------------------------------------------------------- docker logs grep */
+
+  console.log('\n=== docker logs grep ===');
+  {
+    const page = loadPage('docker-logs-grep');
+    const log = [
+      'api  | line 1', 'api  | line 2', 'api  | line 3', 'api  | error boom',
+      'api  | line 5', 'api  | line 6', 'api  | line 7', 'api  | error again', 'api  | line 9',
+    ].join('\n');
+    set(page.w, '#dlg-input', log);
+    set(page.w, '#dlg-pattern', 'error');
+    set(page.w, '#dlg-before', '1');
+    set(page.w, '#dlg-after', '1');
+    await sleep(60);
+    const out = read(page.w, '#dlg-output');
+    check('docker logs: matches use a colon and context a dash, like grep -n -C', out.includes('4:api  | error boom') && out.includes('3-api  | line 3'), true);
+    check('docker logs: context groups are separated with --', out.includes('\n--\n'), true);
+    check('docker logs: the requested context is kept around each match', out.split('\n').filter((line) => !line.startsWith('--')).length, 6);
+
+    set(page.w, '#dlg-mode', 'invert');
+    await sleep(60);
+    check('docker logs: invert mode drops the matching lines', read(page.w, '#dlg-output').includes('error'), false);
+
+    set(page.w, '#dlg-mode', 'count');
+    await sleep(60);
+    check('docker logs: count mode reports the number of matches', read(page.w, '#dlg-output').startsWith('2 matching lines'), true);
+
+    set(page.w, '#dlg-mode', 'unique');
+    await sleep(60);
+    check('docker logs: unique mode lists each matching line once', read(page.w, '#dlg-output').split('\n').length, 2);
+  }
+
+  /* ------------------------------------------------------ typing speed test */
+
+  console.log('\n=== typing speed test ===');
+  {
+    const page = loadPage('typing-speed-test');
+    await sleep(30);
+    const doc = page.w.document;
+    const wordCount = () => doc.querySelectorAll('#ty-words .ty-word').length;
+    check('typing: a timed test fills a long word pool', wordCount() > 100, true);
+    check('typing: the first word shows a caret', doc.querySelectorAll('#ty-words .ty-word:first-child .ty-caret').length, 1);
+    check('typing: accuracy starts at 100%', read(page.w, '#ty-acc'), '100%');
+
+    const first = doc.querySelector('#ty-words .ty-word:first-child').textContent;
+    set(page.w, '#ty-input', `${first} `);
+    await sleep(30);
+    check('typing: a correctly typed word is marked done', doc.querySelectorAll('#ty-words .ty-word.is-done').length, 1);
+    check('typing: the caret moves to the next word', doc.querySelectorAll('#ty-words .ty-word:nth-child(2) .ty-caret').length, 1);
+
+    set(page.w, '#ty-input', `${first} 000`);
+    await sleep(30);
+    check('typing: wrong characters are marked bad', doc.querySelectorAll('#ty-words .ty-word:nth-child(2) .ty-char.is-bad').length > 0, true);
+
+    set(page.w, '#ty-mode', 'words:25');
+    await sleep(30);
+    check('typing: a word goal builds exactly that many words', wordCount(), 25);
+    check('typing: a new test clears the input', read(page.w, '#ty-input'), '');
+    check('typing: a new test resets the result panel', doc.querySelectorAll('#ty-result .tool-result-row').length, 0);
   }
 
   console.log('\n=== actual output (review by eye) ===');

@@ -1,0 +1,57 @@
+<div class="tool-panel">
+  <h2>Log Parser</h2>
+  <label class="tool-field">
+    <span>Log content</span>
+    <textarea id="lp-input" class="tool-input tool-code" rows="10" spellcheck="false" placeholder="Paste logs here, or load a file below."></textarea>
+  </label>
+  <div class="lp-grid">
+    <label class="tool-field">
+      <span>Format</span>
+      <select id="lp-format" class="tool-select">
+        <option value="auto" selected>Auto-detect</option>
+        <option value="json">JSON / JSON Lines</option>
+        <option value="combined">Common / Combined (Apache, Nginx)</option>
+        <option value="syslog">Syslog (RFC 3164 / 5424)</option>
+        <option value="logfmt">logfmt (key=value)</option>
+        <option value="plain">Plain text</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Load a file</span>
+      <input id="lp-file" type="file" accept=".log,.txt,.json,.ndjson,.jsonl,text/plain,application/json">
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="lp-parse">Parse</button>
+    <button class="btn" type="button" id="lp-clear">Clear</button>
+    <span class="tool-status" id="lp-status"></span>
+  </div>
+  <p class="tool-hint">Detects JSON Lines, Apache/Nginx access logs (common and combined), syslog (RFC 3164 and 5424), nginx error logs, logfmt and plain <code>timestamp level message</code> lines. Every line stays in the browser.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Summary</h2>
+  <div id="lp-summary" class="tool-results"></div>
+  <div id="lp-chips" class="lp-chips"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Entries</h2>
+  <div class="lp-grid">
+    <label class="tool-field">
+      <span>Level</span>
+      <select id="lp-level" class="tool-select"><option value="">All levels</option></select>
+    </label>
+    <label class="tool-field">
+      <span>Search</span>
+      <input id="lp-search" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="substring, or /regex/i">
+    </label>
+  </div>
+  <div id="lp-table" class="lp-table-wrap"></div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="lp-copy-json">Copy JSON</button>
+    <button class="btn" type="button" id="lp-copy-csv">Copy CSV</button>
+    <button class="btn" type="button" id="lp-download-json">Download JSON</button>
+    <span class="tool-note" id="lp-meta"></span>
+  </div>
+</div>

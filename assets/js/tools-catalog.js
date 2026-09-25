@@ -1,6 +1,5 @@
 // Client-side search for the /tools/ catalog, backed by tools-search.js.
 import { bindFocusShortcut, buildIndex, search, shortcutLabel } from './tools-search.js';
-import { mount as mountRecent } from './tools-recent.js';
 
 const input = document.querySelector('#tools-search');
 const catalog = document.querySelector('#tools-catalog');
@@ -8,19 +7,6 @@ const groups = Array.from(document.querySelectorAll('[data-tools-group]'));
 const cards = Array.from(document.querySelectorAll('[data-tool-card]'));
 const empty = document.querySelector('#tools-empty');
 const fuzzyNote = document.querySelector('#tools-fuzzy');
-
-// The catalog is the page where "what was I just doing" matters most, so the same
-// recently-used block the tool sidebar carries is filled in here too. The names come
-// from the cards that are already on the page, so a renamed tool cannot go stale.
-const recent = document.querySelector('#tool-recent');
-if (recent) {
-  const names = new Map();
-  for (const card of cards) {
-    const slug = /\/tools\/([^/]+)\//.exec(card.getAttribute('href'));
-    if (slug) names.set(slug[1], card.querySelector('.tool-card-name').textContent.trim());
-  }
-  mountRecent(recent, { names, current: '' });
-}
 
 if (input && catalog) {
   const groupCards = new Map(

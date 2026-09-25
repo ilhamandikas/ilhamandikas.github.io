@@ -5,6 +5,10 @@ const { tk } = window;
 const sourceInput = document.querySelector('#qre-source');
 const sourceStatus = document.querySelector('#qre-source-status');
 const contentPanel = document.querySelector('#qre-content-panel');
+const stylePanel = document.querySelector('#qre-style-panel');
+const logoPanel = document.querySelector('#qre-logo-panel');
+const previewPanel = document.querySelector('#qre-preview-panel');
+const foldHint = document.querySelector('#qre-fold-hint');
 const text = document.querySelector('#qre-text');
 const ecc = document.querySelector('#qre-ecc');
 const size = document.querySelector('#qre-size');
@@ -33,6 +37,15 @@ const status = document.querySelector('#qre-status');
 
 let logo = null;
 let currentSvg = null;
+
+// The editor is progressive disclosure: every section stays folded until a QR
+// image has actually been read, so the page opens as one small upload step.
+const PANELS = [contentPanel, stylePanel, logoPanel, previewPanel];
+
+function setFolded(folded) {
+  for (const panel of PANELS) if (panel) panel.open = !folded;
+  if (foldHint) foldHint.hidden = !folded;
+}
 
 const pct = (value, fallback) => (Number.isFinite(Number(value)) ? Number(value) : fallback);
 
@@ -67,7 +80,7 @@ async function decodeSource(file) {
     if (!found || !found.data) throw new Error('No QR code found in that image');
     text.value = found.data;
     text.dispatchEvent(new Event('input', { bubbles: true }));
-    contentPanel.hidden = false;
+    setFolded(false);
     tk.setStatus(sourceStatus, 'QR text extracted — edit it below', 'ok');
     render();
   } catch (error) {
@@ -142,7 +155,7 @@ sourceInput.addEventListener('change', (event) => decodeSource(event.target.file
 
 document.querySelector('#qre-source-clear').addEventListener('click', () => {
   sourceInput.value = '';
-  contentPanel.hidden = true;
+  setFolded(true);
   tk.setStatus(sourceStatus, '');
 });
 

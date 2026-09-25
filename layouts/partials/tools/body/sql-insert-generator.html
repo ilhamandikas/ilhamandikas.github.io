@@ -1,0 +1,33 @@
+<div class="tool-panel">
+  <h2>SQL Insert Generator</h2>
+  <div class="sql-grid">
+    <label class="tool-field">
+      <span>Table name</span>
+      <input id="sql-table" class="tool-input" type="text" value="users">
+    </label>
+    <label class="tool-field">
+      <span>Dialect</span>
+      <select id="sql-dialect" class="tool-select">
+        <option value="mysql">MySQL / MariaDB</option>
+        <option value="postgres">PostgreSQL</option>
+        <option value="sqlite">SQLite</option>
+        <option value="mssql">SQL Server</option>
+      </select>
+    </label>
+    <label class="tool-check"><input type="checkbox" id="sql-multi" checked> One INSERT per row</label>
+  </div>
+  <label class="tool-field">
+    <span>Rows (JSON array or CSV)</span>
+    <textarea id="sql-input" class="tool-input tool-code" rows="10" spellcheck="false" placeholder='[{"name":"Budi","age":30},{"name":"Sari","age":27}]'></textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#sql-output" data-status="#sql-status">Copy SQL</button>
+    <button class="btn" type="button" data-download="#sql-output" data-filename="insert.sql" data-mime="text/plain">Download .sql</button>
+    <span class="tool-status" id="sql-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Output</h2>
+  <textarea id="sql-output" class="tool-input tool-code" rows="14" readonly spellcheck="false"></textarea>
+</div>

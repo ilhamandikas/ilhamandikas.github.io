@@ -2,6 +2,8 @@ const { tk } = window;
 
 const input = document.querySelector('#lcf-input');
 const mode = document.querySelector('#lcf-mode');
+const sort = document.querySelector('#lcf-sort');
+const unique = document.querySelector('#lcf-unique');
 const trim = document.querySelector('#lcf-trim');
 const skipEmpty = document.querySelector('#lcf-skip-empty');
 const output = document.querySelector('#lcf-output');
@@ -11,6 +13,11 @@ function lines() {
   let list = input.value.split(/\r?\n/);
   if (trim.checked) list = list.map((x) => x.trim());
   if (skipEmpty.checked) list = list.filter((x) => x !== '');
+  if (unique.checked) list = [...new Set(list)];
+  if (sort.value !== 'none') {
+    list = [...list].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+    if (sort.value === 'desc') list.reverse();
+  }
   return list;
 }
 
@@ -46,5 +53,5 @@ function render() {
   tk.setStatus(status, list.length ? `${list.length} line${list.length === 1 ? '' : 's'}` : '');
 }
 
-tk.live([input, mode, trim, skipEmpty], render);
+tk.live([input, mode, sort, unique, trim, skipEmpty], render);
 render();
