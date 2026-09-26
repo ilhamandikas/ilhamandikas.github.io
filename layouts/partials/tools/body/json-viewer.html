@@ -4,13 +4,24 @@
     <textarea id="jv-input" class="tool-input" rows="10" spellcheck="false" placeholder='{"hello":"world","items":[1,2,3]}'></textarea>
   </div>
   <div class="tool-row">
+    <div class="tool-seg" id="jv-view" role="group" aria-label="View">
+      <button type="button" data-jv-view="tree" aria-pressed="true">Tree</button>
+      <button type="button" data-jv-view="table" aria-pressed="false">Table</button>
+    </div>
     {{ partial "tools/sort.html" (dict "id" "jv-sort") }}
     <button class="btn" type="button" id="jv-expand">Expand all</button>
     <button class="btn" type="button" id="jv-collapse">Collapse all</button>
     <span class="tool-status" id="jv-status"></span>
   </div>
-  <div class="tool-field">
+  <div class="tool-field" id="jv-tree-panel">
     <label>Tree</label>
     <div id="jv-tree" class="tool-tree"></div>
+  </div>
+  <div class="tool-field" id="jv-table-panel" hidden>
+    <label>Table</label>
+    <div class="tool-table-wrap">
+      <table class="tool-table" id="jv-table"></table>
+    </div>
+    <p class="tool-hint" id="jv-table-note">—</p>
   </div>
 </div>

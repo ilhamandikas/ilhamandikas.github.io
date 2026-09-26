@@ -413,6 +413,31 @@ textarea.tool-input { min-height: 96px; }
 }
 .tool-sort-text { display: block; }
 
+/* A small segmented control, for switching between two views of one result. */
+.tool-seg {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.tool-seg button {
+  height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-left: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.tool-seg button:first-child { border-left: 0; }
+.tool-seg button:hover { background: var(--bg-soft); }
+.tool-seg button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .tool-about {
   margin-top: 40px;
   padding-top: 24px;

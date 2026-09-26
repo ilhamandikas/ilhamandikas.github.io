@@ -66,8 +66,8 @@
       status: done
     - slug: json-viewer
       name: JSON Viewer
-      desc: Explore a JSON document as a collapsible tree, with a live count of nested values.
-      keywords: [json, viewer, tree, explore, inspect, collapse, structure]
+      desc: Explore a JSON document as a collapsible tree or as a table of records, with a live count of nested values.
+      keywords: [json, viewer, tree, table, grid, records, explore, inspect, collapse, structure, postman]
       status: done
     - slug: json-minifier
       name: JSON Minifier

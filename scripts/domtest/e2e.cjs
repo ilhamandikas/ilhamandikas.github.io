@@ -137,6 +137,55 @@ const check = (label, actual, expected) => {
     desc.dom.window.close();
   }
 
+  // json-viewer table view, the grid a list of records is easier to scan in
+  {
+    const page = await run(
+      'json-viewer',
+      { '#jv-input': '[{"id":1,"name":"Ada","tags":["x","y"]},{"id":2,"name":"Grace","extra":true}]' },
+      { clicks: ['#jv-view [data-jv-view="table"]'] },
+    );
+    const { document } = page.w;
+    const cells = (tr) => [...tr.children].map((td) => td.textContent);
+
+    check('json-viewer table: the switcher marks the table', document.querySelector('[data-jv-view="table"]').getAttribute('aria-pressed'), 'true');
+    check('json-viewer table: the grid replaces the tree', document.querySelector('#jv-table-panel').hidden, false);
+    check('json-viewer table: the tree is hidden', document.querySelector('#jv-tree-panel').hidden, true);
+    check('json-viewer table: the tree buttons step aside', [document.querySelector('#jv-expand').hidden, document.querySelector('#jv-collapse').hidden], [true, true]);
+    check('json-viewer table: the sort button steps aside', document.querySelector('#jv-sort').hidden, true);
+
+    check('json-viewer table: the header numbers the rows and names every key', cells(document.querySelector('#jv-table thead tr')), ['#', 'id', 'name', 'tags', 'extra']);
+    check('json-viewer table: the first record fills its row', cells(document.querySelectorAll('#jv-table tbody tr')[0]), ['1', '1', 'Ada', '["x","y"]', '']);
+    check('json-viewer table: a key only one record has still gets a cell', cells(document.querySelectorAll('#jv-table tbody tr')[1]), ['2', '2', 'Grace', '', 'true']);
+    check('json-viewer table: the shape of the table is stated', read(page.w, '#jv-table-note'), '2 rows · 4 columns');
+
+    // A list of plain values still reads as a table, under a single column.
+    set(page.w, '#jv-input', '[10,20,30]');
+    await sleep(120);
+    check('json-viewer table: plain values share one column', cells(document.querySelector('#jv-table thead tr')), ['#', 'Value']);
+    check('json-viewer table: plain values keep their order', [...document.querySelectorAll('#jv-table tbody tr')].map((tr) => tr.children[1].textContent), ['10', '20', '30']);
+
+    // A single object becomes a table of one row.
+    set(page.w, '#jv-input', '{"a":1,"b":[2]}');
+    await sleep(120);
+    check('json-viewer table: an object gives one row', read(page.w, '#jv-table-note'), '1 row · 2 columns · one object');
+    check('json-viewer table: without a row number', cells(document.querySelectorAll('#jv-table tbody tr')[0]), ['1', '[2]']);
+
+    // An empty list keeps its header, and a scalar has no table at all.
+    set(page.w, '#jv-input', '[]');
+    await sleep(120);
+    check('json-viewer table: an empty list still shows a column', read(page.w, '#jv-table-note'), '0 rows · 1 column');
+    set(page.w, '#jv-input', '42');
+    await sleep(120);
+    check('json-viewer table: a lone value is not a table', read(page.w, '#jv-table-note'), 'A table needs an object or an array of objects.');
+    check('json-viewer table: the tree is untouched by that', read(page.w, '#jv-status'), 'Valid JSON — 0 nested values');
+
+    click(page.w, '#jv-view [data-jv-view="tree"]');
+    check('json-viewer table: switching back brings the tree', document.querySelector('#jv-tree-panel').hidden, false);
+    check('json-viewer table: and hides the grid', document.querySelector('#jv-table-panel').hidden, true);
+    check('json-viewer table: no uncaught errors', page.finish().thrown.length, 0);
+    page.dom.window.close();
+  }
+
   console.log('\n=== network tools (mocked fetch) ===');
 
   // Serve canned responses and remember which URLs were asked for.
