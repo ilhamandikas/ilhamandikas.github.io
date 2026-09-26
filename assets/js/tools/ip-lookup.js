@@ -136,8 +136,8 @@ function render(info) {
     map.className = 'btn';
     map.target = '_blank';
     map.rel = 'noopener noreferrer';
-    map.textContent = 'Open in OpenStreetMap';
-    map.href = `https://www.openstreetmap.org/?mlat=${info.latitude}&mlon=${info.longitude}#map=10/${info.latitude}/${info.longitude}`;
+    map.textContent = 'Open in Google Maps';
+    map.href = `https://www.google.com/maps?q=${info.latitude},${info.longitude}&z=10`;
     actions.appendChild(map);
   }
   const copy = document.createElement('button');

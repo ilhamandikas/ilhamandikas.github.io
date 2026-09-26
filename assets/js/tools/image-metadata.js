@@ -534,11 +534,11 @@ function render(sections, file) {
     const warning = document.createElement('p');
     warning.className = 'img-warning';
     const link = document.createElement('a');
-    link.href = `https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lon}#map=15/${coords.lat}/${coords.lon}`;
+    link.href = `https://www.google.com/maps?q=${coords.lat},${coords.lon}&z=15`;
     link.rel = 'noopener';
     link.target = '_blank';
     link.textContent = `${coords.lat.toFixed(5)}, ${coords.lon.toFixed(5)}`;
-    warning.append('This file says where it was taken: ', link, '. The link opens OpenStreetMap.');
+    warning.append('This file says where it was taken: ', link, '. The link opens Google Maps.');
     nodes.unshift(warning);
   }
 

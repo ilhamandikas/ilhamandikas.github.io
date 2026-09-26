@@ -1512,7 +1512,7 @@ const check = (label, actual, expected) => {
     const link = warning.querySelector('a');
     check('image: the south and east refs decide the signs', link.textContent, '-51.50000, 0.12500');
     check('image: the map link carries numbers, not NaN',
-      link.getAttribute('href'), 'https://www.openstreetmap.org/?mlat=-51.5&mlon=0.125#map=15/-51.5/0.125');
+      link.getAttribute('href'), 'https://www.google.com/maps?q=-51.5,0.125&z=15');
 
     // A PNG has no EXIF, so this is the other reader and the other block layout.
     const chunk = (type, body) => join(new Uint8Array([(body.length >>> 24) & 255, (body.length >>> 16) & 255, (body.length >>> 8) & 255, body.length & 255]), new TextEncoder().encode(type), body, new Uint8Array([0, 0, 0, 0]));

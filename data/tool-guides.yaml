@@ -1025,7 +1025,7 @@ image-metadata:
     Drop in a JPEG, PNG, GIF or WebP and read the metadata the file actually
     carries: camera make and model, exposure settings, orientation, dimensions,
     colour profile, PNG text chunks and, where present, GPS coordinates with a
-    link that opens the location on OpenStreetMap. The parsing happens in the
+    link that opens the location in Google Maps. The parsing happens in the
     page, so the picture is never uploaded. A raw JSON panel shows every tag that
     was read, which is what you want when a field looks wrong.
   faq:
