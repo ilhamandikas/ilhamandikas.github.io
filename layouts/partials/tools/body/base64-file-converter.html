@@ -1,0 +1,29 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="b64f-file">File → Base64</label>
+    <input type="file" id="b64f-file" class="tool-input">
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="b64f-encode">Encode file</button>
+    <label class="tool-inline"><input type="checkbox" id="b64f-dataurl" class="tool-check"> Include the data URL prefix</label>
+    <span class="tool-status" id="b64f-status"></span>
+  </div>
+  <div class="tool-field">
+    <label for="b64f-output">Base64</label>
+    <textarea id="b64f-output" class="tool-input" rows="7" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#b64f-output" data-status="#b64f-status">Copy</button>
+    <button class="btn" type="button" data-download="#b64f-output" data-filename="file.base64.txt">Download text</button>
+  </div>
+
+  <div class="tool-field">
+    <label for="b64f-input">Base64 → File</label>
+    <textarea id="b64f-input" class="tool-input" rows="5" spellcheck="false" placeholder="Paste Base64, or a data URL…"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="b64f-decode">Decode to file</button>
+    <a class="btn" id="b64f-download" download="decoded.bin" hidden>Download file</a>
+    <span class="tool-status" id="b64f-status2"></span>
+  </div>
+</div>

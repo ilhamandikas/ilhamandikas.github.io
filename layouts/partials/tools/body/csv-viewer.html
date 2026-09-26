@@ -1,0 +1,26 @@
+<div class="tool-panel">
+  <h2>CSV Viewer</h2>
+  <div class="tool-row">
+    <input id="csv-file" class="tool-file" type="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
+    <button class="btn" type="button" id="csv-clear">Clear</button>
+    <span class="tool-status" id="csv-status"></span>
+  </div>
+  <label class="tool-field">
+    <span>Or paste CSV, TSV or pipe-separated text</span>
+    <textarea id="csv-input" class="tool-input tool-code" rows="6" spellcheck="false">name,city,total
+Budi,Surabaya,95
+Ada,Jakarta,120
+Citra,Bandung,143</textarea>
+  </label>
+  <div class="tool-inline">
+    <label class="tool-check"><input type="checkbox" id="csv-header" checked> First row is the header</label>
+    <input id="csv-filter" class="tool-input" type="text" placeholder="Filter rows" style="max-width: 220px;">
+    <button class="btn" type="button" id="csv-sort-clear">Clear sort</button>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Table</h2>
+  <div id="csv-table-wrap" class="tool-table-wrap"></div>
+  <p class="tool-hint">Click a column heading to sort by it, and click again to reverse the order. The file is read in the page, so it never leaves your computer. Very large files are shown up to the first five hundred rows.</p>
+</div>

@@ -1,0 +1,15 @@
+{{ partial "tools/io.html" (dict
+  "id" "obf"
+  "inputLabel" "Text"
+  "outputLabel" "Obfuscated"
+  "rows" "5"
+  "filename" "obfuscated.txt"
+  "controls" `<label class="tool-inline">Keep first
+      <input type="number" id="obf-start" class="tool-number" min="0" max="200" value="2">
+    </label>
+    <label class="tool-inline">Keep last
+      <input type="number" id="obf-end" class="tool-number" min="0" max="200" value="2">
+    </label>
+    <label class="tool-inline">Mask with
+      <input type="text" id="obf-char" class="tool-text" maxlength="1" value="*">
+    </label>`) }}

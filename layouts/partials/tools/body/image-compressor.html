@@ -1,0 +1,49 @@
+<div class="tool-panel">
+  <h2>Compress</h2>
+  <label class="tool-field">
+    <span>Image</span>
+    <input id="imc-file" class="tool-input" type="file" accept="image/jpeg,image/png,image/gif,image/webp">
+  </label>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Max width (px)</span>
+      <input id="imc-max-width" class="tool-input" type="number" min="1" step="1" placeholder="Keep original">
+    </label>
+    <label class="tool-field">
+      <span>Max height (px)</span>
+      <input id="imc-max-height" class="tool-input" type="number" min="1" step="1" placeholder="Keep original">
+    </label>
+  </div>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Format</span>
+      <select id="imc-format" class="tool-select">
+        <option value="original">Keep original</option>
+        <option value="jpeg">JPEG</option>
+        <option value="png">PNG</option>
+        <option value="webp">WebP</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Quality <output id="imc-quality-value">80</output></span>
+      <input id="imc-quality" class="tool-range" type="range" min="30" max="100" step="1" value="80">
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="imc-download">Download</button>
+    <span class="tool-status" id="imc-status"></span>
+  </div>
+  <p class="tool-hint">The picture never leaves this device: it is decoded, resized and re-encoded in the page. The width and height are ceilings, so the image is only ever shrunk. JPEG and WebP honour the quality slider; PNG is always lossless.</p>
+</div>
+
+<div class="tool-panel" id="imc-preview" hidden>
+  <h2>Result</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Original</span><span id="imc-original">—</span></p>
+    <p><span class="imc-label">Compressed</span><span id="imc-output">—</span></p>
+    <p><span class="imc-label">Saving</span><span id="imc-saved">—</span></p>
+  </div>
+  <div class="imc-preview-wrap">
+    <canvas id="imc-canvas" width="600" height="400"></canvas>
+  </div>
+</div>

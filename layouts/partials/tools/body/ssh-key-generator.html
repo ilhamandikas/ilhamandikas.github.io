@@ -1,0 +1,78 @@
+<div class="tool-panel">
+  <h2>Key</h2>
+  <div class="tool-row">
+    <div class="tool-field">
+      <label for="ssh-type">Type</label>
+      <select class="tool-select" id="ssh-type">
+        <option value="ed25519" selected>Ed25519 — 256 bit, recommended</option>
+        <option value="ecdsa-p256">ECDSA P-256</option>
+        <option value="ecdsa-p384">ECDSA P-384</option>
+        <option value="ecdsa-p521">ECDSA P-521</option>
+        <option value="rsa-3072">RSA 3072</option>
+        <option value="rsa-4096">RSA 4096 — slowest, widest support</option>
+        <option value="rsa-2048">RSA 2048 — legacy only</option>
+      </select>
+    </div>
+    <div class="tool-field">
+      <label for="ssh-comment">Comment</label>
+      <input class="tool-input" type="text" id="ssh-comment" placeholder="you@laptop" spellcheck="false" autocomplete="off">
+    </div>
+  </div>
+  <p class="tool-hint">The comment is the trailing label in the public key line. It is for your own reference and has no effect on the key. Put something that tells you which machine it came from.</p>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="ssh-generate">Generate key pair</button>
+    <span class="tool-status" id="ssh-status" role="status" aria-live="polite"></span>
+  </div>
+  <p class="tool-hint">Generation happens with the browser's own key generator, in this tab. Nothing is sent, and there is no key that we hold. That is also why a key you make here cannot be recovered from anywhere — if you lose it, it is gone.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Public key</h2>
+  <div class="tool-field">
+    <label for="ssh-public">authorized_keys line</label>
+    <textarea class="tool-input tool-code" id="ssh-public" rows="3" readonly spellcheck="false" data-no-memory></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="ssh-copy-public">Copy</button>
+    <button class="btn" type="button" id="ssh-download-public">Download .pub</button>
+  </div>
+  <div class="tool-field">
+    <label for="ssh-fingerprint">Fingerprint</label>
+    <input class="tool-input tool-code" type="text" id="ssh-fingerprint" readonly spellcheck="false">
+    <p class="tool-hint">This is what <code>ssh-keygen -lf</code> and <code>ssh -o FingerprintHash=sha256</code> print. Compare it with what the server shows you — if the two differ, something is in the middle.</p>
+  </div>
+  <div class="tool-field">
+    <label for="ssh-md5">Fingerprint, legacy form</label>
+    <input class="tool-input tool-code" type="text" id="ssh-md5" readonly spellcheck="false">
+    <p class="tool-hint">MD5 fingerprints only appear in older documentation and in a few vendors' consoles. Nothing new should use them.</p>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Private key</h2>
+  <div class="tool-field">
+    <label for="ssh-private">OpenSSH private key</label>
+    <textarea class="tool-input tool-code" id="ssh-private" rows="14" readonly spellcheck="false" data-no-memory></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="ssh-copy-private">Copy</button>
+    <button class="btn" type="button" id="ssh-download-private">Download</button>
+    <span class="tool-note" id="ssh-note"></span>
+  </div>
+  <p class="tool-hint">This is OpenSSH's own private-key format, the one <code>ssh</code> and <code>ssh-keygen</code> read directly. Save it as <code>~/.ssh/id_ed25519</code>, then lock it down: <code>chmod 600 ~/.ssh/id_ed25519</code>. OpenSSH refuses to use a private key that other users on the machine can read, and that refusal is a feature.</p>
+  <p class="tool-hint">It carries no passphrase. Add one without changing the key itself: <code>ssh-keygen -p -f ~/.ssh/id_ed25519</code>. On Windows, PuTTY's <code>puttygen</code> imports this format as-is.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>PKCS#8 PEM</h2>
+  <div class="tool-field">
+    <label for="ssh-pkcs8">For tools that do not speak OpenSSH</label>
+    <textarea class="tool-input tool-code" id="ssh-pkcs8" rows="10" readonly spellcheck="false" data-no-memory></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="ssh-copy-pkcs8">Copy</button>
+    <button class="btn" type="button" id="ssh-download-pkcs8">Download</button>
+  </div>
+  <p class="tool-hint">The same key in the container Java, Python, Node and OpenSSL expect. It is here because it is the right file for those tools — not because it is the safer one to keep. If you only need SSH, use the OpenSSH key above.</p>
+  <p class="tool-hint">OpenSSH itself reads this form for RSA and ECDSA but <em>not</em> for Ed25519: <code>ssh-keygen -y</code> on a PKCS#8 Ed25519 key answers <code>invalid format</code>, including on a key OpenSSL has just written. That was measured against OpenSSH 9.6, and it is why the OpenSSH container is the one shown first.</p>
+</div>

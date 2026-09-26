@@ -1,0 +1,14 @@
+{{ partial "tools/io.html" (dict
+  "id" "b64enc"
+  "inputLabel" "Text"
+  "outputLabel" "Base64"
+  "rows" "6"
+  "filename" "encoded.txt"
+  "controls" `<label class="tool-check"><input type="checkbox" id="b64-encode-urlsafe"> URL-safe</label>`) }}
+{{ partial "tools/io.html" (dict
+  "id" "b64dec"
+  "inputLabel" "Base64"
+  "outputLabel" "Text"
+  "rows" "6"
+  "filename" "decoded.txt"
+  "controls" `<label class="tool-check"><input type="checkbox" id="b64-decode-urlsafe"> URL-safe</label>`) }}

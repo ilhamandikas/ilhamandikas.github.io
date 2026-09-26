@@ -1,0 +1,35 @@
+<div class="tool-panel">
+  <h2>Google Maps Link Parser</h2>
+  <label class="tool-field">
+    <span>Maps link or coordinates</span>
+    <input id="gmp-input" class="tool-input" type="text" value="https://www.google.com/maps/@-6.2088,106.8456,15z">
+  </label>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Label</span>
+      <input id="gmp-label" class="tool-input" type="text" value="Jakarta">
+    </label>
+    <label class="tool-field">
+      <span>Output format</span>
+      <select id="gmp-format" class="tool-select">
+        <option value="decimal" selected>Decimal degrees</option>
+        <option value="dms">Degrees, minutes, seconds</option>
+        <option value="json">JSON</option>
+        <option value="csv">CSV</option>
+        <option value="sql">SQL INSERT</option>
+        <option value="geojson">GeoJSON</option>
+      </select>
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#gmp-output" data-status="#gmp-status">Copy</button>
+    <button class="btn" type="button" data-download="#gmp-output" data-filename="location.txt" data-mime="text/plain">Download</button>
+    <span class="tool-status" id="gmp-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Output</h2>
+  <pre id="gmp-output" class="tool-result"></pre>
+  <p class="tool-hint">Paste a full Google Maps link or a plain latitude and longitude pair. A short link such as maps.app.goo.gl has to be opened first, because expanding it needs a network request and this page never makes one.</p>
+</div>

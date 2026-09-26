@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="chmod-octal">Octal</label>
+    <input type="text" id="chmod-octal" class="tool-text" value="755" maxlength="4" spellcheck="false">
+  </div>
+  <div class="tool-row" id="chmod-grid">
+    <label class="tool-check"><input type="checkbox" data-who="u" data-bit="4"> user read</label>
+    <label class="tool-check"><input type="checkbox" data-who="u" data-bit="2"> user write</label>
+    <label class="tool-check"><input type="checkbox" data-who="u" data-bit="1"> user execute</label>
+    <label class="tool-check"><input type="checkbox" data-who="g" data-bit="4"> group read</label>
+    <label class="tool-check"><input type="checkbox" data-who="g" data-bit="2"> group write</label>
+    <label class="tool-check"><input type="checkbox" data-who="g" data-bit="1"> group execute</label>
+    <label class="tool-check"><input type="checkbox" data-who="o" data-bit="4"> other read</label>
+    <label class="tool-check"><input type="checkbox" data-who="o" data-bit="2"> other write</label>
+    <label class="tool-check"><input type="checkbox" data-who="o" data-bit="1"> other execute</label>
+  </div>
+  <dl id="chmod-results" class="tool-results"></dl>
+  <p class="tool-status" id="chmod-status"></p>
+</div>

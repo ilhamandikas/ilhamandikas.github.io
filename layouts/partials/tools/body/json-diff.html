@@ -1,0 +1,17 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <div class="tool-field" style="flex:1">
+      <label for="jd-left">Original JSON</label>
+      <textarea id="jd-left" class="tool-input" rows="10" spellcheck="false" placeholder='{ "a": 1 }'></textarea>
+    </div>
+    <div class="tool-field" style="flex:1">
+      <label for="jd-right">Changed JSON</label>
+      <textarea id="jd-right" class="tool-input" rows="10" spellcheck="false" placeholder='{ "a": 2 }'></textarea>
+    </div>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="jd-run">Compare</button>
+    <span class="tool-status" id="jd-status"></span>
+  </div>
+  <div class="tool-diff" id="jd-diff"></div>
+</div>

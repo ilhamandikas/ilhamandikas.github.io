@@ -1,0 +1,28 @@
+<div class="tool-panel">
+  <h2>WhatsApp Link Generator</h2>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Country code</span>
+      <input id="wal-cc" class="tool-input" type="text" value="62">
+    </label>
+    <label class="tool-field">
+      <span>Phone number</span>
+      <input id="wal-phone" class="tool-input" type="text" value="81234567890">
+    </label>
+  </div>
+  <label class="tool-field">
+    <span>Message</span>
+    <textarea id="wal-message" class="tool-input" rows="3" placeholder="Hello, I would like to ask about my order.">Hello, I would like to ask about my order.</textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#wal-output" data-status="#wal-status">Copy link</button>
+    <a id="wal-open" class="btn" href="#" target="_blank" rel="noopener">Open</a>
+    <span class="tool-status" id="wal-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Click-to-chat link</h2>
+  <input id="wal-output" class="tool-input tool-code" type="text" readonly>
+  <p class="tool-hint">A leading zero is dropped and the country code is added, so 081234567890 becomes 6281234567890. The message is URL-encoded, which is why spaces come out as %20.</p>
+</div>

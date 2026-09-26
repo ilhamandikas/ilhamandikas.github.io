@@ -1,0 +1,42 @@
+<div class="tool-panel">
+  <h2>xargs Builder</h2>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Upstream command (optional)</span>
+      <input id="xrg-upstream" class="tool-input" type="text" placeholder="find . -name '*.log' -print0">
+    </label>
+    <label class="tool-field">
+      <span>Command to run</span>
+      <input id="xrg-command" class="tool-input" type="text" placeholder="gzip">
+    </label>
+    <label class="tool-field">
+      <span>Arguments per command (-n)</span>
+      <input id="xrg-n" class="tool-input" type="number" min="1" placeholder="1">
+    </label>
+    <label class="tool-field">
+      <span>Parallel jobs (-P)</span>
+      <input id="xrg-p" class="tool-input" type="number" min="1" placeholder="4">
+    </label>
+    <label class="tool-field">
+      <span>Replace string (-I)</span>
+      <input id="xrg-replace" class="tool-input" type="text" placeholder="{}">
+    </label>
+  </div>
+
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="xrg-null" checked> Null-delimited input (-0)</label>
+    <label class="tool-check"><input type="checkbox" id="xrg-replace-on"> Use a replace string (-I)</label>
+    <label class="tool-check"><input type="checkbox" id="xrg-trace"> Print each command (-t)</label>
+    <label class="tool-check"><input type="checkbox" id="xrg-no-run" checked> Skip when input is empty (-r)</label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Command</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#xrg-out" data-status="#xrg-status">Copy</button>
+    <span class="tool-status" id="xrg-status"></span>
+  </div>
+  <pre id="xrg-out" class="tool-result"></pre>
+  <ul id="xrg-explain" class="cmd-explain"></ul>
+</div>

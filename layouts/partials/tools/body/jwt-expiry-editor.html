@@ -1,0 +1,63 @@
+<div class="tool-panel">
+  <h2>JWT Expiry Editor</h2>
+  <label class="tool-field">
+    <span>Token</span>
+    <textarea id="jwe-token" class="tool-input tool-code" rows="5" spellcheck="false" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></textarea>
+  </label>
+  <div class="tool-row">
+    <span class="tool-status" id="jwe-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel" id="jwe-editor" hidden>
+  <h2>Claims</h2>
+  <div class="jwe-grid">
+    <label class="tool-field">
+      <span>Issued at (iat)</span>
+      <input id="jwe-iat" class="tool-input" type="datetime-local">
+    </label>
+    <label class="tool-field">
+      <span>Not before (nbf)</span>
+      <input id="jwe-nbf" class="tool-input" type="datetime-local">
+    </label>
+    <label class="tool-field">
+      <span>Expires at (exp)</span>
+      <input id="jwe-exp" class="tool-input" type="datetime-local">
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-jwe-shift="900">+15m</button>
+    <button class="btn" type="button" data-jwe-shift="3600">+1h</button>
+    <button class="btn" type="button" data-jwe-shift="86400">+1d</button>
+    <button class="btn" type="button" data-jwe-shift="604800">+7d</button>
+    <button class="btn" type="button" data-jwe-shift="2592000">+30d</button>
+  </div>
+  <div class="jwe-grid">
+    <label class="tool-field">
+      <span>Signing algorithm</span>
+      <select id="jwe-alg" class="tool-select">
+        <option value="none">none (signature removed)</option>
+        <option value="HS256">HS256</option>
+        <option value="HS384">HS384</option>
+        <option value="HS512">HS512</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Secret</span>
+      <input id="jwe-secret" class="tool-input" type="text" placeholder="shared secret">
+    </label>
+  </div>
+  <label class="tool-field">
+    <span>Payload</span>
+    <textarea id="jwe-payload" class="tool-input tool-code" rows="8" spellcheck="false"></textarea>
+  </label>
+</div>
+
+<div class="tool-panel" id="jwe-output-panel" hidden>
+  <h2>Updated token</h2>
+  <textarea id="jwe-out" class="tool-input tool-code" rows="5" readonly spellcheck="false"></textarea>
+  <div class="tool-row">
+    <button class="btn primary" type="button" data-copy="#jwe-out" data-status="#jwe-copy-status">Copy token</button>
+    <span class="tool-status" id="jwe-copy-status"></span>
+  </div>
+</div>

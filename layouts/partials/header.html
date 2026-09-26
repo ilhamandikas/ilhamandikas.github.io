@@ -11,8 +11,14 @@
     <nav id="site-nav" class="site-nav" aria-label="Primary">
       <a href="{{ "/" | relURL }}">Home</a>
       <a href="{{ "/posts/" | relURL }}">Posts</a>
+      <a href="{{ "/tools/" | relURL }}">Tools</a>
+      <a href="{{ "/tools/linux-ops/" | relURL }}">Dev Ops</a>
+      <a href="{{ "/tools/#games" | relURL }}">Games</a>
+      <a href="{{ "/tools/javascript-playground/" | relURL }}">Playground</a>
       <a href="{{ "/about/" | relURL }}">About</a>
       <a href="{{ "/contact/" | relURL }}">Contact</a>
+      {{- /* Revealed by shortcuts.js, so it is never a dead button. */}}
+      <button type="button" class="nav-help" id="nav-help" aria-haspopup="dialog" title="Keyboard shortcuts" hidden>?</button>
     </nav>
   </div>
 </header>

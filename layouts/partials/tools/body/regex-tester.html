@@ -1,0 +1,23 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Pattern
+      <input type="text" id="re-pattern" class="tool-text" placeholder="\\b\\w+@\\w+\\.\\w+" spellcheck="false">
+    </label>
+    <label class="tool-inline">Flags
+      <input type="text" id="re-flags" class="tool-text" value="g" spellcheck="false" autocomplete="off">
+    </label>
+  </div>
+  <div class="tool-field">
+    <label for="re-text">Test text</label>
+    <textarea id="re-text" class="tool-input" rows="6" spellcheck="false"></textarea>
+  </div>
+  <div class="tool-field">
+    <label>Highlighted</label>
+    <pre id="re-highlight" class="tool-pre"></pre>
+  </div>
+  <div class="tool-field">
+    <label>Matches</label>
+    <div id="re-matches" class="tool-cheat"></div>
+  </div>
+  <p class="tool-status" id="re-status"></p>
+</div>

@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <h2>Gamepad tester</h2>
+  <p class="tool-hint">Press a button on the controller to wake it up. Browsers only reveal a pad to the page after you touch it, so the list stays empty until then.</p>
+  <div class="tool-row">
+    <span class="tool-status" id="gpd-status"></span>
+  </div>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Connected</span><span id="gpd-count">—</span></p>
+    <p><span class="imc-label">Last input</span><span id="gpd-last">—</span></p>
+  </div>
+  <div id="gpd-pads" class="gpd-pads"></div>
+</div>
+
+<details class="tool-panel tool-fold">
+  <summary class="tool-fold-head">Reading the numbers</summary>
+  <div class="tool-fold-body">
+    <ul>
+      <li><strong>Axes</strong> run from -1 to 1. A stick at rest should sit near 0; a value that drifts while you are not touching it is stick drift.</li>
+      <li><strong>Buttons</strong> report a pressure rather than only on or off, so a trigger shows a fraction while a face button jumps to 1.</li>
+      <li><strong>Dead zone</strong> is the small travel around the centre that the browser ignores. If a stick only registers at 0.2, that is where the dead zone ends, not a fault.</li>
+      <li>Names like Cross or A are a convention of the standard mapping. A pad that does not follow it shows the raw button numbers instead.</li>
+    </ul>
+  </div>
+</details>

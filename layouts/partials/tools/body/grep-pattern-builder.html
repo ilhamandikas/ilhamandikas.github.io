@@ -1,0 +1,56 @@
+<div class="tool-panel">
+  <h2>grep Pattern Builder</h2>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Pattern</span>
+      <input id="grp-pattern" class="tool-input" type="text" placeholder="TODO|FIXME">
+    </label>
+    <label class="tool-field">
+      <span>Path (optional)</span>
+      <input id="grp-path" class="tool-input" type="text" placeholder="src">
+    </label>
+    <label class="tool-field">
+      <span>Pattern style</span>
+      <select id="grp-style" class="tool-select">
+        <option value="E">Extended regex (-E)</option>
+        <option value="G">Basic regex (default)</option>
+        <option value="F">Fixed string (-F)</option>
+        <option value="P">Perl regex (-P)</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Include files (optional)</span>
+      <input id="grp-include" class="tool-input" type="text" placeholder="*.js">
+    </label>
+    <label class="tool-field">
+      <span>Exclude directories (optional, comma separated)</span>
+      <input id="grp-exclude" class="tool-input" type="text" placeholder="node_modules,.git">
+    </label>
+    <label class="tool-field">
+      <span>Context lines (optional)</span>
+      <input id="grp-context" class="tool-input" type="number" min="0" placeholder="2">
+    </label>
+  </div>
+
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="grp-recursive" checked> Recursive (-r)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-ignore" checked> Ignore case (-i)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-numbers" checked> Line numbers (-n)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-word"> Whole word (-w)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-invert"> Invert match (-v)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-count"> Count (-c)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-only"> Only the matching text (-o)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-files"> List matching files (-l)</label>
+    <label class="tool-check"><input type="checkbox" id="grp-skip-binary" checked> Skip binary files (-I)</label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Command</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#grp-out" data-status="#grp-status">Copy</button>
+    <span class="tool-status" id="grp-status"></span>
+  </div>
+  <pre id="grp-out" class="tool-result"></pre>
+  <p class="tool-hint">The path is left unquoted so a glob like src/*.js still expands in your shell.</p>
+</div>

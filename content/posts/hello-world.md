@@ -3,6 +3,7 @@ title: "Hello, world"
 date: 2026-08-20
 description: "Why this site exists, what I plan to write about, and how it is built."
 tags: ["meta", "writing"]
+comments: false
 ---
 
 This is the first post on a site that has been a long time coming. I have wanted a

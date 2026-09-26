@@ -1,0 +1,59 @@
+<div class="tool-panel">
+  <h2>Text to PDF</h2>
+  <label class="tool-field">
+    <span>Text</span>
+    <textarea id="ttp-text" class="tool-input tool-code" rows="9" spellcheck="false">Rincian pesanan
+
+Kopi susu, 2 gelas
+Roti bakar, 1 porsi
+
+Total: Rp45.000</textarea>
+  </label>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Page size</span>
+      <select id="ttp-page" class="tool-select">
+        <option value="a4" selected>A4</option>
+        <option value="letter">Letter</option>
+        <option value="a5">A5</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Font</span>
+      <select id="ttp-font" class="tool-select">
+        <option value="Helvetica" selected>Helvetica</option>
+        <option value="TimesRoman">Times</option>
+        <option value="Courier">Courier</option>
+      </select>
+    </label>
+  </div>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Font size (pt)</span>
+      <input id="ttp-size" class="tool-input" type="number" min="6" max="36" step="1" value="12">
+    </label>
+    <label class="tool-field">
+      <span>Margin (mm)</span>
+      <input id="ttp-margin" class="tool-input" type="number" min="5" max="50" step="1" value="20">
+    </label>
+    <label class="tool-field">
+      <span>Line spacing</span>
+      <input id="ttp-leading" class="tool-input" type="number" min="1" max="3" step="0.1" value="1.4">
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="ttp-numbers" checked> Page numbers</label>
+    <button class="btn primary" type="button" id="ttp-download" disabled>Download PDF</button>
+    <span class="tool-status" id="ttp-status"></span>
+  </div>
+  <p class="tool-hint">The text is wrapped to the page width word by word, and a new page starts when the space runs out. Everything is written in the page, so nothing is uploaded.</p>
+</div>
+
+<div class="tool-panel" id="ttp-result" hidden>
+  <h2>Result</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Pages</span><span id="ttp-pages">—</span></p>
+    <p><span class="imc-label">Lines</span><span id="ttp-lines">—</span></p>
+    <p><span class="imc-label">File size</span><span id="ttp-file-size">—</span></p>
+  </div>
+</div>

@@ -71,7 +71,7 @@ competent courts of Indonesia.
 ## 9. Contact
 
 Questions about these Terms? Contact me at
-[ilham-andika@outlook.com](mailto:ilham-andika@outlook.com).
+[hai@ilham.dev](mailto:hai@ilham.dev).
 
 > **Note:** This page is provided for general informational purposes and does not
 > constitute legal advice. Please consult a qualified professional for advice specific

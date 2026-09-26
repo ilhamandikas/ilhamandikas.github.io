@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <h2>Time Zone Converter</h2>
+  <div class="tz-grid">
+    <label class="tool-field">
+      <span>Date and time</span>
+      <input id="tz-input" class="tool-input" type="text" spellcheck="false" autocomplete="off" placeholder="Sep 26, 2026 @ 00:24:20.437">
+    </label>
+    <label class="tool-field">
+      <span>The time above is in</span>
+      <select id="tz-zone" class="tool-select"></select>
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="tz-now">Use current UTC time</button>
+    <button class="btn" type="button" id="tz-copy">Copy table</button>
+    <span class="tool-status" id="tz-status"></span>
+  </div>
+  <p class="tool-hint">Paste a time exactly as it appears in a log. The default source is UTC because that is what most servers write; change it if the log was in local time. Every row below is the same instant shown in another zone.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Same moment, other zones</h2>
+  <div id="tz-result" class="tool-results"></div>
+</div>

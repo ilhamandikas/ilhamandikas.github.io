@@ -1,0 +1,29 @@
+<div class="tool-panel">
+  <h2>Cron Next Runs</h2>
+  <label class="tool-field">
+    <span>Cron expression</span>
+    <input id="cnr-cron" class="tool-input tool-code" type="text" value="*/15 9-17 * * 1-5" spellcheck="false" placeholder="minute hour day month weekday">
+  </label>
+  <div class="tool-row">
+    <label class="tool-inline">Timezone
+      <select id="cnr-zone" class="tool-select">
+        <option value="local">Local (this device)</option>
+        <option value="UTC">UTC</option>
+      </select>
+    </label>
+    <label class="tool-inline">Count
+      <select id="cnr-count" class="tool-select">
+        <option>5</option>
+        <option selected>10</option>
+        <option>20</option>
+      </select>
+    </label>
+    <span class="tool-status" id="cnr-status"></span>
+  </div>
+  <p class="tool-hint">Five fields: minute, hour, day of month, month, weekday. Supports <code>*</code>, lists <code>1,2</code>, ranges <code>1-5</code> and steps <code>*/15</code>. Day-of-month and weekday are combined with OR, like standard cron.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Upcoming runs</h2>
+  <div id="cnr-list" class="tool-results"></div>
+</div>

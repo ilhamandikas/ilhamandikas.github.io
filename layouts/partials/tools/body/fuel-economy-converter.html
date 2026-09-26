@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <h2>Fuel Economy Converter</h2>
+  <div class="fec-input-row">
+    <label class="fec-field"><span>Value</span>
+      <input id="fec-value" class="tool-input" type="number" min="0" step="any" inputmode="decimal" value="7.5" />
+    </label>
+    <label class="fec-field"><span>Unit</span>
+      <select id="fec-unit" class="tool-select">
+        <option value="kmpl">km/L</option>
+        <option value="l100" selected>L/100 km</option>
+        <option value="mpgus">MPG (US)</option>
+        <option value="mpguk">MPG (UK)</option>
+      </select>
+    </label>
+  </div>
+  <table class="tool-table">
+    <thead>
+      <tr><th>Unit</th><th>Value</th></tr>
+    </thead>
+    <tbody id="fec-out"></tbody>
+  </table>
+  <div class="tool-row"><span class="tool-status" id="fec-status" role="status" aria-live="polite"></span></div>
+  <p class="tool-hint">Type a figure and pick the unit it is in; every other unit updates as you type. Lower L/100 km is better, while higher km/L and MPG are better, so the direction of a "good" number flips with the unit. US and UK gallons differ, which is why the two MPG figures are never the same.</p>
+</div>

@@ -1,0 +1,42 @@
+<div class="tool-panel">
+  <h2>CLI Table Converter</h2>
+  <label class="tool-field">
+    <span>Paste command output</span>
+    <textarea id="clt-input" class="tool-input tool-code" rows="7" spellcheck="false">CONTAINER ID   IMAGE          STATUS        PORTS
+a1b2c3d4e5f6   nginx:latest   Up 3 hours    0.0.0.0:80-&gt;80/tcp
+f6e5d4c3b2a1   redis:7        Up 2 hours    6379/tcp</textarea>
+  </label>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>How the columns are separated</span>
+      <select id="clt-mode" class="tool-select">
+        <option value="auto" selected>Detect automatically</option>
+        <option value="spaces2">Two or more spaces</option>
+        <option value="spaces">Any run of spaces</option>
+        <option value="pipe">Pipe</option>
+        <option value="csv">Comma</option>
+        <option value="tsv">Tab</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Output</span>
+      <select id="clt-format" class="tool-select">
+        <option value="markdown" selected>Markdown table</option>
+        <option value="csv">CSV</option>
+        <option value="tsv">TSV</option>
+      </select>
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="clt-header" checked> First row is the header</label>
+    <label class="tool-check"><input type="checkbox" id="clt-trim" checked> Trim whitespace</label>
+    <button class="btn" type="button" data-copy="#clt-output" data-status="#clt-status">Copy</button>
+    <span class="tool-status" id="clt-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Output</h2>
+  <textarea id="clt-output" class="tool-input tool-code" rows="9" readonly spellcheck="false"></textarea>
+  <p class="tool-hint">Works on the aligned columns of docker ps, ps, df, kubectl and anything else that lines up in a terminal. Short rows are padded, so the table always comes out rectangular.</p>
+</div>

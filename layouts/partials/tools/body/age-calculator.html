@@ -1,0 +1,23 @@
+<div class="tool-panel">
+  <h2>Age Calculator</h2>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Date of birth</span>
+      <input id="age-birth" class="tool-input" type="date" value="1995-08-17">
+    </label>
+    <label class="tool-field">
+      <span>Age as of</span>
+      <input id="age-ref" class="tool-input" type="date">
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#age-output" data-status="#age-status">Copy</button>
+    <span class="tool-status" id="age-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <pre id="age-output" class="tool-result"></pre>
+  <p class="tool-hint">The age in years, months and days is counted the way a birthday is, not by dividing the total days. Change the second date to see an age at any point in the past or future.</p>
+</div>

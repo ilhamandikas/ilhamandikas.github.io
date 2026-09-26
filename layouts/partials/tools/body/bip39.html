@@ -1,0 +1,35 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Entropy
+      <select id="bip-strength" class="tool-select">
+        <option value="128">128 bits · 12 words</option>
+        <option value="160">160 bits · 15 words</option>
+        <option value="192">192 bits · 18 words</option>
+        <option value="224">224 bits · 21 words</option>
+        <option value="256">256 bits · 24 words</option>
+      </select>
+    </label>
+    <button class="btn primary" type="button" id="bip-generate">Generate</button>
+    <span class="tool-status" id="bip-status"></span>
+  </div>
+  <div class="tool-field">
+    <label for="bip-mnemonic">Mnemonic</label>
+    <textarea id="bip-mnemonic" class="tool-input" rows="3" spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#bip-mnemonic" data-status="#bip-status">Copy</button>
+  </div>
+  <div class="tool-field">
+    <label for="bip-entropy">Entropy (hex)</label>
+    <input type="text" id="bip-entropy" class="tool-input" readonly spellcheck="false">
+  </div>
+  <div class="tool-field">
+    <label for="bip-seed">Seed (hex, empty passphrase)</label>
+    <input type="text" id="bip-seed" class="tool-input" readonly spellcheck="false">
+  </div>
+  <div class="tool-field">
+    <label for="bip-check">Validate a mnemonic</label>
+    <input type="text" id="bip-check" class="tool-input" spellcheck="false" autocomplete="off" placeholder="Paste a mnemonic to check…">
+  </div>
+  <p class="tool-status" id="bip-check-status"></p>
+</div>

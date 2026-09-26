@@ -1,0 +1,10 @@
+{{ partial "tools/bulk.html" (dict
+  "id" "uuid"
+  "label" "UUIDs"
+  "filename" "uuids.txt"
+  "controls" `<label class="tool-inline">How many
+      <input type="number" id="uuid-count" class="tool-number" min="1" max="1000" value="5">
+    </label>
+    <label class="tool-check"><input type="checkbox" id="uuid-upper"> Uppercase</label>
+    <label class="tool-check"><input type="checkbox" id="uuid-braces"> Wrap in braces</label>
+    <button class="btn primary" type="button" id="uuid-generate">Generate</button>`) }}

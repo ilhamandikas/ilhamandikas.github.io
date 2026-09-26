@@ -1,0 +1,87 @@
+<div class="tool-panel">
+  <h2>DevOps Tycoon</h2>
+  <p class="tool-note">Run an internet service: grow traffic, buy capacity and answer incidents before users leave. The game ticks once a second and runs entirely on this page.</p>
+  <div class="dt-controls">
+    <button class="btn primary" type="button" id="dt-play">Play</button>
+    <button class="btn" type="button" id="dt-step">Step</button>
+    <span class="dt-speeds">
+      <button class="btn dt-speed is-active" type="button" data-dt-speed="1">1&times;</button>
+      <button class="btn dt-speed" type="button" data-dt-speed="2">2&times;</button>
+      <button class="btn dt-speed" type="button" data-dt-speed="4">4&times;</button>
+    </span>
+    <button class="btn" type="button" id="dt-reset">Reset</button>
+    <span class="tool-status" id="dt-status" role="status" aria-live="polite"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Dashboard</h2>
+  <div class="dt-stats">
+    <div class="dt-stat"><span>Money</span><strong id="dt-money">Rp 0</strong></div>
+    <div class="dt-stat"><span>Traffic</span><strong id="dt-traffic">0 req/s</strong></div>
+    <div class="dt-stat"><span>Capacity</span><strong id="dt-capacity">0 req/s</strong></div>
+    <div class="dt-stat"><span>CPU</span><strong id="dt-cpu">0%</strong><div class="dt-bar"><div class="dt-bar-fill" id="dt-cpu-bar"></div></div></div>
+    <div class="dt-stat"><span>Database</span><strong id="dt-db">0%</strong><div class="dt-bar"><div class="dt-bar-fill" id="dt-db-bar"></div></div></div>
+    <div class="dt-stat"><span>Disk</span><strong id="dt-disk">0%</strong><div class="dt-bar"><div class="dt-bar-fill" id="dt-disk-bar"></div></div></div>
+    <div class="dt-stat"><span>Latency</span><strong id="dt-latency">0 ms</strong></div>
+    <div class="dt-stat"><span>Error rate</span><strong id="dt-error">0.0%</strong></div>
+    <div class="dt-stat"><span>SLA</span><strong id="dt-sla">100.00%</strong></div>
+    <div class="dt-stat"><span>Satisfaction</span><strong id="dt-satisfaction">100%</strong></div>
+    <div class="dt-stat"><span>Uptime</span><strong id="dt-uptime">100.00%</strong></div>
+    <div class="dt-stat"><span>Servers</span><strong id="dt-servers">1</strong></div>
+  </div>
+  <p class="dt-event" id="dt-event">No active event.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Topology</h2>
+  <div class="dt-topology">
+    <div class="dt-node is-on" id="dt-node-internet">Internet</div>
+    <span class="dt-arrow">&rarr;</span>
+    <div class="dt-node" id="dt-node-cdn">CDN</div>
+    <span class="dt-arrow">&rarr;</span>
+    <div class="dt-node" id="dt-node-waf">WAF</div>
+    <span class="dt-arrow">&rarr;</span>
+    <div class="dt-node" id="dt-node-lb">Load balancer</div>
+    <span class="dt-arrow">&rarr;</span>
+    <div class="dt-node is-on" id="dt-node-app">App servers</div>
+    <span class="dt-arrow">&rarr;</span>
+    <div class="dt-node" id="dt-node-redis">Redis</div>
+    <span class="dt-arrow">&rarr;</span>
+    <div class="dt-node is-on" id="dt-node-db">Database</div>
+    <span class="dt-arrow">&rarr;</span>
+    <div class="dt-node" id="dt-node-replica">Replica</div>
+  </div>
+  <div class="dt-topology dt-topology-secondary">
+    <div class="dt-node" id="dt-node-queue">Message queue</div>
+    <div class="dt-node" id="dt-node-objectstorage">Object storage</div>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Incidents</h2>
+  <div class="dt-incidents" id="dt-incidents"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Shop</h2>
+  <div class="dt-shop" id="dt-shop"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Event log</h2>
+  <div class="dt-log" id="dt-log"></div>
+</div>
+
+<details class="tool-panel tool-fold">
+  <summary class="tool-fold-head">How to play</summary>
+  <div class="tool-fold-body">
+    <ul>
+      <li><strong>Traffic grows on its own.</strong> Every successful request earns money; every server, the database and each add-on costs money each tick.</li>
+      <li><strong>Watch CPU and the database.</strong> Past their limits, latency and the error rate climb and revenue falls while costs stay the same.</li>
+      <li><strong>Buy capacity early.</strong> A second server only pays off fully once you own the load balancer.</li>
+      <li><strong>Answer incidents.</strong> A quick fix is cheap but temporary; buying the matching upgrade fixes the cause for good.</li>
+      <li><strong>Stay in the black.</strong> Bankruptcy or ruined reputation ends the run. Use Reset to start over.</li>
+    </ul>
+  </div>
+</details>

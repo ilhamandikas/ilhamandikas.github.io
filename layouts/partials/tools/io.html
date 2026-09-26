@@ -1,0 +1,20 @@
+{{- $id := .id -}}
+{{- $rows := .rows | default "8" -}}
+<div class="tool-panel">
+  <div class="tool-field">
+    <label for="{{ $id }}-input">{{ .inputLabel | default "Input" }}</label>
+    <textarea id="{{ $id }}-input" class="tool-input" rows="{{ $rows }}" spellcheck="false" autocapitalize="off" autocomplete="off"{{ with .inputPlaceholder }} placeholder="{{ . }}"{{ end }}></textarea>
+  </div>
+  {{- if or .controls .sort }}
+  <div class="tool-row">{{ with .sort }}{{ partial "tools/sort.html" (dict "id" .) }}{{ end }}{{ with .controls }}{{ . | safeHTML }}{{ end }}</div>
+  {{- end }}
+  <div class="tool-field">
+    <label for="{{ $id }}-output">{{ .outputLabel | default "Output" }}</label>
+    <textarea id="{{ $id }}-output" class="tool-input" rows="{{ $rows }}" readonly spellcheck="false"{{ with .outputPlaceholder }} placeholder="{{ . }}"{{ end }}></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#{{ $id }}-output" data-status="#{{ $id }}-status">Copy</button>
+    <button class="btn" type="button" data-download="#{{ $id }}-output" data-filename="{{ .filename | default "output.txt" }}" data-mime="{{ .mime | default "text/plain" }}">Download</button>
+    <span class="tool-status" id="{{ $id }}-status"></span>
+  </div>
+</div>

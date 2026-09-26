@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <h2>HTTP Header Parser</h2>
+  <label class="tool-field">
+    <span>Raw header block</span>
+    <textarea id="hhp-input" class="tool-input" rows="10" spellcheck="false" placeholder="HTTP/1.1 200 OK&#10;Content-Type: application/json&#10;Cache-Control: no-store&#10;Set-Cookie: a=1; Path=/&#10;Set-Cookie: b=2; Path=/"></textarea>
+  </label>
+  <p class="tool-hint">Paste the header block from <code>curl -I</code>, a proxy log or the browser network panel. A status line is optional, folded continuation lines are joined, and repeated fields such as <code>Set-Cookie</code> are kept and labelled. Nothing is sent anywhere.</p>
+  <p class="tool-status" id="hhp-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Summary</h2>
+  <dl class="tool-results" id="hhp-summary"></dl>
+</div>
+
+<div class="tool-panel">
+  <h2>Headers</h2>
+  <div id="hhp-out"></div>
+</div>

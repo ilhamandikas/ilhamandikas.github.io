@@ -1,0 +1,8 @@
+{{- $slug := . -}}
+{{- $found := dict -}}
+{{- range site.Data.tools -}}
+  {{- range .tools -}}
+    {{- if eq .slug $slug -}}{{- $found = . -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $found -}}

@@ -1,0 +1,2 @@
+{{- $guides := index site.Data "tool-guides" | default dict -}}
+{{- return (index $guides . | default dict) -}}

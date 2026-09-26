@@ -1,0 +1,33 @@
+<div class="tool-panel">
+  <h2>Merge PDFs</h2>
+  <label class="tool-field">
+    <span>PDF files</span>
+    <input id="pdm-file" class="tool-input" type="file" multiple accept="application/pdf,.pdf">
+  </label>
+  <label class="tool-field">
+    <span>Output name</span>
+    <input id="pdm-name" class="tool-input" type="text" value="merged.pdf">
+  </label>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="pdm-download" disabled>Download merged PDF</button>
+    <button class="btn" type="button" id="pdm-clear" disabled>Clear</button>
+    <span class="tool-status" id="pdm-status"></span>
+  </div>
+  <p class="tool-hint">The documents are joined in the order shown. Move a file up or down, or drop it from the list, before building the result.</p>
+</div>
+
+<div class="tool-panel" id="pdm-list-panel" hidden>
+  <h2>Order</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Documents</span><span id="pdm-count">—</span></p>
+    <p><span class="imc-label">Pages</span><span id="pdm-pages">—</span></p>
+  </div>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <thead>
+        <tr><th>#</th><th>File</th><th>Pages</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="pdm-list"></tbody>
+    </table>
+  </div>
+</div>

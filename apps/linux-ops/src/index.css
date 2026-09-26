@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind's preflight is off so it cannot leak into the host page. That means
+   the reset has to be re-created here, scoped to `.lo-app` and written with
+   `:where()` (zero specificity) so component and utility classes still win.
+   Without this the browser's own button/heading/list defaults show through and
+   the panel looks broken. */
+@layer base {
+  .lo-app :where(*, *::before, *::after) {
+    border-width: 0;
+    border-style: solid;
+    border-color: #e6e8ec;
+  }
+  .lo-app :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, pre) {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  .lo-app :where(ul, ol, menu) { margin: 0; padding: 0; list-style: none; }
+  /* The host page styles `.grid` (margin-top: 22px); neutralise it so the
+     app's Tailwind grids keep their own spacing. */
+  .lo-app :where(.grid) { margin-top: 0; }
+  .lo-app :where(button, input, select, textarea) {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+  .lo-app :where(button) {
+    background-color: transparent;
+    background-image: none;
+    cursor: pointer;
+    text-transform: none;
+  }
+  .lo-app :where(select) { appearance: none; background-image: none; }
+  .lo-app :where(img, svg, video, canvas, audio, iframe, embed, object) {
+    display: block;
+    vertical-align: middle;
+  }
+  .lo-app :where(img, video) { max-width: 100%; height: auto; }
+}
+
+/* The app is a panel inside a Hugo tool page, so nothing here is global: the
+   shell colour and font live on `.lo-app`, and the site keeps its own. */
+.lo-app {
+  color: #14161a;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.lo-app ::selection {
+  background: rgba(37, 99, 235, 0.2);
+}
+
+/* Thin, quiet scrollbars that match the flat shell. */
+.lo-app * {
+  scrollbar-width: thin;
+  scrollbar-color: #cfd4dc transparent;
+}
+.lo-app *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.lo-app *::-webkit-scrollbar-thumb {
+  background: #cfd4dc;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+@layer components {
+  .lo-card {
+    @apply rounded-[10px] border border-edge bg-panel;
+  }
+  .lo-chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-edge2 px-2.5 py-0.5 text-xs text-muted;
+  }
+  .lo-btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-edge2 px-3 py-1.5 text-sm text-fg transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .lo-btn-primary {
+    @apply border-accent bg-accent/10 text-accent hover:bg-accent/20;
+  }
+  .lo-input {
+    @apply w-full rounded-lg border border-edge2 bg-panel2 px-3 py-2 text-sm text-fg placeholder:text-muted/70 focus:border-accent focus:bg-panel focus:outline-none;
+  }
+}

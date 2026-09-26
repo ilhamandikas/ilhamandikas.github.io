@@ -1,0 +1,32 @@
+<div class="tool-panel">
+  <h2>JSON Schema Validator</h2>
+  <p class="tool-hint">Paste a JSON Schema and a JSON document. The document is checked in the page against a draft-07 subset: type, enum, const, numbers, strings, arrays, objects, <code>$ref</code>, <code>allOf</code>/<code>anyOf</code>/<code>oneOf</code>/<code>not</code> and <code>if</code>/<code>then</code>/<code>else</code>.</p>
+  <div class="tool-row">
+    <button class="btn" type="button" id="jsv-example">Load example</button>
+    <button class="btn" type="button" id="jsv-clear">Clear</button>
+    <span class="tool-status" id="jsv-status" role="status" aria-live="polite"></span>
+  </div>
+</div>
+
+<div class="jsv-grid">
+  <div class="tool-panel">
+    <h2>Schema</h2>
+    <div class="tool-field">
+      <label for="jsv-schema">JSON Schema (draft-07)</label>
+      <textarea class="tool-input tool-code" id="jsv-schema" rows="16" spellcheck="false" placeholder="Paste a JSON Schema…"></textarea>
+    </div>
+  </div>
+  <div class="tool-panel">
+    <h2>Document</h2>
+    <div class="tool-field">
+      <label for="jsv-doc">JSON value to validate</label>
+      <textarea class="tool-input tool-code" id="jsv-doc" rows="16" spellcheck="false" placeholder="Paste the JSON document…"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <p class="tool-note" id="jsv-summary"></p>
+  <div class="tool-results" id="jsv-errors"></div>
+</div>

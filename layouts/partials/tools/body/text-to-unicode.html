@@ -1,0 +1,13 @@
+{{ partial "tools/io.html" (dict
+  "id" "uni"
+  "inputLabel" "Text or code points"
+  "outputLabel" "Result"
+  "rows" "6"
+  "filename" "unicode.txt"
+  "inputPlaceholder" "Hello   ·or·   U+0048 U+0065 U+006C U+006C U+006F"
+  "controls" `<label class="tool-inline">Direction
+      <select id="uni-dir" class="tool-select">
+        <option value="encode">Text → code points</option>
+        <option value="decode">Code points → text</option>
+      </select>
+    </label>`) }}

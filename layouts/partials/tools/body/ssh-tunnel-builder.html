@@ -1,0 +1,69 @@
+<div class="tool-panel">
+  <h2>SSH Tunnel Builder</h2>
+  <label class="tool-field">
+    <span>Forward direction</span>
+    <select id="sth-mode" class="tool-select">
+      <option value="L">Local forward (-L): reach a service on the far side from a port on this machine</option>
+      <option value="R">Remote forward (-R): publish a service on this machine to the far side</option>
+      <option value="D">Dynamic SOCKS proxy (-D): browse through the far side</option>
+    </select>
+  </label>
+
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Bind address (optional)</span>
+      <input id="sth-bind" class="tool-input" type="text" placeholder="127.0.0.1">
+    </label>
+    <label class="tool-field">
+      <span id="sth-port-label">Local port</span>
+      <input id="sth-port" class="tool-input" type="number" min="1" max="65535" placeholder="8080">
+    </label>
+    <label class="tool-field" id="sth-dest-host-field">
+      <span>Destination host</span>
+      <input id="sth-dest-host" class="tool-input" type="text" placeholder="db.internal">
+    </label>
+    <label class="tool-field" id="sth-dest-port-field">
+      <span>Destination port</span>
+      <input id="sth-dest-port" class="tool-input" type="number" min="1" max="65535" placeholder="5432">
+    </label>
+  </div>
+
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>SSH user (optional)</span>
+      <input id="sth-user" class="tool-input" type="text" placeholder="deploy">
+    </label>
+    <label class="tool-field">
+      <span>SSH host</span>
+      <input id="sth-host" class="tool-input" type="text" placeholder="bastion.example.com">
+    </label>
+    <label class="tool-field">
+      <span>SSH port</span>
+      <input id="sth-ssh-port" class="tool-input" type="number" min="1" max="65535" placeholder="22">
+    </label>
+    <label class="tool-field">
+      <span>Identity file (optional)</span>
+      <input id="sth-identity" class="tool-input" type="text" placeholder="~/.ssh/id_ed25519">
+    </label>
+  </div>
+
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="sth-bg" checked> Background (-f)</label>
+    <label class="tool-check"><input type="checkbox" id="sth-nc" checked> No remote command (-N)</label>
+    <label class="tool-check"><input type="checkbox" id="sth-keepalive" checked> Keepalive</label>
+    <label class="tool-check"><input type="checkbox" id="sth-exit-failure" checked> Exit if the forward fails</label>
+    <label class="tool-check"><input type="checkbox" id="sth-compress"> Compression (-C)</label>
+    <label class="tool-check"><input type="checkbox" id="sth-verbose"> Verbose (-v)</label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Command</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#sth-out" data-status="#sth-status">Copy</button>
+    <button class="btn" type="button" data-download="#sth-out" data-filename="ssh-tunnel.sh" data-mime="text/x-shellscript">Download .sh</button>
+    <span class="tool-status" id="sth-status"></span>
+  </div>
+  <pre id="sth-out" class="tool-result"></pre>
+  <p class="tool-hint">Nothing is connected here — the page only writes the command. Run it yourself in a terminal.</p>
+</div>

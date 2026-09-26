@@ -1,0 +1,14 @@
+{{ partial "tools/io.html" (dict
+  "id" "temp"
+  "inputLabel" "Temperature"
+  "outputLabel" "All units"
+  "rows" "5"
+  "filename" "temperature.txt"
+  "inputPlaceholder" "100"
+  "controls" `<label class="tool-inline">Unit
+      <select id="temp-unit" class="tool-select">
+        <option value="C">Celsius (°C)</option>
+        <option value="F">Fahrenheit (°F)</option>
+        <option value="K">Kelvin (K)</option>
+      </select>
+    </label>`) }}

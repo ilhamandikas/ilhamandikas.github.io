@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <h2>curl Converter</h2>
+  <label class="tool-field">
+    <span>curl command</span>
+    <textarea id="cc-in" class="tool-input tool-code" rows="8" spellcheck="false" placeholder="curl -X POST https://api.example.com -H 'Content-Type: application/json' -d '{&quot;hello&quot;:&quot;world&quot;}'"></textarea>
+  </label>
+  <div class="tool-row">
+    <label class="tool-inline">Output
+      <select id="cc-target" class="tool-select">
+        <option value="fetch">JavaScript fetch</option>
+        <option value="axios">Axios</option>
+        <option value="python">Python requests</option>
+      </select>
+    </label>
+    <button class="btn primary" type="button" id="cc-convert">Convert</button>
+    <button class="btn" type="button" data-copy="#cc-out" data-status="#cc-status">Copy</button>
+    <span class="tool-status" id="cc-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Code</h2>
+  <textarea id="cc-out" class="tool-input tool-code" rows="18" readonly spellcheck="false"></textarea>
+</div>

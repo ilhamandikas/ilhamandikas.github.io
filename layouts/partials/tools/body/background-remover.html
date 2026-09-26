@@ -1,0 +1,52 @@
+<div class="tool-panel">
+  <h2>Background Remover</h2>
+  <label class="tool-field">
+    <span>Image</span>
+    <input id="bgr-file" class="tool-input" type="file" accept="image/*">
+  </label>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Colour match: <output id="bgr-tolerance-value">24%</output></span>
+      <input id="bgr-tolerance" class="tool-range" type="range" min="0" max="100" step="1" value="24">
+    </label>
+    <label class="tool-field">
+      <span>Start from</span>
+      <select id="bgr-seeds" class="tool-select">
+        <option value="border" selected>Every edge pixel</option>
+        <option value="corners">The four corners</option>
+      </select>
+    </label>
+  </div>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Edge softness (px)</span>
+      <input id="bgr-edge" class="tool-input" type="number" min="0" max="3" step="1" value="1">
+    </label>
+    <label class="tool-field">
+      <span>Output format</span>
+      <select id="bgr-format" class="tool-select">
+        <option value="image/png" selected>PNG</option>
+        <option value="image/webp">WebP</option>
+      </select>
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="bgr-download" disabled>Download</button>
+    <button class="btn" type="button" id="bgr-reset" disabled>Reset</button>
+    <span class="tool-status" id="bgr-status"></span>
+  </div>
+  <p class="tool-hint">The edge is flooded from the pixels you choose and everything close enough in colour is made transparent. That works well on a plain or studio background and poorly on a busy one, which needs a real segmentation model rather than a colour match. Images larger than 4 megapixels are scaled down to fit.</p>
+</div>
+
+<div class="tool-panel" id="bgr-result" hidden>
+  <h2>Result</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Source</span><span id="bgr-source">—</span></p>
+    <p><span class="imc-label">Working size</span><span id="bgr-work">—</span></p>
+    <p><span class="imc-label">Removed</span><span id="bgr-removed">—</span></p>
+    <p><span class="imc-label">Output</span><span id="bgr-output">—</span></p>
+  </div>
+  <div class="imc-preview-wrap bgr-backdrop">
+    <canvas id="bgr-canvas" class="imc-canvas"></canvas>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Mode
+      <select id="aes-mode" class="tool-select">
+        <option value="encrypt">Encrypt</option>
+        <option value="decrypt">Decrypt</option>
+      </select>
+    </label>
+    <label class="tool-inline">Password
+      <input type="password" id="aes-pass" class="tool-text" value="" autocomplete="new-password">
+    </label>
+    <button class="btn primary" type="button" id="aes-run">Run</button>
+    <span class="tool-status" id="aes-status"></span>
+  </div>
+  <div class="tool-field">
+    <label for="aes-input">Input</label>
+    <textarea id="aes-input" class="tool-input" rows="5" spellcheck="false" placeholder="Text to encrypt, or the Base64 payload to decrypt…"></textarea>
+  </div>
+  <div class="tool-field">
+    <label for="aes-output">Output</label>
+    <textarea id="aes-output" class="tool-input" rows="5" readonly spellcheck="false"></textarea>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#aes-output" data-status="#aes-status">Copy</button>
+  </div>
+</div>

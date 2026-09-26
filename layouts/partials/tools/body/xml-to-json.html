@@ -1,0 +1,9 @@
+{{ partial "tools/io.html" (dict
+  "id" "x2j"
+  "inputLabel" "XML"
+  "outputLabel" "JSON"
+  "rows" "10"
+  "filename" "data.json"
+  "mime" "application/json"
+  "inputPlaceholder" "<root><item id=\"1\">one</item></root>"
+  "controls" `<span class="tool-hint">Attributes become “@name”, repeated elements become arrays, text becomes “#text”.</span>`) }}

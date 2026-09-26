@@ -1,0 +1,12 @@
+{{- $index := slice -}}
+{{- range .RegularPages -}}
+  {{- $index = $index | append (dict
+      "id" .File.ContentBaseName
+      "title" .Title
+      "description" .Description
+      "date" (.Date.Format "2006-01-02")
+      "tags" (.Params.tags | default slice)
+      "url" .Permalink
+      "markdown" (printf "%sindex.md" .Permalink)) -}}
+{{- end -}}
+{{- $index | jsonify -}}

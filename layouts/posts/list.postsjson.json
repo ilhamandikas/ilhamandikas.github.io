@@ -1,0 +1,23 @@
+{{- $posts := slice -}}
+{{- range .RegularPages -}}
+  {{- $posts = $posts | append (dict
+      "id" .File.ContentBaseName
+      "title" .Title
+      "description" .Description
+      "date" (.Date.Format "2006-01-02")
+      "url" .Permalink
+      "markdown" (printf "%sindex.md" .Permalink)
+      "tags" (.Params.tags | default slice)
+      "reading_minutes" .ReadingTime
+      "word_count" .WordCount
+      "summary" (.Summary | plainify)
+      "content_markdown" .RawContent
+      "content_text" (.Plain | htmlUnescape)) -}}
+{{- end -}}
+{{- dict
+    "name" .Title
+    "description" .Description
+    "url" .Permalink
+    "count" (len $posts)
+    "posts" $posts
+  | jsonify (dict "indent" "  ") -}}

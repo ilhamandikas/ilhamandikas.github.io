@@ -1,0 +1,36 @@
+<div class="tool-panel">
+  <h2>Resize to a size limit</h2>
+  <label class="tool-field">
+    <span>Image</span>
+    <input id="ptr-file" class="tool-input" type="file" accept="image/jpeg,image/png,image/gif,image/webp">
+  </label>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Target size (KB)</span>
+      <input id="ptr-target" class="tool-input" type="number" min="10" step="10" value="500">
+    </label>
+    <label class="tool-field">
+      <span>Longest edge (px)</span>
+      <input id="ptr-edge" class="tool-input" type="number" min="120" step="10" placeholder="Keep original">
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="ptr-webp" checked> Try WebP as well and keep the smaller file</label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="ptr-download" disabled>Download</button>
+    <span class="tool-status" id="ptr-status"></span>
+  </div>
+  <p class="tool-hint">The picture is scaled down to the longest edge, then re-encoded at the highest quality that still fits the target. If even the lowest quality is too large, the smallest size it reached is reported so you can lower the edge and try again.</p>
+</div>
+
+<div class="tool-panel" id="ptr-preview" hidden>
+  <h2>Result</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Original</span><span id="ptr-original">—</span></p>
+    <p><span class="imc-label">Result</span><span id="ptr-output">—</span></p>
+  </div>
+  <div class="imc-preview-wrap">
+    <canvas id="ptr-canvas" class="imc-canvas" width="600" height="400"></canvas>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="tool-panel">
+  <h2>API Mock Response Builder</h2>
+  <label class="tool-field">
+    <span>Fields, one per line</span>
+    <textarea id="amr-input" class="tool-input" rows="8" spellcheck="false" placeholder="id: id&#10;name: name&#10;email: email&#10;active: boolean&#10;created_at: datetime&#10;tags: array(3)"></textarea>
+  </label>
+  <div class="amr-controls">
+    <label class="tool-field">
+      <span>Records</span>
+      <input type="number" id="amr-count" class="tool-input" min="1" max="50" value="3">
+    </label>
+    <button type="button" class="btn" id="amr-regen">Regenerate</button>
+  </div>
+  <p class="tool-hint">Describe the shape once as <code>name: type</code> and get a JSON body back. Types include string, number, integer, boolean, date, datetime, email, uuid, url, price, array(n) and object. Values are generated in the browser — useful for stubbing an endpoint before it exists.</p>
+  <p class="tool-status" id="amr-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Response</h2>
+  <textarea id="amr-out" class="tool-input" rows="16" readonly spellcheck="false"></textarea>
+</div>

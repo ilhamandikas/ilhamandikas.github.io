@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <h2>Open Graph Debugger</h2>
+  <label class="tool-field">
+    <span>Page HTML</span>
+    <textarea id="ogd-input" class="tool-input" rows="10" spellcheck="false" placeholder="&lt;meta property=&quot;og:title&quot; content=&quot;Example&quot;&gt;&#10;&lt;meta property=&quot;og:description&quot; content=&quot;A short summary&quot;&gt;&#10;&lt;meta property=&quot;og:image&quot; content=&quot;https://example.com/card.png&quot;&gt;"></textarea>
+  </label>
+  <p class="tool-hint">Paste the <code>&lt;head&gt;</code> of a page, or the whole document. The page pulls out the Open Graph and Twitter Card tags, plus the title and canonical link, and previews the card a link would show. Nothing is fetched.</p>
+  <p class="tool-status" id="ogd-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Preview</h2>
+  <div id="ogd-preview"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Tags</h2>
+  <div id="ogd-out"></div>
+</div>

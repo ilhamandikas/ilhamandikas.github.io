@@ -1,0 +1,32 @@
+<div class="tool-panel">
+  <div class="tool-row">
+    <label class="tool-inline">Preset
+      <select id="cron-preset" class="tool-select">
+        <option value="">Custom…</option>
+        <option value="* * * * *">Every minute</option>
+        <option value="*/5 * * * *">Every 5 minutes</option>
+        <option value="0 * * * *">Every hour</option>
+        <option value="0 0 * * *">Every day at midnight</option>
+        <option value="0 9 * * 1-5">Weekdays at 09:00</option>
+        <option value="0 0 1 * *">First day of the month</option>
+        <option value="0 0 * * 0">Every Sunday</option>
+      </select>
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-inline">Minute <input type="text" id="cron-min" class="tool-text" value="*"></label>
+    <label class="tool-inline">Hour <input type="text" id="cron-hour" class="tool-text" value="*"></label>
+    <label class="tool-inline">Day of month <input type="text" id="cron-dom" class="tool-text" value="*"></label>
+    <label class="tool-inline">Month <input type="text" id="cron-month" class="tool-text" value="*"></label>
+    <label class="tool-inline">Day of week <input type="text" id="cron-dow" class="tool-text" value="*"></label>
+  </div>
+  <div class="tool-field">
+    <label for="cron-expr">Expression</label>
+    <input type="text" id="cron-expr" class="tool-input" readonly spellcheck="false">
+  </div>
+  <p class="tool-status" id="cron-desc"></p>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#cron-expr" data-status="#cron-status">Copy</button>
+    <span class="tool-status" id="cron-status"></span>
+  </div>
+</div>

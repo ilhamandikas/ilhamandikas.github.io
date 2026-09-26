@@ -1,0 +1,13 @@
+{{ partial "tools/io.html" (dict
+  "id" "slug"
+  "inputLabel" "Text"
+  "outputLabel" "Slug"
+  "rows" "4"
+  "filename" "slug.txt"
+  "controls" `<label class="tool-inline">Separator
+  <select id="slug-sep" class="tool-select">
+    <option value="-">dash -</option>
+    <option value="_">underscore _</option>
+  </select>
+</label>
+<label class="tool-check"><input type="checkbox" id="slug-lower" checked> Lowercase</label>`) }}

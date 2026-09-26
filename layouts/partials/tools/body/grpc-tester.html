@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <h2>gRPC Tester</h2>
+  <p class="tool-hint">Browsers cannot open native HTTP/2 gRPC directly. This tester targets <strong>gRPC-Web</strong> endpoints, and can also generate a <code>grpcurl</code> command for native gRPC.</p>
+  <div class="grpc-grid">
+    <label class="tool-field"><span>Endpoint</span><input id="grpc-url" class="tool-input" type="text" placeholder="https://api.example.com" spellcheck="false"></label>
+    <label class="tool-field"><span>Service / method</span><input id="grpc-method" class="tool-input" type="text" placeholder="package.Service/Method" spellcheck="false"></label>
+  </div>
+  <label class="tool-field"><span>Headers — one per line</span><textarea id="grpc-headers" class="tool-input" rows="3" spellcheck="false" placeholder="Authorization: Bearer …"></textarea></label>
+  <label class="tool-field"><span>Payload JSON or base64/protobuf bytes</span><textarea id="grpc-body" class="tool-input tool-code" rows="8" spellcheck="false" placeholder='{"id":"123"}'></textarea></label>
+  <div class="tool-row">
+    <label class="tool-inline">Mode <select id="grpc-mode" class="tool-select"><option value="command">Generate grpcurl</option><option value="web-json">gRPC-Web JSON fetch</option><option value="web-bin">gRPC-Web base64 bytes fetch</option></select></label>
+    <button class="btn primary" type="button" id="grpc-run">Run / build</button>
+    <span class="tool-status" id="grpc-status"></span>
+  </div>
+</div>
+<div class="tool-panel">
+  <h2>Output</h2>
+  <textarea id="grpc-output" class="tool-input tool-code" rows="14" readonly spellcheck="false"></textarea>
+</div>

@@ -1,0 +1,13 @@
+{{ partial "tools/io.html" (dict
+  "id" "ts"
+  "inputLabel" "Timestamp or date"
+  "outputLabel" "Conversions"
+  "rows" "8"
+  "filename" "timestamp.txt"
+  "inputPlaceholder" "1700000000   ·or·   2023-11-14T22:13:20Z"
+  "controls" `<label class="tool-inline">Numeric input is
+      <select id="ts-unit" class="tool-select">
+        <option value="s">seconds</option>
+        <option value="ms">milliseconds</option>
+      </select>
+    </label>`) }}

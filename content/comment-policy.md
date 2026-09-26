@@ -28,4 +28,4 @@ A few things worth knowing:
   am not responsible for it.
 
 See something that breaks these rules, or have a question? Email
-[ilham-andika@outlook.com](mailto:ilham-andika@outlook.com).
+[hai@ilham.dev](mailto:hai@ilham.dev).

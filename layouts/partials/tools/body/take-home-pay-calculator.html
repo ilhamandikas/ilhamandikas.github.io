@@ -1,0 +1,84 @@
+<div class="tool-panel">
+  <h2>Take-home pay calculator</h2>
+  <p class="tool-hint">Estimates the monthly salary left after PPh 21 and the employee share of BPJS, following the Indonesian rules for a full tax year. The arithmetic runs in the page.</p>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Gross salary per month (IDR)</span>
+      <input id="ths-gross" class="tool-input" type="number" min="0" step="100000" value="10000000">
+    </label>
+    <label class="tool-field">
+      <span>PTKP status</span>
+      <select id="ths-ptkp" class="tool-select">
+        <option value="TK/0" selected>TK/0 — single, no dependants</option>
+        <option value="TK/1">TK/1 — single, 1 dependant</option>
+        <option value="TK/2">TK/2 — single, 2 dependants</option>
+        <option value="TK/3">TK/3 — single, 3 dependants</option>
+        <option value="K/0">K/0 — married, no dependants</option>
+        <option value="K/1">K/1 — married, 1 dependant</option>
+        <option value="K/2">K/2 — married, 2 dependants</option>
+        <option value="K/3">K/3 — married, 3 dependants</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Bonus or THR per year (IDR)</span>
+      <input id="ths-bonus" class="tool-input" type="number" min="0" step="100000" value="0">
+    </label>
+    <div class="tool-field">
+      <span>BPJS</span>
+      <label class="tool-check">
+        <input type="checkbox" id="ths-bpjs" checked>
+        <span>Deduct the employee share (JHT, JP, Kesehatan)</span>
+      </label>
+    </div>
+  </div>
+  <div class="tool-row">
+    <span class="tool-status" id="ths-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Take-home pay</h2>
+  <p class="tool-result" id="ths-net">—</p>
+  <p class="tool-hint" id="ths-summary">—</p>
+  <div class="tool-chart" id="ths-chart"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Deductions</h2>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <thead>
+        <tr><th>Item</th><th>Per month</th><th>Per year</th><th>Charged on</th></tr>
+      </thead>
+      <tbody id="ths-rows"></tbody>
+    </table>
+  </div>
+  <p class="tool-hint">Only JHT and BPJS Kesehatan reduce taxable income; JP does not.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Annual figures</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Gross per year</span><span id="ths-gross-year">—</span></p>
+    <p><span class="imc-label">Position allowance</span><span id="ths-jabatan">—</span></p>
+    <p><span class="imc-label">Deductible contributions</span><span id="ths-deductible">—</span></p>
+    <p><span class="imc-label">PTKP</span><span id="ths-ptkp-value">—</span></p>
+    <p><span class="imc-label">Taxable income (PKP)</span><span id="ths-pkp">—</span></p>
+    <p><span class="imc-label">PPh 21 per year</span><span id="ths-tax-year">—</span></p>
+    <p><span class="imc-label">Effective tax rate</span><span id="ths-effective">—</span></p>
+  </div>
+</div>
+
+<details class="tool-panel tool-fold">
+  <summary class="tool-fold-head">How the estimate is built</summary>
+  <div class="tool-fold-body">
+    <ul>
+      <li><strong>Position allowance</strong> (biaya jabatan) is 5% of gross pay for the year, capped at Rp 6,000,000, and is deducted before tax.</li>
+      <li><strong>JHT</strong> is 2% of gross pay and <strong>BPJS Kesehatan</strong> 1% of gross pay up to Rp 12,000,000 a month; both also reduce taxable income. <strong>JP</strong> is 1% of gross pay up to Rp 10,547,400 a month and is not deductible.</li>
+      <li><strong>PPh 21</strong> uses the annual Article 17 brackets: 5% up to Rp 60,000,000, 15% to Rp 250,000,000, 25% to Rp 500,000,000, 30% to Rp 5,000,000,000, and 35% above that. Taxable income is rounded down to the nearest Rp 1,000.</li>
+      <li>The monthly figure is the annual tax divided by twelve. From 2024 an employer withholds a monthly effective rate (TER) instead and reconciles it in December, so an early payslip can differ from this estimate while the yearly total agrees.</li>
+      <li>JKK, JKM and the employer's shares of JHT, JP and Kesehatan are paid by the company, so they never reduce take-home pay.</li>
+      <li>Bonus and THR are treated as part of the year's gross income, which is how the December reconciliation treats them.</li>
+    </ul>
+  </div>
+</details>

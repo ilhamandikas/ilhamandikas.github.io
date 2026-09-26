@@ -1,0 +1,37 @@
+<div class="tool-panel">
+  <h2>Regex Replace Tester</h2>
+  <div class="rr-grid">
+    <label class="tool-field">
+      <span>Pattern</span>
+      <input id="rr-pattern" class="tool-input tool-code" type="text" spellcheck="false" placeholder="(\w+)@(\w+)\.com">
+    </label>
+    <label class="tool-field">
+      <span>Flags</span>
+      <input id="rr-flags" class="tool-input tool-code" type="text" value="g" spellcheck="false">
+    </label>
+  </div>
+  <label class="tool-field">
+    <span>Replacement</span>
+    <input id="rr-replace" class="tool-input tool-code" type="text" spellcheck="false" placeholder="$1 [at] $2">
+  </label>
+  <label class="tool-field">
+    <span>Test text</span>
+    <textarea id="rr-text" class="tool-input" rows="7" spellcheck="false" placeholder="Contact budi@example.com or sari@example.com"></textarea>
+  </label>
+  <div class="tool-row">
+    <span class="tool-status" id="rr-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Preview</h2>
+  <div id="rr-preview" class="tool-result"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <textarea id="rr-output" class="tool-input tool-code" rows="7" readonly spellcheck="false"></textarea>
+  <div class="tool-row">
+    <button class="btn primary" type="button" data-copy="#rr-output" data-status="#rr-status">Copy result</button>
+  </div>
+</div>

@@ -1,0 +1,75 @@
+<div class="tool-panel">
+  <h2>Webhook Tester</h2>
+  <p class="tool-hint">Sign a webhook payload the way Stripe, GitHub or Shopify do, check a signature you received, and send a test request. HMAC-SHA256 runs in your browser and the secret never leaves it.</p>
+  <div class="wh-grid">
+    <label class="tool-field">
+      <span>Provider format</span>
+      <select id="wh-provider" class="tool-select">
+        <option value="stripe">Stripe (t=, v1=)</option>
+        <option value="github">GitHub (X-Hub-Signature-256)</option>
+        <option value="shopify">Shopify (base64)</option>
+        <option value="generic">Generic HMAC-SHA256 (hex)</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Signing secret</span>
+      <input type="text" id="wh-secret" class="tool-input" value="whsec_test" spellcheck="false" autocomplete="off">
+    </label>
+    <label class="tool-field">
+      <span>Timestamp (unix seconds)</span>
+      <div class="int-inline">
+        <input type="text" id="wh-timestamp" class="tool-input" spellcheck="false" autocomplete="off">
+        <button class="btn" type="button" id="wh-refresh">Now</button>
+      </div>
+    </label>
+  </div>
+  <label class="tool-field">
+    <span>Payload</span>
+    <textarea id="wh-payload" class="tool-input tool-code" rows="6" spellcheck="false" placeholder='{"event":"payment.succeeded","id":"evt_123"}'></textarea>
+  </label>
+  <p class="tool-status" id="wh-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Signature</h2>
+  <p class="tool-hint">Header name: <code id="wh-header">—</code></p>
+  <label class="tool-field">
+    <span>Header value</span>
+    <textarea id="wh-header-value" class="tool-input tool-code" rows="2" readonly spellcheck="false"></textarea>
+  </label>
+  <label class="tool-field">
+    <span>Raw signature</span>
+    <textarea id="wh-signature" class="tool-input tool-code" rows="2" readonly spellcheck="false"></textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#wh-header-value" data-status="#wh-status">Copy header value</button>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Verify a received signature</h2>
+  <label class="tool-field">
+    <span>Paste the received signature header</span>
+    <textarea id="wh-verify" class="tool-input tool-code" rows="3" spellcheck="false" placeholder="t=1700000000,v1=…"></textarea>
+  </label>
+  <p class="tool-status" id="wh-verdict" role="status" aria-live="polite"></p>
+</div>
+
+<details class="tool-panel tool-fold">
+  <summary class="tool-fold-head">Send a test request</summary>
+  <div class="tool-fold-body">
+    <label class="tool-field">
+      <span>Target URL</span>
+      <input type="url" id="wh-url" class="tool-input" placeholder="https://example.com/webhook" spellcheck="false" autocomplete="off">
+    </label>
+    <p class="tool-hint">The browser can only send this if the target allows your origin through CORS. If it fails, the signature panel still tells you exactly what would be sent.</p>
+    <div class="tool-row">
+      <button class="btn primary" type="button" id="wh-send">Send POST</button>
+      <span class="tool-status" id="wh-send-status"></span>
+    </div>
+    <label class="tool-field">
+      <span>Response</span>
+      <textarea id="wh-response" class="tool-input tool-code" rows="8" readonly spellcheck="false"></textarea>
+    </label>
+  </div>
+</details>

@@ -1,0 +1,38 @@
+<div class="tool-panel">
+  <div class="ty-bar">
+    <label class="ty-inline">
+      <span>Mode</span>
+      <select id="ty-mode" class="tool-select">
+        <option value="time:15">Time · 15s</option>
+        <option value="time:30" selected>Time · 30s</option>
+        <option value="time:60">Time · 60s</option>
+        <option value="time:120">Time · 120s</option>
+        <option value="words:10">Words · 10</option>
+        <option value="words:25">Words · 25</option>
+        <option value="words:50">Words · 50</option>
+        <option value="words:100">Words · 100</option>
+      </select>
+    </label>
+    <label class="tool-check"><input type="checkbox" id="ty-punct"> punctuation</label>
+    <label class="tool-check"><input type="checkbox" id="ty-numbers"> numbers</label>
+    <button class="btn" type="button" id="ty-restart">Restart</button>
+    <span class="tool-status" id="ty-status"></span>
+  </div>
+
+  <div class="ty-stats">
+    <div class="ty-stat"><strong id="ty-wpm">0</strong><span>wpm</span></div>
+    <div class="ty-stat"><strong id="ty-acc">100%</strong><span>accuracy</span></div>
+    <div class="ty-stat"><strong id="ty-time">30</strong><span id="ty-time-label">seconds left</span></div>
+  </div>
+
+  <div class="ty-stage">
+    <div id="ty-words" class="ty-words" aria-hidden="true"></div>
+    <input type="text" id="ty-input" class="ty-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Typing input">
+  </div>
+  <p class="tool-hint">Click the text and start typing — the timer begins on your first keystroke. <kbd>Tab</kbd> then <kbd>Enter</kbd> restarts. Backspace fixes the current word.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <dl id="ty-result" class="tool-results"></dl>
+</div>

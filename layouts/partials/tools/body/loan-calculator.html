@@ -1,0 +1,106 @@
+<div class="tool-panel">
+  <h2>Loan calculator</h2>
+  <p class="tool-hint">A fixed-rate loan repaid in equal monthly instalments, with the schedule, the balance over time and the effect of paying a little extra. The arithmetic runs in the page.</p>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Loan type</span>
+      <select id="lnc-preset" class="tool-select">
+        <option value="custom" selected>Custom</option>
+        <option value="home">Home loan / KPR</option>
+        <option value="vehicle">Vehicle</option>
+        <option value="education">Education</option>
+        <option value="personal">Personal / multiguna</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Currency</span>
+      <select id="lnc-currency" class="tool-select">
+        <option value="Rp" selected>Rp — Indonesian rupiah</option>
+        <option value="$">$ — dollar</option>
+        <option value="€">€ — euro</option>
+        <option value="£">£ — pound</option>
+        <option value="RM">RM — ringgit</option>
+        <option value="S$">S$ — Singapore dollar</option>
+        <option value="฿">฿ — baht</option>
+        <option value="₱">₱ — peso</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Amount borrowed</span>
+      <input id="lnc-amount" class="tool-input" type="number" min="0" step="1000000" value="300000000">
+    </label>
+    <label class="tool-field">
+      <span>Interest rate per year (%)</span>
+      <input id="lnc-rate" class="tool-input" type="number" min="0" step="0.1" value="7.5">
+    </label>
+    <label class="tool-field">
+      <span>Term (years)</span>
+      <input id="lnc-years" class="tool-input" type="number" min="1" max="40" step="1" value="15">
+    </label>
+    <label class="tool-field">
+      <span>Extra payment per month</span>
+      <input id="lnc-extra" class="tool-input" type="number" min="0" step="100000" value="0">
+    </label>
+  </div>
+  <div class="tool-row">
+    <span class="tool-status" id="lnc-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Monthly payment</h2>
+  <p class="tool-result" id="lnc-monthly">—</p>
+  <p class="tool-hint" id="lnc-summary">—</p>
+  <p class="tool-hint">Remaining balance over the life of the loan</p>
+  <div class="tool-chart" id="lnc-balance"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Totals</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Amount borrowed</span><span id="lnc-principal">—</span></p>
+    <p><span class="imc-label">Total interest</span><span id="lnc-interest">—</span></p>
+    <p><span class="imc-label">Total paid</span><span id="lnc-total">—</span></p>
+    <p><span class="imc-label">Instalments</span><span id="lnc-count">—</span></p>
+    <p><span class="imc-label">Final payment</span><span id="lnc-last">—</span></p>
+    <p><span class="imc-label">Paid off by</span><span id="lnc-payoff">—</span></p>
+  </div>
+  <div class="imc-sizes" id="lnc-extra-panel" hidden>
+    <p><span class="imc-label">Interest saved</span><span id="lnc-saved">—</span></p>
+    <p><span class="imc-label">Time saved</span><span id="lnc-shortened">—</span></p>
+  </div>
+  <p class="tool-hint">Amounts are rounded to the nearest unit, so the last row of the schedule balances to within a unit.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Where the money goes</h2>
+  <p class="tool-hint">Across the whole loan</p>
+  <div class="tool-chart" id="lnc-split"></div>
+  <p class="tool-hint">The first instalment</p>
+  <div class="tool-chart" id="lnc-first"></div>
+</div>
+
+<div class="tool-panel">
+  <h2>Year by year</h2>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <thead>
+        <tr><th>Year</th><th>Opening balance</th><th>Principal paid</th><th>Interest paid</th><th>Closing balance</th></tr>
+      </thead>
+      <tbody id="lnc-rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<details class="tool-panel tool-fold">
+  <summary class="tool-fold-head">How the payment is worked out</summary>
+  <div class="tool-fold-body">
+    <ul>
+      <li>The instalment is the annuity formula: <code>P × i ÷ (1 − (1 + i)<sup>−n</sup>)</code>, where <code>i</code> is the yearly rate divided by twelve and <code>n</code> the number of months.</li>
+      <li>Every month the interest is charged on the balance that is still owed, so the principal part of the instalment grows over the term.</li>
+      <li>An extra payment is applied to the principal straight away, which shortens the term rather than lowering the instalment. That is how the interest saved and the time saved are worked out.</li>
+      <li>A rate of 0% is allowed and simply splits the amount across the months.</li>
+      <li>This models one fixed rate for the whole term. A loan with a fixed-rate period and a floating rate afterwards, or fees and insurance added on top, will differ.</li>
+    </ul>
+  </div>
+</details>

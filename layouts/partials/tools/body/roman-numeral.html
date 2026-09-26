@@ -1,0 +1,13 @@
+{{ partial "tools/io.html" (dict
+  "id" "roman"
+  "inputLabel" "Number or Roman numeral"
+  "outputLabel" "Result"
+  "rows" "3"
+  "filename" "roman.txt"
+  "inputPlaceholder" "2024   ·or·   MMXXIV"
+  "controls" `<label class="tool-inline">Direction
+      <select id="roman-dir" class="tool-select">
+        <option value="encode">Number → Roman</option>
+        <option value="decode">Roman → number</option>
+      </select>
+    </label>`) }}
