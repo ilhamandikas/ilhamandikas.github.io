@@ -1,0 +1,55 @@
+<div class="tool-panel">
+  <h2>sed Replacement Builder</h2>
+  <label class="tool-field">
+    <span>What should sed do?</span>
+    <select id="sed-mode" class="tool-select">
+      <option value="sub">Replace text (s/…/…/)</option>
+      <option value="delete">Delete matching lines (/…/d)</option>
+      <option value="print">Print only matching lines (/…/p)</option>
+    </select>
+  </label>
+
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Pattern (regular expression)</span>
+      <input id="sed-pattern" class="tool-input" type="text" placeholder="http://old\.example\.com">
+    </label>
+    <label class="tool-field" id="sed-replacement-field">
+      <span>Replacement</span>
+      <input id="sed-replacement" class="tool-input" type="text" placeholder="https://new.example.com">
+    </label>
+    <label class="tool-field">
+      <span>Files (optional — empty means stdin)</span>
+      <input id="sed-files" class="tool-input" type="text" placeholder="app.conf config/*.yml">
+    </label>
+    <label class="tool-field">
+      <span>Delimiter</span>
+      <select id="sed-delim" class="tool-select">
+        <option value="/">/</option>
+        <option value="|">|</option>
+        <option value="#">#</option>
+        <option value="@">@</option>
+        <option value=",">,</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="sed-global" checked> Global (g)</label>
+    <label class="tool-check"><input type="checkbox" id="sed-ignore"> Ignore case (I)</label>
+    <label class="tool-check"><input type="checkbox" id="sed-extended" checked> Extended regex (-E)</label>
+    <label class="tool-check"><input type="checkbox" id="sed-inplace"> Edit in place (-i)</label>
+    <label class="tool-check"><input type="checkbox" id="sed-backup" checked> Keep a .bak backup</label>
+    <label class="tool-check"><input type="checkbox" id="sed-quiet"> Quiet (-n)</label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Command</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#sed-out" data-status="#sed-status">Copy</button>
+    <span class="tool-status" id="sed-status"></span>
+  </div>
+  <pre id="sed-out" class="tool-result"></pre>
+  <p class="tool-hint">In-place editing has no undo, so the backup stays on unless you turn it off. File names and globs are left as you typed them so the shell can expand them; quote a name yourself if it contains spaces.</p>
+</div>

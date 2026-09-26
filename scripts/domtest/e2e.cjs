@@ -1599,6 +1599,80 @@ const check = (label, actual, expected) => {
       read(page.w, '#env-output'), 'A       =1\nLONG_KEY=2');
   }
 
+  /* ------------------------------------------------- shell command builders */
+
+  console.log('\n=== shell command builders ===');
+  {
+    const ssh = loadPage('ssh-tunnel-builder');
+    check('ssh tunnel: nothing is written before a host is typed', read(ssh.w, '#sth-out'), '');
+    set(ssh.w, '#sth-host', 'bastion.example.com');
+    set(ssh.w, '#sth-port', '8080');
+    set(ssh.w, '#sth-dest-host', 'db.internal');
+    set(ssh.w, '#sth-dest-port', '5432');
+    set(ssh.w, '#sth-user', 'deploy');
+    check('ssh tunnel: a local forward reads in the usual order',
+      read(ssh.w, '#sth-out'),
+      'ssh -f -N -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -L 8080:db.internal:5432 deploy@bastion.example.com');
+    set(ssh.w, '#sth-mode', 'D');
+    check('ssh tunnel: a dynamic forward drops the destination',
+      read(ssh.w, '#sth-out'),
+      'ssh -f -N -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -D 8080 deploy@bastion.example.com');
+
+    const sed = loadPage('sed-replacement-builder');
+    set(sed.w, '#sed-pattern', 'foo bar');
+    set(sed.w, '#sed-replacement', 'baz');
+    set(sed.w, '#sed-files', 'app.conf');
+    check('sed builder: the expression is quoted for the shell',
+      read(sed.w, '#sed-out'), "sed -E 's/foo bar/baz/g' app.conf");
+    set(sed.w, '#sed-inplace', true);
+    check('sed builder: in-place keeps a backup by default',
+      read(sed.w, '#sed-out'), "sed -E -i.bak 's/foo bar/baz/g' app.conf");
+    set(sed.w, '#sed-files', '');
+    check('sed builder: in-place without a file is refused',
+      read(sed.w, '#sed-status'), 'In-place editing needs at least one file.');
+
+    const grep = loadPage('grep-pattern-builder');
+    set(grep.w, '#grp-pattern', 'TODO|FIXME');
+    set(grep.w, '#grp-path', 'src');
+    set(grep.w, '#grp-include', '*.js');
+    check('grep builder: flags, a quoted pattern and an include come out in order',
+      read(grep.w, '#grp-out'),
+      "grep -E -r -i -n -I --include='*.js' 'TODO|FIXME' src");
+    set(grep.w, '#grp-word', true);
+    check('grep builder: whole word adds -w',
+      read(grep.w, '#grp-out'),
+      "grep -E -r -i -n -w -I --include='*.js' 'TODO|FIXME' src");
+
+    const find = loadPage('find-command-builder');
+    check('find builder: the default is just find .', read(find.w, '#fnd-out'), 'find .');
+    set(find.w, '#fnd-name', '*.log');
+    set(find.w, '#fnd-type', 'f');
+    set(find.w, '#fnd-size', '+10M');
+    set(find.w, '#fnd-age', '-7');
+    set(find.w, '#fnd-exclude', 'node_modules,.git');
+    check('find builder: tests are placed in a working order',
+      read(find.w, '#fnd-out'),
+      "find . -not -path '*/node_modules/*' -not -path '*/.git/*' -name '*.log' -type f -size +10M -mtime -7");
+    set(find.w, '#fnd-action', 'delete');
+    check('find builder: delete is appended last',
+      read(find.w, '#fnd-out'),
+      "find . -not -path '*/node_modules/*' -not -path '*/.git/*' -name '*.log' -type f -size +10M -mtime -7 -delete");
+
+    const xargs = loadPage('xargs-builder');
+    set(xargs.w, '#xrg-upstream', "find . -name '*.log' -print0");
+    set(xargs.w, '#xrg-command', 'gzip');
+    set(xargs.w, '#xrg-n', '5');
+    check('xargs builder: the pipeline and flags are written out',
+      read(xargs.w, '#xrg-out'),
+      "find . -name '*.log' -print0 | xargs -0 -r -n 5 gzip");
+    check('xargs builder: each flag gets a plain-language note',
+      xargs.w.document.querySelectorAll('#xrg-explain li').length, 5);
+    set(xargs.w, '#xrg-replace-on', true);
+    check('xargs builder: -I takes over from -n',
+      read(xargs.w, '#xrg-out'),
+      "find . -name '*.log' -print0 | xargs -0 -r -I '{}' gzip");
+  }
+
   /* --------------------------------------------------------- websocket tester */
 
   console.log('\n=== websocket tester ===');

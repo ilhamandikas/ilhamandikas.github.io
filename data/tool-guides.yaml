@@ -1800,3 +1800,75 @@ linux-ops:
       a: "Paste the output of df, free, ss, docker ps, nginx -t, systemctl status, lsblk, git status, ps, top, pvs, or MySQL and PostgreSQL status output. It detects the format, points out the lines that matter and suggests the next command."
     - q: "Are the suggested commands safe?"
       a: "Each command is labelled safe, changes state, or dangerous, and destructive ones are explained before you run them. Still read the command and its flags before pasting it into a production shell."
+
+ssh-tunnel-builder:
+  about: >-
+    Write an ssh tunnel without memorising the -L, -R and -D shapes. Pick the
+    direction, fill in the ports, and the page assembles the command with the
+    keepalive and failure options most people forget. The bind address is
+    optional, and -D hides the destination fields because a SOCKS proxy has
+    none.
+  faq:
+    - q: "What is the difference between -L, -R and -D?"
+      a: "A local forward (-L) makes a service on the far side reachable from a port on this machine. A remote forward (-R) does the opposite: it publishes a service on this machine to the far side. A dynamic forward (-D) opens a SOCKS proxy you can point a browser at."
+    - q: "Why are -f and -N on by default?"
+      a: "Together they put the tunnel in the background and run no remote command, which is what you usually want for a tunnel that only forwards ports. Turn them off if you also want a shell on the host."
+    - q: "Does this connect for me?"
+      a: "No. It only writes the command; you copy it and run it in your own terminal, so no key or password ever touches the page."
+
+sed-replacement-builder:
+  about: >-
+    Build the sed command you would otherwise look up again. Choose between a
+    substitution, deleting matching lines or printing only the matches, then set
+    the regex style, the delimiter and the flags. The page escapes the delimiter
+    inside the pattern and quotes the whole expression, so a copy-paste into the
+    shell behaves the same way it did here.
+  faq:
+    - q: "Is an in-place edit reversible?"
+      a: "Only with the backup. With -i.bak on, sed leaves the original next to the file with a .bak suffix; turn the backup off and there is no undo."
+    - q: "What does the I flag do?"
+      a: "It makes the pattern match without regard to case. It is a GNU extension, so it works with GNU sed on Linux but not with the old BSD sed on macOS."
+    - q: "Why does it quote the expression in single quotes?"
+      a: "A sed expression is full of characters the shell would otherwise interpret, like spaces, pipes, stars and dollar signs. Single quotes hand the whole expression to sed untouched."
+
+grep-pattern-builder:
+  about: >-
+    Put together a grep command with the right regex flavour and the flags that
+    keep the output readable. Pick extended, basic, fixed or Perl patterns,
+    choose recursion, case, line numbers, context and file filters, and the page
+    builds the command with the pattern safely quoted.
+  faq:
+    - q: "When should I use -F?"
+      a: "When you are searching for literal text that contains regex characters, such as an IP address with dots or a string with brackets. -F treats the pattern as plain text, so nothing needs escaping."
+    - q: "What is the difference between -E and -P?"
+      a: "-E uses POSIX extended regular expressions, which are portable and cover word boundaries, groups and alternation. -P uses PCRE for lookaround and lazy quantifiers, but it is a GNU feature and not available on every system."
+    - q: "How do I pass several extensions?"
+      a: "Type one include pattern at a time, or a shell expansion such as a brace list you write yourself. The builder writes one --include for whatever you enter."
+
+find-command-builder:
+  about: >-
+    Build a find command from plain choices instead of remembering the test
+    order. Filter by name, type, size, age, permissions and depth, exclude noisy
+    directories, and then decide what happens to each match: print it, print it
+    with a null separator, delete it, or run a command on it.
+  faq:
+    - q: "Why does -delete deserve caution?"
+      a: "It removes matches immediately and asks nothing. Run the same command with the print action first so you can see the exact list, then switch to delete."
+    - q: "What is the null-separated option for?"
+      a: "-print0 ends each path with a null byte instead of a newline, so a name that contains a space or a newline is still one item. Pair it with xargs -0."
+    - q: "Does the order of the options matter?"
+      a: "Yes. -maxdepth is a global option and has to come before the tests, and -delete has to come last. The builder already places them in a working order."
+
+xargs-builder:
+  about: >-
+    Build an xargs command and see what each flag means. Choose how the input is
+    split, how many items go to each command, how many commands run at once, and
+    whether a replace string is used. The page writes the command and lists a
+    plain-language note for every flag it added.
+  faq:
+    - q: "Why pair -0 with find -print0?"
+      a: "The null byte is the only character that cannot appear in a file name, so find -print0 and xargs -0 pass paths with spaces or newlines through without splitting them into extra arguments."
+    - q: "What does -I do to -n?"
+      a: "-I implies one item per command, so -n has no effect once -I is set. The builder drops -n when you turn on the replace string."
+    - q: "Is it safe to run commands in parallel?"
+      a: "Only if the command does not depend on order and does not write to the same output. -P speeds things up, but two jobs writing the same file will race."

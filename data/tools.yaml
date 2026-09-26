@@ -322,6 +322,11 @@
       desc: Search the common TCP and UDP ports with their service names and a short description.
       keywords: [port, reference, tcp, udp, service, 443, 80, lookup]
       status: done
+    - slug: ssh-tunnel-builder
+      name: SSH Tunnel Builder
+      desc: Assemble an ssh -L, -R or -D tunnel with the right ports, identity file and keepalive options, then copy the command.
+      keywords: [ssh, tunnel, port forward, local forward, remote forward, socks, proxy, bastion, command, linux]
+      status: done
     - slug: email-header-analyzer
       name: Email Header Analyzer
       desc: Parse raw email headers, list the delivery hops and show where the time went.
@@ -360,6 +365,16 @@
       name: Dev Ops
       desc: Describe a Linux problem and get safe commands, flag explanations, a risk level and the next troubleshooting steps.
       keywords: [linux, ubuntu, shell, devops, server, networking, troubleshooting, docker, systemd, nginx, port, disk]
+      status: done
+    - slug: find-command-builder
+      name: find Command Builder
+      desc: Assemble a find command with name, type, size, age and depth tests, then choose to print, delete or exec on each match.
+      keywords: [find, command, builder, shell, files, search, name, size, mtime, delete, exec, linux, bash]
+      status: done
+    - slug: xargs-builder
+      name: xargs Builder
+      desc: Build and explain an xargs command — null input, batch size, parallelism and a replace string, with a note on each flag.
+      keywords: [xargs, command, builder, shell, pipeline, parallel, stdin, find, bash, linux]
       status: done
 
 - name: Web
@@ -612,6 +627,16 @@
       name: .env Key Sorter
       desc: Sort the keys in a .env file alphabetically, keeping each comment with its key and optionally dropping duplicates or aligning values.
       keywords: [env, dotenv, environment, variables, config, sort, keys, alphabetical, order, duplicates, align, secrets]
+      status: done
+    - slug: sed-replacement-builder
+      name: sed Replacement Builder
+      desc: Build a sed command to replace text, delete matching lines or print only matches, with in-place editing and backups.
+      keywords: [sed, replace, substitute, regex, command, builder, in-place, stream, editor, text, shell]
+      status: done
+    - slug: grep-pattern-builder
+      name: grep Pattern Builder
+      desc: Build a grep command with the right regex style, recursion, includes and context lines, then copy it.
+      keywords: [grep, search, pattern, regex, command, builder, recursive, include, context, text, shell]
       status: done
 
 - name: Convert

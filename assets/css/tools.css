@@ -1106,6 +1106,17 @@ textarea.tool-text { resize: vertical; }
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 18px;
 }
+.tool-grid-2 .tool-field { margin-bottom: 0; }
+.tool-grid-2 + .tool-grid-2 { margin-top: 18px; }
+
+.cmd-explain {
+  margin: 14px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.cmd-explain li { margin: 4px 0; }
+.cmd-explain code { color: var(--fg); }
 
 .tool-result {
   padding: 14px 16px;

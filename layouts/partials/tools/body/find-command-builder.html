@@ -1,0 +1,78 @@
+<div class="tool-panel">
+  <h2>find Command Builder</h2>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Start path</span>
+      <input id="fnd-path" class="tool-input" type="text" placeholder=".">
+    </label>
+    <label class="tool-field">
+      <span>Name pattern (optional)</span>
+      <input id="fnd-name" class="tool-input" type="text" placeholder="*.log">
+    </label>
+    <label class="tool-field">
+      <span>Type</span>
+      <select id="fnd-type" class="tool-select">
+        <option value="">Any</option>
+        <option value="f">File (f)</option>
+        <option value="d">Directory (d)</option>
+        <option value="l">Symlink (l)</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Max depth (optional)</span>
+      <input id="fnd-depth" class="tool-input" type="number" min="0" placeholder="3">
+    </label>
+    <label class="tool-field">
+      <span>Size (optional, e.g. +10M or -1k)</span>
+      <input id="fnd-size" class="tool-input" type="text" placeholder="+10M">
+    </label>
+    <label class="tool-field">
+      <span>Permissions (optional)</span>
+      <input id="fnd-perm" class="tool-input" type="text" placeholder="644">
+    </label>
+    <label class="tool-field">
+      <span>Modified (optional, e.g. -7)</span>
+      <input id="fnd-age" class="tool-input" type="text" placeholder="-7">
+    </label>
+    <label class="tool-field">
+      <span>Modified in</span>
+      <select id="fnd-age-unit" class="tool-select">
+        <option value="mtime">Days (-mtime)</option>
+        <option value="mmin">Minutes (-mmin)</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Exclude paths (optional, comma separated)</span>
+      <input id="fnd-exclude" class="tool-input" type="text" placeholder="node_modules,.git">
+    </label>
+    <label class="tool-field">
+      <span>Do this with each match</span>
+      <select id="fnd-action" class="tool-select">
+        <option value="print">Print the path</option>
+        <option value="print0">Print null-separated (for xargs -0)</option>
+        <option value="delete">Delete it</option>
+        <option value="exec">Run a command for each match</option>
+        <option value="exec-batch">Run a command with many matches at once</option>
+      </select>
+    </label>
+    <label class="tool-field" id="fnd-exec-field">
+      <span>Command for each match</span>
+      <input id="fnd-exec" class="tool-input" type="text" placeholder="rm -f">
+    </label>
+  </div>
+
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="fnd-empty"> Empty files or directories (-empty)</label>
+    <label class="tool-check"><input type="checkbox" id="fnd-ignore-case"> Ignore case in the name (-iname)</label>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Command</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#fnd-out" data-status="#fnd-status">Copy</button>
+    <span class="tool-status" id="fnd-status"></span>
+  </div>
+  <pre id="fnd-out" class="tool-result"></pre>
+  <p class="tool-hint">Deleting is immediate and has no undo. Run the same command with -print first to see exactly what would go.</p>
+</div>

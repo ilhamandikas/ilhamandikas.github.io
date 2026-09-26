@@ -42,6 +42,16 @@ const tk = {
     };
   },
 
+  // Quote one argument the way a POSIX shell expects, so a value with spaces,
+  // quotes or glob characters survives a copy-paste. Plain words are left bare
+  // and a leading ~ stays outside the quotes so it still expands to $HOME.
+  shq(value) {
+    const text = String(value);
+    if (text === '') return "''";
+    if (/^[A-Za-z0-9_@%+=:,./~-]+$/.test(text)) return text;
+    return `'${text.replace(/'/g, "'\\''")}'`;
+  },
+
   // Live-update an output element whenever any of the inputs change.
   live(inputs, render) {
     const els = (Array.isArray(inputs) ? inputs : [inputs]).filter(Boolean);
