@@ -133,9 +133,8 @@
 }
 .tool-split-out { position: sticky; top: 84px; }
 .tool-split-out .tool-code { height: calc(100vh - 260px); min-height: 360px; }
-/* Stacked variant: the output sits under the form at full width instead of
-   sharing the row. Use it when the preview is wide (a config file, a long
-   command) and a side-by-side column would be too narrow to read. */
+/* Stacked variant: the output sits under the form at full width. Use it when a
+   side-by-side column would be too narrow to read. */
 .tool-split-stacked { grid-template-columns: minmax(0, 1fr); }
 .tool-split-stacked .tool-split-out { position: static; }
 .tool-split-stacked .tool-split-out .tool-code { height: 480px; min-height: 360px; }

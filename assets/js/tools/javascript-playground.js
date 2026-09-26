@@ -1,12 +1,11 @@
-// JavaScript playground: a Monaco-powered editor (fetched from a CDN on demand,
-// with a plain-textarea fallback) that runs the snippet in the page and collects
-// its console output, return value and timing. The code runs with the page's own
-// privileges, which is what a browser console does — so only run code you trust.
+// JavaScript playground: a Monaco editor (CDN on demand, text-area fallback) that
+// runs the snippet in the page and collects its console output. The code runs with
+// the page's own privileges, so only run what you trust.
 const { tk } = window;
 
 const CDN = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs';
-// Monaco resolves worker module ids like `vs/language/typescript/tsWorker.js`
-// against `baseUrl`, so that has to be the directory that *contains* `vs/`.
+// Monaco resolves worker ids like `vs/.../tsWorker.js` against `baseUrl`, so it
+// must be the directory that contains `vs/`.
 const BASE = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min';
 
 const els = {

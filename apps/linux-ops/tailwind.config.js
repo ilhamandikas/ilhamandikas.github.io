@@ -12,9 +12,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        // The site's flat-white palette, so the app reads as part of ilham.dev.
-        // No `base` colour on purpose: it would shadow Tailwind's `text-base`
-        // font-size utility and paint typed text white. `panel` is the same white.
+        // No `base` colour: it would shadow Tailwind's `text-base` font-size
+        // utility and paint typed text white. `panel` is the same white.
         panel: '#ffffff',
         panel2: '#f7f8fa',
         edge: '#e6e8ec',

@@ -29,9 +29,8 @@ const els = {
   status: document.querySelector('#snap-status'),
 };
 
-// The page loads with a known-good sample: a generic SNAP BI notification and a
-// matching signature, so Verify returns true before the user touches anything.
-// "Load sample" restores exactly these values after an experiment.
+// Known-good sample: a generic SNAP BI notification and a matching signature, so
+// Verify returns true before the user touches anything. "Load sample" restores it.
 const INITIAL = {
   method: els.method.value,
   endpoint: els.endpoint.value,

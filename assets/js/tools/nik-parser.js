@@ -48,7 +48,7 @@ function render() {
   results.replaceChildren();
 
   if (nik.length !== 16) {
-    tk.setStatus(status, 'Masukkan tepat 16 digit NIK.', nik.length ? 'err' : '');
+    tk.setStatus(status, 'Enter exactly 16 digits of the NIK.', nik.length ? 'err' : '');
     return;
   }
 
@@ -61,31 +61,43 @@ function render() {
   const serial = nik.slice(12, 16);
   const born = dateFromNik(encodedDay, month, year2);
   const isFemale = encodedDay > 40;
-  const gender = isFemale ? 'Perempuan' : 'Laki-laki';
-  const province = ID_PROVINCES[provinceCode] || 'Kode provinsi tidak dikenal';
-  const city = ID_CITIES[cityCode] || 'Kode kabupaten/kota tidak dikenal';
-  const district = ID_DISTRICTS[districtCode] || 'Kode kecamatan tidak dikenal';
+  const gender = isFemale ? 'Female' : 'Male';
+  const province = ID_PROVINCES[provinceCode] || 'Unknown province code';
+  const city = ID_CITIES[cityCode] || 'Unknown regency/city code';
+  const district = ID_DISTRICTS[districtCode] || 'Unknown district code';
 
   const errors = [];
-  if (!ID_PROVINCES[provinceCode]) errors.push('kode provinsi tidak ditemukan');
-  if (!ID_CITIES[cityCode]) errors.push('kode kabupaten/kota tidak ditemukan');
-  if (!ID_DISTRICTS[districtCode]) errors.push('kode kecamatan tidak ditemukan');
-  if (!born) errors.push('tanggal lahir tidak valid');
-  tk.setStatus(status, errors.length ? `NIK terbaca dengan catatan: ${errors.join(', ')}.` : 'NIK terbaca lengkap.', errors.length ? 'err' : 'ok');
+  if (!ID_PROVINCES[provinceCode]) errors.push('province code not found');
+  if (!ID_CITIES[cityCode]) errors.push('regency/city code not found');
+  if (!ID_DISTRICTS[districtCode]) errors.push('district code not found');
+  if (!born) errors.push('invalid birth date');
+  tk.setStatus(
+    status,
+    errors.length ? `NIK parsed with warnings: ${errors.join(', ')}.` : 'NIK parsed successfully.',
+    errors.length ? 'err' : 'ok',
+  );
 
   results.append(
-    row('NIK bersih', nik),
-    row('Kode provinsi', provinceCode),
-    row('Nama provinsi', province),
-    row('Kode kabupaten/kota', cityCode),
-    row('Nama kabupaten/kota', city),
-    row('Kode kecamatan', districtCode),
-    row('Nama kecamatan', district),
-    row('Kode region lengkap', `${dotted(provinceCode)} / ${dotted(cityCode)} / ${dotted(districtCode)}`),
-    row('Jenis kelamin', `${gender} — karena kode tanggal lahir ${nik.slice(6, 8)} ${isFemale ? 'lebih dari 40; tanggal asli dikurangi 40' : 'tidak lebih dari 40'}.`),
-    row('Tanggal lahir', born ? born.date.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Tidak valid'),
-    row('Umur', born ? `${age(born.date)} tahun` : '—'),
-    row('Nomor urut', serial)
+    row('Clean NIK', nik),
+    row('Province code', provinceCode),
+    row('Province name', province),
+    row('Regency/city code', cityCode),
+    row('Regency/city name', city),
+    row('District code', districtCode),
+    row('District name', district),
+    row('Full region code', `${dotted(provinceCode)} / ${dotted(cityCode)} / ${dotted(districtCode)}`),
+    row(
+      'Gender',
+      `${gender} — the birth day code ${nik.slice(6, 8)} is ${
+        isFemale ? 'above 40, so 40 is subtracted to get the real day' : 'not above 40'
+      }.`,
+    ),
+    row(
+      'Birth date',
+      born ? born.date.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Invalid',
+    ),
+    row('Age', born ? `${age(born.date)} years` : '—'),
+    row('Serial number', serial),
   );
 }
 

@@ -281,7 +281,7 @@ if (bar && slug) {
     mark.textContent = 'empty';
     const preview = document.createElement('span');
     preview.className = 'tool-history-preview';
-    preview.textContent = 'Belum ada history. Setelah kamu mengisi tool ini, entry sebelumnya akan muncul di sini.';
+    preview.textContent = 'No history yet. Once you fill in this tool, earlier entries will appear here.';
     item.append(mark, preview);
     return item;
   }
