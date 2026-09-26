@@ -1739,13 +1739,6 @@ textarea.tool-text { resize: vertical; }
   gap: 10px;
   margin-bottom: 14px;
 }
-.mon-field { display: flex; flex-direction: column; gap: 6px; }
-.mon-field > span {
-  font-size: 0.7rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
 .mon-badge {
   margin-left: auto;
   align-self: center;
@@ -1780,17 +1773,6 @@ textarea.tool-text { resize: vertical; }
 }
 .mon-container { width: 100%; height: 420px; }
 .mon-meta { font-size: 0.78rem; color: var(--muted); }
-.mon-file-name {
-  font-family: var(--mono);
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-.mon-drop-hint { margin: 0 0 10px; font-size: 0.8rem; color: var(--muted); }
-.mon-drop-hint strong { color: var(--text); font-weight: 600; }
-.mon-editor-wrap.is-drop {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-}
 
 /* JSON Path Explorer */
 .jpe-examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }

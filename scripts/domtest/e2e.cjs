@@ -2408,7 +2408,11 @@ const check = (label, actual, expected) => {
   console.log('\n=== javascript playground ===');
   {
     const jsp = loadPage('javascript-playground');
+    check('js playground: starts as a plain editor', read(jsp.w, '#jsp-badge'), 'Plain editor');
+    check('js playground: the meta counts the example lines', read(jsp.w, '#jsp-meta').includes('4 lines'), true);
     set(jsp.w, '#jsp-code', "console.log('hello'); const x = await Promise.resolve(21 * 2); return x;");
+    await sleep(20);
+    check('js playground: the line count updates', read(jsp.w, '#jsp-meta').includes('1 line'), true);
     jsp.w.document.querySelector('#jsp-run').click();
     await sleep(300);
     const out = read(jsp.w, '#jsp-output');
@@ -2420,6 +2424,14 @@ const check = (label, actual, expected) => {
     await sleep(300);
     check('js playground: an error is reported', read(jsp.w, '#jsp-status').includes('Threw'), true);
     check('js playground: the error message is shown', read(jsp.w, '#jsp-output').includes('boom'), true);
+    // Monaco cannot load in jsdom, so Format must say so rather than crash.
+    jsp.w.document.querySelector('#jsp-format').click();
+    await sleep(20);
+    check('js playground: format asks for Monaco first', read(jsp.w, '#jsp-status').includes('Enable Monaco'), true);
+    jsp.w.document.querySelector('#jsp-clear').click();
+    await sleep(20);
+    check('js playground: clear empties the editor', read(jsp.w, '#jsp-code'), '');
+    check('js playground: clear empties the output', read(jsp.w, '#jsp-output'), '(no output)');
   }
 
   /* ------------------------------------------------------------ devops tycoon */
@@ -2447,57 +2459,6 @@ const check = (label, actual, expected) => {
     dt.w.__devopsTycoon.buy('lb');
     await sleep(20);
     check('devops: buying the load balancer lights it up', dt.w.document.querySelector('#dt-node-lb').classList.contains('is-on'), true);
-  }
-
-  /* ----------------------------------------------------------- monaco editor */
-
-  console.log('\n=== monaco editor ===');
-  {
-    const mon = loadPage('monaco-editor');
-    check('monaco: starts as a plain editor', read(mon.w, '#mon-badge'), 'Plain editor');
-    check('monaco: the default language is javascript', read(mon.w, '#mon-lang'), 'javascript');
-    set(mon.w, '#mon-editor', 'const x = 1;');
-    await sleep(20);
-    check('monaco: the line and character count updates', read(mon.w, '#mon-meta').includes('1 line'), true);
-    set(mon.w, '#mon-lang', 'json');
-    check('monaco: the language can be changed', read(mon.w, '#mon-lang'), 'json');
-
-    // Opening a file. jsdom has no picker, so set `files` by hand and fire change.
-    const fileInput = mon.w.document.querySelector('#mon-file');
-    const openFile = (name, parts) => {
-      const file = new mon.w.File(parts, name);
-      Object.defineProperty(fileInput, 'files', { value: [file], configurable: true });
-      fileInput.dispatchEvent(new mon.w.Event('change', { bubbles: true }));
-    };
-
-    openFile('app.ts', ['const x: number = 1;\n']);
-    await sleep(60);
-    check('monaco: a text file loads into the editor', read(mon.w, '#mon-editor').includes('const x: number = 1;'), true);
-    check('monaco: the language follows the file extension', read(mon.w, '#mon-lang'), 'typescript');
-    check('monaco: the file name is offered to download', read(mon.w, '#mon-file-name'), 'app.ts');
-
-    openFile('photo.png', ['not really a png']);
-    await sleep(60);
-    check('monaco: a binary file is refused', read(mon.w, '#mon-status').includes('binary'), true);
-    check('monaco: a refused file leaves the editor alone', read(mon.w, '#mon-editor').includes('const x: number = 1;'), true);
-
-    openFile('weird.dat', ['abc\u0000def']);
-    await sleep(60);
-    check('monaco: a NUL byte marks a file as binary', read(mon.w, '#mon-status').includes('binary'), true);
-
-    // Drag and drop shares the picker's code path.
-    const dropEvent = new mon.w.Event('drop', { bubbles: true, cancelable: true });
-    Object.defineProperty(dropEvent, 'dataTransfer', {
-      value: { files: [new mon.w.File(['# dropped'], 'notes.md')], dropEffect: '' },
-    });
-    mon.w.document.querySelector('.mon-editor-wrap').dispatchEvent(dropEvent);
-    await sleep(60);
-    check('monaco: a dropped file loads', read(mon.w, '#mon-editor'), '# dropped');
-    check('monaco: a dropped .md sets markdown', read(mon.w, '#mon-lang'), 'markdown');
-
-    mon.w.document.querySelector('#mon-clear').click();
-    await sleep(20);
-    check('monaco: clear empties the editor', read(mon.w, '#mon-editor'), '');
   }
 
   /* ----------------------------------------------------- json path explorer */

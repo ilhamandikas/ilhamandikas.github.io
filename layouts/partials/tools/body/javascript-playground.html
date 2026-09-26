@@ -1,17 +1,24 @@
 <div class="tool-panel">
   <h2>JavaScript Playground</h2>
-  <p class="tool-hint">Run a snippet and see its console output, return value and timing. Top-level <code>await</code> and <code>return</code> work, so you can try an API call or a quick algorithm. Press Ctrl/Cmd + Enter to run.</p>
-  <label class="tool-field">
-    <span>Code</span>
-    <textarea id="jsp-code" class="tool-input tool-code" rows="12" spellcheck="false">const nums = [1, 2, 3, 4];
+  <p class="tool-hint">Write JavaScript with syntax highlighting and run it right here. Monaco is large, so it is fetched from a CDN the first time you press <strong>Enable Monaco</strong>; if that is unavailable the plain text area still works. Press Ctrl/Cmd + Enter to run.</p>
+  <div class="mon-toolbar">
+    <button class="btn primary" type="button" id="jsp-run">Run</button>
+    <button class="btn" type="button" id="jsp-load">Enable Monaco</button>
+    <button class="btn" type="button" id="jsp-format">Format</button>
+    <button class="btn" type="button" id="jsp-clear">Clear</button>
+    <button class="btn" type="button" data-copy="#jsp-code" data-status="#jsp-status">Copy</button>
+    <button class="btn" type="button" data-download="#jsp-code" data-filename="snippet.js" data-mime="text/javascript">Download</button>
+    <span class="mon-badge" id="jsp-badge">Plain editor</span>
+  </div>
+  <div class="mon-editor-wrap">
+    <div id="jsp-container" class="mon-container" hidden></div>
+    <textarea id="jsp-code" class="mon-textarea" rows="16" spellcheck="false">const nums = [1, 2, 3, 4];
 const doubled = nums.map((n) => n * 2);
 console.log('doubled:', doubled);
 return doubled.reduce((sum, n) => sum + n, 0);</textarea>
-  </label>
+  </div>
   <div class="tool-row">
-    <button class="btn primary" type="button" id="jsp-run">Run</button>
-    <button class="btn" type="button" id="jsp-clear">Clear</button>
-    <button class="btn" type="button" data-copy="#jsp-code" data-status="#jsp-status">Copy code</button>
+    <span class="mon-meta" id="jsp-meta">0 lines · 0 chars</span>
     <span class="tool-status" id="jsp-status" role="status" aria-live="polite"></span>
   </div>
 </div>

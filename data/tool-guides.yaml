@@ -1721,50 +1721,29 @@ snap-signature:
     - q: "Can I use a production private key here?"
       a: "Technically yes, but do not. This is a public web page, so paste a test key, or press Generate key pair to create a throwaway 2048-bit pair and try the flow end to end."
 
-monaco-editor:
-  about: >-
-    A scratchpad built on the Monaco editor — the same editor that powers
-    Visual Studio Code — with syntax highlighting, bracket matching, code
-    folding, inline decorations and a formatter for the languages that ship
-    one. Choose a language from the list and write or paste code, or open a
-    file with the picker or by dropping it onto the editor. Monaco is a large
-    bundle, so it is fetched from a CDN only when you press Enable Monaco;
-    until then, and if the fetch fails, the page uses a plain text area with
-    the same open, copy, download and clear actions. Nothing you type or open
-    is ever sent anywhere.
-  faq:
-    - q: "Why does the editor not appear straight away?"
-      a: "Monaco is several megabytes, so loading it on every visit would slow the page down for people who only want a quick text box. It is fetched on demand when you press Enable Monaco. Until then a plain text area is used, and it keeps working if the fetch fails."
-    - q: "Can I open a file instead of pasting?"
-      a: "Yes. Press Open file, or drag a file onto the editor. Text files are read in the browser, the language is set from the file extension, and Download then saves under the same name. A file you drop never leaves your machine."
-    - q: "How does it choose the language?"
-      a: "From the file extension: .ts becomes TypeScript, .yaml becomes YAML, and so on. The extension overrides a language you picked by hand, because it is the better signal. An unknown extension leaves the current language alone."
-    - q: "Why was my file refused?"
-      a: "Files that look binary — images, archives, executables, anything containing a NUL byte — are not text, so loading them would only show noise. Files over 10 MB are refused too, and files over 2 MB load with a warning that editing may feel slow."
-    - q: "Is my code uploaded?"
-      a: "No. The editor runs entirely in your browser and nothing is sent to a server. The only network request is the one that fetches the editor itself from a CDN, and that request contains none of your text."
-    - q: "Which languages have a formatter?"
-      a: "Monaco ships formatters for a handful of languages such as JavaScript, TypeScript, JSON, HTML and CSS. For languages without one the Format button reports that no formatter is available rather than changing your text."
-    - q: "Does it work offline?"
-      a: "The plain text area does, and so does opening a file. Monaco itself needs one successful download the first time; after that your browser may keep it in its cache, but a hard refresh while offline falls back to the text area."
-    - q: "Where did my text go when I pressed Clear?"
-      a: "It is gone from the page — Clear empties the editor and the text area together, and resets the file name. The editor keeps no copy, so there is nothing to recover afterwards."
-
 javascript-playground:
   about: >-
-    A small console for trying JavaScript without leaving the page. Write a
-    snippet, press Run, and see everything it logs, the value it returns and how
-    long it took. Top-level await is supported, so you can experiment with
-    promises and fetch as well as plain expressions.
+    A console for trying JavaScript without leaving the page, built on the
+    Monaco editor — the same editor that powers Visual Studio Code — so the code
+    gets syntax highlighting, bracket matching, code folding and a formatter.
+    Write or paste a snippet, press Run, and see everything it logs, the value
+    it returns and how long it took. Monaco is a large bundle, so it is fetched
+    from a CDN only when you press Enable Monaco; until then, and if the fetch
+    fails, the page uses a plain text area with the same run, copy, download and
+    clear actions. Nothing you type is ever sent anywhere.
   faq:
+    - q: "Why does the Monaco editor not appear straight away?"
+      a: "Monaco is several megabytes, so loading it on every visit would slow the page down for people who only want a quick text box. It is fetched on demand when you press Enable Monaco. Until then a plain text area is used, and it keeps working if the fetch fails."
     - q: "Can I use top-level await?"
       a: "Yes. The snippet is wrapped in an async function, so await works at the top level and return gives back a value. That also means you do not need to wrap everything in an async IIFE yourself."
     - q: "Is the code sandboxed?"
       a: "No. It runs in the page with the page's own privileges, exactly like the browser's developer console. That keeps it simple and lets it touch real APIs, but it also means you should only run code you trust."
     - q: "Why did my console.log output not appear?"
       a: "Only output produced while the snippet runs is captured, and the snippet has to finish for the run to end. If it throws, the error is shown instead and anything logged before the throw is still listed."
+    - q: "Can I edit other languages?"
+      a: "The playground is for JavaScript, so the editor stays in JavaScript mode. The plain text area still holds whatever you paste, but the highlighting and the formatter are the JavaScript ones."
     - q: "Does it remember my code between visits?"
-      a: "The editor starts from a small example each time. If you want to keep a snippet, use Copy code before you leave, or paste it into your own notes."
+      a: "The editor starts from a small example each time. If you want to keep a snippet, use Copy before you leave, or paste it into your own notes."
 
 linux-ops:
   about: >-

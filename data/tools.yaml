@@ -472,13 +472,8 @@
       status: done
     - slug: javascript-playground
       name: JavaScript Playground
-      desc: Run a JavaScript snippet in the page and read its console output, return value and timing.
-      keywords: [javascript, js, playground, run, sandbox, console, snippet, test, es6]
-      status: done
-    - slug: monaco-editor
-      name: Monaco Editor
-      desc: Write and format code with syntax highlighting for dozens of languages, with a plain text-area fallback.
-      keywords: [monaco, editor, code, syntax highlighting, ide, typescript, json, yaml, format, scratchpad]
+      desc: Write JavaScript with syntax highlighting and run it in the page, reading its console output, return value and timing.
+      keywords: [javascript, js, playground, run, console, snippet, test, es6, monaco, editor, syntax highlighting]
       status: done
 
 - name: Workflow
