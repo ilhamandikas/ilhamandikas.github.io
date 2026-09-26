@@ -1193,6 +1193,23 @@ line-comma-formatter:
     - q: "Can it keep blank lines?"
       a: "Yes. Turn off Skip empty if the blank lines are meaningful. Turn off Trim lines if leading or trailing spaces should be preserved."
 
+env-key-sorter:
+  about: >-
+    Put a .env file in alphabetical order without shuffling the comments that
+    belong to each setting. The top comment block stays first, a comment above a
+    key travels with that key, and blank lines are closed up. Duplicate keys can
+    be collapsed to the last value, and the equals signs can be lined up for a
+    tidier read.
+  faq:
+    - q: "Does it change the values?"
+      a: "No. Only whole lines are moved, so spacing, quotes and inline comments inside a value are untouched. Alignment only pads the space before the equals sign."
+    - q: "Which duplicate value wins?"
+      a: "The last one, which is what most .env loaders use when a key appears twice."
+    - q: "Is my file uploaded?"
+      a: "No. The file is read, sorted and written in the browser; nothing leaves the page."
+    - q: "Does it understand export?"
+      a: "Yes. A line like export PORT=3000 is still recognised as the PORT key and keeps its export prefix."
+
 jwt-expiry-editor:
   about: >-
     Load a JWT, edit its iat, nbf and exp claims with date pickers, and re-encode

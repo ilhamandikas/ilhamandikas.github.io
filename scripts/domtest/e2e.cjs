@@ -1571,6 +1571,34 @@ const check = (label, actual, expected) => {
       read(page.w, '#imc-status'), 'Choose an image first.');
   }
 
+  /* ------------------------------------------------------------- .env sorter */
+
+  console.log('\n=== .env key sorter ===');
+  {
+    const page = loadPage('env-key-sorter');
+    set(page.w, '#env-input', '# Header\nZED=1\n# about alpha\nALPHA=2\nBETA=3\n');
+    check('.env sorter: keys are ordered and the header stays on top',
+      read(page.w, '#env-output'), '# Header\n# about alpha\nALPHA=2\nBETA=3\nZED=1');
+
+    set(page.w, '#env-order', 'desc');
+    check('.env sorter: Z to A reverses the order and carries the comment',
+      read(page.w, '#env-output'), '# Header\nZED=1\nBETA=3\n# about alpha\nALPHA=2');
+
+    set(page.w, '#env-order', 'asc');
+    set(page.w, '#env-input', 'A=1\nB=2\nA=3\n');
+    set(page.w, '#env-unique', true);
+    check('.env sorter: a duplicate key collapses to its last value',
+      read(page.w, '#env-output'), 'A=3\nB=2');
+    check('.env sorter: the duplicate is counted in the status',
+      read(page.w, '#env-status'), '2 keys, 1 duplicate dropped');
+
+    set(page.w, '#env-unique', false);
+    set(page.w, '#env-input', 'A=1\nLONG_KEY=2\n');
+    set(page.w, '#env-align', true);
+    check('.env sorter: values line up on the equals sign',
+      read(page.w, '#env-output'), 'A       =1\nLONG_KEY=2');
+  }
+
   /* --------------------------------------------------------- websocket tester */
 
   console.log('\n=== websocket tester ===');

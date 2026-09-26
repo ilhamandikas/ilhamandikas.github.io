@@ -1,0 +1,38 @@
+<div class="tool-panel">
+  <h2>.env Key Sorter</h2>
+  <label class="tool-field">
+    <span>.env contents</span>
+    <textarea id="env-input" class="tool-input tool-code" rows="12" spellcheck="false" placeholder="Paste a .env file here"># App
+NODE_ENV=production
+PORT=3000
+
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=app
+DB_PASSWORD="change-me"
+
+# Feature flags
+FEATURE_BETA=true</textarea>
+  </label>
+  <div class="tool-row">
+    <label class="tool-inline">Order
+      <select id="env-order" class="tool-select">
+        <option value="asc">A → Z</option>
+        <option value="desc">Z → A</option>
+      </select>
+    </label>
+    <label class="tool-check"><input type="checkbox" id="env-case" checked> Ignore case</label>
+    <label class="tool-check"><input type="checkbox" id="env-unique"> Drop duplicate keys</label>
+    <label class="tool-check"><input type="checkbox" id="env-align"> Align values</label>
+    <button class="btn" type="button" data-copy="#env-output" data-status="#env-status">Copy</button>
+    <button class="btn" type="button" data-download="#env-output" data-filename=".env" data-mime="text/plain">Download .env</button>
+    <span class="tool-status" id="env-status"></span>
+  </div>
+  <p class="tool-hint">Comments stay attached to the key below them and the top comment block stays first, so notes do not drift to the wrong setting. Sorting happens in the page; nothing is uploaded.</p>
+</div>
+
+<div class="tool-panel">
+  <h2>Sorted</h2>
+  <textarea id="env-output" class="tool-input tool-code" rows="12" readonly spellcheck="false"></textarea>
+</div>

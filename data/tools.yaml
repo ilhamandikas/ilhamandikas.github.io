@@ -608,6 +608,11 @@
       desc: Add commas, quotes, arrays or SQL IN formatting to one-item-per-line lists.
       keywords: [list, comma, lines, quote, array, sql in, csv, formatter]
       status: done
+    - slug: env-key-sorter
+      name: .env Key Sorter
+      desc: Sort the keys in a .env file alphabetically, keeping each comment with its key and optionally dropping duplicates or aligning values.
+      keywords: [env, dotenv, environment, variables, config, sort, keys, alphabetical, order, duplicates, align, secrets]
+      status: done
 
 - name: Convert
   slug: convert
