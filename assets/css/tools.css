@@ -1164,6 +1164,31 @@ textarea.tool-text { resize: vertical; }
 }
 .snap-grid .tool-field { margin-bottom: 0; }
 
+.jsp-output {
+  min-height: 80px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.jsp-line { display: flex; gap: 8px; }
+.jsp-line > span:last-child { white-space: pre-wrap; word-break: break-word; }
+.jsp-tag {
+  flex: 0 0 auto;
+  min-width: 48px;
+  padding-top: 2px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.jsp-error > span:last-child { color: #b91c1c; }
+.jsp-warn > span:last-child { color: #b45309; }
+.jsp-result > span:last-child { color: var(--accent); }
+
 .lp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
 .lp-grid .tool-field { margin-bottom: 0; }
 .dc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }

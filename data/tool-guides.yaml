@@ -1679,3 +1679,19 @@ snap-signature:
       a: "Yes. Web Crypto's RSASSA-PKCS1-v1_5 with SHA-256 is exactly SHA256withRSA, so a signature made here verifies in Java, Node or any SNAP BI library, and the other way round."
     - q: "Can I use a production private key here?"
       a: "Technically yes, but do not. This is a public web page, so paste a test key, or press Generate key pair to create a throwaway 2048-bit pair and try the flow end to end."
+
+javascript-playground:
+  about: >-
+    A small console for trying JavaScript without leaving the page. Write a
+    snippet, press Run, and see everything it logs, the value it returns and how
+    long it took. Top-level await is supported, so you can experiment with
+    promises and fetch as well as plain expressions.
+  faq:
+    - q: "Can I use top-level await?"
+      a: "Yes. The snippet is wrapped in an async function, so await works at the top level and return gives back a value. That also means you do not need to wrap everything in an async IIFE yourself."
+    - q: "Is the code sandboxed?"
+      a: "No. It runs in the page with the page's own privileges, exactly like the browser's developer console. That keeps it simple and lets it touch real APIs, but it also means you should only run code you trust."
+    - q: "Why did my console.log output not appear?"
+      a: "Only output produced while the snippet runs is captured, and the snippet has to finish for the run to end. If it throws, the error is shown instead and anything logged before the throw is still listed."
+    - q: "Does it remember my code between visits?"
+      a: "The editor starts from a small example each time. If you want to keep a snippet, use Copy code before you leave, or paste it into your own notes."

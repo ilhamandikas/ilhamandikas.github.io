@@ -461,6 +461,11 @@
       desc: A small rich-text editor that exports clean HTML.
       keywords: [html, editor, wysiwyg, rich text]
       status: done
+    - slug: javascript-playground
+      name: JavaScript Playground
+      desc: Run a JavaScript snippet in the page and read its console output, return value and timing.
+      keywords: [javascript, js, playground, run, sandbox, console, snippet, test, es6]
+      status: done
 
 - name: Workflow
   slug: workflow

@@ -2403,6 +2403,25 @@ const check = (label, actual, expected) => {
     check('hmac: a wrong value is rejected', read(hmac.w, '#hmac-verify-status').includes('does not match'), true);
   }
 
+  /* ---------------------------------------------------- javascript playground */
+
+  console.log('\n=== javascript playground ===');
+  {
+    const jsp = loadPage('javascript-playground');
+    set(jsp.w, '#jsp-code', "console.log('hello'); const x = await Promise.resolve(21 * 2); return x;");
+    jsp.w.document.querySelector('#jsp-run').click();
+    await sleep(300);
+    const out = read(jsp.w, '#jsp-output');
+    check('js playground: console.log is captured', out.includes('hello'), true);
+    check('js playground: the return value is shown', out.includes('42'), true);
+    check('js playground: the run reports success', read(jsp.w, '#jsp-status').includes('Ran in'), true);
+    set(jsp.w, '#jsp-code', 'throw new Error("boom");');
+    jsp.w.document.querySelector('#jsp-run').click();
+    await sleep(300);
+    check('js playground: an error is reported', read(jsp.w, '#jsp-status').includes('Threw'), true);
+    check('js playground: the error message is shown', read(jsp.w, '#jsp-output').includes('boom'), true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

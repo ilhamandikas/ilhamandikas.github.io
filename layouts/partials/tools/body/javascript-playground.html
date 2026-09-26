@@ -1,0 +1,23 @@
+<div class="tool-panel">
+  <h2>JavaScript Playground</h2>
+  <p class="tool-hint">Run a snippet and see its console output, return value and timing. Top-level <code>await</code> and <code>return</code> work, so you can try an API call or a quick algorithm. Press Ctrl/Cmd + Enter to run.</p>
+  <label class="tool-field">
+    <span>Code</span>
+    <textarea id="jsp-code" class="tool-input tool-code" rows="12" spellcheck="false">const nums = [1, 2, 3, 4];
+const doubled = nums.map((n) => n * 2);
+console.log('doubled:', doubled);
+return doubled.reduce((sum, n) => sum + n, 0);</textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="jsp-run">Run</button>
+    <button class="btn" type="button" id="jsp-clear">Clear</button>
+    <button class="btn" type="button" data-copy="#jsp-code" data-status="#jsp-status">Copy code</button>
+    <span class="tool-status" id="jsp-status" role="status" aria-live="polite"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Output</h2>
+  <div id="jsp-output" class="jsp-output"></div>
+  <p class="tool-note">The snippet runs in this page rather than a sandbox, so it can read and change the page. Only run code you trust, the same rule as a browser console.</p>
+</div>
