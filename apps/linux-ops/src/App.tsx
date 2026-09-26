@@ -146,7 +146,7 @@ export default function App() {
                   and it never leaves this page.
                 </p>
               )}
-              <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.4fr_1fr]">
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
                 <CommandList
                   commands={results}
                   activeId={detail?.id ?? ''}
