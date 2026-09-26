@@ -410,6 +410,11 @@
       desc: Read the browser, engine, OS and device from a user-agent string.
       keywords: [user agent, browser, os, device, parse]
       status: done
+    - slug: mic-tester
+      name: Mic Tester
+      desc: Check that a microphone works and watch its level and peak in real time.
+      keywords: [microphone, mic, audio, level, meter, test, input, dbfs, clipping, recording]
+      status: done
     - slug: mime-types
       name: MIME Types
       desc: Look up the MIME type for a file extension.
@@ -868,6 +873,11 @@
       name: Typing Speed Test
       desc: Measure WPM and accuracy with live per-character feedback and a restartable test.
       keywords: [typing, speed, wpm, accuracy, test, words per minute, keyboard, practice]
+      status: done
+    - slug: gamepad-tester
+      name: Gamepad Tester
+      desc: See every axis and button of a connected controller, with the pressed buttons lit up.
+      keywords: [gamepad, controller, joystick, buttons, axes, test, dead zone, vibration, playstation, xbox]
       status: done
     - slug: game-2048
       name: "2048"

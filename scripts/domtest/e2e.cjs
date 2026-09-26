@@ -1610,6 +1610,24 @@ const check = (label, actual, expected) => {
     }
   }
 
+  /* --------------------------------------------------------- device testers */
+
+  console.log('\n=== device testers ===');
+  {
+    const mic = loadPage('mic-tester');
+    check('mic tester: the button is disabled without microphone support', mic.w.document.querySelector('#mic-start').disabled, true);
+    check('mic tester: the reason is stated plainly', read(mic.w, '#mic-status'), 'This browser does not offer a microphone to the page.');
+    check('mic tester: no level is claimed before a run', read(mic.w, '#mic-level'), '—');
+    click(mic.w, '#mic-start');
+    check('mic tester: a click on the disabled button changes nothing', read(mic.w, '#mic-status'), 'This browser does not offer a microphone to the page.');
+
+    const pad = loadPage('gamepad-tester');
+    check('gamepad tester: the missing API is stated plainly', read(pad.w, '#gpd-status'), 'This browser does not offer gamepads to the page.');
+    check('gamepad tester: no controller is invented', read(pad.w, '#gpd-count'), '—');
+    check('gamepad tester: no input is invented', read(pad.w, '#gpd-last'), '—');
+    check('gamepad tester: no pad card is rendered', pad.w.document.querySelectorAll('.gpd-pad').length, 0);
+  }
+
   /* ------------------------------------------------------- zip and pdf tools */
 
   console.log('\n=== zip builder ===');

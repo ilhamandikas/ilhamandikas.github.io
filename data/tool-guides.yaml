@@ -2185,3 +2185,30 @@ text-to-pdf:
       a: "Each word is measured with the chosen font and size, and a line breaks when the next word would cross the margin. That keeps the layout correct even in a proportionally spaced font like Helvetica or Times."
     - q: "Can I use my own font?"
       a: "Not in this version. Embedding a font means shipping the font file, which would add weight to the page. The three standard fonts are always available and need nothing extra."
+
+mic-tester:
+  about: >-
+    Find out whether a microphone is picking anything up, and how loudly. The
+    browser opens the input and the level is measured on a bar with a peak
+    marker, so a quiet headset or a muted laptop mic is obvious at a glance.
+  faq:
+    - q: "Is anything recorded or sent anywhere?"
+      a: "No. The audio is read through an analyser inside the page and turned into a number. There is no recorder attached, no buffer is kept, and no request leaves the browser."
+    - q: "Why does the browser ask for permission?"
+      a: "Reading a microphone requires an explicit grant by design, and it is asked for the first time you press Start listening. If it was blocked earlier, the padlock in the address bar is where you allow it again."
+    - q: "Why does the bar barely move when I speak?"
+      a: "Usually the wrong input device is selected, or its gain is low in the system sound settings. Also check that automatic gain control is not fighting the test, and try again closer to the microphone."
+
+gamepad-tester:
+  about: >-
+    Inspect a connected controller: every axis with its travel, every button
+    with its pressure, and a running note of the last input seen. It is the
+    quick answer to whether a pad works, which stick drifts and which button
+    has stopped registering.
+  faq:
+    - q: "Why is the controller missing until I press a button?"
+      a: "Browsers hide gamepads until an input event proves one is being used, which is a privacy measure. Press any button on the pad and it will appear, then stay listed until it is disconnected."
+    - q: "A stick reports a small value while untouched. Is it broken?"
+      a: "A little drift below about 0.05 is normal on worn analogue sticks and browsable games compensate with a dead zone. A value that keeps climbing on its own, or a stick that never reaches 1 at full travel, points to a real fault."
+    - q: "Can it test vibration or the light bar?"
+      a: "Not here. Those need the haptics actuators a browser exposes separately, and support varies by pad and by browser, so this page sticks to the axes and buttons that every controller reports."

@@ -1201,6 +1201,111 @@ textarea.tool-text { resize: vertical; }
   font-size: 15px;
   font-weight: 600;
 }
+
+/* Microphone level meter: a filled bar with a peak marker riding along it. */
+.mic-meter {
+  position: relative;
+  height: 14px;
+  margin: 18px 0 0;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: #fff;
+  overflow: hidden;
+}
+.mic-bar {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+}
+.mic-peak {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--text);
+}
+.mic-meter.mic-clip .mic-bar { background: #dc2626; }
+
+/* Gamepad report: one card per controller, axes on tracks, buttons in a grid. */
+.gpd-pads { margin-top: 4px; }
+.gpd-pad + .gpd-pad {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.gpd-name {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.gpd-meta {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.gpd-axes { display: grid; gap: 8px; }
+.gpd-axis {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) 56px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.gpd-axis-name { color: var(--muted); }
+.gpd-track {
+  position: relative;
+  height: 10px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: #fff;
+}
+.gpd-track::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: var(--border);
+}
+.gpd-dot {
+  position: absolute;
+  top: -3px;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: #fff;
+}
+.gpd-axis-value {
+  font-family: var(--mono);
+  text-align: right;
+}
+.gpd-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.gpd-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.gpd-button-on {
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+.gpd-button-value { font-family: var(--mono); }
 .rr-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 .dlg-options { align-items: center; margin-top: 14px; }
 .df-grid + .df-grid { margin-top: 14px; }

@@ -1,0 +1,30 @@
+<div class="tool-panel">
+  <h2>Microphone tester</h2>
+  <p class="tool-hint">The microphone is opened straight from this page and the sound never leaves it. The level is measured in memory only, so nothing is recorded and nothing is uploaded.</p>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="mic-start">Start listening</button>
+    <button class="btn" type="button" id="mic-stop" disabled>Stop</button>
+    <span class="tool-status" id="mic-status"></span>
+  </div>
+  <div class="mic-meter" id="mic-meter">
+    <span class="mic-bar" id="mic-bar"></span>
+    <span class="mic-peak" id="mic-peak"></span>
+  </div>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Level</span><span id="mic-level">—</span></p>
+    <p><span class="imc-label">Peak</span><span id="mic-peak-value">—</span></p>
+    <p><span class="imc-label">Input</span><span id="mic-device">—</span></p>
+  </div>
+</div>
+
+<details class="tool-panel tool-fold">
+  <summary class="tool-fold-head">Reading the numbers</summary>
+  <div class="tool-fold-body">
+    <ul>
+      <li><strong>Level</strong> is the loudness right now in dBFS, where 0 is the loudest a digital signal can be and silence sits near -60.</li>
+      <li><strong>Peak</strong> is the loudest moment since listening started. A peak that reaches 0 means the input is clipping, and turning the gain down will sound better than any repair afterwards.</li>
+      <li>A bar that barely moves usually means the wrong input device is selected, or the gain is set low in the system sound settings rather than in the browser.</li>
+      <li>Speech that sits between about -24 and -12 dBFS is comfortable for a call or a recording.</li>
+    </ul>
+  </div>
+</details>
