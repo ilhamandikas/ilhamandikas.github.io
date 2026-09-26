@@ -17,7 +17,7 @@
 
     <div id="tools-catalog">
       {{- range site.Data.tools }}
-      <section class="tools-group" data-tools-group>
+      <section class="tools-group" data-tools-group id="{{ .slug }}">
         <h2 class="tools-group-title">{{ .name }}</h2>
         <div class="tools-grid">
           {{- range .tools }}

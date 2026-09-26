@@ -63,7 +63,7 @@
   gap: 34px;
 }
 
-.tools-group { margin-top: 0; }
+.tools-group { margin-top: 0; scroll-margin-top: 88px; }
 .tools-group-title {
   margin: 0 0 14px;
   font-size: 0.82rem;
