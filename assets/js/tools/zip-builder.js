@@ -19,6 +19,7 @@ const els = {
 
 const MAX_ROWS = 200;
 let entries = [];
+let seen = new Set();
 let zipBlob = null;
 
 // Keep every name distinct so nothing inside the archive is lost.
@@ -37,19 +38,27 @@ function uniqueName(name, taken) {
 }
 
 function fileList() {
-  const rows = entries.slice(0, MAX_ROWS).map((entry) => {
+  const rows = entries.slice(0, MAX_ROWS).map((entry, index) => {
     const row = document.createElement('tr');
     const name = document.createElement('td');
     name.textContent = entry.name;
     const size = document.createElement('td');
     size.textContent = tk.formatBytes(entry.size);
-    row.append(name, size);
+    const actions = document.createElement('td');
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'btn';
+    remove.textContent = 'Remove';
+    remove.setAttribute('data-zip-remove', String(index));
+    remove.setAttribute('aria-label', `Remove ${entry.name}`);
+    actions.append(remove);
+    row.append(name, size, actions);
     return row;
   });
   if (entries.length > MAX_ROWS) {
     const row = document.createElement('tr');
     const cell = document.createElement('td');
-    cell.colSpan = 2;
+    cell.colSpan = 3;
     cell.textContent = `…and ${entries.length - MAX_ROWS} more`;
     row.append(cell);
     rows.push(row);
@@ -95,17 +104,18 @@ function build() {
   tk.setStatus(els.status, `Ready — ${entries.length} file${entries.length === 1 ? '' : 's'}, ${tk.formatBytes(zipBlob.size)}.`, 'ok');
 }
 
+// Files are read once and kept in memory, so a second visit to the picker adds
+// to the archive instead of replacing what is already there.
 async function onFiles() {
-  const files = [...(els.file.files || [])];
+  const files = tk.claimFiles(els.file, seen);
   if (!files.length) return;
 
-  entries = [];
-  const taken = new Set();
+  const taken = new Set(entries.map((entry) => entry.name));
   for (const file of files) {
     const data = new Uint8Array(await file.arrayBuffer());
     const name = uniqueName(file.name || `file-${entries.length + 1}`, taken);
     taken.add(name);
-    entries.push({ name, size: data.length, data });
+    entries.push({ name, size: data.length, data, key: tk.fileKey(file) });
   }
   build();
 }
@@ -113,12 +123,22 @@ async function onFiles() {
 els.file.addEventListener('change', onFiles);
 tk.live([els.level], build);
 
+els.list.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-zip-remove]');
+  if (!button) return;
+  const [dropped] = entries.splice(Number(button.getAttribute('data-zip-remove')), 1);
+  // The file can be picked again once it is no longer in the archive.
+  if (dropped) seen.delete(dropped.key);
+  build();
+});
+
 els.name.addEventListener('change', () => {
   if (els.name.value.trim() && !/\.zip$/i.test(els.name.value.trim())) els.name.value = `${els.name.value.trim()}.zip`;
 });
 
 els.clear.addEventListener('click', () => {
   entries = [];
+  seen = new Set();
   els.file.value = '';
   build();
 });

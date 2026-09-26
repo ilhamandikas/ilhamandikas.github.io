@@ -77,6 +77,9 @@ function poke(w, slug) {
 
   // 2. click everything clickable
   document.querySelectorAll('button, [data-copy], [data-download]').forEach((el) => {
+    // Site chrome is not the tool. Clicking the header's shortcut button would
+    // only open the shortcut list and add text the report mistakes for output.
+    if (el.closest('.site-header, .kbd-help')) return;
     el.dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
   });
 }

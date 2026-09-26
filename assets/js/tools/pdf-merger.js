@@ -17,6 +17,7 @@ const els = {
 };
 
 let items = [];
+let seen = new Set();
 let outputBlob = null;
 let runId = 0;
 
@@ -94,19 +95,21 @@ async function build() {
   }
 }
 
+// A second visit to the picker appends to the list rather than replacing it.
 async function onFiles() {
-  const files = [...(els.file.files || [])];
+  const files = tk.claimFiles(els.file, seen);
   if (!files.length) return;
 
-  items = [];
-  runId += 1;
-  reset();
+  if (!items.length) {
+    runId += 1;
+    reset();
+  }
   const failed = [];
 
   for (const file of files) {
     try {
       const doc = await PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
-      items.push({ name: file.name || 'document.pdf', doc, count: doc.getPageCount() });
+      items.push({ name: file.name || 'document.pdf', doc, count: doc.getPageCount(), key: tk.fileKey(file) });
     } catch {
       failed.push(file.name || 'a file');
     }
@@ -127,7 +130,11 @@ els.list.addEventListener('click', (event) => {
   const action = target.getAttribute('data-merge-action');
   if (action === 'up' && index > 0) [items[index - 1], items[index]] = [items[index], items[index - 1]];
   else if (action === 'down' && index < items.length - 1) [items[index + 1], items[index]] = [items[index], items[index + 1]];
-  else if (action === 'remove') items.splice(index, 1);
+  else if (action === 'remove') {
+    // A removed file can be picked again.
+    const [dropped] = items.splice(index, 1);
+    if (dropped) seen.delete(dropped.key);
+  }
   else return;
   renderList();
   build();
@@ -137,6 +144,7 @@ els.file.addEventListener('change', onFiles);
 
 els.clear.addEventListener('click', () => {
   items = [];
+  seen = new Set();
   els.file.value = '';
   build();
 });

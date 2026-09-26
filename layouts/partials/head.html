@@ -78,3 +78,8 @@
   <script type="speculationrules">
     {"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.xml"}},{"not":{"selector_matches":"[data-no-prerender]"}}]},"eagerness":"moderate"}]}
   </script>
+
+  {{- /* Keyboard shortcuts run on every page, so they are loaded here rather
+         than through a layout's own script block. */}}
+  {{- $shortcuts := resources.Get "js/shortcuts.js" | js.Build (dict "minify" true) | fingerprint }}
+  <script type="module" src="{{ $shortcuts.RelPermalink }}" integrity="{{ $shortcuts.Data.Integrity }}"></script>

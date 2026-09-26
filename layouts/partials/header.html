@@ -17,6 +17,8 @@
       <a href="{{ "/tools/javascript-playground/" | relURL }}">Playground</a>
       <a href="{{ "/about/" | relURL }}">About</a>
       <a href="{{ "/contact/" | relURL }}">Contact</a>
+      {{- /* Revealed by shortcuts.js, so it is never a dead button. */}}
+      <button type="button" class="nav-help" id="nav-help" aria-haspopup="dialog" title="Keyboard shortcuts" hidden>?</button>
     </nav>
   </div>
 </header>

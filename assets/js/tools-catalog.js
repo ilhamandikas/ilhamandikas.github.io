@@ -69,6 +69,10 @@ if (input && catalog) {
   if (kbd) kbd.textContent = shortcutLabel();
   bindFocusShortcut(input);
 
+  // The site-wide `/` and `g s` shortcuts arrive with `#search`, which is the
+  // only way to land on this page with the box already focused.
+  if (location.hash === '#search') input.focus();
+
   document.addEventListener('keydown', (event) => {
     // Escape clears the query first, then hands focus back to the page.
     if (event.key === 'Escape' && document.activeElement === input) {

@@ -351,7 +351,7 @@ const check = (label, actual, expected) => {
     const key = (init) => document.dispatchEvent(new page.w.KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init }));
     const visibleCards = () => [...document.querySelectorAll('[data-tool-card]')].filter((c) => !c.hidden).length;
 
-    check('catalog: script ran', page.scripts.length, 1);
+    check('catalog: script ran', page.scripts.some((file) => path.basename(file).startsWith('tools-catalog')), true);
     check('catalog: all cards visible at rest', visibleCards() > 80, true);
     // Same trap as the sidebar: ranked groups use negative `order` inside this
     // flex container, so anything else in here would sort below the results.
@@ -499,6 +499,178 @@ const check = (label, actual, expected) => {
     const result = page.finish();
     check('search: no uncaught errors', result.thrown.length + result.errors.length, 0);
     page.dom.window.close();
+  }
+
+  console.log('\n=== keyboard shortcuts ===');
+  {
+    const page = loadFile(path.join(ROOT, 'index.html'), 'https://ilham.dev/');
+    const { document } = page.w;
+    const key = (init) => document.dispatchEvent(new page.w.KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init }));
+
+    // Every shortcut ends in a click on a real link, so recording the link that
+    // was clicked is the same as recording where the browser would have gone.
+    const seen = [];
+    document.addEventListener(
+      'click',
+      (event) => {
+        const link = event.target.closest && event.target.closest('a[href]');
+        if (!link) return;
+        seen.push(link.getAttribute('href'));
+        event.preventDefault();
+      },
+      true,
+    );
+
+    const help = document.querySelector('#kbd-help');
+    const chip = document.querySelector('#kbd-chip');
+    const helpButton = document.querySelector('#nav-help');
+    const rows = [...document.querySelectorAll('.kbd-help-row')];
+    const rowFor = (keys) =>
+      rows.find((row) => [...row.querySelectorAll('kbd')].map((kbd) => kbd.textContent).join(' ') === keys);
+    const labelFor = (keys) => {
+      const row = rowFor(keys);
+      return row ? row.querySelector('.kbd-help-label').textContent : null;
+    };
+
+    check('shortcuts: the header button is revealed once the script runs', helpButton.hidden, false);
+    check('shortcuts: the list starts closed', help.hidden, true);
+    check('shortcuts: the pending chip starts hidden', chip.hidden, true);
+    check('shortcuts: no dt is added outside the FAQ', document.querySelectorAll('dt').length, 0);
+
+    // The destinations come from the header, so the two can never disagree.
+    const navLinks = [...document.querySelectorAll('#site-nav a')];
+    const sequenceHrefs = rows
+      .filter((row) => (row.getAttribute('aria-keyshortcuts') || '').startsWith('g '))
+      .map((row) => row.getAttribute('href'));
+    check('shortcuts: every header link has a sequence', navLinks.every((link) => sequenceHrefs.includes(link.getAttribute('href'))), true);
+    check('shortcuts: g h is Home', labelFor('g h'), 'Home');
+    check('shortcuts: g p is Posts', labelFor('g p'), 'Posts');
+    check('shortcuts: g t is Tools', labelFor('g t'), 'Tools');
+    check('shortcuts: g d is Dev Ops', labelFor('g d'), 'Dev Ops');
+    check('shortcuts: g g is Games', labelFor('g g'), 'Games');
+    check('shortcuts: g j is Playground', labelFor('g j'), 'Playground');
+    check('shortcuts: g a is About', labelFor('g a'), 'About');
+    check('shortcuts: g c is Contact', labelFor('g c'), 'Contact');
+    check('shortcuts: g r is the feed', labelFor('g r'), 'RSS feed');
+    check('shortcuts: / is the search', labelFor('/'), 'Search the tools');
+    check('shortcuts: ? is the list itself', labelFor('?'), 'Open or close this list');
+    check('shortcuts: a row points where the header points', rowFor('g t').getAttribute('href'), '/tools/');
+    check('shortcuts: a page without neighbours has no bracket rows', ['[', ']'].filter((k) => rowFor(k)), []);
+
+    key({ key: '?' });
+    check('shortcuts: ? opens the list', help.hidden, false);
+    check('shortcuts: the list takes focus', document.activeElement === help.querySelector('.kbd-help-panel'), true);
+    key({ key: '?' });
+    check('shortcuts: ? closes it again', help.hidden, true);
+
+    helpButton.focus();
+    key({ key: '?' });
+    key({ key: 'Escape' });
+    check('shortcuts: Escape closes the list', help.hidden, true);
+    check('shortcuts: closing hands focus back', document.activeElement === helpButton, true);
+
+    // The header's own button opens the same list.
+    helpButton.click();
+    check('shortcuts: the header button opens the list', help.hidden, false);
+    helpButton.click();
+    check('shortcuts: the header button closes it', help.hidden, true);
+
+    seen.length = 0;
+    key({ key: 'g' });
+    check('shortcuts: waiting on g, the chip says so', chip.hidden, false);
+    key({ key: 'h' });
+    check('shortcuts: g h goes home', seen, ['/']);
+    check('shortcuts: choosing a destination puts the chip away', chip.hidden, true);
+
+    key({ key: 'g' });
+    key({ key: 't' });
+    check('shortcuts: g t goes to the tools', seen, ['/', '/tools/']);
+
+    seen.length = 0;
+    key({ key: 'g' });
+    key({ key: 'z' });
+    check('shortcuts: a sequence with no destination does nothing', seen, []);
+    key({ key: 'z' });
+    check('shortcuts: a lone letter does nothing', seen, []);
+
+    key({ key: '/' });
+    check('shortcuts: / leaves for the catalog search', seen, ['/tools/#search']);
+    seen.length = 0;
+    key({ key: 'k', metaKey: true });
+    check('shortcuts: Cmd+K goes the same way', seen, ['/tools/#search']);
+    key({ key: 'k', ctrlKey: true });
+    check('shortcuts: Ctrl+K too', seen, ['/tools/#search', '/tools/#search']);
+
+    check('shortcuts: no uncaught errors', page.finish().thrown.length + page.finish().errors.length, 0);
+    page.dom.window.close();
+  }
+
+  console.log('\n=== shortcuts on a page with its own search ===');
+  {
+    const page = loadFile(path.join(ROOT, 'tools', 'index.html'), 'https://ilham.dev/tools/');
+    const { document } = page.w;
+    const key = (init) => document.dispatchEvent(new page.w.KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init }));
+    const input = document.querySelector('#tools-search');
+    const help = document.querySelector('#kbd-help');
+
+    input.blur();
+    key({ key: 'k', ctrlKey: true });
+    check('shortcuts: the page keeps Cmd+K for itself', document.activeElement === input, true);
+
+    input.blur();
+    key({ key: '/' });
+    check('shortcuts: / focuses the field instead of leaving', document.activeElement === input, true);
+    check('shortcuts: / does not open the list', help.hidden, true);
+
+    // A field keeps its letters: no sequence, no list, and nothing swallowed.
+    check('shortcuts: a letter typed in a field is not taken', key({ key: 'g' }), true);
+    key({ key: 'h' });
+    check('shortcuts: the chip never appears while typing', document.querySelector('#kbd-chip').hidden, true);
+    check('shortcuts: a question mark in a field is not a shortcut', key({ key: '?' }), true);
+    check('shortcuts: so the list stays shut', help.hidden, true);
+
+    const result = page.finish();
+    check('shortcuts: no uncaught errors on the catalog', result.thrown.length + result.errors.length, 0);
+    page.dom.window.close();
+  }
+
+  console.log('\n=== shortcuts that arrive with #search ===');
+  {
+    const page = loadFile(path.join(ROOT, 'tools', 'index.html'), 'https://ilham.dev/tools/#search');
+    const { document } = page.w;
+    check('shortcuts: landing on #search focuses the field', document.activeElement === document.querySelector('#tools-search'), true);
+    const result = page.finish();
+    check('shortcuts: no uncaught errors', result.thrown.length + result.errors.length, 0);
+    page.dom.window.close();
+  }
+
+  console.log('\n=== shortcuts on a post ===');
+  {
+    const slug = 'running-services-on-a-small-vps';
+    const page = loadFile(path.join(ROOT, 'posts', slug, 'index.html'), `https://ilham.dev/posts/${slug}/`);
+    const { document } = page.w;
+    const rows = [...document.querySelectorAll('.kbd-help-row')];
+    const brackets = rows.filter((row) => ['[', ']'].includes(row.querySelector('kbd').textContent));
+    const prev = document.querySelector('.post-nav a:not(.next)');
+    const next = document.querySelector('.post-nav a.next');
+
+    // The arrow belongs to the page's own link, not to the label.
+    const clean = (text) => text.replace(/[←→]/g, '').replace(/\s+/g, ' ').trim();
+    check('shortcuts: a post offers both neighbours', brackets.length, 2);
+    check('shortcuts: [ points at the previous post', brackets[0].getAttribute('href'), prev.getAttribute('href'));
+    check('shortcuts: [ is labelled with its title', clean(brackets[0].querySelector('.kbd-help-label').textContent), `Previous post: ${clean(prev.textContent)}`);
+    check('shortcuts: ] points at the next post', brackets[1].getAttribute('href'), next.getAttribute('href'));
+
+    // One neighbour only: the row for the missing side must be absent.
+    const lone = loadFile(path.join(ROOT, 'posts', 'hello-world', 'index.html'), 'https://ilham.dev/posts/hello-world/');
+    const loneKeys = [...lone.w.document.querySelectorAll('.kbd-help-row')].map((row) => row.querySelector('kbd').textContent);
+    check('shortcuts: a post with one neighbour lists one bracket key', loneKeys.includes('[') || loneKeys.includes(']'), true);
+    check('shortcuts: and not the other', loneKeys.includes('[') && loneKeys.includes(']'), false);
+
+    const result = page.finish();
+    check('shortcuts: no uncaught errors on a post', result.thrown.length + result.errors.length, 0);
+    page.dom.window.close();
+    lone.dom.window.close();
   }
 
   console.log('\n=== sidebar search ===');
@@ -1673,10 +1845,12 @@ const check = (label, actual, expected) => {
     const page = loadPage('zip-builder');
     check('zip builder: quiet before a file is chosen', read(page.w, '#zip-status'), '');
 
+    // Three separate files: the third only shares a name with the first, so it
+    // is kept under a numeral instead of being taken for the same file.
     const files = [
-      new page.w.File(['hello'], 'a.txt', { type: 'text/plain' }),
-      new page.w.File(['world'], 'b.txt', { type: 'text/plain' }),
-      new page.w.File(['again'], 'a.txt', { type: 'text/plain' }),
+      new page.w.File(['hello'], 'a.txt', { type: 'text/plain', lastModified: 1000 }),
+      new page.w.File(['world'], 'b.txt', { type: 'text/plain', lastModified: 2000 }),
+      new page.w.File(['again'], 'a.txt', { type: 'text/plain', lastModified: 3000 }),
     ];
     const field = page.w.document.querySelector('#zip-file');
     Object.defineProperty(field, 'files', { value: files, configurable: true });
@@ -1696,6 +1870,29 @@ const check = (label, actual, expected) => {
 
     click(page.w, '#zip-clear');
     check('zip builder: clearing empties the list', read(page.w, '#zip-count'), '—');
+
+    // The picker only ever hands over its latest selection, so the archive has
+    // to grow across visits rather than being rebuilt from scratch each time.
+    const pick = async (list) => {
+      Object.defineProperty(field, 'files', { value: list, configurable: true });
+      field.dispatchEvent(new page.w.Event('change', { bubbles: true }));
+      await sleep(200);
+    };
+
+    await pick([new page.w.File(['one'], 'a.txt', { type: 'text/plain', lastModified: 1000 })]);
+    check('zip builder: one file counts as one', read(page.w, '#zip-count'), '1 file');
+    const second = new page.w.File(['two'], 'b.txt', { type: 'text/plain' });
+    await pick([second]);
+    check('zip builder: a second pick adds to the archive', read(page.w, '#zip-count'), '2 files');
+    await pick([second]);
+    check('zip builder: picking the same file twice adds it once', read(page.w, '#zip-count'), '2 files');
+
+    click(page.w, '#zip-list [data-zip-remove="0"]');
+    check('zip builder: removing a file drops just that one', read(page.w, '#zip-count'), '1 file');
+    check('zip builder: the other file stays', page.w.document.querySelector('#zip-list tr').children[0].textContent, 'b.txt');
+
+    await pick([new page.w.File(['one'], 'a.txt', { type: 'text/plain', lastModified: 1000 })]);
+    check('zip builder: a removed file can be picked again', read(page.w, '#zip-count'), '2 files');
   }
 
   console.log('\n=== pdf tools ===');

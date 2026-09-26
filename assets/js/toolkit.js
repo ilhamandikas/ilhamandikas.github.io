@@ -386,6 +386,23 @@ tk.formatBytes = (bytes) => {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 };
 
+// Name, size and modification time are enough to tell two picks apart.
+tk.fileKey = (file) => `${file.name}\u0000${file.size}\u0000${file.lastModified}`;
+
+// A file picker replaces its selection every time it is opened, so a tool that
+// lets people add files in several rounds keeps its own list and asks the input
+// for whatever is new. The caller owns `seen` so repeated picks are ignored.
+tk.claimFiles = (input, seen) => {
+  const fresh = [...(input.files || [])].filter((file) => {
+    const key = tk.fileKey(file);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  input.value = '';
+  return fresh;
+};
+
 // Copy / download buttons work declaratively via data attributes.
 document.addEventListener('click', (event) => {
   const copyBtn = event.target.closest('[data-copy]');
