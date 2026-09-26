@@ -1564,11 +1564,50 @@ const check = (label, actual, expected) => {
     const pngHead = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
     await load(pngHead, 'shot.png', 'image/png');
     check('image-compressor: an unsupported canvas is reported, not thrown',
-      read(page.w, '#imc-status'), 'This browser cannot resize images.');
+      read(page.w, '#imc-status'), 'This browser cannot process images.');
 
     click(page.w, '#imc-download');
     check('image-compressor: download without a picture asks for one first',
       read(page.w, '#imc-status'), 'Choose an image first.');
+  }
+
+  /* --------------------------------------------------------- other image tools */
+
+  console.log('\n=== other image tools ===');
+  {
+    const cases = [
+      ['exif-remover', 'exf'],
+      ['image-format-converter', 'ifc'],
+      ['watermark-tool', 'wmt'],
+      ['photo-target-resizer', 'ptr'],
+      ['screenshot-privacy-cleaner', 'spc'],
+    ];
+    const notAnImage = 'This does not look like a JPEG, PNG, GIF or WebP. Those are the four this page can read.';
+    const noCanvas = 'This browser cannot process images.';
+    const pngHead = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+
+    for (const [slug, prefix] of cases) {
+      const page = loadPage(slug);
+      // Nothing chosen yet, so the page is quiet.
+      check(`${slug}: no error before a file is chosen`, read(page.w, `#${prefix}-status`), '');
+
+      const load = async (data, name, type) => {
+        const file = new page.w.File([data], name, { type });
+        const field = page.w.document.querySelector(`#${prefix}-file`);
+        Object.defineProperty(field, 'files', { value: [file], configurable: true });
+        field.dispatchEvent(new page.w.Event('change', { bubbles: true }));
+        await sleep(80);
+      };
+
+      await load(new Uint8Array([1, 2, 3, 4]), 'notes.txt', 'text/plain');
+      check(`${slug}: a file that is not an image is refused by its bytes`,
+        read(page.w, `#${prefix}-status`), notAnImage);
+
+      // jsdom has no 2D context, so a real header reaches the guard, not a crash.
+      await load(pngHead, 'shot.png', 'image/png');
+      check(`${slug}: an unsupported canvas is reported, not thrown`,
+        read(page.w, `#${prefix}-status`), noCanvas);
+    }
   }
 
   /* ------------------------------------------------------------- .env sorter */

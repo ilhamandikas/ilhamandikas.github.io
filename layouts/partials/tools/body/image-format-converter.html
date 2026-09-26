@@ -1,0 +1,39 @@
+<div class="tool-panel">
+  <h2>Convert</h2>
+  <label class="tool-field">
+    <span>Image</span>
+    <input id="ifc-file" class="tool-input" type="file" accept="image/jpeg,image/png,image/gif,image/webp">
+  </label>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Convert to</span>
+      <select id="ifc-format" class="tool-select">
+        <option value="jpeg" selected>JPEG</option>
+        <option value="png">PNG</option>
+        <option value="webp">WebP</option>
+        <option value="avif">AVIF</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Quality <output id="ifc-quality-value">90</output></span>
+      <input id="ifc-quality" class="tool-range" type="range" min="40" max="100" step="1" value="90">
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="ifc-download" disabled>Download</button>
+    <span class="tool-status" id="ifc-status"></span>
+  </div>
+  <p class="tool-hint" id="ifc-note">JPEG suits photographs, PNG keeps sharp edges and transparency, and WebP is usually the smallest of the three. AVIF is used only when the browser can encode it.</p>
+</div>
+
+<div class="tool-panel" id="ifc-preview" hidden>
+  <h2>Result</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Input</span><span id="ifc-input-info">—</span></p>
+    <p><span class="imc-label">Output</span><span id="ifc-output-info">—</span></p>
+    <p><span class="imc-label">Change</span><span id="ifc-change">—</span></p>
+  </div>
+  <div class="imc-preview-wrap">
+    <canvas id="ifc-canvas" class="imc-canvas" width="600" height="400"></canvas>
+  </div>
+</div>

@@ -1188,7 +1188,8 @@ textarea.tool-text { resize: vertical; }
   border-radius: var(--radius);
   background: var(--bg-soft);
 }
-#imc-canvas {
+#imc-canvas,
+.imc-canvas {
   max-width: 100%;
   height: auto;
   border: 1px solid var(--border);

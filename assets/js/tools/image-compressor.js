@@ -28,24 +28,6 @@ let outputBlob = null;
 let runId = 0;
 let busy = false;
 
-function formatBytes(bytes) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
-// The magic bytes, so a renamed text file is refused by its contents.
-function kindOf(bytes) {
-  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'jpeg';
-  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return 'png';
-  if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) return 'gif';
-  if (
-    bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
-    bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50
-  ) return 'webp';
-  return null;
-}
-
 function targetType() {
   if (els.format.value !== 'original') return els.format.value;
   return source && (source.kind === 'png' || source.kind === 'webp') ? source.kind : 'jpeg';
@@ -64,16 +46,6 @@ function targetSize() {
     width: Math.max(1, Math.round(source.width * scale)),
     height: Math.max(1, Math.round(source.height * scale)),
   };
-}
-
-function loadImage(blob) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read that image')); };
-    img.src = url;
-  });
 }
 
 function clear() {
@@ -114,15 +86,15 @@ function update() {
     busy = false;
     els.download.disabled = false;
     outputBlob = blob || null;
-    els.original.textContent = `${source.width}×${source.height} · ${formatBytes(source.size)}`;
-    els.output.textContent = blob ? `${width}×${height} · ${formatBytes(blob.size)}` : `${width}×${height} · —`;
+    els.original.textContent = `${source.width}×${source.height} · ${tk.formatBytes(source.size)}`;
+    els.output.textContent = blob ? `${width}×${height} · ${tk.formatBytes(blob.size)}` : `${width}×${height} · —`;
     if (blob && source.size) {
       const pct = Math.round((1 - blob.size / source.size) * 100);
       els.saved.textContent = pct >= 0 ? `${pct}% smaller` : `${-pct}% larger`;
     } else {
       els.saved.textContent = '—';
     }
-    tk.setStatus(els.status, blob ? `Ready — ${width}×${height}, ${formatBytes(blob.size)}.` : '', blob ? 'ok' : '');
+    tk.setStatus(els.status, blob ? `Ready — ${width}×${height}, ${tk.formatBytes(blob.size)}.` : '', blob ? 'ok' : '');
   };
 
   const quality = type === 'png' ? undefined : Number(els.quality.value) / 100;
@@ -136,27 +108,18 @@ async function onFile() {
 
   clear();
   els.download.disabled = true;
-  const head = new Uint8Array(await file.arrayBuffer()).subarray(0, 12);
-  const kind = kindOf(head);
+  const kind = await tk.imageKindOfFile(file);
   if (!kind) {
-    tk.setStatus(els.status, 'This does not look like a JPEG, PNG, GIF or WebP. Those are the four this page can read.', 'err');
+    tk.setStatus(els.status, tk.BROWSER_IMAGE_KINDS, 'err');
     return;
   }
   if (!ctx) {
-    tk.setStatus(els.status, 'This browser cannot resize images.', 'err');
+    tk.setStatus(els.status, tk.NO_CANVAS, 'err');
     return;
   }
 
   try {
-    const img = await loadImage(file);
-    source = {
-      img,
-      name: file.name || 'image',
-      kind,
-      size: file.size,
-      width: img.naturalWidth || img.width,
-      height: img.naturalHeight || img.height,
-    };
+    source = await tk.imageSource(file, kind);
     els.preview.hidden = false;
     update();
   } catch (error) {

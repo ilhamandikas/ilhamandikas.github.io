@@ -485,6 +485,31 @@
       desc: Resize and re-encode an image in the browser — cap its dimensions, pick a format and quality, then download the smaller file.
       keywords: [image, compress, resize, optimize, jpeg, png, webp, gif, quality, shrink, scale, downsize, thumbnail, strip metadata, exif, canvas]
       status: done
+    - slug: exif-remover
+      name: EXIF Remover
+      desc: Strip EXIF, GPS and other hidden metadata from a photo by re-encoding it in the browser.
+      keywords: [exif, remove, strip, metadata, gps, privacy, photo, image, clean, anonymise, scrubbing]
+      status: done
+    - slug: image-format-converter
+      name: Image Format Converter
+      desc: Convert a picture between JPEG, PNG, WebP and AVIF, with a quality slider and a before-and-after size.
+      keywords: [image, convert, format, jpeg, png, webp, avif, transcode, encoder, quality, canvas]
+      status: done
+    - slug: watermark-tool
+      name: Watermark Tool
+      desc: Draw a text watermark onto a picture, choosing the corner, size, colour and opacity.
+      keywords: [watermark, text, copyright, stamp, image, photo, brand, overlay, signature, canvas]
+      status: done
+    - slug: photo-target-resizer
+      name: Photo Resizer by Target Size
+      desc: Shrink a photo until it fits a size in kilobytes, keeping the highest quality that still fits.
+      keywords: [resize, photo, target size, kb, compress, limit, upload, quality, jpeg, webp, form]
+      status: done
+    - slug: screenshot-privacy-cleaner
+      name: Screenshot Privacy Cleaner
+      desc: Pixelate or black out parts of a screenshot before sharing it.
+      keywords: [screenshot, privacy, redact, pixelate, blur, censor, black out, mask, anonymise, image]
+      status: done
     - slug: html-wysiwyg-editor
       name: HTML Editor
       desc: A small rich-text editor that exports clean HTML.

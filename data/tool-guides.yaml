@@ -2049,3 +2049,71 @@ maps-link-parser:
       a: "The viewport centre after the @ sign comes first, then the place coordinates marked with !3d and !4d, then query parameters such as q or destination. The first valid pair wins."
     - q: "Why are the coordinates rounded?"
       a: "Six decimal places is about ten centimetres on the ground, which is finer than any map pin. Rounding there keeps the numbers readable without losing meaningful precision."
+
+exif-remover:
+  about: >-
+    A photo carries more than the picture: the camera model, the time it was
+    taken, the software that saved it and often the exact place on the map.
+    Re-encoding the pixels through a canvas rebuilds the image without any of
+    that, so what you share carries only what you can see.
+  faq:
+    - q: "Does re-encoding change how the picture looks?"
+      a: "It redraws the same pixels, so it looks the same to the eye. A JPEG is saved again at the chosen quality, which costs a little sharpness; choosing PNG or a high quality keeps that to a minimum."
+    - q: "Why does the file sometimes get bigger?"
+      a: "The original may have been compressed very hard or stored as a smaller size. Re-encoding at a high quality can produce more bytes than you started with, and the change line shows that rather than hiding it."
+    - q: "Is the metadata really gone?"
+      a: "Yes. The output is written fresh from the canvas, and a canvas only holds pixels, so EXIF, GPS, XMP and any embedded thumbnail have no way to come along."
+
+image-format-converter:
+  about: >-
+    Save a picture in another format so it fits where it is going. JPEG keeps
+    photographs small, PNG keeps sharp edges and transparency, WebP often beats
+    both, and AVIF is offered when the browser can actually write it.
+  faq:
+    - q: "Why is AVIF marked as not supported?"
+      a: "Encoding AVIF is left to the browser, and some browsers can decode it without being able to write it. The page encodes one pixel and checks what format comes back before offering the choice."
+    - q: "What happens to transparency in a JPEG?"
+      a: "JPEG has no alpha channel, so a transparent area has to become something. A white layer is laid down first, which is the usual choice for a photo going to a place that expects a solid background."
+    - q: "Which format should I pick?"
+      a: "Photographs are usually smallest as WebP or JPEG. Screenshots, diagrams and anything with text or a transparent background hold up better as PNG, and the size shown for each choice makes the trade visible."
+
+watermark-tool:
+  about: >-
+    Put a name, a site or a date onto a picture so it travels with the image.
+    You choose a corner, a size as a share of the shorter side, a colour and an
+    opacity, and the text is drawn into the pixels when you download.
+  faq:
+    - q: "How large should the watermark be?"
+      a: "Four per cent of the shorter side is small enough to stay out of the way but large enough to read on a phone. Raise it toward ten per cent when the picture will be shown at a large size."
+    - q: "Why is there a dark outline?"
+      a: "White text disappears on a bright sky and black text disappears in shadow. A thin dark stroke around the letters keeps them readable on either, and it can be turned off when the background is known."
+    - q: "Can someone remove the watermark?"
+      a: "The text is part of the pixels rather than a separate layer, so removing it means editing the image. A determined person still can, which is why a watermark deters rather than prevents."
+
+photo-target-resizer:
+  about: >-
+    Some forms and services cap an upload at five hundred kilobytes or a
+    megabyte. Give this tool the limit and the picture is scaled to fit, then
+    re-encoded at the highest quality that stays under it, with the result
+    shown before you download.
+  faq:
+    - q: "How is the right quality found?"
+      a: "The encoder is tried at a series of qualities from high to low and stops at the first result that fits. That gives the best-looking file the limit allows rather than a guess."
+    - q: "What if the limit is too small?"
+      a: "The smallest the encoder can produce is reported, along with the quality it used. Lower the longest edge, which removes pixels rather than quality, and try again."
+    - q: "Which format comes out?"
+      a: "JPEG by default, because it is the most widely accepted. With the WebP box ticked the same picture is also encoded as WebP, and whichever of the two is smaller is the one you get."
+
+screenshot-privacy-cleaner:
+  about: >-
+    Screenshots are easy to share and easy to over-share. Drag a box over an
+    email address, a phone number, an IP address or a line of text, and either
+    pixelate it or cover it with a solid black rectangle, then download the
+    cleaned-up copy.
+  faq:
+    - q: "Does it find the sensitive parts for me?"
+      a: "No. Locating a phone number inside a picture would need optical character recognition, which would mean shipping a large model and reading every pixel of your screenshot. Marking the areas by hand is the honest version."
+    - q: "Is pixelating as safe as a black box?"
+      a: "A black box destroys the pixels underneath. Pixelation keeps an average of them, and a coarse enough block makes them unreadable, but for anything truly secret the black box is the safer choice."
+    - q: "Can I take a redaction back?"
+      a: "Undo removes the last box and Reset clears them all, because the untouched pixels are kept aside while you work. Once you download, the redactions are baked into the saved file."
