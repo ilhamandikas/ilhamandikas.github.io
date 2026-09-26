@@ -1252,23 +1252,26 @@ docker-logs-grep:
 
 interest-calculator:
   about: >-
-    Work out how much interest a deposit actually earns after tax, or what a
-    loan really costs, across the methods that get confused with each other:
-    simple, compound, tiered, step-up, floating, flat, effective and annuity.
-    Pick a product — deposit, savings, government bond, money-market fund or a
-    loan — and the tax rate and day-count basis are filled in with the
-    Indonesian defaults (20% for deposit interest, 10% for bond interest, 0% for
-    a money-market fund), then shown as gross, tax and net plus a per-day,
-    per-month and per-year figure. Everything is computed in the page.
+    A calculator for the interest methods that are easy to mix up: simple,
+    compound, tiered, step-up, floating, flat, effective and annuity. Enter a
+    principal, a rate and a tenor and the page shows the formula it used, the
+    result as gross, tax and net where tax applies, and a period-by-period
+    breakdown. The product presets follow the tax and day-count conventions
+    commonly used in Indonesia and are marked ID; everything is computed in the
+    browser.
   faq:
-    - q: "Why does 8% a year for one month not give exactly 8% ÷ 12?"
-      a: "Because the day-count basis decides how a month is turned into a fraction of a year. Actual/365 counts 30 days as 30/365, so one month is a little less than a twelfth; 30/360 treats every month as exactly 1/12, which is slightly more. On Rp 10.000.000 at 8% the difference is about Rp 900 gross for the month, so the page lets you switch basis instead of hiding the choice."
-    - q: "How is tax handled on compound interest?"
-      a: "In Indonesia the final 20% tax is withheld every time interest is paid, so on a rollover (ARO) deposit the amount that compounds is the net interest, not the gross. The page compounds net interest, which is why the net effective annual rate is lower than the gross one."
+    - q: "What is the formula for simple interest?"
+      a: "I = P x r x (days / basis), where P is the principal, r the rate per year as a decimal, and basis the day count (365 or 360). The interest is paid once and never earns interest itself, which is how a deposit that pays at maturity works."
+    - q: "What is the formula for compound interest?"
+      a: "A = P x (1 + r / n)^(n x t), where n is the number of compounding periods per year and t the tenor in years. Each period's interest is added to the balance so the next period earns interest on it. When tax is withheld at each payment, the amount that compounds is the net interest."
+    - q: "How are tiered, step-up and floating interest calculated?"
+      a: "All three add up per-slice amounts instead of applying one rate to the whole balance. Tiered splits the balance into brackets and computes slice x rate x (days / basis) for each. Step-up and floating apply a list of rates per period and add P x r_i x span_i. The only difference is that step-up rises on a schedule while floating can move either way."
     - q: "What is the difference between flat, effective and annuity?"
-      a: "Flat charges interest on the original principal for the whole term, so the effective cost is higher than the headline rate. Effective charges interest on the remaining balance each month, so the interest share falls over time. Annuity keeps the total instalment fixed while the split shifts from interest to principal. Flat and annuity are loan methods; a deposit does not have a declining balance."
-    - q: "When should I use tiered or step-up?"
-      a: "Tiered is for products where each balance bracket has its own rate, such as a savings account that pays 3% on the first 10 million and 4% above it. Step-up is for a rate that rises on a schedule, such as 6% in year one, 7% in year two and 8% in year three. Floating is the same idea but the rate can move either way, following a reference rate."
+      a: "Flat charges interest on the original principal for the whole term: I = P x r x (months / 12), split evenly across the instalments, so the true cost is higher than the headline rate. Effective charges interest on the remaining balance each month: interest = remaining x r / 12, so the interest share falls over time. Annuity keeps the total instalment fixed with A = P x i / (1 - (1 + i)^-n), where i = r / 12 and n is the number of months, while the split shifts from interest to principal."
+    - q: "Why does one month not equal one twelfth of the yearly rate?"
+      a: "Because the day-count basis decides how a month becomes a fraction of a year. Actual/365 counts a month as 30/365, a little less than a twelfth; 30/360 treats every month as exactly 1/12, a little more. The page lets you switch basis so the choice is visible instead of hidden."
+    - q: "Which parts are specific to Indonesia?"
+      a: "The product presets and the ID badges: the final tax on deposit and bond interest, the Actual/365 basis, the ARO rollover, and the loan structures quoted as flat, effective or annuity. The formulas themselves are the same everywhere; only the defaults and the naming are local."
 
 log-parser:
   about: >-

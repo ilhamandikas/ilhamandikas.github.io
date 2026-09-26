@@ -2013,10 +2013,10 @@ const check = (label, actual, expected) => {
 
     // Deposit shortcut: 8%/year, one month, 20% tax, Actual/365.
     check('interest: the deposit shortcut sets the 20% deposit tax', read(page.w, '#int-tax'), '20');
-    check('interest: the gross interest for one month is the Actual/365 figure', cell('Bunga bruto'), 'Rp 65.753');
-    check('interest: the tax is 20% of the gross', cell('Pajak 20%'), '− Rp 13.151');
-    check('interest: the net is the gross minus tax', cell('Bunga net'), 'Rp 52.603');
-    check('interest: a full year of net interest is 8% × 80% of the principal', cell('Net per tahun'), 'Rp 640.000');
+    check('interest: the gross interest for one month is the Actual/365 figure', cell('Gross interest'), 'Rp 65.753');
+    check('interest: the tax is 20% of the gross', cell('Tax 20%'), '− Rp 13.151');
+    check('interest: the net is the gross minus tax', cell('Net interest'), 'Rp 52.603');
+    check('interest: a full year of net interest is 8% × 80% of the principal', cell('Net per year'), 'Rp 640.000');
 
     // Bond shortcut: 10% tax.
     set(page.w, '#int-product', 'bond');
@@ -2027,7 +2027,7 @@ const check = (label, actual, expected) => {
     set(page.w, '#int-product', 'deposit');
     set(page.w, '#int-basis', '30/360');
     await sleep(60);
-    check('interest: a 30/360 month is exactly 8% ÷ 12', cell('Bunga bruto'), 'Rp 66.667');
+    check('interest: a 30/360 month is exactly 8% ÷ 12', cell('Gross interest'), 'Rp 66.667');
 
     // Compound: tax is withheld each period, so the net EAY is below the gross.
     set(page.w, '#int-basis', 'actual365');
@@ -2036,16 +2036,16 @@ const check = (label, actual, expected) => {
     set(page.w, '#int-unit', 'years');
     set(page.w, '#int-freq', '12');
     await sleep(60);
-    check('interest: monthly compounding lifts the gross EAY above the nominal rate', cell('EAY bruto'), '8.30%');
-    check('interest: ...and withholding tax each period leaves a lower net EAY', cell('EAY net'), '6.59%');
+    check('interest: monthly compounding lifts the gross EAY above the nominal rate', cell('Gross EAY'), '8.30%');
+    check('interest: ...and withholding tax each period leaves a lower net EAY', cell('Net EAY'), '6.59%');
 
     // Annuity: the amortisation formula for 10 million over 12 months at 8%.
     set(page.w, '#int-method', 'annuity');
     set(page.w, '#int-unit', 'months');
     set(page.w, '#int-tenor', '12');
     await sleep(60);
-    check('interest: the annuity payment matches the amortisation formula', cell('Angsuran per bulan'), 'Rp 869.884');
-    check('interest: the total interest is the sum of the schedule', cell('Total bunga'), 'Rp 438.611');
+    check('interest: the annuity payment matches the amortisation formula', cell('Monthly instalment'), 'Rp 869.884');
+    check('interest: the total interest is the sum of the schedule', cell('Total interest'), 'Rp 438.611');
     check('interest: an annuity shows an instalment table', page.w.document.querySelectorAll('#int-schedule-out tbody tr').length, 12);
   }
 

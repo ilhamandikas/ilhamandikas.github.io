@@ -1,42 +1,43 @@
 <div class="tool-panel">
   <h2>Interest Calculator</h2>
+  <p class="tool-hint">Work out interest on deposits and loans. Anything marked <span class="int-id">ID</span> follows a convention commonly used in Indonesia; everything else is generic. Everything runs in your browser.</p>
   <div class="int-grid">
     <label class="tool-field">
-      <span>Jenis produk</span>
+      <span>Product type</span>
       <select id="int-product" class="tool-select">
-        <option value="deposit">Deposito bank</option>
-        <option value="savings">Tabungan</option>
-        <option value="bond">Obligasi / SBN</option>
-        <option value="moneymarket">Reksa dana pasar uang</option>
-        <option value="loan">Kredit / pinjaman</option>
-        <option value="custom">Kustom</option>
+        <option value="deposit">Bank deposit (deposito) — ID</option>
+        <option value="savings">Savings account (tabungan) — ID</option>
+        <option value="bond">Government bond (SBN) — ID</option>
+        <option value="moneymarket">Money market fund — ID</option>
+        <option value="loan">Loan (kredit) — ID</option>
+        <option value="custom">Custom</option>
       </select>
     </label>
     <label class="tool-field">
-      <span>Metode bunga</span>
+      <span>Interest method</span>
       <select id="int-method" class="tool-select">
-        <optgroup label="Simpanan">
-          <option value="simple">Bunga sederhana (flat)</option>
-          <option value="compound">Bunga majemuk (compound)</option>
-          <option value="tiered">Berjenjang (tiered)</option>
-          <option value="stepup">Naik bertahap (step-up)</option>
-          <option value="floating">Mengambang (floating)</option>
+        <optgroup label="Deposits &amp; savings">
+          <option value="simple">Simple interest (flat) — ID</option>
+          <option value="compound">Compound interest</option>
+          <option value="tiered">Tiered interest — ID</option>
+          <option value="stepup">Step-up interest</option>
+          <option value="floating">Floating interest — ID</option>
         </optgroup>
-        <optgroup label="Pinjaman">
-          <option value="flat">Flat</option>
-          <option value="effective">Efektif (saldo menurun)</option>
-          <option value="annuity">Anuitas</option>
+        <optgroup label="Loans">
+          <option value="flat">Flat interest — ID</option>
+          <option value="effective">Effective interest (declining balance) — ID</option>
+          <option value="annuity">Annuity — ID</option>
         </optgroup>
       </select>
     </label>
   </div>
   <div class="int-grid">
     <label class="tool-field">
-      <span>Pokok / plafon</span>
+      <span>Principal / loan amount</span>
       <input id="int-principal" class="tool-input" type="text" inputmode="decimal" value="10000000" spellcheck="false" autocomplete="off">
     </label>
     <label class="tool-field">
-      <span>Bunga per tahun (%)</span>
+      <span>Interest rate per year (%)</span>
       <input id="int-rate" class="tool-number" type="number" min="0" max="100" step="0.01" value="8">
     </label>
     <label class="tool-field">
@@ -44,20 +45,20 @@
       <div class="int-inline">
         <input id="int-tenor" class="tool-number" type="number" min="0" step="1" value="1">
         <select id="int-unit" class="tool-select">
-          <option value="months" selected>bulan</option>
-          <option value="days">hari</option>
-          <option value="years">tahun</option>
+          <option value="months" selected>months</option>
+          <option value="days">days</option>
+          <option value="years">years</option>
         </select>
       </div>
     </label>
     <label class="tool-field">
-      <span>Pajak bunga (%)</span>
+      <span>Tax on interest (%) <span class="int-id">ID</span></span>
       <input id="int-tax" class="tool-number" type="number" min="0" max="100" step="0.1" value="20">
     </label>
   </div>
   <div class="int-grid">
     <label class="tool-field">
-      <span>Basis hari</span>
+      <span>Day-count basis <span class="int-id">ID</span></span>
       <select id="int-basis" class="tool-select">
         <option value="actual365" selected>Actual/365</option>
         <option value="actual360">Actual/360</option>
@@ -65,42 +66,42 @@
       </select>
     </label>
     <label class="tool-field" id="int-freq-field" hidden>
-      <span>Frekuensi compounding</span>
+      <span>Compounding frequency</span>
       <select id="int-freq" class="tool-select">
-        <option value="1">Tahunan</option>
-        <option value="2">Semesteran</option>
-        <option value="4">Triwulanan</option>
-        <option value="12" selected>Bulanan</option>
-        <option value="365">Harian</option>
+        <option value="1">Yearly</option>
+        <option value="2">Half-yearly</option>
+        <option value="4">Quarterly</option>
+        <option value="12" selected>Monthly</option>
+        <option value="365">Daily</option>
       </select>
     </label>
-    <label class="tool-inline" id="int-aro-field" hidden><input type="checkbox" id="int-aro" class="tool-check" checked> Bunga di-rollover (ARO)</label>
+    <label class="tool-inline" id="int-aro-field" hidden><input type="checkbox" id="int-aro" class="tool-check" checked> Roll over interest (ARO) <span class="int-id">ID</span></label>
   </div>
   <div class="tool-field" id="int-schedule-field" hidden>
-    <span id="int-schedule-label">Jadwal bunga per periode</span>
+    <span id="int-schedule-label">Rate per period</span>
     <textarea id="int-schedule" class="tool-input tool-code" rows="4" spellcheck="false" placeholder="6&#10;7&#10;8"></textarea>
-    <p class="tool-hint">Satu baris per periode (mis. per tahun): <code>6</code>, lalu <code>7</code>, lalu <code>8</code>. Angka dalam persen per tahun. Kalau periode lebih banyak dari baris, baris terakhir dipakai lagi.</p>
+    <p class="tool-hint">One rate per line (for example per year): <code>6</code>, then <code>7</code>, then <code>8</code>. Values are percent per year. If there are more periods than lines, the last line repeats.</p>
   </div>
   <div class="tool-field" id="int-tiers-field" hidden>
-    <span>Bracket saldo</span>
+    <span>Balance brackets</span>
     <textarea id="int-tiers" class="tool-input tool-code" rows="4" spellcheck="false" placeholder="10000000 3&#10;50000000 4&#10;* 5"></textarea>
-    <p class="tool-hint">Satu bracket per baris: <code>batas_atas rate</code>. Pakai <code>*</code> untuk sisa saldo tanpa batas. Contoh di atas: 10 juta pertama 3%, 40 juta berikutnya 4%, sisanya 5%.</p>
+    <p class="tool-hint">One bracket per line: <code>upper_limit rate</code>. Use <code>*</code> for the remainder with no upper limit. The example means the first 10 million at 3%, the next 40 million at 4%, and the rest at 5%.</p>
   </div>
   <div class="tool-row">
-    <button class="btn primary" type="button" id="int-calc">Hitung</button>
-    <button class="btn" type="button" id="int-copy">Copy hasil</button>
+    <button class="btn primary" type="button" id="int-calc">Calculate</button>
+    <button class="btn" type="button" id="int-copy">Copy result</button>
     <span class="tool-status" id="int-status"></span>
   </div>
-  <p class="tool-hint">Pilih jenis produk untuk mengisi pajak dan basis hari secara otomatis — deposito 20%, obligasi/SBN 10%, reksa dana pasar uang 0% — lalu ubah kalau perlu. Tenor dalam bulan dihitung 30 hari; tahun dihitung 365 atau 360 sesuai basis.</p>
+  <p class="tool-hint">Choosing a product fills in the tax and day-count basis that product usually uses in Indonesia — deposit 20%, government bond 10%, money market fund 0% — and you can change them. A tenor in months is counted as 30 days each; a year is 365 or 360 days depending on the basis.</p>
 </div>
 
 <div class="tool-panel">
-  <h2>Hasil</h2>
+  <h2>Result</h2>
   <div id="int-summary" class="tool-results"></div>
   <div id="int-schedule-out"></div>
 </div>
 
 <div class="tool-panel">
-  <h2>Penjelasan metode</h2>
+  <h2>How the method works</h2>
   <div id="int-explain" class="int-explain"></div>
 </div>
