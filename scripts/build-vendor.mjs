@@ -31,6 +31,7 @@ const ENTRIES = {
   `,
   phone: "export { parsePhoneNumberFromString, getCountries, getCountryCallingCode, AsYouType } from 'libphonenumber-js';",
   bip39: "export { generateMnemonic, validateMnemonic, mnemonicToEntropy, entropyToMnemonic, mnemonicToSeedSync } from '@scure/bip39'; export { wordlist as english } from '@scure/bip39/wordlists/english';",
+  jsonpath: "export { JSONPath } from 'jsonpath-plus';",
 };
 
 await rm(OUT, { recursive: true, force: true });

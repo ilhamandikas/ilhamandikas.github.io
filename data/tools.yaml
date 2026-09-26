@@ -706,6 +706,11 @@
       desc: Validate a JSON document against a JSON Schema (draft-07 subset) and list every problem with its JSON Pointer path.
       keywords: [json, schema, validate, draft-07, jsonschema, pointer, api, contract]
       status: done
+    - slug: json-path-explorer
+      name: JSON Path Explorer
+      desc: Evaluate JSONPath expressions against JSON, list every match with its path, and build expressions by clicking a tree.
+      keywords: [json, jsonpath, query, explore, filter, tree, pointer, api, extract]
+      status: done
 
 - name: Games
   slug: games

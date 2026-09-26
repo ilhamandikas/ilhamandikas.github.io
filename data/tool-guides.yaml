@@ -1367,6 +1367,26 @@ typing-speed-test:
     - q: "Why does the test not start until I type?"
       a: "So the clock measures typing, not reading. Nothing happens until the first keystroke, and the word goal ends the moment you reach the last character. Press Enter after a finished test, or the Restart button, to go again with fresh words."
 
+json-path-explorer:
+  about: >-
+    A JSONPath workbench. Paste a JSON document, type an expression such as
+    $..author or $.store.book[?(@.price < 10)].title, and the page lists every
+    match with the exact path that reaches it. The tree below the editor shows
+    the whole document: click any key to load that value's path into the
+    expression box, which is the quickest way to learn the syntax. The
+    JSONPath engine is vendored and runs entirely in the page.
+  faq:
+    - q: "What does a JSONPath expression look like?"
+      a: "It starts at the root with $, then walks the document. A dot reads a key ($.store), a bracket reads an index or a quoted key ($.store.book[0], $['a key']), [*] is every item, .. searches at any depth, and [?(@.price < 10)] filters. You can mix them, for example $..book[?(@.price < 10)].title."
+    - q: "Why does clicking a key change my expression?"
+      a: "That is the explorer part: each key in the tree carries the path that reaches it, and clicking it loads that path so you can see it work, then extend it by hand. It is a way to build a long path without counting brackets."
+    - q: "Are filters and recursive search supported?"
+      a: "Yes. The vendored engine supports recursive descent (..), wildcards ([*]), array and object unions, slices ([1:3]), and filter expressions with comparisons such as ==, !=, <, <=, > and >=. If an expression is not valid, the status line says so rather than showing a wrong result."
+    - q: "What does the path in the results mean?"
+      a: "It is the canonical JSONPath that reaches that match, always written with brackets. It is useful when you want to copy one exact location out of a large document, or reuse it in another tool that takes a JSONPath."
+    - q: "Is my JSON uploaded?"
+      a: "No. Parsing, matching and the tree all run in your browser, and nothing is sent to a server."
+
 json-schema-validator:
   about: >-
     Paste a JSON Schema and a JSON document and the document is checked against

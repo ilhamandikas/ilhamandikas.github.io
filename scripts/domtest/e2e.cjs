@@ -2466,6 +2466,27 @@ const check = (label, actual, expected) => {
     check('monaco: clear empties the editor', read(mon.w, '#mon-editor'), '');
   }
 
+  /* ----------------------------------------------------- json path explorer */
+
+  console.log('\n=== json path explorer ===');
+  {
+    const jpe = loadPage('json-path-explorer');
+    check('jsonpath: the default expression matches four authors', read(jpe.w, '#jpe-summary').includes('4 matches'), true);
+    set(jpe.w, '#jpe-path', '$.store.book[?(@.price < 10)].title');
+    await sleep(300);
+    check('jsonpath: a filter narrows the matches', read(jpe.w, '#jpe-summary').includes('2 matches'), true);
+    set(jpe.w, '#jpe-path', '$..nope');
+    await sleep(300);
+    check('jsonpath: a path with no matches reports none', read(jpe.w, '#jpe-summary').includes('0 matches'), true);
+    set(jpe.w, '#jpe-path', '$.store.bicycle.color');
+    await sleep(300);
+    check('jsonpath: a leaf path returns the value', read(jpe.w, '#jpe-results').includes('red'), true);
+    check('jsonpath: the tree renders the root', jpe.w.document.querySelectorAll('#jpe-tree .jpe-node').length > 0, true);
+    set(jpe.w, '#jpe-input', '{ not json');
+    await sleep(300);
+    check('jsonpath: invalid JSON is reported', read(jpe.w, '#jpe-status').toLowerCase().includes('json error'), true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

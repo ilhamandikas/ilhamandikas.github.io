@@ -1,0 +1,47 @@
+<div class="tool-panel">
+  <h2>JSON Path Explorer</h2>
+  <p class="tool-hint">Paste JSON, write a JSONPath expression and see every match with the exact path to it. Click any key in the tree to build the path for that value. Everything runs in the page.</p>
+  <div class="jpe-examples">
+    <button class="btn jpe-example" type="button" data-path="$..author">$..author</button>
+    <button class="btn jpe-example" type="button" data-path="$.store.book[*].title">$.store.book[*].title</button>
+    <button class="btn jpe-example" type="button" data-path="$.store.book[?(@.price &lt; 10)].title">books under 10</button>
+    <button class="btn jpe-example" type="button" data-path="$.store.book[1:3]">slice [1:3]</button>
+    <button class="btn jpe-example" type="button" data-path="$.store.book[0,1]">union [0,1]</button>
+  </div>
+</div>
+
+<div class="tool-split">
+  <div class="tool-panel">
+    <h2>JSON</h2>
+    <textarea id="jpe-input" class="tool-input tool-code" rows="16" spellcheck="false">{
+  "store": {
+    "book": [
+      { "category": "reference", "author": "Nigel Rees", "title": "Sayings of the Century", "price": 8.95 },
+      { "category": "fiction", "author": "Evelyn Waugh", "title": "Sword of Honour", "price": 12.99 },
+      { "category": "fiction", "author": "Herman Melville", "title": "Moby Dick", "isbn": "0-553-21311-3", "price": 8.99 },
+      { "category": "fiction", "author": "J. R. R. Tolkien", "title": "The Lord of the Rings", "isbn": "0-395-19395-8", "price": 22.99 }
+    ],
+    "bicycle": { "color": "red", "price": 19.95 }
+  },
+  "expensive": 10
+}</textarea>
+  </div>
+
+  <div class="tool-panel">
+    <h2>JSONPath</h2>
+    <input id="jpe-path" class="tool-input tool-code" type="text" value="$..author" spellcheck="false" autocomplete="off">
+    <div class="tool-row">
+      <button class="btn primary" type="button" id="jpe-run">Evaluate</button>
+      <button class="btn" type="button" data-copy="#jpe-result" data-status="#jpe-status">Copy result</button>
+      <span class="tool-status" id="jpe-status" role="status" aria-live="polite"></span>
+    </div>
+    <p class="jpe-summary" id="jpe-summary"></p>
+    <div class="jpe-results" id="jpe-results"></div>
+    <textarea id="jpe-result" hidden readonly></textarea>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Tree</h2>
+  <div class="jpe-tree" id="jpe-tree"></div>
+</div>
