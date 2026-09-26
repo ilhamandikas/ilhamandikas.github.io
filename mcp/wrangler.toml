@@ -1,0 +1,14 @@
+name = "ilham-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+REGISTRY_URL = "https://ilham.dev/tools/tools.json"
+
+# Stateless: the registry is fetched from https://ilham.dev/tools/tools.json and
+# cached at the edge, so there is no database, no Durable Object and nothing to
+# migrate. Point mcp.ilham.dev at this Worker (Cloudflare dashboard → Workers →
+# Settings → Domains & Routes, or uncomment the route below).
+#
+# routes = [{ pattern = "mcp.ilham.dev", custom_domain = true }]
