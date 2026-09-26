@@ -88,6 +88,6 @@
     @apply border-accent bg-accent/10 text-accent hover:bg-accent/20;
   }
   .lo-input {
-    @apply w-full rounded-lg border border-edge bg-base px-3 py-2 text-sm text-fg placeholder:text-muted/70 focus:border-accent focus:outline-none;
+    @apply w-full rounded-lg border border-edge2 bg-panel2 px-3 py-2 text-sm text-fg placeholder:text-muted/70 focus:border-accent focus:bg-panel focus:outline-none;
   }
 }

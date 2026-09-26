@@ -92,7 +92,7 @@ export function Analyzer({ notify, onSelect }: Props) {
             </div>
             <ul className="space-y-2">
               {analysis.findings.map((finding) => (
-                <li key={finding.title} className={`rounded-lg border bg-base p-3 ${SEVERITY_STYLES[finding.severity]}`}>
+                <li key={finding.title} className={`rounded-lg border bg-panel p-3 ${SEVERITY_STYLES[finding.severity]}`}>
                   <p className="text-sm font-medium">{finding.title}</p>
                   <p className="mt-1 text-xs text-muted">{finding.detail}</p>
                 </li>

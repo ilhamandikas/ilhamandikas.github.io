@@ -107,7 +107,7 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
             </div>
           ) : (
             <>
-              <pre className="overflow-x-auto rounded-lg border border-edge bg-base px-3 py-2 font-mono text-sm text-accent">
+              <pre className="overflow-x-auto rounded-lg border border-edge bg-panel px-3 py-2 font-mono text-sm text-accent">
                 {filled}
               </pre>
               <div className="mt-2 flex flex-wrap gap-2">
@@ -153,7 +153,7 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
             <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Alternatives</h3>
             <ul className="space-y-2">
               {command.alternatives.map((alternative) => (
-                <li key={alternative} className="flex items-center justify-between gap-3 rounded-lg border border-edge bg-base px-3 py-2">
+                <li key={alternative} className="flex items-center justify-between gap-3 rounded-lg border border-edge bg-panel px-3 py-2">
                   <code className="overflow-x-auto font-mono text-xs text-fg/90">{alternative}</code>
                   <CopyButton text={alternative} notify={notify} label="Copy" className="lo-btn shrink-0" />
                 </li>

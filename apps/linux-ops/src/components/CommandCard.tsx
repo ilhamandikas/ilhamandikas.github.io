@@ -33,7 +33,7 @@ export function CommandCard({ command, active, favorite, onSelect, onToggleFavor
         </button>
       </div>
       <p className="mt-1 text-sm text-muted">{command.description}</p>
-      <pre className="mt-3 overflow-x-auto rounded-lg border border-edge bg-base px-3 py-2 font-mono text-xs text-accent">
+      <pre className="mt-3 overflow-x-auto rounded-lg border border-edge bg-panel px-3 py-2 font-mono text-xs text-accent">
         {command.command}
       </pre>
       <div className="mt-3 flex flex-wrap items-center gap-2">
