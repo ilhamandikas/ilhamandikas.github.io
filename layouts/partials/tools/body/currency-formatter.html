@@ -1,0 +1,41 @@
+<div class="tool-panel">
+  <h2>Currency Amount Formatter</h2>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Amount</span>
+      <input id="cur-input" class="tool-input" type="text" placeholder="1250000">
+    </label>
+    <label class="tool-field">
+      <span>Currency</span>
+      <select id="cur-symbol" class="tool-select">
+        <option value="Rp" selected>Rupiah (Rp)</option>
+        <option value="$">Dollar ($)</option>
+        <option value="€">Euro (€)</option>
+        <option value="£">Pound (£)</option>
+        <option value="">No symbol</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Separators</span>
+      <select id="cur-style" class="tool-select">
+        <option value="id" selected>Indonesian: 1.250.000,50</option>
+        <option value="en">English: 1,250,000.50</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Decimal places</span>
+      <input id="cur-decimals" class="tool-input" type="number" min="0" max="6" placeholder="0">
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="cur-space"> Space after the symbol</label>
+    <button class="btn" type="button" data-copy="#cur-output" data-status="#cur-status">Copy</button>
+    <span class="tool-status" id="cur-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Formatted</h2>
+  <textarea id="cur-output" class="tool-input tool-code" rows="3" readonly spellcheck="false"></textarea>
+  <p class="tool-hint">Paste a number with or without separators. The result follows the separator style you pick, so an Indonesian amount reads 1.250.000 and an English one reads 1,250,000.</p>
+</div>

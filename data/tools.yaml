@@ -638,6 +638,16 @@
       desc: Build a grep command with the right regex style, recursion, includes and context lines, then copy it.
       keywords: [grep, search, pattern, regex, command, builder, recursive, include, context, text, shell]
       status: done
+    - slug: currency-formatter
+      name: Currency Formatter
+      desc: Format a number as a currency amount with thousand separators and a symbol, in Indonesian or English style.
+      keywords: [currency, rupiah, amount, format, thousand separator, money, idr, usd, angka, format uang]
+      status: done
+    - slug: number-to-words
+      name: Number to Words
+      desc: Spell an Indonesian number out in words, for invoices and receipts.
+      keywords: [number, words, indonesia, rupiah, terbilang, invoice, spelling, angka, huruf, bilangan]
+      status: done
 
 - name: Convert
   slug: convert
@@ -710,6 +720,16 @@
       name: Random Generator
       desc: Pick from a list with a spin wheel, slot machine, random card, dice or ticker animation.
       keywords: [random, picker, generator, wheel, spin, slot, card, dice, raffle, giveaway]
+      status: done
+    - slug: discount-calculator
+      name: Discount Calculator
+      desc: Work out a final price, a discount percent, or the original price from a discount and a final price.
+      keywords: [discount, sale, percent, price, original, reverse, diskon, potongan, harga, calculator]
+      status: done
+    - slug: unit-price-comparator
+      name: Unit Price Comparator
+      desc: Compare products by unit price so different pack sizes can be ranked on the same scale.
+      keywords: [unit price, compare, value, per litre, per kilo, harga satuan, product, pack size, cheapest]
       status: done
 
 - name: Data

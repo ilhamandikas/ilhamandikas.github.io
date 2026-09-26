@@ -1,0 +1,37 @@
+<div class="tool-panel">
+  <h2>Discount Calculator</h2>
+  <label class="tool-field">
+    <span>What do you want to work out?</span>
+    <select id="dis-mode" class="tool-select">
+      <option value="final" selected>Final price from a price and a discount</option>
+      <option value="percent">Discount percent from two prices</option>
+      <option value="original">Original price from a final price and a discount</option>
+      <option value="stack">Stacked discounts, applied one after another</option>
+    </select>
+  </label>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span id="dis-a-label">Original price</span>
+      <input id="dis-a" class="tool-input" type="text" placeholder="250000">
+    </label>
+    <label class="tool-field" id="dis-b-field">
+      <span id="dis-b-label">Discount (%)</span>
+      <input id="dis-b" class="tool-input" type="text" placeholder="20">
+    </label>
+  </div>
+  <label class="tool-field" id="dis-stack-field" hidden>
+    <span>Discounts, one per line, applied in order</span>
+    <textarea id="dis-stack" class="tool-input tool-code" rows="3" spellcheck="false">20
+10</textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#dis-output" data-status="#dis-status">Copy</button>
+    <span class="tool-status" id="dis-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Result</h2>
+  <pre id="dis-output" class="tool-result"></pre>
+  <p class="tool-hint">The reverse mode works backwards from two prices, and the stacked mode applies several discounts in turn. A 20% then 10% stack is 28% off, not 30%, because the second discount comes off the already reduced price.</p>
+</div>

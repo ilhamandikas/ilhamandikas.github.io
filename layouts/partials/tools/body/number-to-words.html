@@ -1,0 +1,18 @@
+<div class="tool-panel">
+  <h2>Number to Indonesian Words</h2>
+  <label class="tool-field">
+    <span>Number</span>
+    <input id="ntw-input" class="tool-input" type="text" placeholder="1250000">
+  </label>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="ntw-capital"> Capitalise the first word</label>
+    <button class="btn" type="button" data-copy="#ntw-output" data-status="#ntw-status">Copy</button>
+    <span class="tool-status" id="ntw-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>In words</h2>
+  <textarea id="ntw-output" class="tool-input tool-code" rows="3" readonly spellcheck="false"></textarea>
+  <p class="tool-hint">Rupiah amounts are often written in words on invoices. A comma or dot marks the decimals, which are read one digit at a time.</p>
+</div>

@@ -1872,3 +1872,64 @@ xargs-builder:
       a: "-I implies one item per command, so -n has no effect once -I is set. The builder drops -n when you turn on the replace string."
     - q: "Is it safe to run commands in parallel?"
       a: "Only if the command does not depend on order and does not write to the same output. -P speeds things up, but two jobs writing the same file will race."
+
+currency-formatter:
+  about: >-
+    Turn a plain number into a readable money amount, or the other way round.
+    Pick the symbol, the separator style and how many decimals to show, and the
+    page writes the formatted value. It also reads a value you paste, so
+    1.250.000 and 1,250,000.50 both come back as numbers before being
+    reformatted the way you want.
+  faq:
+    - q: "Why do the separators matter?"
+      a: "Indonesian uses a dot for thousands and a comma for decimals, the reverse of English. Sending 1.250 to a reader who expects English looks like one and a quarter, so the style switch keeps the amount unambiguous."
+    - q: "What does the decimal places box do?"
+      a: "It pins the number of digits after the decimal mark. Leave it blank and whole numbers show none while fractional ones show two; set it to 0 to round rupiah to the nearest whole unit."
+    - q: "Does it add a currency code?"
+      a: "No. It only knows the symbol you pick, so Rp and $ are distinguished by shape alone. Use a code such as IDR or USD when a machine has to read the value."
+
+number-to-words:
+  about: >-
+    Write an amount in Indonesian words, the way it is done on an invoice or a
+    cheque. Enter a number and the page spells it out, grouping by ribu, juta,
+    miliar and triliun, with an optional capital first letter. Decimals are read
+    one digit at a time after the word koma.
+  faq:
+    - q: "How is 1,250,000 read?"
+      a: "As satu juta dua ratus lima puluh ribu. The scale words are spoken in order from the largest group to the smallest, the same way the digits are written."
+    - q: "What about the number one?"
+      a: "In front of a scale word it shortens: 1000 is seribu and 100 is seratus, not satu ribu and satu ratus. Everywhere else it stays satu, as in satu juta."
+    - q: "How large a number can it handle?"
+      a: "Up to sixteen digits, which covers kuadriliun. Past that the exact value can no longer be held as a number in the page, so the tool asks for a smaller one instead of printing something wrong."
+
+discount-calculator:
+  about: >-
+    Four everyday discount questions in one place: the final price after a
+    discount, the discount percent between two prices, the original price when
+    you only know what you paid, and several discounts stacking one after
+    another. Switch the mode and the fields relabel themselves, then the result
+    shows the price, the discount and the amount saved.
+  faq:
+    - q: "How do I find the discount I was given?"
+      a: "Pick the second mode, enter the full price and the price you actually paid, and the page divides the difference by the full price. That is the percentage off, not the percentage of the original that you paid."
+    - q: "Why does it need a price and a final price for the reverse?"
+      a: "A percentage on its own is not enough. Two prices give the ratio between them, which is all the discount percent is; with only one price there is nothing to compare against."
+    - q: "Can the discount be over 100%?"
+      a: "The final price can fall to zero but not below it, so a discount of 100% or more has no original price. The page says so rather than returning a negative result."
+    - q: "How does the stacked mode work?"
+      a: "Enter one discount per line and the page applies them in order, each on the price the previous one left behind. Two 20% discounts are 36% off together, because the second 20% comes off the reduced price, not the original."
+
+unit-price-comparator:
+  about: >-
+    Compare pack sizes on a level footing. List each product as name, price,
+    quantity and unit, and the page ranks them by price per unit, marking the
+    cheapest in each group. Millilitres and litres, or grams and kilograms, are
+    normalised first, so a 600 ml bottle and a 1.5 litre bottle can be judged
+    against each other.
+  faq:
+    - q: "Why does it group by unit?"
+      a: "Price per millilitre and price per gram are not comparable, so each base unit gets its own ranking. Everything with a volume unit lands in one group, everything with a mass unit in another."
+    - q: "What units are recognised?"
+      a: "ml, l, g, kg, m and cm, plus a few spelled-out forms, and pcs and buah for counted items. Write price and quantity as plain numbers, without thousand separators, and separate the four fields with commas."
+    - q: "Is the cheapest always the best buy?"
+      a: "Only on price. Quality, shelf life and how much you will actually use are not in the numbers, so treat the ranking as one input rather than the answer."

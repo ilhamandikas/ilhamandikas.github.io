@@ -1673,6 +1673,60 @@ const check = (label, actual, expected) => {
       "find . -name '*.log' -print0 | xargs -0 -r -I '{}' gzip");
   }
 
+  /* ------------------------------------------------ calculators & formatters */
+
+  console.log('\n=== calculators & formatters ===');
+  {
+    const cur = loadPage('currency-formatter');
+    set(cur.w, '#cur-input', '1250000');
+    check('currency: an Indonesian amount gets dots for thousands',
+      read(cur.w, '#cur-output'), 'Rp1.250.000');
+    set(cur.w, '#cur-style', 'en');
+    check('currency: the English style swaps the separators',
+      read(cur.w, '#cur-output'), 'Rp1,250,000');
+    set(cur.w, '#cur-space', true);
+    check('currency: a space can follow the symbol',
+      read(cur.w, '#cur-output'), 'Rp 1,250,000');
+
+    const words = loadPage('number-to-words');
+    set(words.w, '#ntw-input', '1250000');
+    check('number to words: the scales are spoken in order',
+      read(words.w, '#ntw-output'), 'satu juta dua ratus lima puluh ribu');
+    set(words.w, '#ntw-capital', true);
+    check('number to words: the first word can be capitalised',
+      read(words.w, '#ntw-output'), 'Satu juta dua ratus lima puluh ribu');
+
+    const dis = loadPage('discount-calculator');
+    set(dis.w, '#dis-a', '250000');
+    set(dis.w, '#dis-b', '20');
+    check('discount: a price and a percent give the final price',
+      read(dis.w, '#dis-output'),
+      'Original price: 250.000\nDiscount: 20%\nYou save: 50.000\nFinal price: 200.000');
+    set(dis.w, '#dis-mode', 'percent');
+    set(dis.w, '#dis-b', '200000');
+    check('discount: two prices give the discount percent',
+      read(dis.w, '#dis-output'),
+      'Original price: 250.000\nFinal price: 200.000\nDiscount: 20%\nYou save: 50.000');
+    set(dis.w, '#dis-mode', 'original');
+    set(dis.w, '#dis-a', '200000');
+    set(dis.w, '#dis-b', '20');
+    check('discount: a final price and a percent recover the original',
+      read(dis.w, '#dis-output'),
+      'Final price: 200.000\nDiscount: 20%\nOriginal price: 250.000\nYou save: 50.000');
+    set(dis.w, '#dis-a', '250000');
+    set(dis.w, '#dis-mode', 'stack');
+    check('discount: stacked discounts compound instead of adding up',
+      read(dis.w, '#dis-output'),
+      'Original price: 250.000\n\nAfter 20%: 200.000 (saved 50.000)\nAfter 10%: 180.000 (saved 20.000)\n\nTotal saved: 70.000\nFinal price: 180.000\nEffective discount: 28%');
+
+    const upc = loadPage('unit-price-comparator');
+    const upcText = read(upc.w, '#upc-output');
+    check('unit price: the cheapest in each group is starred',
+      /^\* Kopi 1000 g/m.test(upcText) && /^\* Air 1500 ml/m.test(upcText), true);
+    check('unit price: the comparison is counted',
+      read(upc.w, '#upc-status'), '4 products compared.');
+  }
+
   /* --------------------------------------------------------- websocket tester */
 
   console.log('\n=== websocket tester ===');
