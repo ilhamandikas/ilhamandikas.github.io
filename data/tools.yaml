@@ -342,6 +342,11 @@
       desc: Describe fields once and generate realistic mock JSON for an API response.
       keywords: [api, mock, response, json, fake, sample, builder, stub]
       status: done
+    - slug: webhook-tester
+      name: Webhook Tester
+      desc: Sign, verify and send a test webhook in the Stripe, GitHub or Shopify format.
+      keywords: [webhook, hmac, signature, stripe, github, shopify, verify, test]
+      status: done
 
 - name: Web
   slug: web

@@ -2344,6 +2344,27 @@ const check = (label, actual, expected) => {
     check('api mock: the record count is respected', mock && mock.data.length, 3);
   }
 
+  /* ------------------------------------------------------------ webhook tester */
+
+  console.log('\n=== webhook tester ===');
+  {
+    const wh = loadPage('webhook-tester');
+    set(wh.w, '#wh-payload', '{"event":"test"}');
+    set(wh.w, '#wh-secret', 'whsec_test');
+    await sleep(200);
+    check('webhook: a Stripe-format signature is produced', /^[0-9a-f]{64}$/.test(read(wh.w, '#wh-signature')), true);
+    check('webhook: the Stripe header is named', read(wh.w, '#wh-header'), 'Stripe-Signature');
+    set(wh.w, '#wh-verify', read(wh.w, '#wh-header-value'));
+    await sleep(200);
+    check('webhook: a matching signature verifies', read(wh.w, '#wh-verdict').includes('valid'), true);
+    set(wh.w, '#wh-verify', 't=1,v1=deadbeef');
+    await sleep(200);
+    check('webhook: a wrong signature is rejected', read(wh.w, '#wh-verdict').includes('does not match'), true);
+    set(wh.w, '#wh-provider', 'github');
+    await sleep(200);
+    check('webhook: switching provider changes the header', read(wh.w, '#wh-header'), 'X-Hub-Signature-256');
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

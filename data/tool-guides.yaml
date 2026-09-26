@@ -1638,3 +1638,19 @@ api-mock-response-builder:
       a: "Yes. Each render draws new values, and the Regenerate button does the same. If you need the exact same payload twice, paste the generated JSON into a file instead of regenerating."
     - q: "Is the data based on anything real?"
       a: "No. Names, addresses and emails are made up from small built-in word lists. They are deliberately fake so nothing generated can collide with a real person or mailbox."
+
+webhook-tester:
+  about: >-
+    A webhook workbench that runs entirely in the browser. Build a payload,
+    sign it with HMAC-SHA256 in the format a provider expects, paste a
+    signature you received to check it, or send the signed request to a test
+    endpoint. The signing secret stays on your machine and is never uploaded.
+  faq:
+    - q: "Which providers are supported?"
+      a: "Stripe, GitHub, Shopify and a generic HMAC-SHA256 format. Each one signs a different string and wraps the result differently: Stripe signs the timestamp and payload and writes t= and v1=, GitHub writes sha256=, Shopify sends base64, and the generic format is plain hex."
+    - q: "Why is the timestamp part of the signature?"
+      a: "It lets the receiver reject an old request that someone replays later. Stripe includes the timestamp in the signed string and sends it alongside, so changing the timestamp invalidates the signature. Use the Now button to refresh it before sending."
+    - q: "Why does sending fail with a network error?"
+      a: "Browsers can only send a request when the target allows your origin through CORS, and a webhook endpoint usually does not. That is a browser rule, not a bug. The signature panel still shows exactly what would be sent, so you can test the signing even when the send is blocked."
+    - q: "Is the secret safe?"
+      a: "It never leaves the page: the HMAC is computed locally with the Web Crypto API and there is no upload step. Still, treat any secret you paste into a website as one you control, and prefer a test secret over a live one."
