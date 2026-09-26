@@ -28,23 +28,23 @@ that promise. So this server only reads the registry.
 
 ## Deploy
 
+The Worker is already live at <https://mcp.ilham.dev>, and `wrangler.toml`
+already carries the custom-domain route, so a redeploy is just:
+
 ```bash
 cd mcp
 npm install
-npx wrangler login          # once
 npm run typecheck
 npm run deploy
 ```
 
-Then attach the domain. Either uncomment the route in `wrangler.toml`:
+Deploying needs Cloudflare auth. Either run `npx wrangler login` once, or set
+`CLOUDFLARE_API_TOKEN` to a token with **Workers Scripts: Edit**,
+**Workers Routes: Edit** and **DNS: Edit** on the `ilham.dev` zone.
 
-```toml
-routes = [{ pattern = "mcp.ilham.dev", custom_domain = true }]
-```
-
-or add it in the Cloudflare dashboard under **Workers → ilham-mcp → Settings →
-Domains & Routes**. Either way you need `ilham.dev` on the same Cloudflare
-account.
+`routes` must stay at the top level of `wrangler.toml`, above `[vars]` — TOML
+would otherwise read it as an environment variable and the custom domain would
+never be attached.
 
 ## Verify
 

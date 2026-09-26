@@ -3,12 +3,17 @@ main = "src/index.ts"
 compatibility_date = "2025-09-23"
 compatibility_flags = ["nodejs_compat"]
 
-[vars]
-REGISTRY_URL = "https://ilham.dev/tools/tools.json"
+# The Worker is served from its custom domain only, so the random
+# *.workers.dev address is switched off explicitly (it is the default once a
+# route exists, but stating it keeps the deploy output warning-free).
+workers_dev = false
 
 # Stateless: the registry is fetched from https://ilham.dev/tools/tools.json and
 # cached at the edge, so there is no database, no Durable Object and nothing to
-# migrate. Point mcp.ilham.dev at this Worker (Cloudflare dashboard → Workers →
-# Settings → Domains & Routes, or uncomment the route below).
-#
-# routes = [{ pattern = "mcp.ilham.dev", custom_domain = true }]
+# migrate. The route below gives the Worker its own custom domain; Cloudflare
+# creates the DNS record and certificate automatically. It has to stay at the top
+# level, above [vars], or TOML would read it as an environment variable.
+routes = [{ pattern = "mcp.ilham.dev", custom_domain = true }]
+
+[vars]
+REGISTRY_URL = "https://ilham.dev/tools/tools.json"
