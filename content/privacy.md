@@ -1,7 +1,7 @@
 ---
 title: "Privacy Statement"
 description: "Privacy Statement for ilham.dev."
-lastmod: 2026-09-20
+lastmod: 2026-09-26
 ---
 
 This Privacy Statement explains how **ilham.dev** ("the Site"), operated by Ilham
@@ -53,9 +53,15 @@ sign-in or session. You can control cookies through your browser settings.
   technical data such as your IP address and browser information. Posting a comment
   requires signing in with a GitHub account. See GitHub's privacy statement and the
   giscus documentation for details.
-- **Gravatar** is used to display a profile picture on this Site. When that image
-  loads, your browser connects to Gravatar's servers, which may receive your IP address
-  and user agent. See Gravatar's privacy policy for details.
+- **Tools that contact third parties.** A few tools reach out to public services to do
+  their job, and each one sends only the value you type in. **IP Lookup** sends the
+  address to ipwho.is (falling back to freeipapi.com). **DNS Lookup** sends the name to
+  Google Public DNS or Cloudflare's DNS-over-HTTPS resolver. **WHOIS Lookup** sends the
+  domain to the IANA bootstrap directory, the registry's own RDAP service and rdap.org.
+  The request testers (**CORS Checker**, **HTTP Request Tester**, **Webhook Tester**,
+  **gRPC Tester** and **WebSocket Tester**) send your request to whatever URL you enter.
+  The **JavaScript Playground** loads the Monaco editor from cdn.jsdelivr.net the first
+  time you enable it. Every other tool runs entirely in your browser and sends nothing.
 - **External links**, for example to GitHub, are governed by those sites' own privacy
   policies.
 
