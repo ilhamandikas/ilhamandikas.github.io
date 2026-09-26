@@ -1,6 +1,6 @@
 <div class="tool-panel">
   <h2>SNAP BI Asymmetric Signature</h2>
-  <p class="tool-hint">Build the string to sign and sign or verify it with SHA256withRSA, the way Bank Indonesia's SNAP BI standard and Midtrans notifications do. Keys and data stay in your browser.</p>
+  <p class="tool-hint">Build the string to sign and sign or verify it with SHA256withRSA, the way Bank Indonesia's SNAP BI standard does. Keys and data stay in your browser.</p>
   <div class="snap-grid">
     <label class="tool-field">
       <span>Action</span>
@@ -27,7 +27,7 @@
   </div>
   <label class="tool-field">
     <span>Body</span>
-    <textarea id="snap-body" class="tool-input tool-code" rows="6" spellcheck="false">{"originalPartnerReferenceNo":"GP24043015193402809","originalReferenceNo":"A120240430081940S9vu8gSjaRID","merchantId":"G099333790","amount":{"value":"102800.00","currency":"IDR"},"latestTransactionStatus":"00","transactionStatusDesc":"SUCCESS","additionalInfo":{"refundHistory":[]}}</textarea>
+    <textarea id="snap-body" class="tool-input tool-code" rows="6" spellcheck="false">{"originalPartnerReferenceNo":"REF-20240502-0001","originalReferenceNo":"REF-20240502-0001","merchantId":"MERCHANT-001","amount":{"value":"25000.00","currency":"IDR"},"latestTransactionStatus":"00","transactionStatusDesc":"SUCCESS","additionalInfo":{"channel":"SNAP-BI"}}</textarea>
   </label>
   <div class="snap-grid">
     <label class="tool-field">
@@ -37,20 +37,20 @@
     <label class="tool-field">
       <span>Public key (SPKI PEM)</span>
       <textarea id="snap-public" class="tool-input tool-code" rows="6" spellcheck="false">-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlWbtlh3eM+bW3n5AFj42
-wddC4L7tQqbLiCFbTv8K67yng9iwK5mEn+UMXiRhvB2JVWFafCPPxFamsiVG3Mjn
-eGjC0BYgmpmw4qXnAnyO3nCdCuPtmZ3ljhKvSTPdWZxrcLi1Xa9V/+Pzb8hrjb5i
-wMn6SZFNeMmZYgFKiSeueo6TPln2PoTqXCzs1HtsM8eUVe8GAsjJe/3dYl992nyX
-OpG21GgNu8o5T3WOptPg6GdDTWkTWUu483yRbVVy04Pz4L8DDZTDv+WcsAViDn1r
-A/jB1Auj/UGKx2ovGcBH/a/hor5TbABbODU6cPTHT54K3sSZtvZNV4eFDB1f/4wd
-fwIDAQAB
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1MQDBfehZTybwfGsfm14
+cTc/5u+5pz4SPnvfFAoGX+AdfPIuPAVCS62V3jhaABiazoKFLx73LYU+Lm/UEp0q
+fbAZi6L3HIk5jPIfYuxCHu6pXrjsIlFWf4HPdzizahKX9rCxq0WQzD+3tsJZIHUy
+EjlVKSDe5HmyNZaSwGWZTWw3j7HE9XWFAXI7ymQ7ilKDeP7JLE3I8JF1qU4IDUrB
+QHI/BZUIGDeKmQYIC+YYKPjRCsHdy+y9XMyj4xA2Cy1CwX03ulBSNlP327qBEm3B
+nCqxTAaF9NTnkClMQNdP5qic1tR0TBjiDJwF9uHLmoQhym/RqwJN4qvbLoYnTIRL
+hQIDAQAB
 -----END PUBLIC KEY-----</textarea>
     </label>
   </div>
   <p class="tool-hint" id="snap-key-hint"></p>
   <div class="tool-field" id="snap-signature-field">
     <span>X-SIGNATURE (base64)</span>
-    <textarea id="snap-signature" class="tool-input tool-code" rows="4" spellcheck="false">RoJnP2tH/YiOhHM/lMVBMSAuzRmS8VrWdIy04Qqyb56daV7oWFMFoMMzqnjQ+q0MIUalYgU094GWQnCx2c29xb1kkqHhv2+iJ9xl6NjGmFGYqyvcKvUDAV83Y1Mw9JnsEcjcupdGw9/MRv/mm2GMrQ+BCZGfc4a46JDyPZbcY294vDGqs5rFBN6iYer5ro4cAQGo9hET2G82Y+j50vCyO/79GFE4vB1rvtu6PK2Bxi+vTYV8k7P7PS8tOPWM2O+kjiVWjwvLR99Botou+a8sxlQqZaihfWMKcByzV+Lgkr9cptpjys+1NIRWT1ad/sJBSLHyldzC3q2oRn5z5oZmyg==</textarea>
+    <textarea id="snap-signature" class="tool-input tool-code" rows="4" spellcheck="false">kiTbGcmz2yS8Qs1xMKSmebnUsX3CFqjOmsOD+v4acHDYCJt1geM+6McORHh3XsClqDzyfvNFG893P67BKlDlXJXY1vUX9sKJVJ1ph/FtC7kndQklJf2eNo6qDjGOVZorgD+LB7saq5VqQfEK4IvHSUhqXGtU7awQNCvmKsqGnXEOzMCExqV9umJ6XqX1CZo33qKmkzPUQd3wvn5xVb3P2zq4n84+aeo1S5+BsLXC82P4V9aQddzCdOchID/9GKb6+Dk4WDAO5SU3sOdDNU16+38RGBR8XHHKaGeYE8sgRTB/YDWWoPX9tqhnMC9eSpmf4+whpXWMkodHW3zoN4V/tQ==</textarea>
   </div>
   <div class="tool-row">
     <button class="btn primary" type="button" id="snap-run">Verify</button>

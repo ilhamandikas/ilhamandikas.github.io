@@ -1,4 +1,4 @@
-// SNAP BI asymmetric signature (SHA256withRSA), matching the Midtrans demo.
+// SNAP BI asymmetric signature (SHA256withRSA).
 // The string to sign is:
 //   HTTPMethod + ":" + EndpointUrl + ":" + lowercase(hex(SHA256(minify(body)))) + ":" + X-TIMESTAMP
 // Signing uses the private key, verification uses the public key. Both run in
@@ -6,22 +6,6 @@
 const { tk } = window;
 
 const ALG = { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' };
-const SAMPLE = {
-  method: 'POST',
-  endpoint: '/v1.0/debit/notify',
-  timestamp: '2024-05-02T14:43:08+07:00',
-  body: '{"originalPartnerReferenceNo":"GP24043015193402809","originalReferenceNo":"A120240430081940S9vu8gSjaRID","merchantId":"G099333790","amount":{"value":"102800.00","currency":"IDR"},"latestTransactionStatus":"00","transactionStatusDesc":"SUCCESS","additionalInfo":{"refundHistory":[]}}',
-  publicKey: `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlWbtlh3eM+bW3n5AFj42
-wddC4L7tQqbLiCFbTv8K67yng9iwK5mEn+UMXiRhvB2JVWFafCPPxFamsiVG3Mjn
-eGjC0BYgmpmw4qXnAnyO3nCdCuPtmZ3ljhKvSTPdWZxrcLi1Xa9V/+Pzb8hrjb5i
-wMn6SZFNeMmZYgFKiSeueo6TPln2PoTqXCzs1HtsM8eUVe8GAsjJe/3dYl992nyX
-OpG21GgNu8o5T3WOptPg6GdDTWkTWUu483yRbVVy04Pz4L8DDZTDv+WcsAViDn1r
-A/jB1Auj/UGKx2ovGcBH/a/hor5TbABbODU6cPTHT54K3sSZtvZNV4eFDB1f/4wd
-fwIDAQAB
------END PUBLIC KEY-----`,
-  signature: 'RoJnP2tH/YiOhHM/lMVBMSAuzRmS8VrWdIy04Qqyb56daV7oWFMFoMMzqnjQ+q0MIUalYgU094GWQnCx2c29xb1kkqHhv2+iJ9xl6NjGmFGYqyvcKvUDAV83Y1Mw9JnsEcjcupdGw9/MRv/mm2GMrQ+BCZGfc4a46JDyPZbcY294vDGqs5rFBN6iYer5ro4cAQGo9hET2G82Y+j50vCyO/79GFE4vB1rvtu6PK2Bxi+vTYV8k7P7PS8tOPWM2O+kjiVWjwvLR99Botou+a8sxlQqZaihfWMKcByzV+Lgkr9cptpjys+1NIRWT1ad/sJBSLHyldzC3q2oRn5z5oZmyg==',
-};
 
 const els = {
   mode: document.querySelector('#snap-mode'),
@@ -43,6 +27,18 @@ const els = {
   string: document.querySelector('#snap-string'),
   out: document.querySelector('#snap-out'),
   status: document.querySelector('#snap-status'),
+};
+
+// The page loads with a known-good sample: a generic SNAP BI notification and a
+// matching signature, so Verify returns true before the user touches anything.
+// "Load sample" restores exactly these values after an experiment.
+const INITIAL = {
+  method: els.method.value,
+  endpoint: els.endpoint.value,
+  timestamp: els.timestamp.value,
+  body: els.body.value,
+  publicKey: els.publicKey.value,
+  signature: els.signature.value,
 };
 
 function pemToBuffer(pem) {
@@ -163,14 +159,9 @@ async function keygen() {
 }
 
 function loadSample() {
-  els.method.value = SAMPLE.method;
-  els.endpoint.value = SAMPLE.endpoint;
-  els.timestamp.value = SAMPLE.timestamp;
-  els.body.value = SAMPLE.body;
-  els.publicKey.value = SAMPLE.publicKey;
-  els.signature.value = SAMPLE.signature;
+  Object.entries(INITIAL).forEach(([key, value]) => { els[key].value = value; });
   preview();
-  tk.setStatus(els.status, 'Loaded the Midtrans sample. Press Verify.', 'ok');
+  tk.setStatus(els.status, 'Loaded the sample request. Press Verify.', 'ok');
 }
 
 els.mode.addEventListener('change', syncMode);

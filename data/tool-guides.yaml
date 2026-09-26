@@ -1704,11 +1704,11 @@ webhook-tester:
 snap-signature:
   about: >-
     A workbench for the asymmetric signature in Bank Indonesia's SNAP BI
-    standard, the same scheme Midtrans uses for payment notifications. It builds
-    the string to sign from the HTTP method, endpoint, a SHA-256 hash of the
-    minified body and the X-TIMESTAMP, then signs it with an RSA private key or
-    verifies it with the sender's public key. Both operations run in the browser
-    with the Web Crypto API.
+    standard, the scheme banks and payment providers use for API requests and
+    notifications. It builds the string to sign from the HTTP method, endpoint,
+    a SHA-256 hash of the minified body and the X-TIMESTAMP, then signs it with
+    an RSA private key or verifies it with the sender's public key. Both
+    operations run in the browser with the Web Crypto API.
   faq:
     - q: "What exactly is the string that gets signed?"
       a: "HTTPMethod + ':' + EndpointUrl + ':' + lowercase(hex(SHA-256(minify(body)))) + ':' + X-TIMESTAMP. The method is upper-cased, the body is minified JSON, and its SHA-256 is written as lowercase hex. Join the four parts with colons and sign that exact string."

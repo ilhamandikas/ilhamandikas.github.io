@@ -2372,8 +2372,8 @@ const check = (label, actual, expected) => {
     const snap = loadPage('snap-signature');
     await sleep(150);
     check('snap: the body is minified', read(snap.w, '#snap-minified').startsWith('{"originalPartnerReferenceNo"'), true);
-    check('snap: the SHA-256 hash is lowercase hex', read(snap.w, '#snap-hash'), '79ebbe6a6b695262dd686d0dedafc57c94e3b3dededf8d63971f8a95699ace85');
-    check('snap: the string to sign joins the four parts', read(snap.w, '#snap-string'), 'POST:/v1.0/debit/notify:79ebbe6a6b695262dd686d0dedafc57c94e3b3dededf8d63971f8a95699ace85:2024-05-02T14:43:08+07:00');
+    check('snap: the SHA-256 hash is lowercase hex', read(snap.w, '#snap-hash'), '8c33c1fe3b15c025c0d3a87cf46569f88a7f8e1c71f6493203b704b88c3fa1b0');
+    check('snap: the string to sign joins the four parts', read(snap.w, '#snap-string'), 'POST:/v1.0/debit/notify:8c33c1fe3b15c025c0d3a87cf46569f88a7f8e1c71f6493203b704b88c3fa1b0:2024-05-02T14:43:08+07:00');
     snap.w.document.querySelector('#snap-run').click();
     await sleep(300);
     check('snap: the sample signature verifies', read(snap.w, '#snap-out'), 'true');
