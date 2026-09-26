@@ -9,6 +9,15 @@ const visual = document.querySelector('#rnd-visual');
 const results = document.querySelector('#rnd-results');
 const status = document.querySelector('#rnd-status');
 
+// Ticks get further apart towards the end, so the stage slows down and lands
+// instead of stopping mid-flicker.
+const TICKS = 16;
+const FIRST_GAP = 40;
+const GAP_GROWTH = 7;
+
+let spin = null;
+let last = [];
+
 function items() {
   return itemsInput.value
     .split(/[\n,]/)
@@ -36,46 +45,79 @@ function pick(list, count, noDuplicates) {
 }
 
 function render(out) {
-  results.replaceChildren();
-  for (const value of out) {
-    const li = document.createElement('li');
-    li.textContent = value;
-    results.append(li);
-  }
+  results.replaceChildren(
+    ...out.map((value, index) => {
+      const li = document.createElement('li');
+      li.textContent = value;
+      li.style.setProperty('--random-i', String(index));
+      return li;
+    }),
+  );
+}
+
+function show() {
+  visual.classList.remove('spin');
+  visual.classList.add('done');
+  visual.textContent = last[0] || '?';
+}
+
+function stop() {
+  if (spin) clearTimeout(spin);
+  spin = null;
 }
 
 function animate(out, all) {
+  stop();
+  last = out;
   const chosen = out[0] || '?';
-  visual.className = `random-visual ${mode.value} spin`;
-  visual.textContent = mode.value === 'dice' ? String(rand(6) + 1) : all[rand(all.length)] || '?';
+  const name = mode.value;
   let ticks = 0;
-  const timer = setInterval(() => {
+  let gap = FIRST_GAP;
+
+  visual.className = `random-visual ${name} spin`;
+  results.replaceChildren();
+  tk.setStatus(status, 'Choosing an item.');
+
+  const step = () => {
     ticks += 1;
-    visual.textContent = mode.value === 'dice' ? String(rand(6) + 1) : all[rand(all.length)] || '?';
-    if (ticks >= 16) {
-      clearInterval(timer);
-      visual.className = `random-visual ${mode.value}`;
-      visual.textContent = chosen;
+    if (ticks >= TICKS) {
+      spin = null;
+      show();
       render(out);
       tk.setStatus(status, `Picked ${out.length} item${out.length === 1 ? '' : 's'}`, 'ok');
+      return;
     }
-  }, 60);
+    visual.textContent = name === 'dice' ? String(rand(6) + 1) : all[rand(all.length)] || '?';
+    gap += GAP_GROWTH;
+    spin = setTimeout(step, gap);
+  };
+  step();
 }
 
 function generate() {
   const list = items();
   if (list.length === 0) {
+    stop();
+    last = [];
     render([]);
+    visual.className = 'random-visual ' + mode.value;
     visual.textContent = '?';
-    tk.setStatus(status, 'Add at least one item', 'err');
+    tk.setStatus(status, 'Add at least one item to pick from', 'err');
     return;
   }
   const count = Math.max(1, Math.min(20, Number(countInput.value) || 1));
   countInput.value = String(count);
-  const out = pick(list, count, unique.checked);
-  animate(out, list);
+  animate(pick(list, count, unique.checked), list);
 }
 
+mode.addEventListener('change', () => {
+  // Changing the mode mid-spin should settle on what was already drawn.
+  stop();
+  visual.className = `random-visual ${mode.value}`;
+  if (last.length) show();
+});
+
 go.addEventListener('click', generate);
-tk.live([mode], () => { visual.className = `random-visual ${mode.value}`; });
+window.addEventListener('pagehide', stop);
+
 generate();

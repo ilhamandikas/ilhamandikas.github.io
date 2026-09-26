@@ -957,6 +957,7 @@ textarea.tool-text { resize: vertical; }
   align-items: center;
 }
 .random-visual {
+  position: relative;
   display: grid;
   place-items: center;
   min-height: 180px;
@@ -985,10 +986,63 @@ textarea.tool-text { resize: vertical; }
   font-size: 3rem;
 }
 .random-visual.ticker { min-height: 96px; font-family: var(--mono); }
-.random-visual.spin { animation: random-pop 0.72s linear infinite; }
-@keyframes random-pop {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.035) rotate(1.5deg); }
+
+/* A ring that only shows while choosing, so the wheel has something to turn. */
+.random-visual::before {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  opacity: 0;
+  border: 2px solid transparent;
+  border-radius: inherit;
+}
+.random-visual.spin::before { opacity: 1; }
+.random-visual.wheel.spin::before {
+  border-top-color: var(--accent);
+  border-right-color: var(--accent);
+}
+
+/* The stage moves while it chooses, then lands. Each mode gets motion that
+   suits it, all of it flat: transforms and borders only. */
+@media (prefers-reduced-motion: no-preference) {
+  .random-visual.spin { animation: random-pulse 0.72s linear infinite; }
+  .random-visual.wheel.spin::before { animation: random-turn 0.7s linear infinite; }
+  .random-visual.slot.spin { animation: random-reel 0.12s steps(2, end) infinite; }
+  .random-visual.card.spin { animation: random-flip 0.8s linear infinite; }
+  .random-visual.dice.spin { animation: random-shake 0.45s ease-in-out infinite; }
+  .random-visual.ticker.spin { animation: random-slide 0.5s ease-in-out infinite; }
+  .random-visual.done { animation: random-land 0.45s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+
+  .random-results li {
+    animation: random-in 0.34s ease-out both;
+    animation-delay: calc(var(--random-i, 0) * 55ms);
+  }
+}
+@keyframes random-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+@keyframes random-turn { to { transform: rotate(360deg); } }
+@keyframes random-reel {
+  0% { transform: translateY(-4px); }
+  100% { transform: translateY(4px); }
+}
+@keyframes random-flip { to { transform: rotateY(360deg); } }
+@keyframes random-shake {
+  0%, 100% { transform: rotate(-7deg); }
+  50% { transform: rotate(7deg); }
+}
+@keyframes random-slide {
+  0%, 100% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+}
+@keyframes random-land {
+  from { transform: scale(1.09); }
+  to { transform: scale(1); }
+}
+@keyframes random-in {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: none; }
 }
 .random-results {
   margin: 0;
@@ -1019,6 +1073,11 @@ textarea.tool-text { resize: vertical; }
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11px;
+}
+.random-results li:first-child::before {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .jwt-json-field label {
