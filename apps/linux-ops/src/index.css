@@ -2,11 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tailwind's preflight is off so it cannot leak into the host page. That means
+   the reset has to be re-created here, scoped to `.lo-app` and written with
+   `:where()` (zero specificity) so component and utility classes still win.
+   Without this the browser's own button/heading/list defaults show through and
+   the panel looks broken. */
+@layer base {
+  .lo-app :where(*, *::before, *::after) {
+    border-width: 0;
+    border-style: solid;
+    border-color: #e6e8ec;
+  }
+  .lo-app :where(h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, pre) {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  .lo-app :where(ul, ol, menu) { margin: 0; padding: 0; list-style: none; }
+  /* The host page styles `.grid` (margin-top: 22px); neutralise it so the
+     app's Tailwind grids keep their own spacing. */
+  .lo-app :where(.grid) { margin-top: 0; }
+  .lo-app :where(button, input, select, textarea) {
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+  .lo-app :where(button) {
+    background-color: transparent;
+    background-image: none;
+    cursor: pointer;
+    text-transform: none;
+  }
+  .lo-app :where(select) { appearance: none; background-image: none; }
+  .lo-app :where(img, svg, video, canvas, audio, iframe, embed, object) {
+    display: block;
+    vertical-align: middle;
+  }
+  .lo-app :where(img, video) { max-width: 100%; height: auto; }
+}
+
 /* The app is a panel inside a Hugo tool page, so nothing here is global: the
    shell colour and font live on `.lo-app`, and the site keeps its own. */
 .lo-app {
   color: #14161a;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

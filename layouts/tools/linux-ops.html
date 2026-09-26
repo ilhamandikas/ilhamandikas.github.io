@@ -1,6 +1,9 @@
 {{ define "main" }}
 <article class="page tool-page">
-  <div class="container">
+  {{- /* `tool-layout-wide` gives the app the same 1280px canvas the other wide
+         tools use; `tool-layout` is deliberately omitted because the app brings
+         its own sidebar. */}}
+  <div class="container tool-layout-wide">
     <div class="page-header tool-header">
       <p class="tool-crumb"><a href="{{ "/tools/" | relURL }}">Tools</a></p>
       <h1>{{ .Title }}</h1>
