@@ -722,11 +722,16 @@ list-converter:
 hmac-generator:
   about: >-
     Compute an HMAC over a message using SHA-256, SHA-384 or SHA-512 and a shared
-    secret, which is how a webhook signature is normally verified. The
-    computation uses WebCrypto.
+    secret, then copy the result as hex or base64. Paste an expected HMAC to
+    check it against the message and key, which is how a webhook signature is
+    normally verified. The computation uses WebCrypto.
   faq:
     - q: "What is the difference between an HMAC and a plain hash?"
       a: "A plain hash proves nothing about who produced it. An HMAC mixes in a secret, so only someone holding that secret can produce the same value — which is what lets you verify that a webhook came from the service you expect."
+    - q: "Should I use hex or base64?"
+      a: "Either works; they are the same bytes in different clothes. Providers differ: GitHub sends hex, Shopify sends base64, and many APIs use base64 because it is shorter. The verify box accepts whichever you paste, so you can compare across formats."
+    - q: "How does the verify box decide if it matches?"
+      a: "It computes the HMAC for the current message and key, then compares it with what you pasted. A value that is all hexadecimal is compared as hex, anything else as base64. Whitespace is ignored so a value split across lines still matches."
 
 bcrypt:
   about: >-

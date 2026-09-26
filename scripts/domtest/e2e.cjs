@@ -2383,6 +2383,26 @@ const check = (label, actual, expected) => {
     check('snap: a tampered signature is rejected', read(snap.w, '#snap-out'), 'false');
   }
 
+  /* --------------------------------------------------------- hmac generator */
+
+  console.log('\n=== hmac generator ===');
+  {
+    const hmac = loadPage('hmac-generator');
+    set(hmac.w, '#hmac-text', 'The quick brown fox jumps over the lazy dog');
+    set(hmac.w, '#hmac-key', 'key');
+    await sleep(250);
+    check('hmac: SHA-256 matches the RFC 4231 test vector', read(hmac.w, '#hmac-output'), 'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8');
+    set(hmac.w, '#hmac-format', 'base64');
+    await sleep(100);
+    check('hmac: base64 encodes the same bytes', read(hmac.w, '#hmac-output'), '97yD9DBThCSxMpjmqm+xQ+9NWaFJRhdZl0edvC0aPNg=');
+    set(hmac.w, '#hmac-expected', 'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8');
+    await sleep(100);
+    check('hmac: a matching hex value verifies', read(hmac.w, '#hmac-verify-status').includes('matches'), true);
+    set(hmac.w, '#hmac-expected', 'deadbeef');
+    await sleep(100);
+    check('hmac: a wrong value is rejected', read(hmac.w, '#hmac-verify-status').includes('does not match'), true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

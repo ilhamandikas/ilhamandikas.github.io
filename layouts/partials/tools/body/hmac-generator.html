@@ -13,13 +13,24 @@
         <option>SHA-512</option>
       </select>
     </label>
+    <label class="tool-inline">Output
+      <select id="hmac-format" class="tool-select">
+        <option value="hex">Hex</option>
+        <option value="base64">Base64</option>
+      </select>
+    </label>
   </div>
   <div class="tool-field">
-    <label for="hmac-output">HMAC (hex)</label>
+    <label for="hmac-output" id="hmac-output-label">HMAC (hex)</label>
     <textarea id="hmac-output" class="tool-input" rows="3" readonly spellcheck="false"></textarea>
   </div>
   <div class="tool-row">
     <button class="btn" type="button" data-copy="#hmac-output" data-status="#hmac-status">Copy</button>
-    <span class="tool-status" id="hmac-status"></span>
+    <span class="tool-status" id="hmac-status" role="status" aria-live="polite"></span>
   </div>
+  <div class="tool-field">
+    <label for="hmac-expected">Verify (paste an expected HMAC)</label>
+    <textarea id="hmac-expected" class="tool-input" rows="2" spellcheck="false" placeholder="Paste a hex or base64 HMAC to compare…"></textarea>
+  </div>
+  <p class="tool-status" id="hmac-verify-status" role="status" aria-live="polite"></p>
 </div>
