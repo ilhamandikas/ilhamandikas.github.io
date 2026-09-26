@@ -1,0 +1,22 @@
+<div class="tool-panel">
+  <h2>Snake</h2>
+  <div class="snake-bar">
+    <div class="mm-stats">
+      <div class="mm-stat"><span>Score</span><strong id="snake-score">0</strong></div>
+      <div class="mm-stat"><span>Best</span><strong id="snake-best">0</strong></div>
+    </div>
+    <button class="btn" type="button" id="snake-pause">Pause</button>
+    <button class="btn primary" type="button" id="snake-new">New game</button>
+  </div>
+  <div class="snake-wrap">
+    <div class="snake-board" id="snake-board"></div>
+    <div class="snake-pad">
+      <button class="btn snake-pad-btn" type="button" data-snake-dir="-1,0" aria-label="Up">▲</button>
+      <button class="btn snake-pad-btn" type="button" data-snake-dir="0,-1" aria-label="Left">◀</button>
+      <button class="btn snake-pad-btn" type="button" data-snake-dir="1,0" aria-label="Down">▼</button>
+      <button class="btn snake-pad-btn" type="button" data-snake-dir="0,1" aria-label="Right">▶</button>
+    </div>
+  </div>
+  <div class="tool-row"><span class="tool-status" id="snake-status" role="status" aria-live="polite"></span></div>
+  <p class="tool-hint">Use the arrow keys or WASD to steer, or the pad beside the board on touch. The snake starts on your first turn and speeds up as it grows. The game ends on a wall or on itself, and Space pauses.</p>
+</div>

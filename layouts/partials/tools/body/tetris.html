@@ -1,0 +1,21 @@
+<div class="tool-panel">
+  <h2>Tetris</h2>
+  <div class="tetris-layout">
+    <div class="tetris-side">
+      <div class="tetris-box"><span>Hold</span><div class="tetris-mini-grid" id="tetris-hold"></div></div>
+      <div class="mm-stats">
+        <div class="mm-stat"><span>Score</span><strong id="tetris-score">0</strong></div>
+        <div class="mm-stat"><span>Lines</span><strong id="tetris-lines">0</strong></div>
+        <div class="mm-stat"><span>Level</span><strong id="tetris-level">1</strong></div>
+      </div>
+    </div>
+    <div class="tetris-board" id="tetris-board"></div>
+    <div class="tetris-side">
+      <div class="tetris-box"><span>Next</span><div class="tetris-mini-grid" id="tetris-next"></div></div>
+      <button class="btn" type="button" id="tetris-pause">Pause</button>
+      <button class="btn primary" type="button" id="tetris-new">New game</button>
+    </div>
+  </div>
+  <div class="tool-row"><span class="tool-status" id="tetris-status" role="status" aria-live="polite"></span></div>
+  <p class="tool-hint">Arrow keys move and rotate, Down soft-drops, Space hard-drops, C holds a piece and P pauses. Clear full rows for points — four at once scores far more — and the game speeds up every ten lines.</p>
+</div>

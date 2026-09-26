@@ -1,0 +1,14 @@
+<div class="tool-panel">
+  <h2>2048</h2>
+  <div class="g2048-bar">
+    <div class="g2048-stat"><span>Score</span><strong id="g2048-score">0</strong></div>
+    <div class="g2048-stat"><span>Best</span><strong id="g2048-best">0</strong></div>
+    <div class="g2048-actions">
+      <button class="btn" type="button" id="g2048-undo">Undo</button>
+      <button class="btn primary" type="button" id="g2048-new">New game</button>
+    </div>
+  </div>
+  <div class="g2048-board" id="g2048-board" role="grid" aria-label="2048 board"></div>
+  <div class="tool-row"><span class="tool-status" id="g2048-status" role="status" aria-live="polite"></span></div>
+  <p class="tool-hint">Use the arrow keys or WASD (swipe on touch) to slide the tiles. Equal tiles merge into one and a new tile appears after each move. Reach 2048 to win, then keep going for a higher score. Undo steps back one move, and the best score is kept on this device.</p>
+</div>

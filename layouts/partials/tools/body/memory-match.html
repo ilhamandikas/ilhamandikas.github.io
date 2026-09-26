@@ -1,0 +1,20 @@
+<div class="tool-panel">
+  <h2>Memory Match</h2>
+  <div class="mm-bar">
+    <label class="mm-inline"><span>Difficulty</span>
+      <select id="mm-level" class="tool-select">
+        <option value="easy" selected>Easy · 4 × 4</option>
+        <option value="medium">Medium · 6 × 4</option>
+        <option value="hard">Hard · 6 × 6</option>
+      </select>
+    </label>
+    <div class="mm-stats">
+      <div class="mm-stat"><span>Moves</span><strong id="mm-moves">0</strong></div>
+      <div class="mm-stat"><span>Time</span><strong id="mm-time">0s</strong></div>
+    </div>
+    <button class="btn primary" type="button" id="mm-new">New game</button>
+  </div>
+  <div class="mm-board" id="mm-board"></div>
+  <div class="tool-row"><span class="tool-status" id="mm-status" role="status" aria-live="polite"></span></div>
+  <p class="tool-hint">Flip two cards at a time and remember where each symbol sits. A matching pair stays face up; a mismatch turns back after a moment. The timer starts on your first flip and stops when the last pair is found.</p>
+</div>

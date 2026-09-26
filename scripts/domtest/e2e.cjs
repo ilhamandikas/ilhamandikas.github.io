@@ -2226,6 +2226,39 @@ const check = (label, actual, expected) => {
     check('json schema: the error path is a JSON Pointer', read(page.w, '#jsv-errors').includes('#/id'), true);
   }
 
+  /* ---------------------------------------------------------------- games */
+
+  console.log('\n=== games ===');
+  {
+    const g2048 = loadPage('game-2048');
+    check('2048: the board has 16 tiles', g2048.w.document.querySelectorAll('#g2048-board .g2048-cell').length, 16);
+    check(
+      '2048: a new game starts two tiles',
+      [...g2048.w.document.querySelectorAll('#g2048-board .g2048-cell')].filter((cell) => cell.textContent).length,
+      2,
+    );
+
+    const mm = loadPage('memory-match');
+    check('memory: easy deals 16 cards', mm.w.document.querySelectorAll('#mm-board .mm-card').length, 16);
+    mm.w.document.querySelectorAll('#mm-board .mm-card')[0].click();
+    mm.w.document.querySelectorAll('#mm-board .mm-card')[1].click();
+    check('memory: two flips count as one move', read(mm.w, '#mm-moves'), '1');
+
+    const ms = loadPage('minesweeper');
+    check('minesweeper: easy is a 9 by 9 grid', ms.w.document.querySelectorAll('#ms-board .ms-cell').length, 81);
+    ms.w.document.querySelector('#ms-board .ms-cell').click();
+    check('minesweeper: the first click is safe', ms.w.document.querySelectorAll('#ms-board .ms-cell.is-revealed').length > 0, true);
+
+    const snake = loadPage('snake');
+    check('snake: the board has 400 cells', snake.w.document.querySelectorAll('#snake-board .snake-cell').length, 400);
+    check('snake: the snake starts at length three', snake.w.document.querySelectorAll('#snake-board .snake-cell.is-snake').length, 3);
+
+    const tetris = loadPage('tetris');
+    check('tetris: the board has 200 cells', tetris.w.document.querySelectorAll('#tetris-board .tetris-cell').length, 200);
+    check('tetris: a piece is on the board', tetris.w.document.querySelectorAll('#tetris-board .tetris-cell.is-filled').length >= 4, true);
+    check('tetris: the next queue is shown', tetris.w.document.querySelector('#tetris-next').children.length > 0, true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

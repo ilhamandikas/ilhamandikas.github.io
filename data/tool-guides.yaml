@@ -1378,3 +1378,98 @@ json-schema-validator:
       a: "A JSON Pointer into the document, starting at # for the root, with each property and array index appended. It points straight at the value that failed, so you can copy it into code that walks the same path."
     - q: "Is a valid result a guarantee?"
       a: "It means the document satisfies the keywords this page implements. It is not a full conformance suite: unknown keywords are treated as annotations, and formats are checked with pragmatic rules rather than the strictest reading of every specification."
+
+game-2048:
+  about: >-
+    The classic 2048 puzzle, rebuilt as a single page. Slide the board with the
+    arrow keys, WASD or a swipe; equal tiles merge into one and a fresh tile
+    appears after every move. The current score, the best score on this device
+    and a one-step undo sit above the board. The game is won when a 2048 tile
+    appears, but play continues for a higher score. Everything runs locally and
+    nothing is uploaded.
+  faq:
+    - q: "How does merging work?"
+      a: "A move slides every tile as far as it will go in that direction. Two tiles of the same value that meet merge into one tile of double the value, and a tile that has already merged once in a move cannot merge again. That single-merge rule is why sliding left can pair the first two tiles but leave the third of a triple alone."
+    - q: "Where is my best score kept?"
+      a: "In this browser's local storage, under a key that belongs to this page. It survives reloads and never leaves your device. Clearing site data resets it."
+    - q: "What does undo do?"
+      a: "It steps back exactly one move, including the score you gained and the random tile that appeared. There is only one level of undo, so use it to recover from a mis-swipe rather than to rewind a whole game."
+    - q: "Why did the game end when I still had empty squares?"
+      a: "A game is over only when no direction can move any tile. That can happen with gaps left on the board if the remaining tiles are all different and boxed in, so the board can look half-empty and still be finished."
+    - q: "Is there a strategy?"
+      a: "Most strong players keep their largest tile in one corner and build a descending chain along two edges, never moving the corner tile away. Deciding early which corner that is matters more than any single merge."
+
+memory-match:
+  about: >-
+    A memory game with three board sizes. Cards start face down; flip two at a
+    time and a matching pair stays up. The page counts your moves and times the
+    round from the first flip to the last pair, so you can see whether a bigger
+    board costs you speed or accuracy. Symbols are shuffled on every new game.
+  faq:
+    - q: "What do the difficulty levels change?"
+      a: "Only the number of pairs. Easy is a 4 × 4 board with eight pairs, Medium is 6 × 4 with twelve, and Hard is 6 × 6 with eighteen. More pairs mean more to remember at once, not a stricter rule set."
+    - q: "When does the timer start?"
+      a: "On your first flip, not when the page loads, so thinking time before you begin is not counted. It stops the moment the final pair is matched."
+    - q: "Why did my two cards turn back over?"
+      a: "They were not a pair. A mismatch is shown for a moment so you can memorise the symbols, then both cards turn face down again. A matching pair is locked face up."
+    - q: "Does a new game reshuffle the same symbols?"
+      a: "Yes, the same set of symbols is reused but their positions are shuffled every time. Switching difficulty also deals a fresh board immediately."
+    - q: "Is the board different every time?"
+      a: "The shuffle is random on each new game, so no two boards are the same unless you are very unlucky. Nothing about the board is stored or shared."
+
+minesweeper:
+  about: >-
+    Minesweeper with first-click safety and three board sizes. Click a cell to
+    open it and right-click to flag a suspected mine. Opening an empty cell
+    clears its neighbours automatically, numbers count the mines touching a
+    cell, and the round is won when every safe cell is open. A timer and a
+    mines-left counter sit above the grid.
+  faq:
+    - q: "What does first-click safety mean?"
+      a: "The mines are placed only after your first click, and never on that cell or its eight neighbours. Your opening move can therefore never end the game and will always clear a small area to work from."
+    - q: "How do I flag a mine?"
+      a: "Right-click a closed cell to flag it, and right-click again to remove the flag. Flagging is a note to yourself: it does not open the cell and it does not affect whether you win. The counter shows how many mines are still unaccounted for."
+    - q: "What do the numbers mean?"
+      a: "A number is how many of the eight surrounding cells contain a mine. The colour of the number changes with its value so a busy cell stands out at a glance."
+    - q: "How do I win?"
+      a: "Open every cell that is not a mine. You do not need to flag every mine, and you can finish with flags still on the board — the win is based on the safe cells you have cleared."
+    - q: "Is the board solvable without guessing?"
+      a: "Not always. Minesweeper can produce positions where logic alone leaves two equally likely options, and no amount of care will avoid a guess. The difficulty presets set the mine density, not a guarantee of a purely deductive board."
+
+snake:
+  about: >-
+    A grid Snake that runs entirely in the page. Steer with the arrow keys or
+    WASD, or the on-screen pad on touch. The snake starts on your first turn,
+    grows by one each time it eats, and speeds up as the score rises. The game
+    ends on a wall or on the snake's own body, and Space pauses. The best score
+    is kept on this device.
+  faq:
+    - q: "When does the snake start moving?"
+      a: "Only after your first direction, so the page never starts a game you did not ask for. After that the snake keeps moving in its current direction until you turn or pause."
+    - q: "Why can't I reverse direction?"
+      a: "Turning straight back into your own neck would end the game instantly, so a 180-degree turn is ignored. Press a perpendicular direction first and then the reverse if you really need to double back."
+    - q: "How does the speed work?"
+      a: "Each food makes the step delay a little shorter, down to a floor so the game stays playable. That means the longer you survive, the less time you have to react — the difficulty is the growth, not a separate setting."
+    - q: "Does eating count on the tail cell?"
+      a: "No. The cell the tail is about to leave is treated as free, so following your own tail closely is safe as long as you keep moving. Only the body that stays behind blocks you."
+    - q: "Where is my best score stored?"
+      a: "In this browser's local storage, tied to this page. It is never uploaded and disappears if you clear site data."
+
+tetris:
+  about: >-
+    A full Tetris in a single page: seven-bag randomiser, next-piece preview,
+    hold slot, a faint ghost showing where the piece will land, levels and
+    scoring. Arrow keys move and rotate, Down soft-drops, Space hard-drops, C
+    holds and P pauses. The board is drawn with DOM cells rather than a canvas,
+    so it stays crisp at any size and needs no plugins.
+  faq:
+    - q: "How does the piece randomiser work?"
+      a: "It uses a seven-bag: all seven tetrominoes are shuffled into a bag and dealt one at a time, then a new bag is shuffled. That means you never wait more than twelve pieces for a given shape, which is fairer than pure random drops."
+    - q: "What is the ghost piece?"
+      a: "The faint outline at the bottom of the falling piece. It shows where the piece will come to rest if you hard-drop right now, so you can judge a placement before committing to it."
+    - q: "How is scoring calculated?"
+      a: "Clearing one line is 100, two is 300, three is 500 and four is 800, multiplied by the current level. Soft-dropping adds one point per row and a hard drop adds two per row. Level rises every ten lines and speeds the fall up."
+    - q: "What does the hold slot do?"
+      a: "Press C to park the current piece and bring back whatever was in the hold slot, or to pull the piece out of it if the slot was empty. You can hold only once per piece, so it is a way to defer an awkward shape rather than to cycle freely."
+    - q: "Why is the board made of divs instead of a canvas?"
+      a: "A DOM grid keeps the theme's flat, crisp look at every zoom level, is selectable by the same styling as the rest of the site and needs no drawing code. It also means the game works even where canvas is unavailable."

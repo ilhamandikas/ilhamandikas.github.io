@@ -1,0 +1,20 @@
+<div class="tool-panel">
+  <h2>Minesweeper</h2>
+  <div class="ms-bar">
+    <label class="mm-inline"><span>Difficulty</span>
+      <select id="ms-level" class="tool-select">
+        <option value="easy" selected>Easy · 9 × 9 · 10 mines</option>
+        <option value="medium">Medium · 12 × 12 · 22 mines</option>
+        <option value="hard">Hard · 16 × 16 · 40 mines</option>
+      </select>
+    </label>
+    <div class="mm-stats">
+      <div class="mm-stat"><span>Mines left</span><strong id="ms-mines">10</strong></div>
+      <div class="mm-stat"><span>Time</span><strong id="ms-time">0s</strong></div>
+    </div>
+    <button class="btn primary" type="button" id="ms-new">New game</button>
+  </div>
+  <div class="ms-board" id="ms-board"></div>
+  <div class="tool-row"><span class="tool-status" id="ms-status" role="status" aria-live="polite"></span></div>
+  <p class="tool-hint">Click a cell to open it and right-click to flag a suspected mine. The first click is always safe, and opening an empty cell clears its neighbours. Clear every safe cell to win.</p>
+</div>

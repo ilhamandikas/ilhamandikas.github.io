@@ -534,11 +534,6 @@
       desc: Add commas, quotes, arrays or SQL IN formatting to one-item-per-line lists.
       keywords: [list, comma, lines, quote, array, sql in, csv, formatter]
       status: done
-    - slug: typing-speed-test
-      name: Typing Speed Test
-      desc: Measure WPM and accuracy with live per-character feedback and a restartable test.
-      keywords: [typing, speed, wpm, accuracy, test, words per minute, keyboard, practice]
-      status: done
 
 - name: Convert
   slug: convert
@@ -640,4 +635,38 @@
       name: JSON Schema Validator
       desc: Validate a JSON document against a JSON Schema (draft-07 subset) and list every problem with its JSON Pointer path.
       keywords: [json, schema, validate, draft-07, jsonschema, pointer, api, contract]
+      status: done
+
+- name: Games
+  slug: games
+  tools:
+    - slug: typing-speed-test
+      name: Typing Speed Test
+      desc: Measure WPM and accuracy with live per-character feedback and a restartable test.
+      keywords: [typing, speed, wpm, accuracy, test, words per minute, keyboard, practice]
+      status: done
+    - slug: game-2048
+      name: 2048
+      desc: Slide and merge numbered tiles to reach 2048, with undo, best score and keyboard or swipe controls.
+      keywords: [2048, game, puzzle, tiles, merge, slide, numbers]
+      status: done
+    - slug: memory-match
+      name: Memory Match
+      desc: Flip cards and find matching pairs, with move count, timer and difficulty levels.
+      keywords: [memory, match, pairs, cards, game, concentration]
+      status: done
+    - slug: minesweeper
+      name: Minesweeper
+      desc: Clear a grid without hitting a mine, with flags, first-click safety and difficulty levels.
+      keywords: [minesweeper, game, mines, flags, puzzle, grid]
+      status: done
+    - slug: snake
+      name: Snake
+      desc: Steer a growing snake to eat food without hitting the walls or yourself.
+      keywords: [snake, game, arcade, retro, canvas]
+      status: done
+    - slug: tetris
+      name: Tetris
+      desc: Stack falling tetrominoes and clear lines, with next-piece preview, hold and levels.
+      keywords: [tetris, game, blocks, tetromino, arcade, puzzle]
       status: done
