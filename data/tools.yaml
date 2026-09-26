@@ -558,6 +558,11 @@
       desc: Convert colors between HEX, RGB, HSL and more.
       keywords: [color, hex, rgb, hsl, convert, picker]
       status: done
+    - slug: fuel-economy-converter
+      name: Fuel Economy Converter
+      desc: Convert fuel economy between km/L, L/100 km and US or UK MPG.
+      keywords: [fuel, economy, mileage, kmpl, l/100km, mpg, liters, consumption, convert]
+      status: done
 
 - name: Math
   slug: math

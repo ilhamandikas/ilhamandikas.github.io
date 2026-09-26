@@ -1532,3 +1532,20 @@ textarea.tool-text { resize: vertical; }
 .tetris-mini.is-T { background: #7c3aed; }
 .tetris-cell.is-Z,
 .tetris-mini.is-Z { background: #dc2626; }
+
+/* Fuel economy converter */
+.fec-input-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.fec-field { display: flex; flex-direction: column; gap: 6px; min-width: 160px; }
+.fec-field > span {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.tool-table tr.is-active { background: var(--accent-soft); }
+.tool-table tr.is-active th { color: var(--accent); }

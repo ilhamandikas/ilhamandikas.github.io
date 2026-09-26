@@ -2259,6 +2259,22 @@ const check = (label, actual, expected) => {
     check('tetris: the next queue is shown', tetris.w.document.querySelector('#tetris-next').children.length > 0, true);
   }
 
+  /* -------------------------------------------------- fuel economy converter */
+
+  console.log('\n=== fuel economy converter ===');
+  {
+    const page = loadPage('fuel-economy-converter');
+    const cell = (i) => page.w.document.querySelectorAll('#fec-out tr')[i].querySelector('td').textContent;
+    set(page.w, '#fec-unit', 'kmpl');
+    set(page.w, '#fec-value', '100');
+    await sleep(30);
+    check('fuel: 100 km/L is 1 L/100 km', cell(1), '1');
+    set(page.w, '#fec-unit', 'l100');
+    set(page.w, '#fec-value', '235.214583');
+    await sleep(30);
+    check('fuel: 235.214583 L/100 km is 1 MPG (US)', cell(2), '1');
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [
