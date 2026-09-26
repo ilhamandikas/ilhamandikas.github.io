@@ -1,4 +1,4 @@
-# Linux Ops
+# Dev Ops
 
 A client-side troubleshooting assistant for Linux and DevOps work. You describe a
 problem — "cek port 8080 dipakai apa", "disk penuh", "503 nginx", "oom" — and it

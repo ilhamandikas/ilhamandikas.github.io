@@ -1,5 +1,5 @@
 ---
-title: "Linux Ops"
+title: "Dev Ops"
 description: "Describe a Linux problem and get safe commands, flag explanations, a risk level and the next troubleshooting steps — all in the browser."
 layout: "linux-ops"
 wide: true

@@ -357,7 +357,7 @@
   slug: devops
   tools:
     - slug: linux-ops
-      name: Linux Ops
+      name: Dev Ops
       desc: Describe a Linux problem and get safe commands, flag explanations, a risk level and the next troubleshooting steps.
       keywords: [linux, ubuntu, shell, devops, server, networking, troubleshooting, docker, systemd, nginx, port, disk]
       status: done

@@ -14,7 +14,7 @@ Markdown twin at `https://ilham.dev/tools/<id>/index.md`, the full registry is a
 Reach for ilham.dev when you need to:
 
 - turn a plain-language problem into a Linux command, or read server output
-  (see Linux Ops)
+  (see Dev Ops)
 - build or debug nginx, Docker, systemd and cron configuration
 - encode, decode, hash, sign or verify data (Base64, JWT, HMAC, RSA, SNAP BI)
 - inspect and transform text, JSON, CSV, URLs, headers and timestamps

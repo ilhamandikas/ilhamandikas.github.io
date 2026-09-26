@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Linux Ops Command Generator — a client-side troubleshooting assistant that turns a natural-language problem into safe commands, flag explanations, risk levels and next steps.",
+  "description": "Dev Ops — a client-side troubleshooting assistant that turns a natural-language problem into safe commands, flag explanations, risk levels and next steps.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

@@ -2514,7 +2514,7 @@ const check = (label, actual, expected) => {
     check('llms.txt: it links every tool', registry.tools.every((t) => llms.includes(t.url)), true);
 
     const markdown = fs.readFileSync(path.join(ROOT, 'tools', 'linux-ops', 'index.md'), 'utf8');
-    check('markdown twin: it starts with the tool name', markdown.startsWith('# Linux Ops'), true);
+    check('markdown twin: it starts with the tool name', markdown.startsWith('# Dev Ops'), true);
     check('markdown twin: it lists the curated use cases', markdown.includes('check which process uses a port'), true);
 
     check('robots.txt: it advertises the registry', fs.readFileSync(path.join(ROOT, 'robots.txt'), 'utf8').includes('tools/tools.json'), true);
