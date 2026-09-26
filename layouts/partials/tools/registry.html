@@ -1,0 +1,48 @@
+{{- /* The machine-readable tool registry, built from the same data the site
+       renders. Returns a slice of tool dicts, newest catalog order preserved.
+
+       Sources, in order of precedence:
+         data/tools.yaml        id, name, description, keywords, category, status
+         data/tool-guides.yaml  about + FAQ (the FAQ questions become examples)
+         data/tool-ai.yaml      optional use_cases / examples / keywords / features
+   */ -}}
+{{- $guides := index site.Data "tool-guides" | default dict -}}
+{{- $overlay := index site.Data "tool-ai" | default dict -}}
+{{- $base := site.BaseURL -}}
+{{- $defaultFeatures := slice "Runs in the browser" "No login required" "No data uploaded" -}}
+{{- $tools := slice -}}
+{{- range site.Data.tools -}}
+  {{- $category := . -}}
+  {{- range .tools -}}
+    {{- $slug := .slug -}}
+    {{- $guide := index $guides $slug | default dict -}}
+    {{- $ai := index $overlay $slug | default dict -}}
+    {{- $examples := slice -}}
+    {{- range ($guide.faq | default slice) -}}
+      {{- $examples = $examples | append .q -}}
+    {{- end -}}
+    {{- with index $ai "examples" }}{{ $examples = . }}{{ end -}}
+    {{- /* Keywords are free text in YAML, so a bare 2048 or 443 parses as a
+           number. Coerce to strings here so tools.json is type-stable. */ -}}
+    {{- $keywords := slice -}}
+    {{- range (.keywords | default slice) -}}
+      {{- $keywords = $keywords | append (printf "%v" .) -}}
+    {{- end -}}
+    {{- $entry := dict
+        "id" $slug
+        "name" (printf "%v" .name)
+        "url" (printf "%stools/%s/" $base $slug)
+        "documentation" (printf "%stools/%s/index.md" $base $slug)
+        "category" $category.slug
+        "category_name" $category.name
+        "description" (printf "%v" .desc)
+        "keywords" $keywords
+        "examples" $examples
+        "features" (index $ai "features" | default $defaultFeatures)
+        "status" (.status | default "done") -}}
+    {{- with index $ai "keywords" }}{{ $entry = merge $entry (dict "keywords" .) }}{{ end -}}
+    {{- with index $ai "use_cases" }}{{ $entry = merge $entry (dict "use_cases" .) }}{{ end -}}
+    {{- $tools = $tools | append $entry -}}
+  {{- end -}}
+{{- end -}}
+{{- return $tools -}}

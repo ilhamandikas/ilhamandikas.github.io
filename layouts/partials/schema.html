@@ -45,7 +45,13 @@
         "browserRequirements" "Requires JavaScript"
         "isAccessibleForFree" true
         "inLanguage" $lang
+        "keywords" (delimit ($meta.keywords | default slice) ", ")
         "author" $person
+        "subjectOf" (dict
+          "@type" "DigitalDocument"
+          "name" (printf "%s (Markdown)" .Title)
+          "encodingFormat" "text/markdown"
+          "url" (printf "%stools/%s/index.md" $home $slug))
         "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")) -}}
     {{- with $guide.faq -}}
       {{- $questions := slice -}}
@@ -74,6 +80,11 @@
         "@type" "CollectionPage" "name" .Title "description" $desc
         "url" .Permalink "inLanguage" $lang
         "isPartOf" (dict "@type" "WebSite" "name" site.Title "url" $home)
+        "subjectOf" (dict
+          "@type" "DataFeed"
+          "name" "Tool registry (JSON)"
+          "encodingFormat" "application/json"
+          "url" (printf "%stools/tools.json" $home))
         "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $parts) "itemListElement" $parts)) -}}
   {{- end -}}
   {{- $graph = $graph | append (dict "@type" "BreadcrumbList" "itemListElement" $crumbs) -}}

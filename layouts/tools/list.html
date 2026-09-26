@@ -39,6 +39,14 @@
       {{- end }}
     </div>
     <p class="subtitle" id="tools-empty" hidden>No tools match that search.</p>
+
+    <p class="tools-machine">
+      <span>For AI assistants:</span>
+      <a href="{{ "tools/tools.json" | relURL }}">tools.json</a>
+      <a href="{{ "tools/search-index.json" | relURL }}">search-index.json</a>
+      <a href="{{ "llms.txt" | relURL }}">llms.txt</a>
+      <a href="https://mcp.ilham.dev/mcp">MCP server</a>
+    </p>
   </div>
 </section>
 {{ end }}

@@ -1,0 +1,68 @@
+# Optional AI metadata that cannot be derived from the catalog or the guide.
+# Keyed by tool slug. Anything here overrides the generated defaults, so keep it
+# small: most tools already get their keywords from data/tools.yaml and their
+# example questions from the FAQ in data/tool-guides.yaml.
+
+linux-ops:
+  use_cases:
+    - check which process uses a port
+    - find what is filling the disk
+    - debug an nginx 502 or 503
+    - inspect a crash-looping Docker container
+    - read journalctl and systemctl output
+    - check memory pressure and swap
+  examples:
+    - How to check which process uses port 8080?
+    - How to find large files on Ubuntu?
+    - Nginx returns 503, what should I check?
+    - Which command shows memory usage per process?
+
+cron-next-runs:
+  use_cases:
+    - explain a cron expression
+    - see the next run times
+    - check a crontab schedule
+  examples:
+    - What does 0 3 * * * mean?
+    - When does */15 9-17 * * 1-5 run next?
+
+nginx-config-generator:
+  use_cases:
+    - generate an nginx server block
+    - add a reverse proxy with TLS
+    - set up gzip and caching
+  examples:
+    - How do I proxy /api to localhost:3000?
+    - What is a safe nginx config for a static site?
+
+nginx-reverse-proxy-wizard:
+  use_cases:
+    - add a reverse proxy step by step
+    - fix common proxy errors
+  examples:
+    - How do I set up a reverse proxy with WebSocket support?
+    - Why do I get 502 Bad Gateway from nginx?
+
+json-schema-validator:
+  use_cases:
+    - validate JSON against a schema
+    - find the path of a schema error
+  examples:
+    - How do I validate a JSON document against a draft-07 schema?
+    - Where exactly did my JSON fail validation?
+
+json-path-explorer:
+  use_cases:
+    - query JSON with JSONPath
+    - explore an API response
+  examples:
+    - How do I get every author from this JSON?
+    - How do I filter JSONPath results by value?
+
+jwt-parser:
+  use_cases:
+    - inspect a JWT without verifying it
+    - check when a token expires
+  examples:
+    - How do I read the claims in a JWT?
+    - When does this token expire?

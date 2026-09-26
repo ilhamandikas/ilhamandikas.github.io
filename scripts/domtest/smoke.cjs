@@ -82,7 +82,16 @@ function poke(w, slug) {
 }
 
 (async () => {
-  const slugs = fs.readdirSync(TOOLS).filter((d) => fs.statSync(path.join(TOOLS, d)).isDirectory()).sort();
+  const slugs = fs
+    .readdirSync(TOOLS)
+    .filter((d) => fs.statSync(path.join(TOOLS, d)).isDirectory())
+    .filter((d) => {
+      // Hugo aliases render a bare redirect stub with no tool markup or scripts;
+      // booting them would only ever report "no scripts found".
+      const html = fs.readFileSync(path.join(TOOLS, d, 'index.html'), 'utf8');
+      return !/http-equiv=refresh/i.test(html);
+    })
+    .sort();
   const report = [];
 
   for (const slug of slugs) {

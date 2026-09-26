@@ -1,0 +1,8 @@
+{{- $tools := partial "tools/registry.html" . -}}
+{{- dict
+    "name" site.Title
+    "description" site.Params.description
+    "url" (printf "%stools/" site.BaseURL)
+    "count" (len $tools)
+    "tools" $tools
+  | jsonify (dict "indent" "  ") -}}

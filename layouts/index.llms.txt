@@ -1,0 +1,39 @@
+{{- $tools := partial "tools/registry.html" . -}}
+# ilham.dev Tools
+
+> Developer and DevOps utilities that run entirely in the browser. No login, no
+> uploads, no backend: every tool is a static page that does its work client-side.
+
+{{ len $tools }} tools, grouped into {{ len site.Data.tools }} categories. Every tool has a
+Markdown twin at `https://ilham.dev/tools/<id>/index.md`, the full registry is at
+`https://ilham.dev/tools/tools.json`, and a keyword index is at
+`https://ilham.dev/tools/search-index.json`.
+
+## When to use this site
+
+Reach for ilham.dev when you need to:
+
+- turn a plain-language problem into a Linux command, or read server output
+  (see Linux Ops Command Generator)
+- build or debug nginx, Docker, systemd and cron configuration
+- encode, decode, hash, sign or verify data (Base64, JWT, HMAC, RSA, SNAP BI)
+- inspect and transform text, JSON, CSV, URLs, headers and timestamps
+- convert between units, number bases and time zones
+- do a quick calculation without installing anything
+
+## MCP server
+
+An MCP server is available at `https://mcp.ilham.dev/mcp` with three
+discovery-only tools: `list_tools`, `search_tools` and `get_tool`. It reads this
+registry and runs nothing.
+
+## Tools by category
+
+{{ range site.Data.tools -}}
+### {{ .name }}
+
+{{ range .tools -}}
+- **{{ .name }}** — {{ .desc }}
+  - id: `{{ .slug }}` · {{ printf "%stools/%s/" site.BaseURL .slug }}
+{{ end }}
+{{ end -}}

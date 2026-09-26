@@ -21,6 +21,22 @@
 /* The Linux Ops app is a self-contained panel; only its outer spacing is ours. */
 .lo-embed { margin: 0 0 2.5rem; }
 
+/* Machine-readable siblings of the catalog, linked for humans and crawlers. */
+.tools-machine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 34px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+}
+.tools-machine span { color: var(--text); font-weight: 600; }
+.tools-machine a { color: var(--accent); text-decoration: none; }
+.tools-machine a:hover { text-decoration: underline; }
+
 .tools-search { margin: 0 0 34px; }
 
 .tools-search-field {

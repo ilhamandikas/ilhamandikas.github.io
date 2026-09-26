@@ -2,3 +2,8 @@ User-agent: *
 Allow: /
 
 Sitemap: {{ "sitemap.xml" | absURL }}
+
+# Machine-readable indexes for AI assistants:
+#   {{ "llms.txt" | absURL }}
+#   {{ "tools/tools.json" | absURL }}
+#   {{ "tools/search-index.json" | absURL }}

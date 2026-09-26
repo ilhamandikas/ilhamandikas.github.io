@@ -35,3 +35,43 @@ timeZone = "Asia/Jakarta"
     style = "github"
   [markup.goldmark.renderer]
     unsafe = false
+
+# --- AI discovery --------------------------------------------------------------
+# Everything under /tools/*.json and /llms.txt is generated from data/tools.yaml
+# (plus data/tool-guides.yaml and the optional data/tool-ai.yaml overlay), so the
+# registry, the LLM index and the search index can never drift from the catalog
+# the site itself renders. Nothing extra has to be committed or built with npm.
+[mediaTypes."text/markdown"]
+  suffixes = ["md"]
+  delimiter = ""
+
+[outputFormats.LLMS]
+  mediaType = "text/plain"
+  baseName = "llms"
+  isPlainText = true
+  notAlternative = true
+
+[outputFormats.ToolsJSON]
+  mediaType = "application/json"
+  baseName = "tools"
+  isPlainText = true
+  notAlternative = true
+
+[outputFormats.SearchIndex]
+  mediaType = "application/json"
+  baseName = "search-index"
+  isPlainText = true
+  notAlternative = true
+
+[outputFormats.Markdown]
+  mediaType = "text/markdown"
+  baseName = "index"
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+  home = ["HTML", "RSS", "LLMS"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  term = ["HTML", "RSS"]

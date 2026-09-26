@@ -1,0 +1,11 @@
+{{- $tools := partial "tools/registry.html" . -}}
+{{- $index := slice -}}
+{{- range $tools -}}
+  {{- $index = $index | append (dict
+      "id" .id
+      "name" .name
+      "category" .category
+      "keywords" .keywords
+      "url" .url) -}}
+{{- end -}}
+{{- $index | jsonify -}}

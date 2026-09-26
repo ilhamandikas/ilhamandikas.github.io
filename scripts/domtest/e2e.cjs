@@ -2521,6 +2521,50 @@ const check = (label, actual, expected) => {
     check('jsonpath: invalid JSON is reported', read(jpe.w, '#jpe-status').toLowerCase().includes('json error'), true);
   }
 
+  /* ------------------------------------------------- AI discovery artifacts */
+
+  console.log('\n=== ai discovery ===');
+  {
+    const registry = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools', 'tools.json'), 'utf8'));
+    check('registry: it lists every tool', registry.count, TOOL_COUNT);
+    check('registry: the count matches the array', registry.tools.length, TOOL_COUNT);
+
+    const required = ['id', 'name', 'url', 'documentation', 'category', 'category_name', 'description', 'keywords', 'examples', 'features'];
+    check('registry: every tool carries the required fields', registry.tools.filter((t) => required.some((k) => t[k] === undefined || t[k] === '' || t[k] === null)).map((t) => t.id), []);
+    check('registry: every tool points at its own page', registry.tools.every((t) => t.url === `https://ilham.dev/tools/${t.id}/`), true);
+    check('registry: every tool documents a Markdown twin', registry.tools.every((t) => t.documentation === `https://ilham.dev/tools/${t.id}/index.md`), true);
+    check('registry: every tool has at least one example question', registry.tools.every((t) => Array.isArray(t.examples) && t.examples.length > 0), true);
+    check('registry: names and descriptions are strings', registry.tools.filter((t) => typeof t.name !== 'string' || typeof t.description !== 'string').map((t) => t.id), []);
+    check('registry: every keyword is a string', registry.tools.filter((t) => t.keywords.some((k) => typeof k !== 'string')).map((t) => t.id), []);
+    check('registry: every id has a content file', registry.tools.filter((t) => !fs.existsSync(path.join(ROOT, '..', 'content', 'tools', `${t.id}.md`))).map((t) => t.id), []);
+    check('registry: every tool has a Markdown twin on disk', registry.tools.filter((t) => !fs.existsSync(path.join(ROOT, 'tools', t.id, 'index.md'))).map((t) => t.id), []);
+
+    const curated = registry.tools.find((t) => t.id === 'linux-ops');
+    check('registry: the curated overlay supplies use cases', Array.isArray(curated.use_cases) && curated.use_cases.length > 0, true);
+
+    const index = JSON.parse(fs.readFileSync(path.join(ROOT, 'tools', 'search-index.json'), 'utf8'));
+    check('search index: it lists every tool', index.length, TOOL_COUNT);
+    check('search index: every entry keeps its keywords', index.every((e) => Array.isArray(e.keywords) && e.keywords.length > 0), true);
+
+    const llms = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
+    check('llms.txt: it names the catalog', llms.startsWith('# ilham.dev Tools'), true);
+    check('llms.txt: it states the tool count', llms.includes(`${TOOL_COUNT} tools`), true);
+    check('llms.txt: it links the registry', llms.includes('https://ilham.dev/tools/tools.json'), true);
+    check('llms.txt: it links every tool', registry.tools.every((t) => llms.includes(t.url)), true);
+
+    const markdown = fs.readFileSync(path.join(ROOT, 'tools', 'linux-ops', 'index.md'), 'utf8');
+    check('markdown twin: it starts with the tool name', markdown.startsWith('# Linux Ops Command Generator'), true);
+    check('markdown twin: it lists the curated use cases', markdown.includes('check which process uses a port'), true);
+
+    check('robots.txt: it advertises the registry', fs.readFileSync(path.join(ROOT, 'robots.txt'), 'utf8').includes('tools/tools.json'), true);
+    check('catalog: it advertises the registry in <head>', /rel=alternate[^>]*tools\.json/.test(fs.readFileSync(path.join(TOOLS, 'index.html'), 'utf8')), true);
+    check('catalog: it links the machine-readable files', /tools-machine[\s\S]*llms\.txt/.test(fs.readFileSync(path.join(TOOLS, 'index.html'), 'utf8')), true);
+
+    const toolHtml = fs.readFileSync(path.join(TOOLS, 'jwt-parser', 'index.html'), 'utf8');
+    check('tool page: it advertises its Markdown twin', /rel=alternate[^>]*jwt-parser\/index\.md/.test(toolHtml), true);
+    check('tool page: JSON-LD links the Markdown twin', toolHtml.includes('jwt-parser/index.md'), true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

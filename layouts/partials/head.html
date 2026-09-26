@@ -25,6 +25,22 @@
   <link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">
   {{- end }}
 
+  {{- /* Point crawlers and AI assistants at the machine-readable versions of
+         this page: /llms.txt on the home page, the registry and search index
+         on the tools catalog, and a Markdown twin of every tool page. */}}
+  {{- with .OutputFormats.Get "LLMS" }}
+  <link rel="alternate" type="text/plain" href="{{ .Permalink }}" title="llms.txt">
+  {{- end }}
+  {{- with .OutputFormats.Get "ToolsJSON" }}
+  <link rel="alternate" type="application/json" href="{{ .Permalink }}" title="Tool registry">
+  {{- end }}
+  {{- with .OutputFormats.Get "SearchIndex" }}
+  <link rel="alternate" type="application/json" href="{{ .Permalink }}" title="Search index">
+  {{- end }}
+  {{- with .OutputFormats.Get "Markdown" }}
+  <link rel="alternate" type="text/markdown" href="{{ .Permalink }}" title="Markdown">
+  {{- end }}
+
   <meta property="og:site_name" content="{{ site.Title }}">
   <meta property="og:locale" content="en_US">
   <meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }}{{ end }}">

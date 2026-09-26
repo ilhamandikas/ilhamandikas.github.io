@@ -730,7 +730,7 @@
       keywords: [typing, speed, wpm, accuracy, test, words per minute, keyboard, practice]
       status: done
     - slug: game-2048
-      name: 2048
+      name: "2048"
       desc: Slide and merge numbered tiles to reach 2048, with undo, best score and keyboard or swipe controls.
       keywords: [2048, game, puzzle, tiles, merge, slide, numbers]
       status: done
