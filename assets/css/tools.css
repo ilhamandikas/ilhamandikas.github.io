@@ -1130,7 +1130,8 @@ textarea.tool-text { resize: vertical; }
 .tz-grid,
 .dlg-grid,
 .int-grid,
-.df-grid {
+.df-grid,
+.imc-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
@@ -1142,7 +1143,26 @@ textarea.tool-text { resize: vertical; }
 .tz-grid .tool-field,
 .dlg-grid .tool-field,
 .int-grid .tool-field,
-.df-grid .tool-field { margin-bottom: 0; }
+.df-grid .tool-field,
+.imc-grid .tool-field { margin-bottom: 0; }
+.imc-sizes { display: grid; gap: 6px; margin: 0 0 16px; }
+.imc-sizes p { display: flex; gap: 10px; margin: 0; font-size: 14px; }
+.imc-label { min-width: 92px; font-weight: 600; color: var(--muted); }
+.imc-preview-wrap {
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+}
+#imc-canvas {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
 .rr-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 .dlg-options { align-items: center; margin-top: 14px; }
 .df-grid + .df-grid { margin-top: 14px; }

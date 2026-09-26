@@ -1034,9 +1034,28 @@ image-metadata:
     - q: "Is the GPS location exact?"
       a: "It is exactly what the file says, to as many decimal places as the file stores. Many cameras write a rounded position, and some write a position that was never fixed at all, so a coordinate in a file is a claim by the camera rather than a measurement you can rely on. The page shows the degrees, minutes and seconds it read alongside the decimal pair so you can check the conversion yourself."
     - q: "Can it remove metadata?"
-      a: "No. It only reads. Stripping metadata means re-encoding the image, which is a different tool and a lossy one — and it is worth knowing that the reliable way to remove EXIF is to re-export the picture from an editor, or to use a dedicated metadata stripper, rather than to trust a viewer."
+      a: "No. It only reads. Stripping metadata means re-encoding the image, which is a lossy step (the Image Compressor does exactly this) — and it is worth knowing that the reliable way to remove EXIF is to re-export the picture from an editor, or to use a dedicated metadata stripper, rather than to trust a viewer."
     - q: "Which formats are supported, and why those four?"
       a: "JPEG, PNG, GIF and WebP — the four whose metadata can be read from the file structure alone without a decoder. TIFF shares EXIF's structure with JPEG and is read where it appears inside one of these, but a standalone .tif is not accepted, because supporting it properly means supporting every TIFF variant including the ones that are not images at all."
+
+image-compressor:
+  about: >-
+    Pick a JPEG, PNG, GIF or WebP, cap its width and height, choose the output
+    format and quality, then download the result — all in the page, so the file
+    is never uploaded. The resize is a plain canvas re-encode: the dimensions
+    are treated as ceilings, so a photo is only ever shrunk and a smaller image
+    is left at its own size. Re-encoding also drops EXIF, GPS and camera
+    settings, which is a useful side effect when you want to share a picture
+    without the location it was taken.
+  faq:
+    - q: "Does compressing remove the metadata?"
+      a: "Yes, for the file you download. The pixels are redrawn onto a canvas and written out again, and a canvas only carries pixels, so EXIF, GPS and camera settings are not part of it. That is convenient when you want to strip a location before sharing, but it also means a rotated photo can come out the wrong way round, because the orientation tag that told viewers how to display it is gone."
+    - q: "Why did my translucent PNG turn black or white?"
+      a: "Because the format you chose does not keep transparency. JPEG has no alpha channel, so transparent pixels are filled with the encoder's default colour, usually black. Keep PNG or WebP selected when the image has a transparent background, and switch to JPEG only when every pixel is opaque."
+    - q: "The file got bigger instead of smaller — why?"
+      a: "Re-encoding is not automatically a win. Re-encoding a photograph to PNG usually changes little, and turning a small, already-optimised JPEG into a PNG can easily double it. The quality slider only applies to JPEG and WebP; for those two, lowering it is what actually shrinks the file."
+    - q: "Is there a size limit?"
+      a: "Only what the browser and its memory can hold. Everything runs on this device, so a very large panorama can be slow or hit the canvas size limit, around 16,000 pixels a side in most browsers. If a huge image fails, cap the width or height and try again."
 
 file-hash-checker:
   about: >-

@@ -1537,6 +1537,40 @@ const check = (label, actual, expected) => {
     check('image: ...and nothing from the previous file is left on screen', read(page.w, '#img-results'), '');
   }
 
+  /* ------------------------------------------------------ image compressor */
+
+  console.log('\n=== image compressor ===');
+  {
+    const page = loadPage('image-compressor');
+    // Nothing chosen yet, so the page is quiet and the result panel is absent.
+    check('image-compressor: no error before a file is chosen', read(page.w, '#imc-status'), '');
+    check('image-compressor: the result panel is hidden until there is a result',
+      page.w.document.querySelector('#imc-preview').hidden, true);
+
+    const load = async (data, name, type) => {
+      const file = new page.w.File([data], name, { type });
+      const field = page.w.document.querySelector('#imc-file');
+      Object.defineProperty(field, 'files', { value: [file], configurable: true });
+      field.dispatchEvent(new page.w.Event('change', { bubbles: true }));
+      await sleep(80);
+    };
+
+    await load(new Uint8Array([1, 2, 3, 4]), 'notes.txt', 'text/plain');
+    check('image-compressor: a file that is not an image is refused by its bytes',
+      read(page.w, '#imc-status'),
+      'This does not look like a JPEG, PNG, GIF or WebP. Those are the four this page can read.');
+
+    // jsdom has no 2D context, so a real header reaches the guard, not a crash.
+    const pngHead = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    await load(pngHead, 'shot.png', 'image/png');
+    check('image-compressor: an unsupported canvas is reported, not thrown',
+      read(page.w, '#imc-status'), 'This browser cannot resize images.');
+
+    click(page.w, '#imc-download');
+    check('image-compressor: download without a picture asks for one first',
+      read(page.w, '#imc-status'), 'Choose an image first.');
+  }
+
   /* --------------------------------------------------------- websocket tester */
 
   console.log('\n=== websocket tester ===');

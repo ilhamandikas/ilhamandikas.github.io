@@ -465,6 +465,11 @@
       desc: Read the EXIF, GPS, comments and colour data hidden inside a photo, without uploading it.
       keywords: [exif, metadata, image, photo, gps, location, camera, jpeg, png, webp, gif, xmp, iptc, hidden data, geotag]
       status: done
+    - slug: image-compressor
+      name: Image Compressor
+      desc: Resize and re-encode an image in the browser — cap its dimensions, pick a format and quality, then download the smaller file.
+      keywords: [image, compress, resize, optimize, jpeg, png, webp, gif, quality, shrink, scale, downsize, thumbnail, strip metadata, exif, canvas]
+      status: done
     - slug: html-wysiwyg-editor
       name: HTML Editor
       desc: A small rich-text editor that exports clean HTML.
