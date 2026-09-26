@@ -1725,22 +1725,30 @@ monaco-editor:
   about: >-
     A scratchpad built on the Monaco editor — the same editor that powers
     Visual Studio Code — with syntax highlighting, bracket matching, code
-    folding and a formatter for the languages that ship one. Choose a language
-    from the list and write or paste code. Monaco is a large bundle, so it is
-    fetched from a CDN only when you press Enable Monaco; until then, and if
-    the fetch fails, the page uses a plain text area with the same copy,
-    download and clear actions. Nothing you type is ever sent anywhere.
+    folding, inline decorations and a formatter for the languages that ship
+    one. Choose a language from the list and write or paste code, or open a
+    file with the picker or by dropping it onto the editor. Monaco is a large
+    bundle, so it is fetched from a CDN only when you press Enable Monaco;
+    until then, and if the fetch fails, the page uses a plain text area with
+    the same open, copy, download and clear actions. Nothing you type or open
+    is ever sent anywhere.
   faq:
     - q: "Why does the editor not appear straight away?"
       a: "Monaco is several megabytes, so loading it on every visit would slow the page down for people who only want a quick text box. It is fetched on demand when you press Enable Monaco. Until then a plain text area is used, and it keeps working if the fetch fails."
+    - q: "Can I open a file instead of pasting?"
+      a: "Yes. Press Open file, or drag a file onto the editor. Text files are read in the browser, the language is set from the file extension, and Download then saves under the same name. A file you drop never leaves your machine."
+    - q: "How does it choose the language?"
+      a: "From the file extension: .ts becomes TypeScript, .yaml becomes YAML, and so on. The extension overrides a language you picked by hand, because it is the better signal. An unknown extension leaves the current language alone."
+    - q: "Why was my file refused?"
+      a: "Files that look binary — images, archives, executables, anything containing a NUL byte — are not text, so loading them would only show noise. Files over 10 MB are refused too, and files over 2 MB load with a warning that editing may feel slow."
     - q: "Is my code uploaded?"
       a: "No. The editor runs entirely in your browser and nothing is sent to a server. The only network request is the one that fetches the editor itself from a CDN, and that request contains none of your text."
     - q: "Which languages have a formatter?"
       a: "Monaco ships formatters for a handful of languages such as JavaScript, TypeScript, JSON, HTML and CSS. For languages without one the Format button reports that no formatter is available rather than changing your text."
     - q: "Does it work offline?"
-      a: "The plain text area does. Monaco itself needs one successful download the first time; after that your browser may keep it in its cache, but a hard refresh while offline falls back to the text area."
+      a: "The plain text area does, and so does opening a file. Monaco itself needs one successful download the first time; after that your browser may keep it in its cache, but a hard refresh while offline falls back to the text area."
     - q: "Where did my text go when I pressed Clear?"
-      a: "It is gone from the page — Clear empties the editor and the text area together. The editor keeps no copy, so there is nothing to recover afterwards."
+      a: "It is gone from the page — Clear empties the editor and the text area together, and resets the file name. The editor keeps no copy, so there is nothing to recover afterwards."
 
 javascript-playground:
   about: >-

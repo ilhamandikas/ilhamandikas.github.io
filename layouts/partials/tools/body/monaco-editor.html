@@ -31,12 +31,15 @@
       </select>
     </label>
     <button class="btn primary" type="button" id="mon-load">Enable Monaco</button>
+    <button class="btn" type="button" id="mon-open">Open file</button>
+    <input type="file" id="mon-file" hidden>
     <button class="btn" type="button" id="mon-format">Format</button>
     <button class="btn" type="button" data-copy="#mon-editor" data-status="#mon-status">Copy</button>
     <button class="btn" type="button" data-download="#mon-editor" data-filename="snippet.txt" data-mime="text/plain">Download</button>
     <button class="btn" type="button" id="mon-clear">Clear</button>
     <span class="mon-badge" id="mon-badge">Plain editor</span>
   </div>
+  <p class="mon-drop-hint">Drag a file onto the editor, or press <strong>Open file</strong>. Text files are detected by extension; binaries are refused.</p>
   <div class="mon-editor-wrap">
     <div id="mon-container" class="mon-container" hidden></div>
     <textarea id="mon-editor" class="mon-textarea" rows="18" spellcheck="false">const greet = (name) => `Hello, ${name}!`;
@@ -45,6 +48,7 @@ console.log(greet('DevOps'));</textarea>
   </div>
   <div class="tool-row">
     <span class="mon-meta" id="mon-meta">0 lines · 0 chars</span>
+    <span class="mon-file-name" id="mon-file-name" hidden></span>
     <span class="tool-status" id="mon-status" role="status" aria-live="polite"></span>
   </div>
 </div>

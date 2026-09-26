@@ -2461,6 +2461,40 @@ const check = (label, actual, expected) => {
     check('monaco: the line and character count updates', read(mon.w, '#mon-meta').includes('1 line'), true);
     set(mon.w, '#mon-lang', 'json');
     check('monaco: the language can be changed', read(mon.w, '#mon-lang'), 'json');
+
+    // Opening a file. jsdom has no picker, so set `files` by hand and fire change.
+    const fileInput = mon.w.document.querySelector('#mon-file');
+    const openFile = (name, parts) => {
+      const file = new mon.w.File(parts, name);
+      Object.defineProperty(fileInput, 'files', { value: [file], configurable: true });
+      fileInput.dispatchEvent(new mon.w.Event('change', { bubbles: true }));
+    };
+
+    openFile('app.ts', ['const x: number = 1;\n']);
+    await sleep(60);
+    check('monaco: a text file loads into the editor', read(mon.w, '#mon-editor').includes('const x: number = 1;'), true);
+    check('monaco: the language follows the file extension', read(mon.w, '#mon-lang'), 'typescript');
+    check('monaco: the file name is offered to download', read(mon.w, '#mon-file-name'), 'app.ts');
+
+    openFile('photo.png', ['not really a png']);
+    await sleep(60);
+    check('monaco: a binary file is refused', read(mon.w, '#mon-status').includes('binary'), true);
+    check('monaco: a refused file leaves the editor alone', read(mon.w, '#mon-editor').includes('const x: number = 1;'), true);
+
+    openFile('weird.dat', ['abc\u0000def']);
+    await sleep(60);
+    check('monaco: a NUL byte marks a file as binary', read(mon.w, '#mon-status').includes('binary'), true);
+
+    // Drag and drop shares the picker's code path.
+    const dropEvent = new mon.w.Event('drop', { bubbles: true, cancelable: true });
+    Object.defineProperty(dropEvent, 'dataTransfer', {
+      value: { files: [new mon.w.File(['# dropped'], 'notes.md')], dropEffect: '' },
+    });
+    mon.w.document.querySelector('.mon-editor-wrap').dispatchEvent(dropEvent);
+    await sleep(60);
+    check('monaco: a dropped file loads', read(mon.w, '#mon-editor'), '# dropped');
+    check('monaco: a dropped .md sets markdown', read(mon.w, '#mon-lang'), 'markdown');
+
     mon.w.document.querySelector('#mon-clear').click();
     await sleep(20);
     check('monaco: clear empties the editor', read(mon.w, '#mon-editor'), '');
