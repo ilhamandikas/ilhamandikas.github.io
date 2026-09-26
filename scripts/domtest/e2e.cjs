@@ -1727,6 +1727,48 @@ const check = (label, actual, expected) => {
       read(upc.w, '#upc-status'), '4 products compared.');
   }
 
+  /* --------------------------------------------------- text & chat utilities */
+
+  console.log('\n=== text & chat utilities ===');
+  {
+    const age = loadPage('age-calculator');
+    set(age.w, '#age-birth', '2000-01-15');
+    set(age.w, '#age-ref', '2020-03-10');
+    const ageText = read(age.w, '#age-output');
+    check('age: years, months and days are counted the birthday way',
+      /^Age: 20 years, 1 month, 24 days$/m.test(ageText), true);
+    check('age: the totals include months and days',
+      /^Total days: 7360$/m.test(ageText) && /^Total months: 241$/m.test(ageText), true);
+    check('age: the birth weekday and next birthday are named',
+      /^Born on a Saturday$/m.test(ageText) && /^Next birthday: 15 January \(in 311 days\)$/m.test(ageText), true);
+
+    const typ = loadPage('typo-spotter');
+    set(typ.w, '#typ-input', 'Hello  world ,this is is a test!!');
+    const typText = read(typ.w, '#typ-output');
+    check('typo spotter: each rule is listed with a position',
+      /double space/.test(typText)
+        && /space before punctuation/.test(typText)
+        && /missing space after punctuation/.test(typText)
+        && /repeated word "is is"/.test(typText)
+        && /repeated punctuation "!!"/.test(typText),
+      true);
+    check('typo spotter: the findings are counted',
+      read(typ.w, '#typ-status'), '5 findings.');
+
+    const wal = loadPage('whatsapp-link-generator');
+    set(wal.w, '#wal-cc', '62');
+    set(wal.w, '#wal-phone', '081234567890');
+    set(wal.w, '#wal-message', 'Hello there');
+    check('whatsapp link: the national zero is dropped and the text is encoded',
+      read(wal.w, '#wal-output'), 'https://wa.me/6281234567890?text=Hello%20there');
+
+    const waf = loadPage('whatsapp-formatter');
+    set(waf.w, '#waf-input', '*bold* _italic_ ~strike~ ```code```');
+    check('whatsapp formatter: the markers become tags in the preview',
+      waf.w.document.querySelector('#waf-preview').innerHTML,
+      '<strong>bold</strong> <em>italic</em> <del>strike</del> <code>code</code>');
+  }
+
   /* --------------------------------------------------------- websocket tester */
 
   console.log('\n=== websocket tester ===');

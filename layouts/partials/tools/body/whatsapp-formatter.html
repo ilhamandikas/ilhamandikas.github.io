@@ -1,0 +1,28 @@
+<div class="tool-panel">
+  <h2>WhatsApp Message Formatter</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-wa="*">Bold</button>
+    <button class="btn" type="button" data-wa="_">Italic</button>
+    <button class="btn" type="button" data-wa="~">Strikethrough</button>
+    <button class="btn" type="button" data-wa="```">Monospace</button>
+    <button class="btn" type="button" data-wa="-" data-wa-list="1">Bullet list</button>
+    <button class="btn" type="button" data-wa="1." data-wa-list="1">Numbered list</button>
+  </div>
+  <label class="tool-field">
+    <span>Message</span>
+    <textarea id="waf-input" class="tool-input tool-code" rows="7" spellcheck="false">*Pesanan* sudah dikirim _hari ini_
+- Cek nomor resi
+- Konfirmasi setelah paket sampai
+Terima kasih!</textarea>
+  </label>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#waf-input" data-status="#waf-status">Copy message</button>
+    <span class="tool-status" id="waf-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Preview</h2>
+  <div id="waf-preview" class="tool-preview"></div>
+  <p class="tool-hint">WhatsApp reads *bold*, _italic_, ~strikethrough~ and ```monospace```. Select some text and press a button to wrap it, or press a list button to prefix each selected line. The preview is how the message will look once sent.</p>
+</div>

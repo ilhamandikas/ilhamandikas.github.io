@@ -1130,6 +1130,23 @@ textarea.tool-text { resize: vertical; }
   overflow-wrap: anywhere;
 }
 
+.tool-preview {
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.tool-preview code {
+  padding: 1px 3px;
+  border-radius: 4px;
+  background: var(--bg-soft);
+  font-family: var(--mono);
+  font-size: 13.5px;
+}
+
 .sticker-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

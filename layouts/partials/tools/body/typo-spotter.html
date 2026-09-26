@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <h2>Typo Spotter</h2>
+  <label class="tool-field">
+    <span>Text</span>
+    <textarea id="typ-input" class="tool-input tool-code" rows="7" spellcheck="false">Halo  dunia ,ini contoh teks yang yang punya beberapa masalah ..
+Besok kita pergi ke mall,terus makan diatas jam 7 !</textarea>
+  </label>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="typ-informal" checked> Flag informal Indonesian short forms</label>
+    <button class="btn" type="button" data-copy="#typ-output" data-status="#typ-status">Copy</button>
+    <span class="tool-status" id="typ-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Findings</h2>
+  <pre id="typ-output" class="tool-result"></pre>
+  <p class="tool-hint">A plain rule checker, not a grammar engine. It catches double spaces, stray spaces before punctuation, missing spaces after it, repeated words, repeated exclamation marks and a few common Indonesian short forms, listing the line and column of each.</p>
+</div>

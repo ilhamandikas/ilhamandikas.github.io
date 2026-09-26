@@ -1933,3 +1933,63 @@ unit-price-comparator:
       a: "ml, l, g, kg, m and cm, plus a few spelled-out forms, and pcs and buah for counted items. Write price and quantity as plain numbers, without thousand separators, and separate the four fields with commas."
     - q: "Is the cheapest always the best buy?"
       a: "Only on price. Quality, shelf life and how much you will actually use are not in the numbers, so treat the ranking as one input rather than the answer."
+
+age-calculator:
+  about: >-
+    Work out an age the way a birthday works: whole years, then whole months,
+    then the leftover days. Alongside that it shows the totals in days, weeks,
+    months and hours, the weekday someone was born on, and how long until the
+    next birthday. Move the second date to see an age at any point.
+  faq:
+    - q: "Why not just divide the total days by 365?"
+      a: "Because a year is not 365 days on average and months have different lengths. Counting whole years, then months, then days is how people read an age, and it stays correct across leap years."
+    - q: "Which date is the second field for?"
+      a: "It is the date you are measuring the age at. It defaults to today, but you can set it to a past date for a record or a future date to see how old someone will be."
+    - q: "How is the next birthday counted?"
+      a: "The page takes the birth month and day in the current year, or the next one if that has already passed this year, and counts the days between. A birthday today shows as today."
+
+typo-spotter:
+  about: >-
+    A rule checker for the mistakes that spellcheck misses. It flags double
+    spaces, a space before a comma or a full stop, a missing space after
+    punctuation, repeated words such as the same word twice, runs of
+    exclamation marks and spaces hugging brackets. Turn on the informal switch
+    and it also lists common Indonesian short forms like yg, tdk and diatas with
+    the fuller word to use instead.
+  faq:
+    - q: "Is this checking grammar?"
+      a: "No. It only matches patterns, so it will not tell you whether a sentence makes sense and it does not know the difference between your and you're. It is a first pass for mechanical slips, not a replacement for reading the text."
+    - q: "Why does it flag text that looks fine?"
+      a: "Some rules are deliberately blunt. A missing-space rule will fire on e.g. and a repeated-word rule on a genuine repetition like had had, both of which are sometimes correct. Treat the list as suggestions and skim it."
+    - q: "Does anything leave the page?"
+      a: "No. The checking runs entirely in the browser, so drafts and internal notes can be pasted in without them being sent anywhere."
+
+whatsapp-link-generator:
+  about: >-
+    Build a wa.me link that opens a chat with a number and a message already
+    filled in. Enter the country code and the phone number, type the message,
+    and the page writes the click-to-chat link, ready to paste into a page, an
+    email or a QR code.
+  faq:
+    - q: "Why is the leading zero removed?"
+      a: "wa.me needs the number in international form, which has no national trunk prefix. A local number written 0812 becomes 62812 once the country code is added, so the leading zero is dropped before the two are joined."
+    - q: "Does the message have to be encoded?"
+      a: "Spaces and punctuation cannot sit raw in a URL, so the message is percent-encoded. That is why a space turns into %20 in the link; WhatsApp decodes it back to a normal space when the chat opens."
+    - q: "Can I shorten the link?"
+      a: "Not here, because shortening needs a request to a third-party service and this page never sends your text anywhere. Use your own shortener afterwards if you need one."
+
+whatsapp-formatter:
+  about: >-
+    Write a WhatsApp message without remembering which character makes what
+    bold. Select some text and press a button to wrap it, or press a list button
+    to prefix each line, then watch the preview update to show how the message
+    will look. Bold, italic, strikethrough and monospace are all supported, and
+    the raw marker characters stay in the text so you can copy it straight into
+    the chat box.
+  faq:
+    - q: "Which markers does WhatsApp use?"
+      a: "An asterisk on each side for bold, an underscore for italic, a tilde for strikethrough and three backticks for monospace. They only take effect when the character touches text with no space, which is why the wrap button adds them snugly."
+    - q: "Do the buttons need a selection?"
+      a: "No. With nothing selected the markers are inserted as a pair and the caret is placed between them, so you can type the text afterwards. With a selection the markers go around it."
+    - q: "Can the preview differ from WhatsApp?"
+      a: "Slightly. The page renders the markers as HTML for a quick look, while WhatsApp applies its own rules, so an unusual nesting of markers may look a little different in the app. The copy button always gives you the plain text with markers."

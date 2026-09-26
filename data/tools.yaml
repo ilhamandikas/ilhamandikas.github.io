@@ -495,6 +495,11 @@
       desc: Write JavaScript with syntax highlighting and run it in the page, reading its console output, return value and timing.
       keywords: [javascript, js, playground, run, console, snippet, test, es6, monaco, editor, syntax highlighting]
       status: done
+    - slug: whatsapp-link-generator
+      name: WhatsApp Link Generator
+      desc: Turn a phone number and a message into a wa.me click-to-chat link.
+      keywords: [whatsapp, wa.me, click to chat, link, phone, message, generator, wa]
+      status: done
 
 - name: Workflow
   slug: workflow
@@ -648,6 +653,16 @@
       desc: Spell an Indonesian number out in words, for invoices and receipts.
       keywords: [number, words, indonesia, rupiah, terbilang, invoice, spelling, angka, huruf, bilangan]
       status: done
+    - slug: typo-spotter
+      name: Typo Spotter
+      desc: Flag double spaces, stray spaces around punctuation, repeated words and informal Indonesian short forms.
+      keywords: [typo, typo checker, spelling, double space, punctuation, repeated words, proofread, informal, indonesia, ejaan, salah ketik]
+      status: done
+    - slug: whatsapp-formatter
+      name: WhatsApp Message Formatter
+      desc: Format a WhatsApp message with bold, italic, strikethrough, monospace and lists, with a live preview.
+      keywords: [whatsapp, format, bold, italic, strikethrough, monospace, list, message, chat, wa]
+      status: done
 
 - name: Convert
   slug: convert
@@ -730,6 +745,11 @@
       name: Unit Price Comparator
       desc: Compare products by unit price so different pack sizes can be ranked on the same scale.
       keywords: [unit price, compare, value, per litre, per kilo, harga satuan, product, pack size, cheapest]
+      status: done
+    - slug: age-calculator
+      name: Age Calculator
+      desc: Work out an age in years, months and days, with totals and the next birthday.
+      keywords: [age, birthday, birth date, umur, tanggal lahir, years, months, days, calculator]
       status: done
 
 - name: Data
