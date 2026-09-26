@@ -2195,14 +2195,18 @@ text-to-pdf:
 
 mic-tester:
   about: >-
-    Find out whether a microphone is picking anything up, and how loudly. The
-    browser opens the input and the level is measured on a bar with a peak
-    marker, so a quiet headset or a muted laptop mic is obvious at a glance.
+    Find out whether a microphone is picking anything up, and how loudly, then
+    keep a clip of it. The browser opens the input and the level is measured on a
+    bar with a peak marker, so a quiet headset or a muted laptop mic is obvious at
+    a glance. Press Record and the same signal is captured, so the recording can
+    be played back on the page straight away or downloaded as a file.
   faq:
-    - q: "Is anything recorded or sent anywhere?"
-      a: "No. The audio is read through an analyser inside the page and turned into a number. There is no recorder attached, no buffer is kept, and no request leaves the browser."
+    - q: "Where does the recording go?"
+      a: "Nowhere. It is held as a blob in this tab, played through a local object url and dropped when the tab closes. The only way it leaves the browser is if you press Download."
     - q: "Why does the browser ask for permission?"
-      a: "Reading a microphone requires an explicit grant by design, and it is asked for the first time you press Start listening. If it was blocked earlier, the padlock in the address bar is where you allow it again."
+      a: "Reading a microphone requires an explicit grant by design, and it is asked for the first time you press Start microphone. If it was blocked earlier, the padlock in the address bar is where you allow it again."
+    - q: "What format is the clip saved in?"
+      a: "Whatever the browser can encode, which is usually WebM with Opus in Chrome and Firefox and MP4 in Safari. The panel names the format it used, and the download keeps the matching file extension."
     - q: "Why does the bar barely move when I speak?"
       a: "Usually the wrong input device is selected, or its gain is low in the system sound settings. Also check that automatic gain control is not fighting the test, and try again closer to the microphone."
 

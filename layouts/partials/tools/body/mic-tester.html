@@ -1,9 +1,9 @@
 <div class="tool-panel">
-  <h2>Microphone tester</h2>
-  <p class="tool-hint">The microphone is opened straight from this page and the sound never leaves it. The level is measured in memory only, so nothing is recorded and nothing is uploaded.</p>
+  <h2>Microphone recorder</h2>
+  <p class="tool-hint">The microphone is opened straight from this page, and both the level and the recording stay in it. A clip is held in memory only, so you can play it back and download it, and it disappears when the tab closes.</p>
   <div class="tool-row">
-    <button class="btn primary" type="button" id="mic-start">Start listening</button>
-    <button class="btn" type="button" id="mic-stop" disabled>Stop</button>
+    <button class="btn primary" type="button" id="mic-start">Start microphone</button>
+    <button class="btn" type="button" id="mic-stop" disabled>Stop microphone</button>
     <span class="tool-status" id="mic-status"></span>
   </div>
   <div class="mic-meter" id="mic-meter">
@@ -15,6 +15,26 @@
     <p><span class="imc-label">Peak</span><span id="mic-peak-value">—</span></p>
     <p><span class="imc-label">Input</span><span id="mic-device">—</span></p>
   </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="mic-record" disabled>Record</button>
+    <button class="btn" type="button" id="mic-record-stop" disabled>Stop recording</button>
+    <span class="imc-label" id="mic-time">0:00</span>
+    <span class="tool-status" id="mic-record-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel" id="mic-result" hidden>
+  <h2>Recording</h2>
+  <audio id="mic-audio" controls preload="metadata"></audio>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Length</span><span id="mic-length">—</span></p>
+    <p><span class="imc-label">Size</span><span id="mic-size">—</span></p>
+    <p><span class="imc-label">Format</span><span id="mic-type">—</span></p>
+  </div>
+  <div class="tool-row">
+    <button class="btn" type="button" id="mic-download">Download</button>
+    <button class="btn" type="button" id="mic-discard">Discard</button>
+  </div>
 </div>
 
 <details class="tool-panel tool-fold">
@@ -25,6 +45,7 @@
       <li><strong>Peak</strong> is the loudest moment since listening started. A peak that reaches 0 means the input is clipping, and turning the gain down will sound better than any repair afterwards.</li>
       <li>A bar that barely moves usually means the wrong input device is selected, or the gain is set low in the system sound settings rather than in the browser.</li>
       <li>Speech that sits between about -24 and -12 dBFS is comfortable for a call or a recording.</li>
+      <li><strong>Record</strong> captures the same signal the meter shows. A fresh recording replaces the last one, and Discard throws it away without a trace on disk.</li>
     </ul>
   </div>
 </details>

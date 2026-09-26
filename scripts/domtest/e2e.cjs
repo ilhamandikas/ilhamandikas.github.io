@@ -1877,8 +1877,15 @@ const check = (label, actual, expected) => {
     check('mic tester: the button is disabled without microphone support', mic.w.document.querySelector('#mic-start').disabled, true);
     check('mic tester: the reason is stated plainly', read(mic.w, '#mic-status'), 'This browser does not offer a microphone to the page.');
     check('mic tester: no level is claimed before a run', read(mic.w, '#mic-level'), '—');
+    check('mic tester: recording waits for a microphone', mic.w.document.querySelector('#mic-record').disabled, true);
+    check('mic tester: recording cannot be stopped before it starts', mic.w.document.querySelector('#mic-record-stop').disabled, true);
+    check('mic tester: the clock is at rest', read(mic.w, '#mic-time'), '0:00');
+    check('mic tester: no clip is offered before a run', mic.w.document.querySelector('#mic-result').hidden, true);
+    check('mic tester: recording says nothing before a run', read(mic.w, '#mic-record-status'), '');
     click(mic.w, '#mic-start');
     check('mic tester: a click on the disabled button changes nothing', read(mic.w, '#mic-status'), 'This browser does not offer a microphone to the page.');
+    click(mic.w, '#mic-record');
+    check('mic tester: a clip cannot be recorded without one', mic.w.document.querySelector('#mic-result').hidden, true);
 
     const pad = loadPage('gamepad-tester');
     check('gamepad tester: the missing API is stated plainly', read(pad.w, '#gpd-status'), 'This browser does not offer gamepads to the page.');

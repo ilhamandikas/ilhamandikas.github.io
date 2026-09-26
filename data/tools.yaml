@@ -411,9 +411,9 @@
       keywords: [user agent, browser, os, device, parse]
       status: done
     - slug: mic-tester
-      name: Mic Tester
-      desc: Check that a microphone works and watch its level and peak in real time.
-      keywords: [microphone, mic, audio, level, meter, test, input, dbfs, clipping, recording]
+      name: Microphone Recorder
+      desc: Check a microphone, watch its level and peak, and record a clip to play back or download.
+      keywords: [microphone, mic, audio, level, meter, test, input, dbfs, clipping, recording, recorder, voice, playback]
       status: done
     - slug: openapi-viewer
       name: OpenAPI Viewer
