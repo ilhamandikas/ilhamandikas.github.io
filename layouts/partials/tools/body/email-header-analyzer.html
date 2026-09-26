@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <h2>Email Header Analyzer</h2>
+  <label class="tool-field">
+    <span>Raw email headers</span>
+    <textarea id="eh-input" class="tool-input" rows="12" spellcheck="false" placeholder="Return-Path: &lt;sender@example.com&gt;&#10;Received: from mail.example.com (mail.example.com [203.0.113.10]) by mx.google.com; Tue, 1 Oct 2024 10:00:03 -0700&#10;Received: from client.example.com (client.example.com [198.51.100.5]) by mail.example.com; Tue, 1 Oct 2024 09:59:58 -0700&#10;From: Sender &lt;sender@example.com&gt;&#10;Subject: Hello&#10;Authentication-Results: mx.google.com; spf=pass; dkim=pass; dmarc=pass"></textarea>
+  </label>
+  <p class="tool-hint">Paste the raw headers from “Show original” in your mail client. The page lists the delivery hops in order, the time between them, and the SPF, DKIM and DMARC verdicts. Everything is parsed in the browser.</p>
+  <p class="tool-status" id="eh-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Summary</h2>
+  <dl class="tool-results" id="eh-summary"></dl>
+</div>
+
+<div class="tool-panel">
+  <h2>Delivery path</h2>
+  <div id="eh-hops"></div>
+</div>

@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <h2>HTTP Header Builder</h2>
+  <label class="tool-field">
+    <span>Headers, one per line</span>
+    <textarea id="hhb-input" class="tool-input" rows="8" spellcheck="false" placeholder="Content-Type: application/json&#10;Authorization: Bearer token"></textarea>
+  </label>
+  <div class="hhb-options">
+    <label class="hhb-check"><input type="checkbox" data-hhb="hsts"> Strict-Transport-Security</label>
+    <label class="hhb-check"><input type="checkbox" data-hhb="nosniff"> X-Content-Type-Options</label>
+    <label class="hhb-check"><input type="checkbox" data-hhb="frame"> X-Frame-Options</label>
+    <label class="hhb-check"><input type="checkbox" data-hhb="referrer"> Referrer-Policy</label>
+    <label class="hhb-check"><input type="checkbox" data-hhb="csp"> Content-Security-Policy</label>
+    <label class="hhb-check"><input type="checkbox" data-hhb="permissions"> Permissions-Policy</label>
+    <label class="hhb-check"><input type="checkbox" data-hhb="cache"> Cache-Control: no-store</label>
+    <label class="hhb-check"><input type="checkbox" id="hhb-sort"> Sort by name</label>
+  </div>
+  <p class="tool-hint">Type one <code>Name: value</code> pair per line. Names are validated, the last value wins for a repeated name, and ticked security headers are added only when you have not set them yourself. The result is a clean block you can paste into a request or a server config.</p>
+  <p class="tool-status" id="hhb-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Header block</h2>
+  <textarea id="hhb-out" class="tool-input" rows="10" readonly spellcheck="false"></textarea>
+</div>

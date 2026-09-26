@@ -2275,6 +2275,75 @@ const check = (label, actual, expected) => {
     check('fuel: 235.214583 L/100 km is 1 MPG (US)', cell(2), '1');
   }
 
+  /* ------------------------------------------------- network & api tools */
+
+  console.log('\n=== network & api tools ===');
+  {
+    const ipv6 = loadPage('ipv6-expander');
+    check(
+      'ipv6: 2001:db8::1 expands to eight groups',
+      read(ipv6.w, '#ipv6-out').includes('2001:0db8:0000:0000:0000:0000:0000:0001'),
+      true,
+    );
+    check('ipv6: the documentation range is named', read(ipv6.w, '#ipv6-out').includes('Documentation'), true);
+
+    const hhp = loadPage('http-header-parser');
+    set(hhp.w, '#hhp-input', 'HTTP/1.1 200 OK\nSet-Cookie: a=1\nSet-Cookie: b=2');
+    await sleep(30);
+    check('header parser: repeated fields are labelled', read(hhp.w, '#hhp-out').includes('(repeated)'), true);
+    check('header parser: the status line is kept', read(hhp.w, '#hhp-summary').includes('200 OK'), true);
+
+    const hhb = loadPage('http-header-builder');
+    set(hhb.w, '#hhb-input', 'Content-Type: application/json');
+    await sleep(30);
+    check('header builder: the typed header is emitted', read(hhb.w, '#hhb-out').includes('Content-Type: application/json'), true);
+    hhb.w.document.querySelector('[data-hhb="hsts"]').click();
+    await sleep(30);
+    check('header builder: a security header is added', read(hhb.w, '#hhb-out').includes('Strict-Transport-Security'), true);
+
+    const wsf = loadPage('websocket-frame-parser');
+    set(wsf.w, '#wsf-input', '81 85 37 fa 21 3d 7f 9f 4d 51 58');
+    await sleep(30);
+    check('websocket frame: a masked text frame is unmasked', read(wsf.w, '#wsf-payload').includes('Hello'), true);
+
+    const port = loadPage('port-reference');
+    check('ports: the whole list is shown at rest', port.w.document.querySelectorAll('#port-out tbody tr').length > 20, true);
+    set(port.w, '#port-search', '443');
+    await sleep(30);
+    check('ports: a numeric search matches the HTTPS family', port.w.document.querySelectorAll('#port-out tbody tr').length, 3);
+
+    const eh = loadPage('email-header-analyzer');
+    set(
+      eh.w,
+      '#eh-input',
+      'Received: from mail.example.com by mx.google.com; Tue, 1 Oct 2024 10:00:03 -0700\nReceived: from client.example.com by mail.example.com; Tue, 1 Oct 2024 09:59:58 -0700\nFrom: Sender <sender@example.com>\nAuthentication-Results: mx.google.com; spf=pass; dkim=pass; dmarc=pass',
+    );
+    await sleep(30);
+    check('email: both delivery hops are listed', eh.w.document.querySelectorAll('#eh-hops tbody tr').length, 2);
+    check('email: the SPF verdict is read', read(eh.w, '#eh-summary').includes('pass'), true);
+
+    const ogd = loadPage('open-graph-debugger');
+    set(ogd.w, '#ogd-input', '<meta property="og:title" content="Hello OG"><meta property="og:description" content="A summary">');
+    await sleep(30);
+    check('open graph: the card shows the og:title', read(ogd.w, '#ogd-preview').includes('Hello OG'), true);
+    check('open graph: the tag table is filled', ogd.w.document.querySelectorAll('#ogd-out tbody tr').length, 2);
+
+    const ni = loadPage('network-info');
+    check('network info: details are rendered on load', ni.w.document.querySelectorAll('#ni-out .tool-result-row').length > 5, true);
+
+    const amr = loadPage('api-mock-response-builder');
+    set(amr.w, '#amr-input', 'id: id\nname: name\nactive: boolean');
+    await sleep(30);
+    let mock = null;
+    try {
+      mock = JSON.parse(read(amr.w, '#amr-out'));
+    } catch {
+      mock = null;
+    }
+    check('api mock: the output is valid JSON', Array.isArray(mock && mock.data), true);
+    check('api mock: the record count is respected', mock && mock.data.length, 3);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <h2>Port Reference</h2>
+  <div class="port-controls">
+    <label class="tool-field">
+      <span>Search</span>
+      <input type="search" id="port-search" class="tool-input" placeholder="443, ssh, database…" autocomplete="off" spellcheck="false">
+    </label>
+    <label class="tool-field">
+      <span>Protocol</span>
+      <select id="port-proto" class="tool-input">
+        <option value="all">All</option>
+        <option value="tcp">TCP</option>
+        <option value="udp">UDP</option>
+      </select>
+    </label>
+  </div>
+  <p class="tool-hint">A short offline list of the ports that come up most often, with the service name and a note on what runs there. Search by number or name, or narrow to TCP or UDP. No lookups are made.</p>
+  <p class="tool-status" id="port-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Ports</h2>
+  <div id="port-out"></div>
+</div>

@@ -297,6 +297,51 @@
       desc: Open a WebSocket from the page, send frames and watch what the server sends back.
       keywords: [websocket, ws, wss, socket, test, client, realtime, frames, subscribe, debug, postman]
       status: done
+    - slug: ipv6-expander
+      name: IPv6 Expander
+      desc: Expand, compress and classify an IPv6 address, with prefix and embedded IPv4 support.
+      keywords: [ipv6, expand, compress, canonical, address, prefix, ip]
+      status: done
+    - slug: http-header-parser
+      name: HTTP Header Parser
+      desc: Turn a pasted header block into a clean table, including cookies and repeated fields.
+      keywords: [http, headers, parse, response, request, cookies, curl, devtools]
+      status: done
+    - slug: http-header-builder
+      name: HTTP Header Builder
+      desc: Build a tidy header block from key/value lines, with common security headers ready to add.
+      keywords: [http, headers, build, security, hsts, csp, request]
+      status: done
+    - slug: websocket-frame-parser
+      name: WebSocket Frame Parser
+      desc: Decode a raw WebSocket frame from hex and explain its opcode, length and payload.
+      keywords: [websocket, frame, parse, opcode, hex, ws, rfc6455]
+      status: done
+    - slug: port-reference
+      name: Port Reference
+      desc: Search the common TCP and UDP ports with their service names and a short description.
+      keywords: [port, reference, tcp, udp, service, 443, 80, lookup]
+      status: done
+    - slug: email-header-analyzer
+      name: Email Header Analyzer
+      desc: Parse raw email headers, list the delivery hops and show where the time went.
+      keywords: [email, header, analyze, received, spam, delivery, hops, mail]
+      status: done
+    - slug: open-graph-debugger
+      name: Open Graph Debugger
+      desc: Extract Open Graph and Twitter Card tags from pasted HTML and preview the shared card.
+      keywords: [open graph, og, twitter card, meta, social, preview, share, seo]
+      status: done
+    - slug: network-info
+      name: Network Info
+      desc: Show what this browser exposes about its connection, device, screen and locale.
+      keywords: [network, connection, online, downlink, rtt, device, browser, info]
+      status: done
+    - slug: api-mock-response-builder
+      name: API Mock Response Builder
+      desc: Describe fields once and generate realistic mock JSON for an API response.
+      keywords: [api, mock, response, json, fake, sample, builder, stub]
+      status: done
 
 - name: Web
   slug: web

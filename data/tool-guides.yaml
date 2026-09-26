@@ -1491,3 +1491,147 @@ fuel-economy-converter:
       a: "One km/L is 2.352145833 MPG (US) and 2.824809 MPG (UK). Equivalently, MPG (US) is 235.214583 divided by L/100 km and MPG (UK) is 282.480936 divided by L/100 km. Those constants come from the litre-to-gallon definitions and are exact to the digits shown."
     - q: "Is the result rounded?"
       a: "Each figure is shown to three decimal places, which is finer than any dashboard or pump can measure. The underlying value is not rounded before conversion, so the four outputs stay consistent with one another."
+
+ipv6-expander:
+  about: >-
+    Paste an IPv6 address in any spelling and the page shows the full eight-group
+    form, the canonical compressed form and what kind of address it is. Prefixes,
+    zone indexes and embedded IPv4 addresses are understood, and everything is
+    computed in the browser.
+  faq:
+    - q: "Why does the compressed form sometimes keep a zero group?"
+      a: "The canonical rules compress only the longest run of two or more zero groups. A single zero group is written as a plain 0, and on a tie the leftmost run is the one compressed, so the same address always has one canonical spelling."
+    - q: "What is the difference between link-local, unique local and global?"
+      a: "Link-local (fe80::/10) is for one link and is never routed. Unique local (fc00::/7) is the IPv6 equivalent of private space, routable inside an organisation but not on the public internet. Global unicast (2000::/3) is the public, routable range."
+    - q: "What is an IPv4-mapped address?"
+      a: "An address of the form ::ffff:a.b.c.d that carries an IPv4 address inside an IPv6 one. It appears on dual-stack sockets and in logs, and the expander recognises it so you are not left guessing why a dotted quad shows up in an IPv6 field."
+    - q: "Does the zone index change the address?"
+      a: "No. The part after % names a local interface, such as %eth0, and is not part of the 128 bits. It matters only to the host you are on, which is why it is shown separately and not included in the expanded or compressed forms."
+
+http-header-parser:
+  about: >-
+    Paste a raw header block from curl, a proxy log or the browser network panel
+    and the page turns it into a clean table. A status line is optional, folded
+    continuation lines are rejoined, and repeated fields such as Set-Cookie are
+    kept and marked so nothing is silently dropped.
+  faq:
+    - q: "Why are some headers marked as repeated?"
+      a: "Because the same field name appears more than once. Some headers, like Set-Cookie, are supposed to repeat and must not be merged; others are combined by the recipient. The label shows you which is which before you act on the values."
+    - q: "How are folded lines handled?"
+      a: "Older systems wrapped long header values onto the next line with leading whitespace. The parser treats a line that starts with a space or tab as a continuation of the previous header and joins it back with a single space, which is what the HTTP rules say to do."
+    - q: "What is the status line?"
+      a: "The HTTP/1.1 200 OK line that opens a response. It is optional here, so you can paste just the headers, but when it is present it is reported separately and not mistaken for a header."
+    - q: "Is anything sent over the network?"
+      a: "No. The text you paste is parsed in the page. That is deliberate: header blocks often carry cookies, tokens and internal hostnames that should not leave your machine."
+
+http-header-builder:
+  about: >-
+    A small workbench for building a header block. Type one Name: value pair per
+    line, tick any common security headers you want added, and the page validates
+    the names, keeps the last value for a repeat and emits a clean block ready to
+    paste into a request or a server config.
+  faq:
+    - q: "What makes a valid header name?"
+      a: "A header name is an HTTP token: letters, digits and a small set of symbols, with no spaces or colons. The builder checks each name against that rule and reports any line it cannot use instead of guessing what you meant."
+    - q: "What happens if I list the same header twice?"
+      a: "The last value wins. That matches how most tools and servers resolve a duplicated field, and it means you can put a placeholder near the top and override it further down without editing the earlier line."
+    - q: "Which security headers can I add?"
+      a: "HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, a starter Content-Security-Policy, Permissions-Policy and a no-store Cache-Control. They are added only when you have not already set that header yourself, so your own value is never overwritten."
+    - q: "Does the page send the headers anywhere?"
+      a: "No. It is a text builder: the input is parsed and the output is written back into the page. Nothing is transmitted, which is safe even when the block contains an Authorization value."
+
+websocket-frame-parser:
+  about: >-
+    Paste the hex bytes of a single WebSocket frame and the page decodes the bits
+    the RFC defines: FIN, the reserved bits, the opcode, whether the frame is
+    masked, the payload length, the masking key and the payload itself. Text
+    frames are unmasked and shown as readable text.
+  faq:
+    - q: "Where do I get the raw frame bytes?"
+      a: "From a packet capture or a proxy that logs frames, such as Wireshark with a WebSocket filter, or from a test that dumps the bytes your client sent. Copy the frame payload bytes, not the TCP or TLS wrapper, and paste them as hex."
+    - q: "Why is the payload scrambled?"
+      a: "Client-to-server frames are masked, so the bytes on the wire are XORed with a four-byte key. The parser applies that key to recover the payload. A server-to-client frame is not masked and is shown as it arrived."
+    - q: "What does the opcode mean?"
+      a: "0x1 is text, 0x2 is binary, 0x0 continues a fragmented message, 0x8 closes the connection, 0x9 is a ping and 0xa is a pong. Anything else is reserved and is labelled as such rather than guessed at."
+    - q: "Does this connect to a server?"
+      a: "No. It reads bytes you paste and nothing else. There is no socket and no request, so it is safe for frames that contain tokens or message payloads from production."
+
+port-reference:
+  about: >-
+    A compact, offline table of the ports that come up most often when you read
+    configs, logs and firewall rules. Each row gives the port number, whether it
+    is TCP, UDP or both, the usual service name and a one-line note on what it
+    carries. Search by number or name.
+  faq:
+    - q: "Is this a full list of every port?"
+      a: "No, it is a shortlist of the common ones. The IANA registry has thousands of assignments. This table is meant to answer the everyday question of what is probably running on a port, not to be a complete authority."
+    - q: "Does a port number guarantee the service?"
+      a: "No. A port is just a number; anything can listen on it. The service column shows the conventional assignment, so treat it as a strong hint and confirm with the process or the application config."
+    - q: "What is the difference between TCP and UDP for the same port?"
+      a: "They are separate namespaces. Port 53 is used by DNS over both, and port 123 is UDP for NTP. When a service uses both, the row lists tcp/udp, and the protocol filter matches either."
+    - q: "Why are some dev-server ports listed as alternatives?"
+      a: "Ports like 3000, 5000 and 8000 have no official service. They are shown as common development defaults because that is how they actually turn up, and the note makes clear they are conventions rather than assignments."
+
+email-header-analyzer:
+  about: >-
+    Paste the raw headers of a message and the page lays out the delivery path:
+    each Received hop in order, the hosts and IP addresses involved, the time
+    between hops, and the SPF, DKIM and DMARC verdicts from the
+    Authentication-Results header. Nothing leaves the browser.
+  faq:
+    - q: "Why do the hops appear in a different order from the paste?"
+      a: "Mail servers prepend a Received header, so the first one in the file is the most recent hop. The analyzer reverses them so hop 1 is where the message started and the last hop is where it arrived, which is the order the journey happened in."
+    - q: "How is the delay between hops worked out?"
+      a: "Each Received header ends with a timestamp after the semicolon. The page parses those timestamps and subtracts consecutive ones, so a large gap points at a server that queued the message. Clock skew between servers can make a delay look negative."
+    - q: "What do the SPF, DKIM and DMARC values mean?"
+      a: "They are the receiving server's verdicts. pass means the check succeeded, fail means it did not, and softfail, neutral, none or temperror are the softer outcomes. They come from Authentication-Results and are reported exactly as written."
+    - q: "Can I use this to trace spam?"
+      a: "It helps. The earliest hop and the sending IP are the most useful, and the authentication verdicts show whether the sender was allowed to use the domain. Treat the headers as evidence to check, not proof, since earlier hops can be forged."
+
+open-graph-debugger:
+  about: >-
+    Paste a page's HTML and the page pulls out its Open Graph and Twitter Card
+    tags, the title and the canonical link, then draws a preview of the card a
+    link would produce. It is the quick way to see why a shared link shows the
+    wrong title or no image.
+  faq:
+    - q: "Why does the preview look different from the real one?"
+      a: "Every platform renders the card its own way and may crop the image or ignore a tag. This preview shows the values that were found and the order of priority, which is what you need to debug, not a pixel-perfect copy of any one site."
+    - q: "Which title wins if several are present?"
+      a: "Open Graph is preferred over Twitter Card, and both are preferred over the plain title element. That matches how most crawlers resolve it, and the tag table still lists every value so you can see what else is there."
+    - q: "The image is missing from the preview. Why?"
+      a: "The parser only reads the tag; it does not fetch the image. If og:image is absent or empty, the card shows no image. Use an absolute URL, since relative image paths are unreliable for crawlers."
+    - q: "Is the page fetched for me?"
+      a: "No. You paste the HTML and it is parsed in the browser with a local DOM parser. Nothing is requested, so you can inspect a staging page behind a login or a page that is not public yet."
+
+network-info:
+  about: >-
+    A snapshot of the connection and device facts a browser exposes to a page:
+    online state, the Network Information values where they exist, screen and
+    viewport size, pixel ratio, language, CPU threads, memory hint and time zone.
+    It is read locally and never uploaded.
+  faq:
+    - q: "Why are some values blank?"
+      a: "Support varies. The Network Information API, deviceMemory and hardwareConcurrency are not in every browser, and some are rounded or capped for privacy. A dash means the browser did not provide a value, not that it is zero."
+    - q: "How accurate is the downlink and round-trip time?"
+      a: "They are estimates the browser derives from recent traffic and are deliberately coarse. They are fine for choosing an image size or deciding whether to prefetch, but not for measuring a connection."
+    - q: "Does this reveal my IP address or location?"
+      a: "No. The page only reads values the browser already exposes to JavaScript. It does not call an IP service, does not use geolocation and does not make a network request."
+    - q: "Why does the time zone matter?"
+      a: "It is handy when you are debugging a timestamp bug and need to know what the browser thinks local time is. It comes from Intl, so it reflects the system setting rather than anything you typed."
+
+api-mock-response-builder:
+  about: >-
+    Describe a response shape once as name: type pairs and the page generates a
+    realistic JSON body with the number of records you ask for. It is the quick
+    way to stub an endpoint, seed a fixture or show a frontend what the real
+    payload will look like before the API exists.
+  faq:
+    - q: "What types can I use?"
+      a: "string, word, name, firstname, lastname, email, phone, city, country, address, company, product, url, image, uuid, id, number, integer, price, age, boolean, date, datetime, timestamp, color, object and array(n). Anything else is reported and skipped rather than guessed."
+    - q: "How do I get a list of values in one field?"
+      a: "Write array(3) for three items or array for a default of three. Each item is a short word, which is enough to fill a tags or categories field while you build the UI."
+    - q: "Are the values random every time?"
+      a: "Yes. Each render draws new values, and the Regenerate button does the same. If you need the exact same payload twice, paste the generated JSON into a file instead of regenerating."
+    - q: "Is the data based on anything real?"
+      a: "No. Names, addresses and emails are made up from small built-in word lists. They are deliberately fake so nothing generated can collide with a real person or mailbox."

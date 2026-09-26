@@ -1,0 +1,19 @@
+<div class="tool-panel">
+  <h2>WebSocket Frame Parser</h2>
+  <label class="tool-field">
+    <span>Frame bytes (hex)</span>
+    <textarea id="wsf-input" class="tool-input" rows="4" spellcheck="false" placeholder="81 85 37 fa 21 3d 7f 9f 4d 51 58"></textarea>
+  </label>
+  <p class="tool-hint">Paste the bytes of a single RFC 6455 frame as hex. The page reads the FIN and opcode bits, the length field, the masking key and the payload, unmasks it and shows the decoded text when the frame is a text frame. Everything runs in the browser.</p>
+  <p class="tool-status" id="wsf-status" role="status" aria-live="polite"></p>
+</div>
+
+<div class="tool-panel">
+  <h2>Frame</h2>
+  <dl class="tool-results" id="wsf-out"></dl>
+</div>
+
+<div class="tool-panel">
+  <h2>Payload</h2>
+  <div id="wsf-payload"></div>
+</div>
