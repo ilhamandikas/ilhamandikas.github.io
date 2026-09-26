@@ -791,6 +791,16 @@
       desc: Calculate deposit or loan interest after tax, with flat, effective, annuity, compound, tiered, step-up and floating methods.
       keywords: [interest, bunga, deposito, obligasi, pajak, compound, anuitas, flat, efektif, tiered, step-up, floating, kredit, pinjaman]
       status: done
+    - slug: take-home-pay-calculator
+      name: Take-Home Pay Calculator
+      desc: Estimate Indonesian net salary from gross pay, with PPh 21 and the employee share of BPJS broken out.
+      keywords: [gaji bersih, take home pay, salary, pph 21, pajak, bpjs, jht, jp, kesehatan, ptkp, payroll, net salary, thr, kalkulator gaji]
+      status: done
+    - slug: loan-calculator
+      name: Loan Calculator
+      desc: Work out a fixed-rate loan payment, its amortisation schedule and the interest saved by paying extra.
+      keywords: [loan, kredit, pinjaman, mortgage, kpr, anuitas, amortisation, schedule, installment, cicilan, interest, extra payment, chart]
+      status: done
     - slug: date-calculator
       name: Date Calculator
       desc: Add or subtract days, weeks, months and years, or measure the duration and business days between two dates.

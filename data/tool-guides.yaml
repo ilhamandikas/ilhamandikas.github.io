@@ -1340,6 +1340,43 @@ log-parser:
     - q: "How are log levels mapped?"
       a: "WARN and WARNING become warn, ERR and ERROR become error, CRIT/CRITICAL/FATAL/ALERT/EMERG/PANIC become fatal, and TRACE/DEBUG/INFO/NOTICE map to themselves. Access logs use the status code: 5xx is error, 4xx is warn, everything else is info. Syslog RFC 5424 levels come from the priority value."
 
+loan-calculator:
+  about: >-
+    A loan is repaid in equal instalments, but the split inside each instalment
+    changes every month: early on almost all of it is interest, and by the end
+    almost all of it is principal. This works out the instalment with the annuity
+    formula, builds the schedule behind it, and draws the balance as it falls.
+    It also shows what happens when a little extra is paid each month, which
+    shortens the term instead of lowering the instalment.
+  faq:
+    - q: "How is the monthly instalment calculated?"
+      a: "With the annuity formula: principal × i ÷ (1 − (1 + i)^−n), where i is the yearly rate divided by twelve and n is the number of months. Every month the interest is charged on the balance still owed, so the principal part grows as the balance falls."
+    - q: "Does paying extra lower my instalment?"
+      a: "Not here. The extra amount goes straight to the principal while the instalment stays the same, so the loan finishes sooner and less interest is paid. Ask the lender to apply it to the principal rather than to the next instalment."
+    - q: "Why is the total interest higher than I expected?"
+      a: "Interest is charged on the balance, so on a long loan at a moderate rate the interest can approach, or with a large extra payment exceed, the amount borrowed. Shortening the term or paying extra reduces it, which the interest saved line reports."
+    - q: "Does this cover a loan with a fixed period then a floating rate?"
+      a: "No. It models one fixed rate for the whole term, and it leaves out arrangement fees, insurance and penalties. For a loan whose rate changes partway through, work out each period separately."
+
+take-home-pay-calculator:
+  about: >-
+    A contract salary is not what reaches the bank account, and the gap is made of
+    two compulsory deductions: income tax under Article 21 and the employee share
+    of the BPJS programmes. This works out the monthly figure from the gross
+    salary, the PTKP status and whether BPJS applies. The tax follows the annual
+    Article 17 brackets, the same total the December reconciliation arrives at, and
+    every deduction is shown separately so the difference can be checked line by
+    line against a payslip.
+  faq:
+    - q: "Which BPJS deductions come out of the salary?"
+      a: "JHT at 2% of gross pay, JP at 1% of gross pay up to the monthly ceiling, and BPJS Kesehatan at 1% of gross pay up to Rp 12,000,000 a month. JKK, JKM and the employer's share of JHT, JP and Kesehatan are paid by the company and do not touch take-home pay."
+    - q: "Why can my payslip show a different monthly tax?"
+      a: "Since 2024 an employer withholds a monthly effective rate (TER) and settles the difference in December. The yearly total matches the annual brackets used here, but an individual month can differ, so the December figure is the one to compare against."
+    - q: "How is the bonus treated?"
+      a: "As part of the year's gross income, which also lifts the position allowance until it hits the Rp 6,000,000 ceiling. That is how the year-end reconciliation treats a bonus or THR."
+    - q: "Is this the same as the payroll software of my company?"
+      a: "It follows the same published rules, but it will not know about allowances that are taxed separately, benefits in kind, a prior employer in the same year, or a status that changed mid-year. Treat the result as a close estimate and the payslip as the record."
+
 date-calculator:
   about: >-
     Two calculators in one page. The difference mode measures the gap between two

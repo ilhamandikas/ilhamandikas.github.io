@@ -2790,6 +2790,160 @@ const check = (label, actual, expected) => {
     check('interest: an annuity shows an instalment table', page.w.document.querySelectorAll('#int-schedule-out tbody tr').length, 12);
   }
 
+  /* ------------------------------------------------------- take-home pay */
+
+  console.log('\n=== take-home pay ===');
+  {
+    const page = loadPage('take-home-pay-calculator');
+    const row = (index) => [...page.w.document.querySelectorAll('#ths-rows tr')[index].children].map((td) => td.textContent);
+
+    // Rp 10,000,000 gross, TK/0: 200,000 JHT + 100,000 JP + 100,000 Kesehatan,
+    // 235,000 tax, so 9,365,000 lands in the account.
+    check('take-home pay: the net figure leads', read(page.w, '#ths-net'), 'Rp 9,365,000');
+    check('take-home pay: the summary names the deductions', read(page.w, '#ths-summary'), 'Rp 10,000,000 gross minus Rp 635,000 of deductions, per month.');
+    check('take-home pay: JHT is 2% of gross', row(0).slice(0, 3), ['JHT (2%)', 'Rp 200,000', 'Rp 2,400,000']);
+    check('take-home pay: JP is 1% of gross', row(1).slice(0, 3), ['JP (1%)', 'Rp 100,000', 'Rp 1,200,000']);
+    check('take-home pay: kesehatan is 1% of gross', row(2).slice(0, 3), ['BPJS Kesehatan (1%)', 'Rp 100,000', 'Rp 1,200,000']);
+    check('take-home pay: the monthly tax is the yearly tax over twelve', row(3).slice(0, 3), ['PPh 21', 'Rp 235,000', 'Rp 2,820,000']);
+    check('take-home pay: the position allowance hits its ceiling', read(page.w, '#ths-jabatan'), 'Rp 6,000,000 (5%, capped at Rp 6,000,000)');
+    check('take-home pay: only JHT and kesehatan are deductible', read(page.w, '#ths-deductible'), 'Rp 3,600,000');
+    check('take-home pay: the PTKP for TK/0 is 54,000,000', read(page.w, '#ths-ptkp-value'), 'Rp 54,000,000 (TK/0)');
+    check('take-home pay: taxable income is gross less allowances', read(page.w, '#ths-pkp'), 'Rp 56,400,000');
+    check('take-home pay: the yearly tax is 5% of that', read(page.w, '#ths-tax-year'), 'Rp 2,820,000');
+    check('take-home pay: the effective rate is stated', read(page.w, '#ths-effective'), '2.35%');
+
+    // The chart is the same numbers, so it has to agree with them.
+    const legend = [...page.w.document.querySelectorAll('#ths-chart .tool-chart-legend li')];
+    check('take-home pay: the chart names every part', legend.map((li) => li.querySelector('.tool-chart-label').textContent), ['Take-home pay', 'PPh 21', 'JHT (2%)', 'JP (1%)', 'BPJS Kesehatan (1%)']);
+    check('take-home pay: the chart carries the values', legend.map((li) => li.querySelector('.tool-chart-value').textContent), ['Rp 9,365,000', 'Rp 235,000', 'Rp 200,000', 'Rp 100,000', 'Rp 100,000']);
+    const bars = [...page.w.document.querySelectorAll('#ths-chart .tool-chart-bar rect')];
+    check('take-home pay: the net pay takes its share of the bar', bars[0].getAttribute('width'), '93.65');
+    check('take-home pay: the parts add up across the bar', bars.reduce((sum, rect) => sum + Number(rect.getAttribute('width')), 0).toFixed(2), '100.00');
+
+    // A salary above the caps has to stop counting towards them.
+    set(page.w, '#ths-gross', '25000000');
+    await sleep(120);
+    check('take-home pay: JP stops at its monthly ceiling', row(1).slice(0, 2), ['JP (1%)', 'Rp 105,474']);
+    check('take-home pay: kesehatan stops at 12,000,000', row(2).slice(0, 2), ['BPJS Kesehatan (1%)', 'Rp 120,000']);
+    check('take-home pay: JHT has no ceiling', row(0).slice(0, 2), ['JHT (2%)', 'Rp 500,000']);
+
+    // Without BPJS there is nothing to contribute.
+    set(page.w, '#ths-bpjs', false);
+    await sleep(120);
+    check('take-home pay: no BPJS means one deduction left', page.w.document.querySelectorAll('#ths-rows tr').length, 1);
+    check('take-home pay: and the deductible contributions are gone', read(page.w, '#ths-deductible'), '—');
+    check('take-home pay: so taxable income is higher', read(page.w, '#ths-pkp'), 'Rp 240,000,000');
+
+    // A different PTKP changes the tax and nothing else.
+    set(page.w, '#ths-bpjs', true);
+    set(page.w, '#ths-gross', '10000000');
+    set(page.w, '#ths-ptkp', 'K/3');
+    await sleep(120);
+    check('take-home pay: K/3 raises the allowance to 72,000,000', read(page.w, '#ths-ptkp-value'), 'Rp 72,000,000 (K/3)');
+    check('take-home pay: which cuts the yearly tax', read(page.w, '#ths-tax-year'), 'Rp 1,920,000');
+
+    // A bonus is part of the year, and pushes the allowance to its ceiling again.
+    set(page.w, '#ths-ptkp', 'TK/0');
+    set(page.w, '#ths-bonus', '20000000');
+    await sleep(120);
+    check('take-home pay: a bonus joins the yearly gross', read(page.w, '#ths-gross-year'), 'Rp 140,000,000');
+    check('take-home pay: and is taxed with the rest', read(page.w, '#ths-tax-year'), 'Rp 5,460,000');
+
+    set(page.w, '#ths-bonus', '0');
+    set(page.w, '#ths-gross', '');
+    await sleep(120);
+    check('take-home pay: an empty salary is asked for, not assumed', read(page.w, '#ths-status'), 'Enter a gross salary to see the estimate.');
+    check('take-home pay: and nothing is claimed', read(page.w, '#ths-net'), '—');
+    check('take-home pay: no error state is left behind', errorStatuses(page.w), []);
+    page.dom.window.close();
+  }
+
+  /* -------------------------------------------------------- loan calculator */
+
+  console.log('\n=== loan calculator ===');
+  {
+    const page = loadPage('loan-calculator');
+    const cell = (id) => read(page.w, `#${id}`);
+    const rows = () => [...page.w.document.querySelectorAll('#lnc-rows tr')];
+    const ticks = () => [...page.w.document.querySelectorAll('#lnc-balance .tool-chart-tick')].map((t) => t.textContent);
+    const bar = (sel) => Number(page.w.document.querySelector(sel).getAttribute('width')).toFixed(2);
+
+    // Rp 300,000,000 at 7.5% over 15 years: the annuity formula gives 2,781,037.
+    check('loan: the instalment is the annuity figure', cell('lnc-monthly'), 'Rp 2,781,037 a month');
+    check('loan: the summary counts the instalments', cell('lnc-summary'), '180 instalments of about Rp 2,781,037, paying Rp 200,586,674 in interest on top of the Rp 300,000,000 borrowed.');
+    check('loan: the total interest is the sum of the schedule', cell('lnc-interest'), 'Rp 200,586,674');
+    check('loan: the total paid is principal plus interest', cell('lnc-total'), 'Rp 500,586,674');
+    check('loan: the term is spelled out in months and years', cell('lnc-count'), '180 (15.0 years)');
+    check('loan: the final instalment is listed', cell('lnc-last'), 'Rp 2,781,037');
+    check('loan: the project interest is reported as a share', cell('lnc-status'), 'Interest is 66.9% of the amount borrowed.');
+    check('loan: the payoff month is named', /^[A-Z][a-z]{2,3} \d{4}$/.test(cell('lnc-payoff')), true);
+
+    // A balance chart and a schedule that carry the same figures.
+    const paths = [...page.w.document.querySelectorAll('#lnc-balance .tool-chart-line path')];
+    check('loan: the balance chart draws an area and a line', paths.length, 2);
+    check('loan: the line starts at the amount borrowed', paths[1].getAttribute('d').startsWith('M 62.00,12.00'), true);
+    check('loan: the chart labels the balance axis', ticks().slice(0, 4), ['Rp 0', 'Rp 100M', 'Rp 200M', 'Rp 300M']);
+    const year = new Date().getFullYear();
+    check('loan: and names the years along the bottom', ticks().slice(4), [year, year + 3, year + 6, year + 9, year + 12, year + 15].map(String));
+    check('loan: grid lines sit behind the line', page.w.document.querySelectorAll('#lnc-balance .tool-chart-grid').length, 4);
+
+    check('loan: one table row per year', rows().length, 15);
+    check('loan: the first row opens at the full amount', [...rows()[0].children].map((td) => td.textContent), ['1', 'Rp 300,000,000', 'Rp 11,254,082', 'Rp 22,118,363', 'Rp 288,745,918']);
+    check('loan: the last row clears the loan', [...rows()[14].children].map((td) => td.textContent), ['15', 'Rp 32,055,324', 'Rp 32,055,324', 'Rp 1,317,121', 'Rp 0']);
+
+    // The splits: early instalments are mostly interest, the loan as a whole is not.
+    check('loan: the first instalment is split', [...page.w.document.querySelectorAll('#lnc-first .tool-chart-legend li')].map((li) => li.querySelector('.tool-chart-label').textContent), ['Principal', 'Interest']);
+    check('loan: interest dominates the first instalment', bar('#lnc-first .tool-chart-bar rect'), '32.58');
+    check('loan: but not the loan as a whole', bar('#lnc-split .tool-chart-bar rect'), '59.93');
+    check('loan: the bar agrees with the totals', [...page.w.document.querySelectorAll('#lnc-split .tool-chart-legend li')].map((li) => li.querySelector('.tool-chart-value').textContent), ['Rp 300,000,000', 'Rp 200,586,674']);
+
+    // Extra payments shorten the term instead of lowering the instalment.
+    set(page.w, '#lnc-extra', '1000000');
+    await sleep(120);
+    check('loan: an extra payment raises the instalment', cell('lnc-monthly'), 'Rp 3,781,037 a month');
+    check('loan: and the loan is paid off early', cell('lnc-count'), '110 (9.2 years)');
+    check('loan: so less interest is paid', cell('lnc-interest'), 'Rp 115,679,064');
+    check('loan: the interest saved is reported', cell('lnc-saved'), 'Rp 84,907,610 (57.7% of the interest)');
+    check('loan: the time saved is reported', cell('lnc-shortened').startsWith('70 months (5.8 years), paid off '), true);
+    check('loan: and the status sums it up', cell('lnc-status'), 'Paying Rp 1,000,000 extra each month saves Rp 84,907,610 and ends the loan 70 months early.');
+    check('loan: the saved panel appears', page.w.document.querySelector('#lnc-extra-panel').hidden, false);
+
+    // A preset fills the fields in.
+    set(page.w, '#lnc-extra', '0');
+    set(page.w, '#lnc-preset', 'vehicle');
+    await sleep(120);
+    check('loan: a preset sets the amount', read(page.w, '#lnc-amount'), '200000000');
+    check('loan: a preset sets the rate', read(page.w, '#lnc-rate'), '8.5');
+    check('loan: a preset sets the term', read(page.w, '#lnc-years'), '5');
+    check('loan: and the payment follows', cell('lnc-monthly'), 'Rp 4,103,306 a month');
+    check('loan: the saved panel goes away again', page.w.document.querySelector('#lnc-extra-panel').hidden, true);
+
+    // Another currency changes the labels and nothing else.
+    set(page.w, '#lnc-currency', '$');
+    await sleep(120);
+    check('loan: the currency symbol is used', cell('lnc-total'), '$ 246,198,376');
+
+    // Zero percent still splits the amount evenly, with no interest at all.
+    set(page.w, '#lnc-currency', 'Rp');
+    set(page.w, '#lnc-rate', '0');
+    set(page.w, '#lnc-years', '10');
+    set(page.w, '#lnc-amount', '120000000');
+    await sleep(120);
+    check('loan: 0% has no interest at all', cell('lnc-interest'), 'Rp 0');
+    check('loan: and divides the amount evenly', cell('lnc-monthly'), 'Rp 1,000,000 a month');
+    check('loan: the first instalment is all principal', bar('#lnc-first .tool-chart-bar rect'), '100.00');
+    check('loan: every year repays the same amount', [...rows()[0].children].map((td) => td.textContent), ['1', 'Rp 120,000,000', 'Rp 12,000,000', 'Rp 0', 'Rp 108,000,000']);
+
+    set(page.w, '#lnc-amount', '');
+    await sleep(120);
+    check('loan: an empty amount is asked for', cell('lnc-status'), 'Enter an amount to borrow.');
+    check('loan: and no figure is claimed', cell('lnc-monthly'), '—');
+    check('loan: and the schedule is cleared', rows().length, 0);
+    check('loan: and the chart is cleared', page.w.document.querySelectorAll('#lnc-balance *').length, 0);
+    check('loan: no error state is left behind', errorStatuses(page.w), []);
+    page.dom.window.close();
+  }
+
   /* -------------------------------------------------------- time zone converter */
 
   console.log('\n=== time zone converter ===');
