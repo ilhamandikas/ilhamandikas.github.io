@@ -2449,6 +2449,23 @@ const check = (label, actual, expected) => {
     check('devops: buying the load balancer lights it up', dt.w.document.querySelector('#dt-node-lb').classList.contains('is-on'), true);
   }
 
+  /* ----------------------------------------------------------- monaco editor */
+
+  console.log('\n=== monaco editor ===');
+  {
+    const mon = loadPage('monaco-editor');
+    check('monaco: starts as a plain editor', read(mon.w, '#mon-badge'), 'Plain editor');
+    check('monaco: the default language is javascript', read(mon.w, '#mon-lang'), 'javascript');
+    set(mon.w, '#mon-editor', 'const x = 1;');
+    await sleep(20);
+    check('monaco: the line and character count updates', read(mon.w, '#mon-meta').includes('1 line'), true);
+    set(mon.w, '#mon-lang', 'json');
+    check('monaco: the language can be changed', read(mon.w, '#mon-lang'), 'json');
+    mon.w.document.querySelector('#mon-clear').click();
+    await sleep(20);
+    check('monaco: clear empties the editor', read(mon.w, '#mon-editor'), '');
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [

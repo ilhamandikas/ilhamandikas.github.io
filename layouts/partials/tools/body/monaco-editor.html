@@ -1,0 +1,50 @@
+<div class="tool-panel">
+  <h2>Monaco Editor</h2>
+  <p class="tool-hint">A code editor with syntax highlighting, bracket matching and formatting. Monaco is large, so it is fetched from a CDN the first time you press <strong>Enable Monaco</strong>; if that is unavailable the plain text area below still works.</p>
+  <div class="mon-toolbar">
+    <label class="mon-field">
+      <span>Language</span>
+      <select id="mon-lang">
+        <option value="plaintext">Plain text</option>
+        <option value="javascript" selected>JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="json">JSON</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="scss">SCSS</option>
+        <option value="markdown">Markdown</option>
+        <option value="yaml">YAML</option>
+        <option value="xml">XML</option>
+        <option value="sql">SQL</option>
+        <option value="python">Python</option>
+        <option value="shell">Shell</option>
+        <option value="go">Go</option>
+        <option value="rust">Rust</option>
+        <option value="java">Java</option>
+        <option value="csharp">C#</option>
+        <option value="cpp">C++</option>
+        <option value="php">PHP</option>
+        <option value="ruby">Ruby</option>
+        <option value="dockerfile">Dockerfile</option>
+        <option value="ini">INI</option>
+        <option value="graphql">GraphQL</option>
+      </select>
+    </label>
+    <button class="btn primary" type="button" id="mon-load">Enable Monaco</button>
+    <button class="btn" type="button" id="mon-format">Format</button>
+    <button class="btn" type="button" data-copy="#mon-editor" data-status="#mon-status">Copy</button>
+    <button class="btn" type="button" data-download="#mon-editor" data-filename="snippet.txt" data-mime="text/plain">Download</button>
+    <button class="btn" type="button" id="mon-clear">Clear</button>
+    <span class="mon-badge" id="mon-badge">Plain editor</span>
+  </div>
+  <div class="mon-editor-wrap">
+    <div id="mon-container" class="mon-container" hidden></div>
+    <textarea id="mon-editor" class="mon-textarea" rows="18" spellcheck="false">const greet = (name) => `Hello, ${name}!`;
+
+console.log(greet('DevOps'));</textarea>
+  </div>
+  <div class="tool-row">
+    <span class="mon-meta" id="mon-meta">0 lines · 0 chars</span>
+    <span class="tool-status" id="mon-status" role="status" aria-live="polite"></span>
+  </div>
+</div>

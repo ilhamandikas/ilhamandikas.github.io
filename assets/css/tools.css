@@ -1706,6 +1706,56 @@ textarea.tool-text { resize: vertical; }
   color: var(--text);
 }
 
+/* Monaco editor */
+.mon-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.mon-field { display: flex; flex-direction: column; gap: 6px; }
+.mon-field > span {
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mon-badge {
+  margin-left: auto;
+  align-self: center;
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.mon-badge.is-on {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.mon-editor-wrap {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.mon-textarea {
+  display: block;
+  width: 100%;
+  min-height: 360px;
+  padding: 12px 14px;
+  border: 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  resize: vertical;
+  background: #fff;
+  color: var(--text);
+}
+.mon-container { width: 100%; height: 420px; }
+.mon-meta { font-size: 0.78rem; color: var(--muted); }
+
 /* Fuel economy converter */
 .fec-input-row {
   display: flex;

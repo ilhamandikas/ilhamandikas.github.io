@@ -1701,6 +1701,27 @@ snap-signature:
     - q: "Can I use a production private key here?"
       a: "Technically yes, but do not. This is a public web page, so paste a test key, or press Generate key pair to create a throwaway 2048-bit pair and try the flow end to end."
 
+monaco-editor:
+  about: >-
+    A scratchpad built on the Monaco editor — the same editor that powers
+    Visual Studio Code — with syntax highlighting, bracket matching, code
+    folding and a formatter for the languages that ship one. Choose a language
+    from the list and write or paste code. Monaco is a large bundle, so it is
+    fetched from a CDN only when you press Enable Monaco; until then, and if
+    the fetch fails, the page uses a plain text area with the same copy,
+    download and clear actions. Nothing you type is ever sent anywhere.
+  faq:
+    - q: "Why does the editor not appear straight away?"
+      a: "Monaco is several megabytes, so loading it on every visit would slow the page down for people who only want a quick text box. It is fetched on demand when you press Enable Monaco. Until then a plain text area is used, and it keeps working if the fetch fails."
+    - q: "Is my code uploaded?"
+      a: "No. The editor runs entirely in your browser and nothing is sent to a server. The only network request is the one that fetches the editor itself from a CDN, and that request contains none of your text."
+    - q: "Which languages have a formatter?"
+      a: "Monaco ships formatters for a handful of languages such as JavaScript, TypeScript, JSON, HTML and CSS. For languages without one the Format button reports that no formatter is available rather than changing your text."
+    - q: "Does it work offline?"
+      a: "The plain text area does. Monaco itself needs one successful download the first time; after that your browser may keep it in its cache, but a hard refresh while offline falls back to the text area."
+    - q: "Where did my text go when I pressed Clear?"
+      a: "It is gone from the page — Clear empties the editor and the text area together. The editor keeps no copy, so there is nothing to recover afterwards."
+
 javascript-playground:
   about: >-
     A small console for trying JavaScript without leaving the page. Write a
