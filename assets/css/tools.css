@@ -1157,6 +1157,13 @@ textarea.tool-text { resize: vertical; }
 }
 .wh-grid .tool-field { margin-bottom: 0; }
 
+.snap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.snap-grid .tool-field { margin-bottom: 0; }
+
 .lp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
 .lp-grid .tool-field { margin-bottom: 0; }
 .dc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }

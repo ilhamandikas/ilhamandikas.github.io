@@ -347,6 +347,11 @@
       desc: Sign, verify and send a test webhook in the Stripe, GitHub or Shopify format.
       keywords: [webhook, hmac, signature, stripe, github, shopify, verify, test]
       status: done
+    - slug: snap-signature
+      name: SNAP BI Asymmetric Signature
+      desc: Build, sign and verify the SHA256withRSA signature used by SNAP BI and Midtrans notifications.
+      keywords: [snap, bi, signature, rsa, sha256, midtrans, bank indonesia, x-signature, verify]
+      status: done
 
 - name: Web
   slug: web
