@@ -1591,6 +1591,121 @@ textarea.tool-text { resize: vertical; }
 .tetris-cell.is-Z,
 .tetris-mini.is-Z { background: #dc2626; }
 
+/* DevOps Tycoon */
+.dt-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.dt-speeds { display: inline-flex; gap: 4px; }
+.dt-speed.is-active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.dt-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.dt-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.dt-stat > span {
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.dt-stat > strong { font-size: 1.15rem; font-weight: 600; }
+.dt-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  overflow: hidden;
+}
+.dt-bar-fill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+.dt-bar-fill.is-warn { background: #d97706; }
+.dt-bar-fill.is-critical { background: #b91c1c; }
+.dt-event { margin: 14px 0 0; font-size: 0.85rem; color: var(--muted); }
+.dt-event.is-good { color: #15803d; }
+.dt-event.is-bad { color: #b91c1c; }
+.dt-topology {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.dt-topology-secondary { margin-top: 12px; }
+.dt-node {
+  padding: 8px 12px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  background: var(--bg-soft);
+}
+.dt-node.is-on {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.dt-arrow { color: var(--border-strong); }
+.dt-shop {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.dt-shop-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.dt-shop-desc { font-size: 0.82rem; color: var(--muted); }
+.dt-shop-item .btn { margin-top: auto; }
+.dt-incidents { display: flex; flex-direction: column; gap: 12px; }
+.dt-incident {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-left: 4px solid #d97706;
+  border-radius: 10px;
+  background: var(--surface);
+}
+.dt-incident.is-critical { border-left-color: #b91c1c; }
+.dt-incident h3 { margin: 0 0 6px; font-size: 0.95rem; }
+.dt-incident-detail { margin: 0 0 4px; }
+.dt-incident-ttl { margin: 0 0 10px; font-size: 0.78rem; color: var(--muted); }
+.dt-incident-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.dt-log {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+.dt-log-line {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-soft);
+  color: var(--text);
+}
+
 /* Fuel economy converter */
 .fec-input-row {
   display: flex;

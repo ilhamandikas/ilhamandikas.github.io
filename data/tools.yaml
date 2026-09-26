@@ -735,3 +735,8 @@
       desc: Stack falling tetrominoes and clear lines, with next-piece preview, hold and levels.
       keywords: [tetris, game, blocks, tetromino, arcade, puzzle]
       status: done
+    - slug: devops-tycoon
+      name: DevOps Tycoon
+      desc: Manage servers, traffic and incidents as a DevOps engineer — buy capacity, survive outages and keep the service profitable.
+      keywords: [devops, tycoon, server, infrastructure, simulation, incident, sre, game, management]
+      status: done

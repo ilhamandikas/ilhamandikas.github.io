@@ -2422,6 +2422,33 @@ const check = (label, actual, expected) => {
     check('js playground: the error message is shown', read(jsp.w, '#jsp-output').includes('boom'), true);
   }
 
+  /* ------------------------------------------------------------ devops tycoon */
+
+  console.log('\n=== devops tycoon ===');
+  {
+    const dt = loadPage('devops-tycoon');
+    check('devops: starts with one server', read(dt.w, '#dt-servers'), '1');
+    check('devops: money is shown in rupiah', read(dt.w, '#dt-money').startsWith('Rp'), true);
+    const before = read(dt.w, '#dt-money');
+    dt.w.document.querySelector('#dt-step').click();
+    await sleep(20);
+    check('devops: a step advances the simulation', read(dt.w, '#dt-money') !== before, true);
+    dt.w.document.querySelector('[data-dt-buy="server"]').click();
+    await sleep(20);
+    check('devops: buying a server adds one', read(dt.w, '#dt-servers'), '2');
+    dt.w.__devopsTycoon.forceIncident('disk');
+    await sleep(20);
+    check('devops: an incident is shown', dt.w.document.querySelectorAll('.dt-incident').length, 1);
+    dt.w.document.querySelector('.dt-incident .dt-incident-options .btn').click();
+    await sleep(20);
+    check('devops: resolving clears the incident', dt.w.document.querySelectorAll('.dt-incident').length, 0);
+    check('devops: the load balancer starts off', dt.w.document.querySelector('#dt-node-lb').classList.contains('is-on'), false);
+    dt.w.__devopsTycoon.getState().money = 1000000;
+    dt.w.__devopsTycoon.buy('lb');
+    await sleep(20);
+    check('devops: buying the load balancer lights it up', dt.w.document.querySelector('#dt-node-lb').classList.contains('is-on'), true);
+  }
+
   console.log('\n=== actual output (review by eye) ===');
 
   const review = [
