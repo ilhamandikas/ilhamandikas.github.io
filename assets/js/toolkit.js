@@ -284,6 +284,53 @@ const tk = {
 
 window.tk = tk;
 
+// Parse delimiter-separated text, honouring quoted fields and doubled quotes.
+// Returns an array of arrays; lines that are wholly blank are dropped.
+tk.parseDelimited = (text, delimiter = ',') => {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let quoted = false;
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    if (quoted) {
+      if (char === '"') {
+        if (text[i + 1] === '"') {
+          field += '"';
+          i += 1;
+        } else quoted = false;
+      } else field += char;
+    } else if (char === '"') quoted = true;
+    else if (char === delimiter) {
+      row.push(field);
+      field = '';
+    } else if (char === '\n') {
+      row.push(field);
+      if (row.some((cell) => cell.trim() !== '')) rows.push(row);
+      row = [];
+      field = '';
+    } else if (char !== '\r') field += char;
+  }
+  row.push(field);
+  if (row.some((cell) => cell.trim() !== '')) rows.push(row);
+  return rows;
+};
+
+// Guess the delimiter from the first non-empty line.
+tk.detectDelimiter = (text) => {
+  const line = text.split('\n').find((entry) => entry.trim()) || '';
+  const best = [',', ';', '\t', '|']
+    .map((delimiter) => [delimiter, line.split(delimiter).length])
+    .sort((a, b) => b[1] - a[1])[0];
+  return best && best[1] > 1 ? best[0] : ',';
+};
+
+// Quote a field only when it would otherwise break the row.
+tk.quoteCell = (value, delimiter = ',') => {
+  const text = String(value ?? '');
+  return /["\n\r]/.test(text) || text.includes(delimiter) ? `"${text.replace(/"/g, '""')}"` : text;
+};
+
 // Copy / download buttons work declaratively via data attributes.
 document.addEventListener('click', (event) => {
   const copyBtn = event.target.closest('[data-copy]');

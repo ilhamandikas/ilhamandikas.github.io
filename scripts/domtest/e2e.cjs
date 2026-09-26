@@ -1769,6 +1769,56 @@ const check = (label, actual, expected) => {
       '<strong>bold</strong> <em>italic</em> <del>strike</del> <code>code</code>');
   }
 
+  /* ------------------------------------------------------ data & converters */
+
+  console.log('\n=== data & converters ===');
+  {
+    const csvView = loadPage('csv-viewer');
+    set(csvView.w, '#csv-input', 'name,city\nBudi,Surabaya\nAda,Jakarta');
+    const drawn = [...csvView.w.document.querySelectorAll('#csv-table-wrap tbody tr')]
+      .map((tr) => [...tr.children].map((td) => td.textContent).join('|'))
+      .join('\n');
+    check('csv viewer: the rows are drawn in a table', drawn, 'Budi|Surabaya\nAda|Jakarta');
+    check('csv viewer: the shape is reported',
+      read(csvView.w, '#csv-status'), '2 rows, 2 columns.');
+    csvView.w.document.querySelectorAll('#csv-table-wrap thead th')[1].click();
+    const sorted = [...csvView.w.document.querySelectorAll('#csv-table-wrap tbody tr')]
+      .map((tr) => tr.children[1].textContent)
+      .join(',');
+    check('csv viewer: clicking a heading sorts by that column', sorted, 'Jakarta,Surabaya');
+
+    const cxj = loadPage('csv-json-converter');
+    set(cxj.w, '#cxj-input', 'name,city\nAda,Jakarta\nBudi,Surabaya');
+    const parsedJson = JSON.parse(read(cxj.w, '#cxj-output'));
+    check('csv to json: each row becomes an object',
+      parsedJson.length === 2 && parsedJson[1].city === 'Surabaya', true);
+    set(cxj.w, '#cxj-direction', 'json2csv');
+    set(cxj.w, '#cxj-input', '[{"name":"Ada","city":"Jakarta"},{"name":"Budi","city":"Surabaya"}]');
+    check('json to csv: the keys become the header',
+      read(cxj.w, '#cxj-output'), 'name,city\nAda,Jakarta\nBudi,Surabaya');
+
+    const clt = loadPage('cli-table-converter');
+    set(clt.w, '#clt-input', 'NAME   AGE\nAda    30\nBudi   41');
+    check('cli table: aligned output becomes a markdown table',
+      read(clt.w, '#clt-output'),
+      '| NAME | AGE |\n| --- | --- |\n| Ada | 30 |\n| Budi | 41 |');
+    set(clt.w, '#clt-format', 'csv');
+    check('cli table: the same rows come out as csv',
+      read(clt.w, '#clt-output'), 'NAME,AGE\nAda,30\nBudi,41');
+
+    const gmp = loadPage('maps-link-parser');
+    set(gmp.w, '#gmp-input', 'https://www.google.com/maps/@-6.2088,106.8456,15z');
+    set(gmp.w, '#gmp-label', 'Jakarta');
+    check('maps parser: decimal output', read(gmp.w, '#gmp-output'), '-6.2088, 106.8456');
+    set(gmp.w, '#gmp-format', 'sql');
+    check('maps parser: a sql insert is written',
+      read(gmp.w, '#gmp-output'),
+      "INSERT INTO places (label, latitude, longitude)\nVALUES ('Jakarta', -6.2088, 106.8456);");
+    set(gmp.w, '#gmp-input', 'https://maps.app.goo.gl/abc123');
+    check('maps parser: a short link is refused with a reason',
+      /short link/i.test(read(gmp.w, '#gmp-status')), true);
+  }
+
   /* --------------------------------------------------------- websocket tester */
 
   console.log('\n=== websocket tester ===');

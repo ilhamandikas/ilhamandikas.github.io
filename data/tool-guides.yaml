@@ -1993,3 +1993,59 @@ whatsapp-formatter:
       a: "No. With nothing selected the markers are inserted as a pair and the caret is placed between them, so you can type the text afterwards. With a selection the markers go around it."
     - q: "Can the preview differ from WhatsApp?"
       a: "Slightly. The page renders the markers as HTML for a quick look, while WhatsApp applies its own rules, so an unusual nesting of markers may look a little different in the app. The copy button always gives you the plain text with markers."
+
+csv-viewer:
+  about: >-
+    Drop in a CSV, TSV or pipe-separated file and read it as a table. The
+    delimiter is guessed from the first line, but you can sort by any column,
+    type in the filter box to narrow the rows, and see the shape of the file at
+    a glance. The file is parsed in the page, so nothing is uploaded.
+  faq:
+    - q: "How does it pick the delimiter?"
+      a: "It counts commas, semicolons, tabs and pipes on the first non-empty line and uses whichever appears most. A file with a single column falls back to the comma."
+    - q: "How large a file can it open?"
+      a: "The whole file is parsed, but only the first five hundred rows are drawn to keep the page responsive. The row count in the corner always reflects the full file, not just what is shown."
+    - q: "Does it read quoted fields?"
+      a: "Yes. A field wrapped in double quotes may contain the delimiter, a newline or a doubled quote, and the viewer keeps it as one value rather than splitting it."
+
+csv-json-converter:
+  about: >-
+    Move between the two shapes that CSV and JSON use for tabular data. Going
+    to JSON, each row becomes an object keyed by the header; going to CSV, the
+    keys become the header and any key a row is missing is left empty. The
+    delimiter is detected for CSV input and can be set by hand.
+  faq:
+    - q: "What does the JSON have to look like?"
+      a: "An array. Each item can be an object, whose keys become columns, or an array, which is written as a plain row. Anything that is not an array is rejected with a message rather than a partial result."
+    - q: "Where does the extra header come from?"
+      a: "When objects have different keys, the header is the union of all of them, in the order the keys first appear. A row that lacks one of those keys simply gets an empty cell."
+    - q: "Are values converted to numbers?"
+      a: "No. CSV cells are text, so 120 in a CSV file becomes the string \"120\" in JSON. Convert the types in your own code if the number matters."
+
+cli-table-converter:
+  about: >-
+    Turn the columns printed by docker ps, ps, df or kubectl into a table you
+    can paste into a document or a ticket. The separator is detected from the
+    text, and the output can be a Markdown table, CSV or TSV. Rows of different
+    lengths are padded so the result is always rectangular.
+  faq:
+    - q: "Why does the automatic mode choose two spaces?"
+      a: "In aligned terminal output a single space can appear inside a value, while two or more spaces are the gap between columns. Splitting on two spaces keeps names with one space intact, and any-run-of-spaces is available when a column is narrow."
+    - q: "What happens to a pipe in the data?"
+      a: "In a Markdown table a pipe would end the cell, so it is escaped as a backslash followed by the pipe. In CSV and TSV output the usual quoting rules apply instead."
+    - q: "Can I drop the header?"
+      a: "Clear the first-row box and the table is written without one. In Markdown output that means generic column names are used, because the format expects a header line."
+
+maps-link-parser:
+  about: >-
+    Paste a Google Maps link and the page pulls out the latitude and longitude,
+    then writes them the way you need them: a plain pair, degrees minutes and
+    seconds, JSON, CSV, a SQL INSERT or a GeoJSON point. A label you type is
+    carried into the formats that have a place for it.
+  faq:
+    - q: "Why does a short link not work?"
+      a: "A maps.app.goo.gl link only reveals its coordinates after a network request follows the redirect, and this page makes no requests. Open the link once in a browser and paste the full URL from the address bar."
+    - q: "Which part of the link is used?"
+      a: "The viewport centre after the @ sign comes first, then the place coordinates marked with !3d and !4d, then query parameters such as q or destination. The first valid pair wins."
+    - q: "Why are the coordinates rounded?"
+      a: "Six decimal places is about ten centimetres on the ground, which is finer than any map pin. Rounding there keeps the numbers readable without losing meaningful precision."

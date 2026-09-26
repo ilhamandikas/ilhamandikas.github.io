@@ -692,6 +692,16 @@
       desc: Convert fuel economy between km/L, L/100 km and US or UK MPG.
       keywords: [fuel, economy, mileage, kmpl, l/100km, mpg, liters, consumption, convert]
       status: done
+    - slug: cli-table-converter
+      name: CLI Table Converter
+      desc: Turn aligned terminal output such as docker ps or df into a Markdown table, CSV or TSV.
+      keywords: [cli, terminal, table, markdown, csv, tsv, convert, docker ps, df, columns]
+      status: done
+    - slug: maps-link-parser
+      name: Google Maps Link Parser
+      desc: Pull the latitude and longitude out of a Google Maps link and export it as JSON, CSV, SQL or GeoJSON.
+      keywords: [google maps, link, url, latitude, longitude, coordinates, gps, sql, json, csv, geojson, parse]
+      status: done
 
 - name: Math
   slug: math
@@ -789,6 +799,16 @@
       name: JSON Path Explorer
       desc: Evaluate JSONPath expressions against JSON, list every match with its path, and build expressions by clicking a tree.
       keywords: [json, jsonpath, query, explore, filter, tree, pointer, api, extract]
+      status: done
+    - slug: csv-viewer
+      name: CSV Viewer
+      desc: Open a CSV, TSV or pipe-separated file, filter it and sort it column by column in a table.
+      keywords: [csv, tsv, viewer, table, sort, filter, delimiter, spreadsheet, data]
+      status: done
+    - slug: csv-json-converter
+      name: CSV and JSON Converter
+      desc: Convert CSV to JSON, or JSON back to CSV, with configurable delimiter and pretty-printing.
+      keywords: [csv, json, convert, delimiter, header, objects, rows, data, tsv]
       status: done
 
 - name: Games

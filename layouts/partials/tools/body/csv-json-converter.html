@@ -1,0 +1,44 @@
+<div class="tool-panel">
+  <h2>CSV and JSON Converter</h2>
+  <div class="tool-grid-2">
+    <label class="tool-field">
+      <span>Direction</span>
+      <select id="cxj-direction" class="tool-select">
+        <option value="csv2json" selected>CSV to JSON</option>
+        <option value="json2csv">JSON to CSV</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>Delimiter</span>
+      <select id="cxj-delimiter" class="tool-select">
+        <option value="auto" selected>Detect automatically</option>
+        <option value="commas">Comma</option>
+        <option value="semicolons">Semicolon</option>
+        <option value="tabs">Tab</option>
+        <option value="pipes">Pipe</option>
+      </select>
+    </label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input type="checkbox" id="cxj-header" checked> First row is the header</label>
+    <label class="tool-check"><input type="checkbox" id="cxj-pretty" checked> Pretty-print JSON</label>
+    <span class="tool-status" id="cxj-status"></span>
+  </div>
+</div>
+
+<div class="tool-panel">
+  <h2>Input</h2>
+  <textarea id="cxj-input" class="tool-input tool-code" rows="7" spellcheck="false">name,city,total
+Ada,Jakarta,120
+Budi,Surabaya,95</textarea>
+</div>
+
+<div class="tool-panel">
+  <h2>Output</h2>
+  <div class="tool-row">
+    <button class="btn" type="button" data-copy="#cxj-output" data-status="#cxj-status">Copy</button>
+    <button class="btn" type="button" data-download="#cxj-output" data-filename="converted.json" data-mime="application/json">Download</button>
+  </div>
+  <textarea id="cxj-output" class="tool-input tool-code" rows="9" readonly spellcheck="false"></textarea>
+  <p class="tool-hint">Going one way, each row becomes an object keyed by the header. Going the other way, the keys become the header and any key missing from a row is left empty.</p>
+</div>
