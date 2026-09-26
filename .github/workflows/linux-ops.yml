@@ -42,4 +42,4 @@ jobs:
         run: npm run build
 
       - name: Verify the committed build output is current
-        run: git diff --exit-code -- ../../static/linux-ops
+        run: git diff --exit-code -- ../../assets/linux-ops

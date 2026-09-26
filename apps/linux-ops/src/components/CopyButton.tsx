@@ -7,7 +7,7 @@ interface Props {
 
 // Copy with a clipboard fallback, because navigator.clipboard is unavailable on
 // insecure origins (and in some embedded browsers).
-export function CopyButton({ text, notify, label = 'Copy', className = 'btn' }: Props) {
+export function CopyButton({ text, notify, label = 'Copy', className = 'lo-btn' }: Props) {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);

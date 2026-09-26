@@ -51,7 +51,7 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
   const gated = command.risk === 'dangerous' && !revealed;
 
   return (
-    <div className="card flex h-full flex-col overflow-hidden">
+    <div className="lo-card flex h-full flex-col overflow-hidden">
       <div className="border-b border-edge p-5">
         <div className="flex items-start justify-between gap-3">
           <h2 className="text-lg font-semibold text-fg">{command.title}</h2>
@@ -68,8 +68,8 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
         <p className="mt-1 text-sm text-muted">{command.description}</p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <RiskBadge risk={command.risk} />
-          {command.requiresSudo && <span className="chip">needs sudo</span>}
-          <span className="chip">{command.category}</span>
+          {command.requiresSudo && <span className="lo-chip">needs sudo</span>}
+          <span className="lo-chip">{command.category}</span>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
                 <label key={param.name} className="block">
                   <span className="mb-1 block text-xs text-muted">{param.label}</span>
                   <input
-                    className="input"
+                    className="lo-input"
                     value={values[param.name] ?? ''}
                     placeholder={param.placeholder}
                     onChange={(event) => setValues((current) => ({ ...current, [param.name]: event.target.value }))}
@@ -101,7 +101,7 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
                 This command is destructive and can cause data loss. It is never suggested by default — read it carefully
                 before revealing it.
               </p>
-              <button type="button" className="btn mt-3 border-danger/50 text-danger" onClick={() => setRevealed(true)}>
+              <button type="button" className="lo-btn mt-3 border-danger/50 text-danger" onClick={() => setRevealed(true)}>
                 I understand, show the command
               </button>
             </div>
@@ -111,8 +111,8 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
                 {filled}
               </pre>
               <div className="mt-2 flex flex-wrap gap-2">
-                <CopyButton text={filled} notify={notify} label="Copy command" className="btn btn-primary" />
-                <button type="button" className="btn" onClick={download}>
+                <CopyButton text={filled} notify={notify} label="Copy command" className="lo-btn lo-btn-primary" />
+                <button type="button" className="lo-btn" onClick={download}>
                   Download .sh
                 </button>
               </div>
@@ -155,7 +155,7 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
               {command.alternatives.map((alternative) => (
                 <li key={alternative} className="flex items-center justify-between gap-3 rounded-lg border border-edge bg-base px-3 py-2">
                   <code className="overflow-x-auto font-mono text-xs text-fg/90">{alternative}</code>
-                  <CopyButton text={alternative} notify={notify} label="Copy" className="btn shrink-0" />
+                  <CopyButton text={alternative} notify={notify} label="Copy" className="lo-btn shrink-0" />
                 </li>
               ))}
             </ul>
@@ -167,7 +167,7 @@ export function CommandDetail({ command, initialValues = {}, favorite, onToggleF
             <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">Next troubleshooting steps</h3>
             <div className="flex flex-wrap gap-2">
               {nextSteps.map((step) => (
-                <button key={step.id} type="button" className="btn" onClick={() => onSelect(step.id)}>
+                <button key={step.id} type="button" className="lo-btn" onClick={() => onSelect(step.id)}>
                   {step.title}
                 </button>
               ))}

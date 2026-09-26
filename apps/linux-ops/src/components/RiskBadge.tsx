@@ -8,5 +8,5 @@ const STYLES: Record<Risk, string> = {
 };
 
 export function RiskBadge({ risk }: { risk: Risk }) {
-  return <span className={`chip ${STYLES[risk]}`}>{RISK_LABEL[risk]}</span>;
+  return <span className={`lo-chip ${STYLES[risk]}`}>{RISK_LABEL[risk]}</span>;
 }

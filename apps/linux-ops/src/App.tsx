@@ -87,43 +87,34 @@ export default function App() {
   const sensitiveQuery = detectSensitive(query);
 
   return (
-    <div className="flex h-full flex-col">
-      <header className="border-b border-edge bg-panel/80 backdrop-blur">
-        <div className="flex flex-wrap items-center gap-3 px-4 py-3">
-          <button type="button" className="btn lg:hidden" onClick={() => setSidebarOpen((open) => !open)}>
+    <div className="lo-app">
+      {/* The site page supplies the title and description, so the app keeps only
+          the tab switch here. The box is a fixed-height panel that scrolls
+          internally, which keeps the site footer reachable. */}
+      <div className="flex h-[70vh] min-h-[560px] flex-col overflow-hidden rounded-[10px] border border-edge bg-panel">
+        <div className="flex flex-wrap items-center gap-3 border-b border-edge px-3 py-2">
+          <button type="button" className="lo-btn lg:hidden" onClick={() => setSidebarOpen((open) => !open)}>
             Menu
           </button>
-          <div className="flex items-center gap-2">
-            <span aria-hidden className="text-lg">
-              🐧
-            </span>
-            <div>
-              <h1 className="text-sm font-semibold text-fg">Linux Ops Command Generator</h1>
-              <p className="hidden text-xs text-muted sm:block">
-                Describe the problem, get a safe command, its flags and the next step.
-              </p>
-            </div>
-          </div>
           <div className="ml-auto flex items-center gap-2">
             <button
               type="button"
-              className={`btn ${tab === 'commands' ? 'btn-primary' : ''}`}
+              className={`lo-btn ${tab === 'commands' ? 'lo-btn-primary' : ''}`}
               onClick={() => setTab('commands')}
             >
               Commands
             </button>
             <button
               type="button"
-              className={`btn ${tab === 'analyzer' ? 'btn-primary' : ''}`}
+              className={`lo-btn ${tab === 'analyzer' ? 'lo-btn-primary' : ''}`}
               onClick={() => setTab('analyzer')}
             >
               Analyzer
             </button>
           </div>
         </div>
-      </header>
 
-      <div className="flex min-h-0 flex-1">
+        <div className="flex min-h-0 flex-1">
         <aside className={`${sidebarOpen ? 'block' : 'hidden'} w-64 shrink-0 border-r border-edge bg-panel lg:block`}>
           <Sidebar
             categories={CATEGORIES}
@@ -165,7 +156,7 @@ export default function App() {
                   query={query}
                 />
                 {detail && (
-                  <div className="xl:sticky xl:top-4 xl:h-[calc(100vh-7rem)]">
+                  <div className="xl:sticky xl:top-4 xl:h-[calc(70vh-6.5rem)]">
                     <CommandDetail
                       command={detail}
                       initialValues={parsed.params}
@@ -186,6 +177,7 @@ export default function App() {
 
       <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} onSelect={select} />
       <ToastHost toasts={toasts} />
+      </div>
     </div>
   );
 }

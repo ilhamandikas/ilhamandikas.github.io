@@ -12,7 +12,7 @@ interface Props {
 export function CommandCard({ command, active, favorite, onSelect, onToggleFavorite }: Props) {
   return (
     <article
-      className={`card cursor-pointer p-4 transition-colors ${
+      className={`lo-card cursor-pointer p-4 transition-colors ${
         active ? 'border-accent/60' : 'hover:border-edge2'
       }`}
       onClick={() => onSelect(command.id)}
@@ -38,9 +38,9 @@ export function CommandCard({ command, active, favorite, onSelect, onToggleFavor
       </pre>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <RiskBadge risk={command.risk} />
-        {command.requiresSudo && <span className="chip">needs sudo</span>}
+        {command.requiresSudo && <span className="lo-chip">needs sudo</span>}
         {command.tags.slice(0, 3).map((tag) => (
-          <span key={tag} className="chip">
+          <span key={tag} className="lo-chip">
             {tag}
           </span>
         ))}

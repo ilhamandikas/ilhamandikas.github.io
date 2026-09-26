@@ -7,7 +7,7 @@ export function ToastHost({ toasts }: { toasts: Toast[] }) {
         <div
           key={toast.id}
           role="status"
-          className="rounded-lg border border-edge2 bg-panel2 px-4 py-2 text-sm text-fg shadow-panel"
+          className="rounded-lg border border-edge2 bg-panel2 px-4 py-2 text-sm text-fg"
         >
           {toast.message}
         </div>

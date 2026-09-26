@@ -16,7 +16,7 @@ export const SearchBar = forwardRef<HTMLInputElement, Props>(function SearchBar(
       <input
         ref={ref}
         type="search"
-        className="input py-3 pl-10 pr-24 text-base"
+        className="lo-input py-3 pl-10 pr-24 text-base"
         placeholder="Describe the problem: cek port 8080 dipakai apa, disk penuh, 503 nginx…"
         value={value}
         onChange={(event) => onChange(event.target.value)}

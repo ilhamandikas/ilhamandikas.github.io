@@ -44,13 +44,13 @@ export function Analyzer({ notify, onSelect }: Props) {
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <div className="card flex flex-col p-4">
+      <div className="lo-card flex flex-col p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 className="text-sm font-semibold text-fg">Paste command output</h2>
-          <CopyButton text={text} notify={notify} label="Copy" className="btn" />
+          <CopyButton text={text} notify={notify} label="Copy" className="lo-btn" />
         </div>
         <textarea
-          className="input min-h-[320px] flex-1 resize-y font-mono text-xs"
+          className="lo-input min-h-[320px] flex-1 resize-y font-mono text-xs"
           placeholder={'Paste the output of ss, df, free, ps, docker ps, nginx -t, systemctl status, lsblk, pvs/lvs, git status, a replication query or a process list.'}
           value={text}
           spellCheck={false}
@@ -59,12 +59,12 @@ export function Analyzer({ notify, onSelect }: Props) {
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <span className="text-xs text-muted">Try a sample:</span>
           {SAMPLES.map((sample) => (
-            <button key={sample.label} type="button" className="btn" onClick={() => setText(sample.text)}>
+            <button key={sample.label} type="button" className="lo-btn" onClick={() => setText(sample.text)}>
               {sample.label}
             </button>
           ))}
           {text && (
-            <button type="button" className="btn" onClick={() => setText('')}>
+            <button type="button" className="lo-btn" onClick={() => setText('')}>
               Clear
             </button>
           )}
@@ -77,7 +77,7 @@ export function Analyzer({ notify, onSelect }: Props) {
         )}
       </div>
 
-      <div className="card p-4">
+      <div className="lo-card p-4">
         <h2 className="text-sm font-semibold text-fg">What this output means</h2>
         {!analysis ? (
           <p className="mt-2 text-sm text-muted">
@@ -87,7 +87,7 @@ export function Analyzer({ notify, onSelect }: Props) {
         ) : (
           <div className="mt-3 space-y-3">
             <div className="flex items-center gap-2">
-              <span className="chip">{analysis.label}</span>
+              <span className="lo-chip">{analysis.label}</span>
               <span className="text-xs text-muted">{analysis.summary}</span>
             </div>
             <ul className="space-y-2">
@@ -106,7 +106,7 @@ export function Analyzer({ notify, onSelect }: Props) {
                     .map((id) => COMMAND_BY_ID.get(id))
                     .filter((item) => item !== undefined)
                     .map((item) => (
-                      <button key={item.id} type="button" className="btn" onClick={() => onSelect(item.id)}>
+                      <button key={item.id} type="button" className="lo-btn" onClick={() => onSelect(item.id)}>
                         {item.title}
                       </button>
                     ))}

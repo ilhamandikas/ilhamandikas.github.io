@@ -33,10 +33,13 @@ process.on('unhandledRejection', (e) => {
 
 function resolveScripts(html) {
   // Hugo's minifier emits unquoted attribute values, so handle both forms.
+  // Any same-origin script that Hugo actually shipped is fair game: tool pages
+  // use /js/*.js, and the embedded Linux Ops app uses /linux-ops/app.*.js.
   return [...html.matchAll(/<script[^>]*\ssrc=(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)]
     .map((m) => m[1] || m[2] || m[3])
-    .filter((src) => src && src.startsWith('/js/'))
-    .map((src) => path.join(ROOT, src));
+    .filter((src) => src && src.startsWith('/') && !src.startsWith('//'))
+    .map((src) => path.join(ROOT, src))
+    .filter((file) => fs.existsSync(file));
 }
 
 // jsdom has no WebSocket and Node has one that talks to the real network, which a

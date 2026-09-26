@@ -18,6 +18,9 @@
 .tools-feature a { color: var(--accent); text-decoration: none; }
 .tools-feature a:hover { text-decoration: underline; }
 
+/* The Linux Ops app is a self-contained panel; only its outer spacing is ours. */
+.lo-embed { margin: 0 0 2.5rem; }
+
 .tools-search { margin: 0 0 34px; }
 
 .tools-search-field {

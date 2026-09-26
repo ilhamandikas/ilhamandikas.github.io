@@ -2,55 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
-}
-
-html,
-body,
-#root {
-  height: 100%;
-}
-
-body {
-  @apply bg-base text-fg antialiased;
+/* The app is a panel inside a Hugo tool page, so nothing here is global: the
+   shell colour and font live on `.lo-app`, and the site keeps its own. */
+.lo-app {
+  color: #14161a;
   font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-::selection {
-  background: rgba(56, 189, 248, 0.35);
+.lo-app ::selection {
+  background: rgba(37, 99, 235, 0.2);
 }
 
-/* Thin, quiet scrollbars that match the dark shell. */
-* {
+/* Thin, quiet scrollbars that match the flat shell. */
+.lo-app * {
   scrollbar-width: thin;
-  scrollbar-color: #2c3a4f transparent;
+  scrollbar-color: #cfd4dc transparent;
 }
-*::-webkit-scrollbar {
+.lo-app *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-*::-webkit-scrollbar-thumb {
-  background: #2c3a4f;
+.lo-app *::-webkit-scrollbar-thumb {
+  background: #cfd4dc;
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 @layer components {
-  .card {
-    @apply rounded-xl border border-edge bg-panel shadow-panel;
+  .lo-card {
+    @apply rounded-[10px] border border-edge bg-panel;
   }
-  .chip {
+  .lo-chip {
     @apply inline-flex items-center gap-1 rounded-full border border-edge2 px-2.5 py-0.5 text-xs text-muted;
   }
-  .btn {
+  .lo-btn {
     @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-edge2 px-3 py-1.5 text-sm text-fg transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-40;
   }
-  .btn-primary {
+  .lo-btn-primary {
     @apply border-accent bg-accent/10 text-accent hover:bg-accent/20;
   }
-  .input {
+  .lo-input {
     @apply w-full rounded-lg border border-edge bg-base px-3 py-2 text-sm text-fg placeholder:text-muted/70 focus:border-accent focus:outline-none;
   }
 }

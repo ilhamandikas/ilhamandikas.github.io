@@ -1765,3 +1765,23 @@ javascript-playground:
       a: "Only output produced while the snippet runs is captured, and the snippet has to finish for the run to end. If it throws, the error is shown instead and anything logged before the throw is still listed."
     - q: "Does it remember my code between visits?"
       a: "The editor starts from a small example each time. If you want to keep a snippet, use Copy code before you leave, or paste it into your own notes."
+
+linux-ops:
+  about: >-
+    A troubleshooting companion for Linux servers. Describe the problem in
+    plain language — which process is using port 8080, disk is full, nginx
+    returns 503 — and it finds the matching command, explains every flag, rates
+    how risky it is and suggests what to check next. There is also an analyzer:
+    paste the output of df, free, ss, docker ps, nginx -t, systemctl status or
+    journalctl and it reads the output back to you. Everything runs in your
+    browser; nothing is uploaded, and a search that looks like it contains a
+    secret is kept out of the URL.
+  faq:
+    - q: "Does it run the commands for me?"
+      a: "No. It only suggests commands and explains them; you copy the one you want and run it yourself. That is deliberate: a tool that can run anything on your server is a tool that can break your server."
+    - q: "Is my search sent anywhere?"
+      a: "No. The catalog, the search index and the analyzer all run in your browser. Nothing is uploaded, and if a search looks like it contains a secret — a token, a password, a private key — it is kept out of the URL too."
+    - q: "What can the analyzer read?"
+      a: "Paste the output of df, free, ss, docker ps, nginx -t, systemctl status, lsblk, git status, ps, top, pvs, or MySQL and PostgreSQL status output. It detects the format, points out the lines that matter and suggests the next command."
+    - q: "Are the suggested commands safe?"
+      a: "Each command is labelled safe, changes state, or dangerous, and destructive ones are explained before you run them. Still read the command and its flags before pasting it into a production shell."

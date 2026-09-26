@@ -13,7 +13,7 @@ interface Props {
 export function CommandList({ commands, activeId, favorites, onSelect, onToggleFavorite, query }: Props) {
   if (commands.length === 0) {
     return (
-      <div className="card p-8 text-center">
+      <div className="lo-card p-8 text-center">
         <p className="text-sm text-fg">No command matches “{query}”.</p>
         <p className="mt-1 text-sm text-muted">
           Try a plain description of the symptom, such as “disk penuh”, “port 8080”, “503 nginx” or “oom”.

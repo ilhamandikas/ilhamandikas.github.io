@@ -45,17 +45,22 @@ React 18 + Vite 5 + TypeScript + Tailwind CSS, with Fuse.js for fuzzy search.
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173/linux-ops/
+npm run dev      # http://localhost:5173/ (dev only; production mounts into Hugo)
 npm run lint
 npm run build    # type-check + production build
 ```
 
 ## Deployment
 
-The build output goes to `../../static/linux-ops` (see `vite.config.ts`), which is
-the Hugo `static` tree of the surrounding site. Hugo copies it into `public/`, so
-the existing GitHub Pages workflow at `.github/workflows/hugo.yml` deploys the app
-at <https://ilham.dev/linux-ops/> without needing npm during the Hugo build.
+The build output goes to `../../assets/linux-ops` with stable file names (`app.js`,
+`app.css`). Hugo fingerprints those into `public/linux-ops/` and the page at
+`content/tools/linux-ops.md` mounts the app into its `#root` element, so the app is
+served at <https://ilham.dev/tools/linux-ops/> as a normal Hugo page with the site
+header and footer. Nothing needs npm during the Hugo build.
+
+Tailwind is configured with `preflight: false` and `important: '.lo-app'`, so the
+app's styles are scoped under `.lo-app` and cannot collide with the site's own
+`.card`, `.grid` or `.container` rules.
 
 The build output is committed so the Hugo CI stays npm-free. The dedicated
 workflow at `.github/workflows/linux-ops.yml` rebuilds the app from source and

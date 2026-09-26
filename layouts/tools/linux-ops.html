@@ -1,0 +1,23 @@
+{{ define "main" }}
+<article class="page tool-page">
+  <div class="container">
+    <div class="page-header tool-header">
+      <p class="tool-crumb"><a href="{{ "/tools/" | relURL }}">Tools</a></p>
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}<p class="updated">{{ . }}</p>{{ end }}
+    </div>
+    {{- /* The app owns everything inside this panel: its styles are scoped to
+           `.lo-app` and its bundle is fingerprinted here, so the Hugo build
+           stays free of npm. */}}
+    <div class="lo-embed"><div id="root"></div></div>
+    {{ partial "tools/about.html" "linux-ops" }}
+  </div>
+</article>
+{{ end }}
+
+{{ define "scripts" }}
+{{- $css := resources.Get "linux-ops/app.css" | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+{{- $js := resources.Get "linux-ops/app.js" | fingerprint }}
+<script defer src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
+{{ end }}

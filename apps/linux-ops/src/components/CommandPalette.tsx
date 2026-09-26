@@ -35,8 +35,8 @@ export function CommandPalette({ open, onClose, onSelect }: Props) {
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex items-start justify-center bg-black/60 p-4 pt-24" onClick={onClose}>
-      <div className="card w-full max-w-xl overflow-hidden" onClick={(event) => event.stopPropagation()}>
+    <div className="fixed inset-0 z-40 flex items-start justify-center bg-[rgba(20,22,26,0.4)] p-4 pt-16" onClick={onClose}>
+      <div className="lo-card w-full max-w-xl overflow-hidden" onClick={(event) => event.stopPropagation()}>
         <input
           ref={inputRef}
           className="w-full border-b border-edge bg-transparent px-4 py-3 text-sm text-fg placeholder:text-muted/70 focus:outline-none"
