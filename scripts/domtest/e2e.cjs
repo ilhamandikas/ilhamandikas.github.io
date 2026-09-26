@@ -1581,6 +1581,7 @@ const check = (label, actual, expected) => {
       ['watermark-tool', 'wmt'],
       ['photo-target-resizer', 'ptr'],
       ['screenshot-privacy-cleaner', 'spc'],
+      ['background-remover', 'bgr'],
     ];
     const notAnImage = 'This does not look like a JPEG, PNG, GIF or WebP. Those are the four this page can read.';
     const noCanvas = 'This browser cannot process images.';

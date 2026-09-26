@@ -1354,6 +1354,9 @@ textarea.tool-text { resize: vertical; }
 }
 .oav-op .tool-table-wrap { margin: 0; }
 .oav-op .tool-result { margin: 0; }
+
+/* The cleared area shows as the pale backdrop behind the canvas. */
+.bgr-backdrop { background: var(--bg-soft); }
 .rr-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 .dlg-options { align-items: center; margin-top: 14px; }
 .df-grid + .df-grid { margin-top: 14px; }

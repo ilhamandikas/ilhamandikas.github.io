@@ -2226,3 +2226,17 @@ openapi-viewer:
       a: "OpenAPI 3.0 and 3.1 as well as Swagger 2.0. The overview writes down which one it found, and a Swagger 2 document's host, basePath and schemes are shown as the server."
     - q: "How deep does a schema go?"
       a: "Nested objects are expanded a couple of levels and then summarised as object, so one schema cannot flood the page. The shape is still clear, and the full definition is in the document you pasted."
+
+background-remover:
+  about: >-
+    Make the background of a photo transparent. Pixels along the edge are
+    flooded inwards and everything close enough in colour goes, which turns a
+    product shot on a plain surface or a screenshot on a flat colour into a
+    cut-out PNG in one step.
+  faq:
+    - q: "Will this work on a photo with a busy background?"
+      a: "No, and no colour match can. A street, a room or a crowd needs a segmentation model that understands what a person or an object is. This page is honest about that limit rather than producing a ragged edge that has to be cleaned up by hand."
+    - q: "Why is part of the subject disappearing?"
+      a: "The subject shares a colour with the background and the match is too generous. Lower the colour match until it stops, or start from the four corners when only the edges are reliable."
+    - q: "What happens to the parts that are left?"
+      a: "They keep their colour and position exactly, and the cleared area becomes fully transparent. The download is a PNG or a WebP because JPEG cannot store transparency at all."

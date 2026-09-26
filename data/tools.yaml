@@ -520,6 +520,11 @@
       desc: Pixelate or black out parts of a screenshot before sharing it.
       keywords: [screenshot, privacy, redact, pixelate, blur, censor, black out, mask, anonymise, image]
       status: done
+    - slug: background-remover
+      name: Background Remover
+      desc: Clear a plain background from an image by flooding in from the edges.
+      keywords: [background, remove, transparent, cutout, png, alpha, magic wand, flood fill, photo, product]
+      status: done
     - slug: zip-builder
       name: Zip Builder
       desc: Bundle several files into a zip archive in the browser, with a choice of compression level.
