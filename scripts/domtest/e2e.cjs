@@ -1610,6 +1610,43 @@ const check = (label, actual, expected) => {
     }
   }
 
+  /* --------------------------------------------------------- openapi viewer */
+
+  console.log('\n=== openapi viewer ===');
+  {
+    const page = loadPage('openapi-viewer');
+    check('openapi viewer: the sample is read at load', read(page.w, '#oav-title'), 'Orders API');
+    check('openapi viewer: the version names both the spec and the release', read(page.w, '#oav-version'), 'OpenAPI 3.0.3 · 1.2.0');
+    check('openapi viewer: the server is listed', read(page.w, '#oav-servers'), 'https://api.example.com/v1');
+    check('openapi viewer: the operations are counted', read(page.w, '#oav-count'), '3');
+    check('openapi viewer: each path becomes a card', page.w.document.querySelectorAll('.oav-op').length, 3);
+    check('openapi viewer: the paths and methods are listed',
+      [...page.w.document.querySelectorAll('.oav-op')].map((card) => `${card.querySelector('.oav-method').textContent} ${card.querySelector('.oav-path').textContent}`).join(', '),
+      'GET /orders, POST /orders, GET /orders/{id}');
+    check('openapi viewer: a reference is resolved into a shape',
+      page.w.document.querySelector('.oav-op .oav-section + .tool-result').textContent.startsWith('required · application/json: { id: string, status: enum(open | shipped | cancelled), total?: number(double) }'),
+      true);
+    check('openapi viewer: parameters become rows',
+      [...[...page.w.document.querySelectorAll('.oav-op')][0].querySelectorAll('.tool-table')][0].querySelectorAll('tbody tr').length, 2);
+    check('openapi viewer: responses become rows',
+      [...[...page.w.document.querySelectorAll('.oav-op')][2].querySelectorAll('.tool-table')][1].querySelectorAll('tbody tr').length, 2);
+
+    set(page.w, '#oav-filter', 'create');
+    check('openapi viewer: the filter narrows the list', page.w.document.querySelectorAll('.oav-op').length, 1);
+    check('openapi viewer: the filter is reported', read(page.w, '#oav-status'), 'Read — 3 operations, 1 shown.');
+    set(page.w, '#oav-filter', 'zzz');
+    check('openapi viewer: an empty filter result is explained', page.w.document.querySelectorAll('.oav-op').length, 0);
+
+    set(page.w, '#oav-input', 'not: [a spec');
+    await sleep(350);
+    check('openapi viewer: a broken document is refused', /^Could not parse the document: /.test(read(page.w, '#oav-status')), true);
+    set(page.w, '#oav-input', '{"hello": "world"}');
+    set(page.w, '#oav-format', 'json');
+    await sleep(350);
+    check('openapi viewer: a document without paths is refused',
+      read(page.w, '#oav-status'), 'That document has no paths, so it is not an OpenAPI or Swagger specification.');
+  }
+
   /* --------------------------------------------------------- device testers */
 
   console.log('\n=== device testers ===');

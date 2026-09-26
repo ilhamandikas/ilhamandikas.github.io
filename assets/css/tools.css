@@ -1306,6 +1306,54 @@ textarea.tool-text { resize: vertical; }
   font-weight: 600;
 }
 .gpd-button-value { font-family: var(--mono); }
+
+/* OpenAPI viewer: one card per operation, method badge first. */
+.oav-ops { display: grid; gap: 18px; }
+.oav-op {
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.oav-op-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.oav-method {
+  padding: 2px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.oav-path {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+}
+.oav-op-summary {
+  font-size: 14px;
+  color: var(--muted);
+}
+.oav-tags {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+.oav-section {
+  margin: 18px 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.oav-op .tool-table-wrap { margin: 0; }
+.oav-op .tool-result { margin: 0; }
 .rr-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 .dlg-options { align-items: center; margin-top: 14px; }
 .df-grid + .df-grid { margin-top: 14px; }

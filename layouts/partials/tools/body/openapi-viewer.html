@@ -1,0 +1,121 @@
+<div class="tool-panel">
+  <h2>OpenAPI Viewer</h2>
+  <label class="tool-field">
+    <span>Specification</span>
+    <textarea id="oav-input" class="tool-input tool-code" rows="10" spellcheck="false">openapi: 3.0.3
+info:
+  title: Orders API
+  version: 1.2.0
+  description: Manage orders and their line items.
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /orders:
+    get:
+      summary: List orders
+      tags: [Orders]
+      parameters:
+        - name: status
+          in: query
+          description: Only return orders in this state.
+          schema:
+            type: string
+            enum: [open, shipped, cancelled]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: A page of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Create an order
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: The order was created
+  /orders/{id}:
+    get:
+      summary: Fetch one order
+      tags: [Orders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          description: No such order
+components:
+  schemas:
+    Order:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [open, shipped, cancelled]
+        total:
+          type: number
+          format: double</textarea>
+  </label>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Format</span>
+      <select id="oav-format" class="tool-select">
+        <option value="auto" selected>Detect automatically</option>
+        <option value="json">JSON</option>
+        <option value="yaml">YAML</option>
+      </select>
+    </label>
+    <label class="tool-field">
+      <span>File</span>
+      <input id="oav-file" class="tool-input" type="file" accept=".json,.yaml,.yml,application/json,text/yaml">
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="oav-load">Read specification</button>
+    <span class="tool-status" id="oav-status"></span>
+  </div>
+  <p class="tool-hint">Swagger 2.0 and OpenAPI 3 documents are both accepted. Nothing is fetched: references are resolved inside the document you paste, so a spec split across several files is out of scope here.</p>
+</div>
+
+<div class="tool-panel" id="oav-summary" hidden>
+  <h2>Overview</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Title</span><span id="oav-title">—</span></p>
+    <p><span class="imc-label">Version</span><span id="oav-version">—</span></p>
+    <p><span class="imc-label">Servers</span><span id="oav-servers">—</span></p>
+    <p><span class="imc-label">Operations</span><span id="oav-count">—</span></p>
+  </div>
+</div>
+
+<div class="tool-panel" id="oav-ops-panel" hidden>
+  <h2>Operations</h2>
+  <div class="tool-row">
+    <input id="oav-filter" class="tool-input" type="search" placeholder="Filter by path, method, tag or summary" autocomplete="off">
+  </div>
+  <div id="oav-ops" class="oav-ops"></div>
+</div>

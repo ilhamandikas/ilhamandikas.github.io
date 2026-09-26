@@ -415,6 +415,11 @@
       desc: Check that a microphone works and watch its level and peak in real time.
       keywords: [microphone, mic, audio, level, meter, test, input, dbfs, clipping, recording]
       status: done
+    - slug: openapi-viewer
+      name: OpenAPI Viewer
+      desc: Read an OpenAPI or Swagger document and list its operations, parameters and responses.
+      keywords: [openapi, swagger, api, specification, endpoints, schema, rest, documentation, viewer, yaml]
+      status: done
     - slug: mime-types
       name: MIME Types
       desc: Look up the MIME type for a file extension.
