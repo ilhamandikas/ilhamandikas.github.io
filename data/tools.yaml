@@ -510,6 +510,31 @@
       desc: Pixelate or black out parts of a screenshot before sharing it.
       keywords: [screenshot, privacy, redact, pixelate, blur, censor, black out, mask, anonymise, image]
       status: done
+    - slug: zip-builder
+      name: Zip Builder
+      desc: Bundle several files into a zip archive in the browser, with a choice of compression level.
+      keywords: [zip, archive, compress, bundle, files, download, package, store, deflate]
+      status: done
+    - slug: pdf-info
+      name: PDF Page Counter and Info
+      desc: Read a PDF to see its page count, page sizes, version and document information.
+      keywords: [pdf, page count, info, metadata, size, pages, version, details, inspect]
+      status: done
+    - slug: pdf-page-extractor
+      name: PDF Page Extractor
+      desc: Keep only the pages you choose from a PDF and download the rest as a new file.
+      keywords: [pdf, extract, pages, split, delete pages, keep, remove, range, document]
+      status: done
+    - slug: pdf-merger
+      name: PDF Merger
+      desc: Join several PDFs into one document, in the order you set.
+      keywords: [pdf, merge, combine, join, concatenate, append, documents, order]
+      status: done
+    - slug: text-to-pdf
+      name: Text to PDF
+      desc: Write plain text out as a PDF, with wrapping, page size, margins and page numbers.
+      keywords: [pdf, text, write, convert, document, page size, print, wrap, generator]
+      status: done
     - slug: html-wysiwyg-editor
       name: HTML Editor
       desc: A small rich-text editor that exports clean HTML.

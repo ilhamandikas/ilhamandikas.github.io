@@ -2117,3 +2117,71 @@ screenshot-privacy-cleaner:
       a: "A black box destroys the pixels underneath. Pixelation keeps an average of them, and a coarse enough block makes them unreadable, but for anything truly secret the black box is the safer choice."
     - q: "Can I take a redaction back?"
       a: "Undo removes the last box and Reset clears them all, because the untouched pixels are kept aside while you work. Once you download, the redactions are baked into the saved file."
+
+zip-builder:
+  about: >-
+    Pick a handful of files and get one zip back, without installing anything.
+    The archive is assembled in the page from the bytes already on your disk,
+    so nothing is uploaded, and a compression level lets you trade a little
+    time for a smaller download.
+  faq:
+    - q: "Why do two files with the same name both survive?"
+      a: "A zip cannot hold two entries under one name, so the second becomes name-1, then name-2 and so on. That keeps both files instead of quietly losing one."
+    - q: "Which compression level should I use?"
+      a: "The balanced level suits almost everything. Store only is quicker and is the right choice for files that are already compressed, such as a JPEG or another zip, where no level can help."
+    - q: "Is there a size limit?"
+      a: "Only what your device's memory allows, since the archive is built in the page. A few hundred megabytes of photographs is fine on a desktop and heavy on a phone."
+
+pdf-info:
+  about: >-
+    Open a PDF to see what it is made of: how many pages there are, the exact
+    size of each one, the format version and the document information the
+    producer wrote, such as the title and the author.
+  faq:
+    - q: "What are the point and millimetre figures?"
+      a: "A PDF measures its pages in points, where seventy-two points make an inch. Both units are shown because print shops usually ask in millimetres while the file stores points."
+    - q: "Why is some document information missing?"
+      a: "The title, author and subject are optional fields. Plenty of producers leave them empty or fill in only a producer name, and this page shows what is actually there rather than guessing."
+    - q: "Can it read an encrypted PDF?"
+      a: "A password-protected PDF cannot be parsed without the password, so the page says so instead of showing an empty report. Removing the password with the owner's permission has to happen in a reader that can open it."
+
+pdf-page-extractor:
+  about: >-
+    Pull the pages you want out of a long PDF, or cut the pages you do not
+    want by listing only the ones to keep. The chosen pages are copied into a
+    new document, so the parts you left out are genuinely absent from the
+    result rather than merely hidden.
+  faq:
+    - q: "How do I write a page range?"
+      a: "Separate the parts with commas: 1-3, 7, 10- means the first three pages, page seven and everything from page ten onward. A leading dash as in -4 means from the first page to the fourth."
+    - q: "Does the original file change?"
+      a: "No. The file on your disk is only read. The result is a separate download, and the original keeps all of its pages."
+    - q: "Do links and form fields survive?"
+      a: "The page content comes across, but annotations such as form fields and internal links are not carried over, because only the pages themselves are copied into the new document."
+
+pdf-merger:
+  about: >-
+    Combine several PDFs into a single document. The files are listed in the
+    order they will appear, and the order can be changed before the result is
+    built, which matters when a cover page or an appendix has to land in the
+    right place.
+  faq:
+    - q: "Can I merge PDFs with different page sizes?"
+      a: "Yes. Each page keeps its own size, so a mixed document will have pages of different dimensions. Readers and printers handle that; a print shop may prefer a consistent size."
+    - q: "What happens if one file cannot be read?"
+      a: "That file is named in the status and skipped, while the rest are merged. An encrypted PDF is the usual reason, since it cannot be parsed without its password."
+    - q: "Is the order the order I selected them in?"
+      a: "Files are taken in the order the picker returned them, which is usually the order shown in your file browser. Use the Up and Down buttons to set the order you actually want."
+
+text-to-pdf:
+  about: >-
+    Turn a note, a receipt or a block of plain text into a PDF. The text is
+    wrapped to the page width and carried onto a new page when the space runs
+    out, with a choice of page size, font, size, margin and line spacing.
+  faq:
+    - q: "Which characters can be drawn?"
+      a: "The standard PDF fonts cover Latin-1, which is enough for English and Indonesian and most Western European text. Characters outside that range, such as emoji or Cyrillic, cannot be drawn and are left out, and the count is reported."
+    - q: "How does the wrapping work?"
+      a: "Each word is measured with the chosen font and size, and a line breaks when the next word would cross the margin. That keeps the layout correct even in a proportionally spaced font like Helvetica or Times."
+    - q: "Can I use my own font?"
+      a: "Not in this version. Embedding a font means shipping the font file, which would add weight to the page. The three standard fonts are always available and need nothing extra."

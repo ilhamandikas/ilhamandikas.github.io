@@ -1196,6 +1196,11 @@ textarea.tool-text { resize: vertical; }
   border-radius: 8px;
   background: #fff;
 }
+.pdi-heading {
+  margin: 20px 0 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
 .rr-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
 .dlg-options { align-items: center; margin-top: 14px; }
 .df-grid + .df-grid { margin-top: 14px; }

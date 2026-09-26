@@ -1,0 +1,37 @@
+<div class="tool-panel">
+  <h2>Read a PDF</h2>
+  <label class="tool-field">
+    <span>PDF file</span>
+    <input id="pdi-file" class="tool-input" type="file" accept="application/pdf,.pdf">
+  </label>
+  <div class="tool-row">
+    <span class="tool-status" id="pdi-status"></span>
+  </div>
+  <p class="tool-hint">The file is parsed in the page to read its structure and document information. Nothing is uploaded.</p>
+</div>
+
+<div class="tool-panel" id="pdi-report" hidden>
+  <h2>Report</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Pages</span><span id="pdi-pages">—</span></p>
+    <p><span class="imc-label">File size</span><span id="pdi-size">—</span></p>
+    <p><span class="imc-label">Version</span><span id="pdi-version">—</span></p>
+  </div>
+
+  <h3 class="pdi-heading">Document information</h3>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <tbody id="pdi-meta"></tbody>
+    </table>
+  </div>
+
+  <h3 class="pdi-heading">Pages</h3>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <thead>
+        <tr><th>Page</th><th>Width</th><th>Height</th><th>Orientation</th></tr>
+      </thead>
+      <tbody id="pdi-page-list"></tbody>
+    </table>
+  </div>
+</div>

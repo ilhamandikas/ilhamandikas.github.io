@@ -1610,6 +1610,117 @@ const check = (label, actual, expected) => {
     }
   }
 
+  /* ------------------------------------------------------- zip and pdf tools */
+
+  console.log('\n=== zip builder ===');
+  {
+    const page = loadPage('zip-builder');
+    check('zip builder: quiet before a file is chosen', read(page.w, '#zip-status'), '');
+
+    const files = [
+      new page.w.File(['hello'], 'a.txt', { type: 'text/plain' }),
+      new page.w.File(['world'], 'b.txt', { type: 'text/plain' }),
+      new page.w.File(['again'], 'a.txt', { type: 'text/plain' }),
+    ];
+    const field = page.w.document.querySelector('#zip-file');
+    Object.defineProperty(field, 'files', { value: files, configurable: true });
+    field.dispatchEvent(new page.w.Event('change', { bubbles: true }));
+    await sleep(250);
+
+    const names = [...page.w.document.querySelectorAll('#zip-list tr')]
+      .map((tr) => tr.children[0].textContent)
+      .join(',');
+    check('zip builder: a repeated name is given a numeral', names, 'a.txt,b.txt,a-1.txt');
+    check('zip builder: the file count is reported', read(page.w, '#zip-count'), '3 files');
+    check('zip builder: a real archive size is shown', /^\d+(\.\d+)? (B|KB|MB)$/.test(read(page.w, '#zip-size')), true);
+    check('zip builder: the result is announced', /^Ready — 3 files, /.test(read(page.w, '#zip-status')), true);
+
+    click(page.w, '#zip-download');
+    check('zip builder: the download names the archive', read(page.w, '#zip-status'), 'Saved archive.zip.');
+
+    click(page.w, '#zip-clear');
+    check('zip builder: clearing empties the list', read(page.w, '#zip-count'), '—');
+  }
+
+  console.log('\n=== pdf tools ===');
+  {
+    // A small PDF is written by hand so the tests own a real file to parse.
+    const pdfText = (boxes, info) => {
+      const lines = ['%PDF-1.4', '1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj'];
+      lines.push(`2 0 obj << /Type /Pages /Kids [${boxes.map((_, index) => `${3 + index} 0 R`).join(' ')}] /Count ${boxes.length} >> endobj`);
+      boxes.forEach((box, index) => {
+        lines.push(`${3 + index} 0 obj << /Type /Page /Parent 2 0 R /MediaBox [${box}] >> endobj`);
+      });
+      const infoNumber = 3 + boxes.length;
+      lines.push(`${infoNumber} 0 obj << /Title (Sample report) /Author (Ada Lovelace) /CreationDate (D:20240115090000+07'00') >> endobj`);
+      lines.push(`trailer << /Root 1 0 R /Size ${infoNumber + 1} /Info ${infoNumber} 0 R >>`);
+      lines.push('%%EOF');
+      return lines.join('\n');
+    };
+
+    const loadPdf = async (slug, id, data, name) => {
+      const page = loadPage(slug);
+      const file = new page.w.File([data], name, { type: 'application/pdf' });
+      const field = page.w.document.querySelector(`#${id}-file`);
+      Object.defineProperty(field, 'files', { value: [file], configurable: true });
+      field.dispatchEvent(new page.w.Event('change', { bubbles: true }));
+      await sleep(400);
+      return page;
+    };
+
+    const info = await loadPdf('pdf-info', 'pdi', pdfText(['0 0 595 842', '0 0 842 595']), 'report.pdf');
+    check('pdf info: the page count is reported', read(info.w, '#pdi-pages'), '2 pages');
+    check('pdf info: the version comes from the header', read(info.w, '#pdi-version'), '1.4');
+    check('pdf info: the document information is listed',
+      [...info.w.document.querySelectorAll('#pdi-meta tr')].map((tr) => tr.children[1].textContent).join(','),
+      'Sample report,Ada Lovelace,2024-01-15');
+    check('pdf info: each page reports its orientation',
+      [...info.w.document.querySelectorAll('#pdi-page-list tr')].map((tr) => tr.children[3].textContent).join(','),
+      'Portrait,Landscape');
+
+    const extract = await loadPdf('pdf-page-extractor', 'ppe', pdfText(['0 0 595 842', '0 0 595 842', '0 0 595 842', '0 0 595 842']), 'four.pdf');
+    check('pdf extractor: the default range keeps the first two pages',
+      read(extract.w, '#ppe-kept'), '2 of 4 pages');
+    set(extract.w, '#ppe-range', '1,3-4');
+    await sleep(250);
+    check('pdf extractor: a mixed range is honoured', read(extract.w, '#ppe-kept'), '3 of 4 pages');
+    check('pdf extractor: the new file has a size', /KB|B$/.test(read(extract.w, '#ppe-output')), true);
+    set(extract.w, '#ppe-range', '9');
+    await sleep(250);
+    check('pdf extractor: a page outside the document is refused',
+      read(extract.w, '#ppe-status'), 'Outside 1–4: 9.');
+
+    const merger = loadPage('pdf-merger');
+    const pair = [
+      new merger.w.File([pdfText(['0 0 595 842'])], 'one.pdf', { type: 'application/pdf' }),
+      new merger.w.File([pdfText(['0 0 595 842', '0 0 595 842'])], 'two.pdf', { type: 'application/pdf' }),
+    ];
+    const mergeField = merger.w.document.querySelector('#pdm-file');
+    Object.defineProperty(mergeField, 'files', { value: pair, configurable: true });
+    mergeField.dispatchEvent(new merger.w.Event('change', { bubbles: true }));
+    await sleep(400);
+    check('pdf merger: the page total is reported', read(merger.w, '#pdm-pages'), '3 pages');
+    const order = () => [...merger.w.document.querySelectorAll('#pdm-list tr')].map((tr) => tr.children[1].textContent).join(',');
+    check('pdf merger: the documents keep their order', order(), 'one.pdf,two.pdf');
+    click(merger.w, '#pdm-list tr:nth-child(2) [data-merge-action="up"]');
+    await sleep(250);
+    check('pdf merger: a document can be moved up', order(), 'two.pdf,one.pdf');
+    click(merger.w, '#pdm-download');
+    check('pdf merger: the download names the result', read(merger.w, '#pdm-status'), 'Saved merged.pdf.');
+
+    const text = loadPage('text-to-pdf');
+    await sleep(300);
+    check('text to pdf: the sample is laid out on one page', read(text.w, '#ttp-pages'), '1');
+    check('text to pdf: the line count is reported', Number(read(text.w, '#ttp-lines')) > 0, true);
+    set(text.w, '#ttp-text', Array.from({ length: 200 }, (_, index) => `Line ${index + 1}`).join('\n'));
+    set(text.w, '#ttp-size', '24');
+    await sleep(500);
+    check('text to pdf: long text spills onto another page', Number(read(text.w, '#ttp-pages')) > 1, true);
+    check('text to pdf: the file size is real', /^\d+(\.\d+)? (B|KB|MB)$/.test(read(text.w, '#ttp-file-size')), true);
+    click(text.w, '#ttp-download');
+    check('text to pdf: the download is named', read(text.w, '#ttp-status'), 'Saved text.pdf.');
+  }
+
   /* ------------------------------------------------------------- .env sorter */
 
   console.log('\n=== .env key sorter ===');

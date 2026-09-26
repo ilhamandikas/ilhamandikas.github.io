@@ -4,7 +4,7 @@
 //
 // Usage: npm run vendor
 import { build } from 'esbuild';
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 
 const OUT = 'assets/js/vendor';
 
@@ -32,9 +32,12 @@ const ENTRIES = {
   phone: "export { parsePhoneNumberFromString, getCountries, getCountryCallingCode, AsYouType } from 'libphonenumber-js';",
   bip39: "export { generateMnemonic, validateMnemonic, mnemonicToEntropy, entropyToMnemonic, mnemonicToSeedSync } from '@scure/bip39'; export { wordlist as english } from '@scure/bip39/wordlists/english';",
   jsonpath: "export { JSONPath } from 'jsonpath-plus';",
+  fflate: "export { zipSync, unzipSync, strToU8, strFromU8 } from 'fflate';",
+  'pdf-lib': "export { PDFDocument, StandardFonts, rgb, PDFName, PDFString, PDFHexString, PDFDict } from 'pdf-lib';",
 };
 
-await rm(OUT, { recursive: true, force: true });
+// Only the files this script owns are replaced. jsqr is a hand-copied dist
+// file that shares the directory, so the whole folder is never wiped.
 await mkdir(OUT, { recursive: true });
 
 for (const [name, contents] of Object.entries(ENTRIES)) {

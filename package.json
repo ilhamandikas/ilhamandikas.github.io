@@ -11,10 +11,12 @@
   "dependencies": {
     "@scure/bip39": "^1.3.0",
     "bcryptjs": "^2.4.3",
+    "fflate": "^0.8.3",
     "figlet": "^1.7.0",
     "jsonpath-plus": "^10.2.0",
     "libphonenumber-js": "^1.11.7",
     "marked": "^12.0.2",
+    "pdf-lib": "^1.17.1",
     "qrcode": "^1.5.3",
     "smol-toml": "^1.2.1",
     "yaml": "^2.4.5"

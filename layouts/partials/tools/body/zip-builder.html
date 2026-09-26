@@ -1,0 +1,44 @@
+<div class="tool-panel">
+  <h2>Zip Builder</h2>
+  <label class="tool-field">
+    <span>Files</span>
+    <input id="zip-file" class="tool-input" type="file" multiple>
+  </label>
+  <div class="imc-grid">
+    <label class="tool-field">
+      <span>Archive name</span>
+      <input id="zip-name" class="tool-input" type="text" value="archive.zip">
+    </label>
+    <label class="tool-field">
+      <span>Compression</span>
+      <select id="zip-level" class="tool-select">
+        <option value="6" selected>Balanced</option>
+        <option value="0">Store only, no compression</option>
+        <option value="1">Fastest</option>
+        <option value="9">Smallest</option>
+      </select>
+    </label>
+  </div>
+  <div class="tool-row">
+    <button class="btn primary" type="button" id="zip-download" disabled>Download zip</button>
+    <button class="btn" type="button" id="zip-clear" disabled>Clear</button>
+    <span class="tool-status" id="zip-status"></span>
+  </div>
+  <p class="tool-hint">The archive is assembled in the page, so the files never leave this device. Two files with the same name get a numeric suffix rather than overwriting each other.</p>
+</div>
+
+<div class="tool-panel" id="zip-preview" hidden>
+  <h2>Contents</h2>
+  <div class="imc-sizes">
+    <p><span class="imc-label">Files</span><span id="zip-count">—</span></p>
+    <p><span class="imc-label">Archive</span><span id="zip-size">—</span></p>
+  </div>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <thead>
+        <tr><th>Name inside the zip</th><th>Original size</th></tr>
+      </thead>
+      <tbody id="zip-list"></tbody>
+    </table>
+  </div>
+</div>

@@ -52,12 +52,14 @@ const tk = {
     return `'${text.replace(/'/g, "'\\''")}'`;
   },
 
-  // Live-update an output element whenever any of the inputs change.
-  live(inputs, render) {
+  // Live-update an output element whenever any of the inputs change. A delay
+  // debounces typing while a select still reacts on the same tick.
+  live(inputs, render, delay = 0) {
     const els = (Array.isArray(inputs) ? inputs : [inputs]).filter(Boolean);
     const run = () => render();
+    const onInput = delay ? tk.debounce(run, delay) : run;
     els.forEach((el) => {
-      el.addEventListener('input', run);
+      el.addEventListener('input', onInput);
       el.addEventListener('change', run);
     });
     run();
