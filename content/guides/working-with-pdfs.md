@@ -11,9 +11,15 @@ aliases:
 - /posts/how-to-turn-plain-text-into-a-pdf/
 ---
 
-PDF metadata, page extraction, merging, signatures, and browser-side document handling.
+A PDF is a document container, not just a collection of images. Pages can contain selectable text, forms, metadata, and signatures. Changing one part may affect another.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Decide what you need to keep
+
+Merging or extracting pages creates a new document. Open the output and check page order, orientation, links, and form fields. If a PDF is digitally signed, editing it can invalidate the signature even when the pages still look the same.
+
+## Handle private documents deliberately
+
+Check whether a tool processes files locally before opening contracts, IDs, or financial records. A downloaded copy may retain metadata or embedded content you did not intend to share. Inspect the output, not only the preview.
 
 ## Related tools
 
@@ -22,9 +28,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [PDF Page Extractor](/tools/pdf-page-extractor/) — Keep only the pages you choose from a PDF and download the rest as a new file.
 - [PDF Signature Checker](/tools/pdf-signature-checker/) — Inspect the digital signatures embedded in a PDF.
 - [Text to PDF](/tools/text-to-pdf/) — Write plain text out as a PDF, with wrapping, page size, margins and page numbers.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

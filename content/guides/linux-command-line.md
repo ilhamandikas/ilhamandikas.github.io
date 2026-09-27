@@ -14,9 +14,15 @@ aliases:
 - /posts/how-to-use-xargs-without-surprises/
 ---
 
-Practical notes for find, grep, sed, xargs, chmod, cron, and other commands that are easy to misuse.
+The safest terminal command is one you can explain before you run it. Work out what a command will read, what it will change, and whether you can reverse the change.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Inspect before editing
+
+Use `pwd` to confirm where you are and `ls -la` to see what is present. For a search or replacement, print matching lines before changing files. Quote paths with spaces, and try the command on a disposable copy when you are unsure.
+
+## Read the flags
+
+Flags can change a harmless-looking command into a destructive one. Check `--help` or the manual page before using `-r`, `-f`, or a command piped into a shell. Generated commands are starting points, not permission to run them as root without inspection.
 
 ## Related tools
 
@@ -29,9 +35,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [Dev Ops](/tools/linux-ops/) — Describe a Linux problem and get safe commands, flag explanations, a risk level and the next troubleshooting steps — all in the browser.
 - [sed Replacement Builder](/tools/sed-replacement-builder/) — Build a sed command to replace text, delete matching lines or print only matches, with in-place editing and backups.
 - [xargs Builder](/tools/xargs-builder/) — Build and explain an xargs command — null input, batch size, parallelism and a replace string, with a note on each flag.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

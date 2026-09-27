@@ -59,21 +59,23 @@
 - Broader guide: {{ .title }} ({{ .url | absURL }})
 {{- end }}
 
+{{ $tool.description }}
+
 ## What it does
 
 {{ with $guide.about }}{{ . }}{{ else }}{{ $tool.description }}{{ end }}
 
-## Use the tool
+## What to try
 
-Open {{ printf "%stools/%s/" site.BaseURL $slug }}, add the input the tool asks for, run it, and check the output before using it elsewhere.
+Open {{ printf "%stools/%s/" site.BaseURL $slug }} and start with a small example or the controls on the page. Check what happens before moving to real data. The questions below cover details that may not be obvious from the first result.
 
-## Input and output
+## What goes in and comes out
 
 - Input: {{ with $tool.input.format }}{{ . }} {{ end }}{{ $tool.input.type | default "text" }}.
 - Output: {{ with $tool.output.format }}{{ . }} {{ end }}{{ $tool.output.type | default "text" }}.
-- Category: {{ $tool.category_name }}.
+- Find it under: {{ $tool.category_name }}.
 
-## Privacy and processing
+## Where your input goes
 
 {{- if eq $tool.privacy.processing "client-side" }}
 Processing happens locally in your browser. This tool does not upload the input to ilham.dev.
@@ -85,7 +87,7 @@ Processing model: {{ $tool.privacy.processing }}.
 
 {{- with $tool.use_cases }}
 
-## Common use cases
+## When it helps
 
 {{- range . }}
 - {{ . }}
@@ -94,7 +96,7 @@ Processing model: {{ $tool.privacy.processing }}.
 
 {{- with $tool.limitations }}
 
-## Limitations
+## What to watch for
 
 {{- range . }}
 - {{ . }}
@@ -103,7 +105,7 @@ Processing model: {{ $tool.privacy.processing }}.
 
 {{- with $guide.faq }}
 
-## Questions
+## Questions you might have
 
 {{- range . }}
 

@@ -21,9 +21,15 @@ aliases:
 - /posts/how-to-use-ssh-tunnel-builder/
 ---
 
-DNS, WHOIS, IP addresses, ports, subnets, MAC addresses, Wi-Fi QR codes, and SSH tunnels.
+“The service is down” can mean several things: DNS points to the wrong address, the port cannot be reached, the connection works but TLS fails, or the application replies with an error. Find the first step that breaks.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Follow the path
+
+Resolve the hostname, check the address you received, then test whether the expected port accepts a connection. If it does, inspect the protocol response. A reachable TCP port does not prove the HTTP application is healthy; a working local request does not prove the public path through a firewall or proxy works.
+
+## Compare vantage points
+
+Test from the machine running the service and from the client that cannot reach it. Check what address the process listens on: `127.0.0.1` only accepts local IPv4 connections, while `0.0.0.0` listens on available IPv4 interfaces. Be careful with public lookups; DNS and IP tools may send your query to an external service.
 
 ## Related tools
 
@@ -42,9 +48,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [SSH Tunnel Builder](/tools/ssh-tunnel-builder/) — Assemble an ssh -L, -R or -D tunnel with the right ports, identity file and keepalive options, then copy the command.
 - [WHOIS Lookup](/tools/whois-lookup/) — Show registrar, registration and expiry dates, status and nameservers for a domain.
 - [Wi-Fi QR Code](/tools/wifi-qr-generator/) — Build a QR code that joins a Wi-Fi network.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

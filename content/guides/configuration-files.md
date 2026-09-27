@@ -7,16 +7,16 @@ tags:
 - devops
 ---
 
-Reading, sorting, and editing configuration files without moving comments or changing meaning.
+Configuration files look like plain text, but tiny differences matter: indentation in YAML, quoting in JSON, and the environment a value is loaded into. A file that parses successfully can still tell an application to do the wrong thing.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Separate syntax from meaning
+
+First check whether the file parses. Then check whether the keys and values match what your application expects. Converting YAML to JSON can help reveal the structure, but it will not validate an application-specific setting.
+
+## Change one thing at a time
+
+Save a working copy, make a small edit, and run the application's own validation or dry-run command when available. Never paste a production `.env` file into a tool without checking how that tool handles input; it may contain credentials.
 
 ## Related tools
 
 - [.env Key Sorter](/tools/env-key-sorter/) — Sort the keys in a .env file alphabetically, keeping each comment with its key and optionally dropping duplicates or aligning values.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

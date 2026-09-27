@@ -9,17 +9,17 @@ aliases:
 - /posts/how-to-format-sql-before-reviewing-a-query/
 ---
 
-Formatting SQL, generating inserts, and preparing small data sets for review or testing.
+A SQL query can look tidy and still be unsafe. Formatting is for reading; correctness and safety depend on the query, its parameters, and the database schema.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Separate values from SQL
+
+Use parameterized queries in application code instead of building SQL by concatenating user input. A generated `INSERT` statement may help prepare sample rows, but review types, null values, quoting, and constraints before running it.
+
+## Run experiments where mistakes are cheap
+
+Try a statement on a small test database first. For `UPDATE` or `DELETE`, inspect the matching rows with a `SELECT` using the same condition. Back up important data and check the transaction behavior before applying a bulk change.
 
 ## Related tools
 
 - [SQL Insert Generator](/tools/sql-insert-generator/) — Turn JSON or CSV rows into SQL INSERT statements for MySQL, PostgreSQL, SQLite or SQL Server.
 - [SQL Prettify](/tools/sql-prettify/) — Reformat SQL queries so they are readable.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

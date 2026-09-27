@@ -12,16 +12,16 @@ aliases:
 - /posts/how-to-url-encode-text-without-breaking-query-strings/
 ---
 
-Parsing URLs, encoding query strings, reading slugs, and checking redirected or wrapped links.
+A URL has parts with different jobs: scheme, host, path, query, and fragment. When you encode the whole thing as one string, you can accidentally change where it points.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Identify the part you are changing
+
+To add a query parameter, encode its name and value rather than encoding the entire URL. A fragment (`#...`) stays in the browser and is not sent in an ordinary HTTP request. Check whether a trailing slash or a change from `http` to `https` matters to the service you are calling.
+
+## Be careful with what you share
+
+URLs can appear in browser history, server logs, screenshots, and referrer information. Do not put passwords or live tokens in a query string. A shortened or decoded link is still just a link: inspect the destination before visiting it.
 
 ## Related tools
 
 - [SafeLink Decoder](/tools/safelink-decoder/) — Extract the real destination behind an Outlook SafeLink.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

@@ -19,9 +19,15 @@ aliases:
 - /posts/how-to-style-a-qr-code-without-breaking-scanning/
 ---
 
-Image compression, format conversion, metadata removal, redaction, QR codes, placeholders, stickers, and watermarks.
+Images have more to them than the pixels you see: dimensions, format, file size, and sometimes metadata about the device or location. Decide which of those you need to keep before converting or sharing an image.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Choose the goal first
+
+Resizing changes dimensions; compressing tries to reduce file size; converting changes format. These can affect quality differently. Export a copy and compare it at full size before replacing the original.
+
+## Check what travels with the file
+
+Photos may include EXIF metadata. Removing it can help when sharing, but do not assume every output format or workflow keeps or removes the same fields. Inspect the exported file itself if the metadata matters. A transparent image may also lose transparency when converted to a format that does not support it.
 
 ## Related tools
 
@@ -38,9 +44,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [Sticker Maker](/tools/sticker-maker/) — Create PNG stickers with shapes, text decoration, outlines and simple background removal.
 - [SVG Placeholder](/tools/svg-placeholder/) — Create a placeholder image as an SVG.
 - [Watermark Tool](/tools/watermark-tool/) — Draw a text watermark onto a picture, choosing the corner, size, colour and opacity.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

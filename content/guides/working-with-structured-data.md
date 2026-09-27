@@ -22,9 +22,15 @@ aliases:
 - /posts/how-to-validate-json-with-a-schema/
 ---
 
-JSON, YAML, TOML, XML, CSV, JSONPath, schemas, diffs, viewers, and format conversion caveats.
+JSON, YAML, TOML, XML, and CSV all store data, but they do not make the same promises. Converting between them is more than changing punctuation: you may lose types, nesting, comments, order, or repeated fields.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Read before converting
+
+First check what the source actually contains. A JSON array of objects converts to a table easily when every object has similar keys. Nested objects and arrays do not fit cleanly into a CSV cell; decide whether to flatten them, serialize them as text, or keep the original format.
+
+## Compare meaning, not only appearance
+
+A formatter changes whitespace; a parser checks syntax; a schema checks whether data follows agreed rules. If a conversion succeeds, inspect a few records and round-trip a small sample. Pay special attention to numbers, empty values, dates, and YAML values that look like booleans or timestamps.
 
 ## Related tools
 
@@ -48,9 +54,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [YAML to JSON](/tools/yaml-to-json/) — Convert YAML documents to JSON.
 - [YAML to TOML](/tools/yaml-to-toml/) — Convert YAML documents to TOML.
 - [YAML Viewer](/tools/yaml-viewer/) — Validate and explore a YAML document.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

@@ -9,18 +9,18 @@ aliases:
 - /posts/how-to-test-regex-before-using-it/
 ---
 
-How to test matching and replacement patterns before using regex in real code or shell commands.
+A regular expression is a pattern for matching text, not a full parser for every format. It helps to decide first whether you want to *find* a fragment, *validate* an entire string, or *replace* a match.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Test both sides
+
+Start with one example that should match and one that should not. Anchors such as `^` and `$` matter when you want to check a whole value; without them, a valid-looking fragment inside a longer string can pass. Add edge cases before using the pattern on real data.
+
+## Watch the replacement
+
+A search pattern and its replacement text follow different rules. Capture groups, escaping, and global flags can change the result. Preview several lines, including ones that should stay untouched, before applying a replacement to a large file.
 
 ## Related tools
 
 - [Regex Cheatsheet](/tools/regex-cheatsheet/) — A quick reference of regular-expression syntax.
 - [Regex Replace Tester](/tools/regex-replace-tester/) — Preview regex find-and-replace results with capture group references and live highlighting.
 - [Regex Tester](/tools/regex-tester/) — Test a regular expression against sample text with live matches.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

@@ -13,9 +13,15 @@ aliases:
 - /posts/how-to-use-a-javascript-playground-safely/
 ---
 
-Device info, network info, key codes, microphones, cameras, JavaScript playgrounds, and browser-side testing.
+The browser shows you two different kinds of failure: what happened on the network and what your JavaScript did with the response. Keeping those separate saves a lot of guessing.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Start in the Network tab
+
+Reload the page with DevTools open. Find the request that failed and check its URL, method, status, and response. A missing request may mean your code never reached the fetch call. A successful `200` with a broken page means the network worked; look at parsing or rendering next.
+
+## Read the Console as a clue, not a verdict
+
+A CORS message tells you the browser blocked access to a response, not necessarily that the server never received the request. Fix the first relevant error, reload, and see whether the next one remains. Avoid pasting session cookies or authorization headers into a public bug report.
 
 ## Related tools
 
@@ -25,9 +31,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [JavaScript Playground](/tools/javascript-playground/) — Write JavaScript with Monaco syntax highlighting and run it in the page, reading its console output, return value and timing.
 - [Keycode Info](/tools/keycode-info/) — Press a key to see its code, key and modifier state.
 - [Microphone Recorder](/tools/mic-tester/) — Check a microphone, watch its level and peak, and record a clip to play back or download.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

@@ -7,9 +7,15 @@ tags:
 - web
 ---
 
-Small browser games and practice utilities that live under tools without becoming blog posts.
+Small games and practice tools are useful when the feedback is immediate: you make a move, see the result, and try again. You do not need an account or a complicated setup to get started.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Start simple
+
+Open a game or test and try one round before looking for settings. For a keyboard-based game, make sure the page has focus; if a key does nothing, click the game area and try again. On a phone, use the controls shown on screen if the game provides them.
+
+## Know what a score measures
+
+A typing test measures performance on that passage, with that device and input method. One score is not a diagnosis or a permanent rating. Compare repeated attempts under similar conditions if you want to track progress.
 
 ## Related tools
 
@@ -20,9 +26,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [Snake](/tools/snake/) — Steer a growing snake to eat food without hitting the walls or yourself.
 - [Tetris](/tools/tetris/) — Stack falling tetrominoes and clear lines, with next-piece preview, hold and levels.
 - [Typing Speed Test](/tools/typing-speed-test/) — Measure WPM and accuracy with live per-character feedback and a restartable test.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

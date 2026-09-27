@@ -12,9 +12,15 @@ aliases:
 - /posts/how-to-read-unix-timestamps-without-guessing-seconds-or-milliseconds/
 ---
 
-Dates, durations, timestamps, time zones, age calculations, stopwatches, and ETA estimates.
+A date and an instant are not the same thing. “Monday at 9” needs a time zone before two people in different places can agree on when it happens. A Unix timestamp, by contrast, points to one instant.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Keep the zone with the time
+
+When arranging a meeting or reading a log, record the time zone or UTC offset alongside the clock time. An offset like `+07:00` describes that one timestamp; a named zone can also account for rule changes and daylight saving time.
+
+## Watch boundaries
+
+Adding 24 hours is not always the same as moving to the same local clock time tomorrow when daylight saving changes. For schedules, check the result around a zone's transition dates instead of assuming every day has the same number of local hours.
 
 ## Related tools
 
@@ -26,9 +32,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [Time Zone Converter](/tools/time-zone-converter/) — Read a timestamp from a log and see the same moment in UTC, Jakarta and other zones.
 - [Timestamp Converter](/tools/timestamp-converter/) — Convert between Unix timestamps, ISO strings and local time.
 - [User Agent Parser](/tools/user-agent-parser/) — Read the browser, engine, OS and device from a user-agent string.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

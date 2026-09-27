@@ -7,9 +7,15 @@ tags:
 - data
 ---
 
-Percentages, discounts, loans, interest, unit prices, currency, temperature, fuel economy, number bases, and roman numerals.
+A calculator can do the arithmetic correctly and still answer the wrong question if the units or assumptions are wrong. Before you type a number, write down what it represents.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Check the units first
+
+For temperature, 20 °C and 20 °F are very different starting points. For prices, check whether you want price per item, per kilogram, or per litre. For percentages, ask “percent of what?” before calculating.
+
+## Treat estimates as estimates
+
+Loan payments depend on rate, term, and the repayment model. Take-home pay depends on local rules and personal circumstances. Use the result to compare possibilities, then check important decisions against the actual agreement or official source.
 
 ## Related tools
 
@@ -25,9 +31,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [Take-Home Pay Calculator](/tools/take-home-pay-calculator/) — Estimate Indonesian net salary from gross pay, with PPh 21 and the employee share of BPJS broken out.
 - [Temperature Converter](/tools/temperature-converter/) — Convert between Celsius, Fahrenheit and Kelvin.
 - [Unit Price Comparator](/tools/unit-price-comparator/) — Compare products by unit price so different pack sizes can be ranked on the same scale.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

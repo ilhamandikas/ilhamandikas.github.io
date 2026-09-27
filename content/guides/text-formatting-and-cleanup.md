@@ -7,9 +7,15 @@ tags:
 - automation
 ---
 
-Case conversion, line formatting, text statistics, Unicode, binary views, emoji, NATO spelling, and message formatting.
+Text cleanup is easiest when you know exactly what must stay unchanged. Changing case, removing whitespace, or joining lines can be harmless in prose and destructive in code, identifiers, or signed data.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Keep an untouched copy
+
+Try a small example with punctuation, non-ASCII characters, and blank lines. Compare the result with the original before running the same operation across a larger document. Line endings and whitespace can matter in configuration and data files.
+
+## Pick the right operation
+
+Use formatting to make text easier to read, not as a substitute for parsing it. If the text has a real structure such as CSV, JSON, or YAML, use a tool that understands that structure instead of a chain of broad find-and-replace rules.
 
 ## Related tools
 
@@ -30,9 +36,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [Typo Spotter](/tools/typo-spotter/) — Flag double spaces, stray spaces around punctuation, repeated words and informal Indonesian short forms.
 - [WhatsApp Message Formatter](/tools/whatsapp-formatter/) — Format a WhatsApp message with bold, italic, strikethrough, monospace and lists, with a live preview.
 - [WhatsApp Link Generator](/tools/whatsapp-link-generator/) — Turn a phone number and a message into a wa.me click-to-chat link.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

@@ -9,16 +9,18 @@ aliases:
 - /posts/how-to-filter-docker-logs-without-losing-context/
 ---
 
-Docker logs are useful, but they get noisy quickly. This guide is for the practical checks around `docker logs`, timestamps, context, grep patterns, and deciding when to inspect application logs instead.
+When a container fails, start by asking when it happened and what the process wrote just before it stopped. `docker logs <container>` shows the container's standard output and standard error. It does not automatically include files an application writes inside the container.
 
-This page is the canonical guide for Docker log filtering on ilham.dev.
+## Narrow the time window
+
+Try `docker logs --since 10m --timestamps <container>` for a recent failure. With Compose, use `docker compose logs --since 10m <service>`. Check the timestamp and time zone before comparing the result with alerts or other services. If nothing appears, check whether the app writes to a file instead.
+
+## Keep the lines around a match
+
+Searching for `error` can help you find a starting point, but the reason may be on the lines before it. Save or inspect a little context around each match. A stack trace may cover several lines, and a warning may appear in healthy runs too. Compare the same period across related services before deciding what caused the failure.
+
+Logs can include tokens, request bodies, and personal information. Redact those before sharing an example.
 
 ## Related tools
 
 - [Docker Logs Grep](/tools/docker-logs-grep/) — Filter Docker logs with grep patterns, context, timestamps and container names.
-
-## Notes for future edits
-
-- Keep examples close to real debugging workflows.
-- Explain the difference between container stdout/stderr logs and logs written inside the application.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.

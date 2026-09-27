@@ -8,7 +8,7 @@
         {{- with .Description }}<p class="updated">{{ . }}</p>{{ end }}
       </div>
       <div class="prose">
-        <p>These are single-tool guides. For broader workflow notes, go back to <a href="{{ "/guides/" | relURL }}">topic guides</a>.</p>
+        <p>Looking for help with a particular tool? Find it below. For explanations that cover a whole task, start with the <a href="{{ "/guides/" | relURL }}">topic guides</a>.</p>
       </div>
       {{- $pages := site.RegularPages -}}
       {{- range site.Data.tools }}
@@ -42,7 +42,7 @@
         {{- with .Description }}<p class="updated">{{ . }}</p>{{ end }}
       </div>
       <div class="prose">
-        <p>These are the broader notes. If you need notes for one specific tool, use the <a href="{{ "/guides/tools/" | relURL }}">tool notes</a> page.</p>
+        <p>Start with the problem you are trying to solve. If you already know which tool you need, find it in the <a href="{{ "/guides/tools/" | relURL }}">tool guides</a>.</p>
       </div>
       {{- $topicGuides := slice -}}
       {{- range site.RegularPages -}}
@@ -82,28 +82,22 @@
         {{- with $.Description }}<p class="updated">{{ . }}</p>{{ end }}
       </div>
       <div class="prose">
-        <p>
-          A short companion for <a href="{{ printf "/tools/%s/" $slug | relURL }}">{{ $tool.name }}</a>:
-          when it is useful, what it expects, and what to check before using the result.
-        </p>
+        <p>{{ $tool.description }}</p>
 
         <h2>What it does</h2>
         <p>{{ with $guide.about }}{{ . }}{{ else }}{{ $tool.description }}{{ end }}</p>
 
-        <h2>Use the tool</h2>
-        <p>
-          Open <a href="{{ printf "/tools/%s/" $slug | relURL }}">{{ $tool.name }}</a>, add the input the tool asks for,
-          run it, and check the output before using it elsewhere.
-        </p>
+        <h2>What to try</h2>
+        <p>Open <a href="{{ printf "/tools/%s/" $slug | relURL }}">{{ $tool.name }}</a> and start with a small example or the controls on the page. Check what happens before moving to real data. The questions below cover details that may not be obvious from the first result.</p>
 
-        <h2>Input and output</h2>
+        <h2>What goes in and comes out</h2>
         <ul>
           <li><strong>Input:</strong> {{ with $tool.input.format }}{{ . }} {{ end }}{{ $tool.input.type | default "text" }}.</li>
           <li><strong>Output:</strong> {{ with $tool.output.format }}{{ . }} {{ end }}{{ $tool.output.type | default "text" }}.</li>
-          <li><strong>Category:</strong> {{ $tool.category_name }}.</li>
+          <li><strong>Find it under:</strong> {{ $tool.category_name }}.</li>
         </ul>
 
-        <h2>Privacy and processing</h2>
+        <h2>Where your input goes</h2>
         {{- if eq $tool.privacy.processing "client-side" }}
           <p>Processing happens locally in your browser. This tool does not upload the input to ilham.dev.</p>
         {{- else if eq $tool.privacy.processing "third-party-api" }}
@@ -113,21 +107,21 @@
         {{- end }}
 
         {{- with $tool.use_cases }}
-        <h2>Common use cases</h2>
+        <h2>When it helps</h2>
         <ul>
           {{- range . }}<li>{{ . }}</li>{{ end }}
         </ul>
         {{- end }}
 
         {{- with $tool.limitations }}
-        <h2>Limitations</h2>
+        <h2>What to watch for</h2>
         <ul>
           {{- range . }}<li>{{ . }}</li>{{ end }}
         </ul>
         {{- end }}
 
         {{- with $guide.faq }}
-        <h2>Questions</h2>
+        <h2>Questions you might have</h2>
         {{- range . }}
           <h3>{{ .q }}</h3>
           <p>{{ .a }}</p>
@@ -136,7 +130,7 @@
 
         {{- with $.Params.broader_guide }}
         <h2>Related guide</h2>
-        <p>For broader background, see <a href="{{ .url | relURL }}">{{ .title }}</a>.</p>
+        <p>If the topic is new to you, start with <a href="{{ .url | relURL }}">{{ .title }}</a> for the bigger picture.</p>
         {{- end }}
       </div>
     </div>

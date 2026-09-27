@@ -15,9 +15,15 @@ aliases:
 - /posts/how-to-test-an-http-request-before-writing-code/
 ---
 
-Requests, headers, auth headers, status codes, curl, MIME types, and small checks before blaming the API.
+An HTTP request asks a server to do something; the response tells you what happened from that server's point of view. Debugging gets easier when you inspect both sides instead of focusing only on the status code.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Check one layer at a time
+
+Confirm the URL, method, query parameters, headers, and body actually sent. Then read the status, response headers, and response body. A `200` with unexpected JSON is a different problem from a connection failure; a `400` may include a useful validation message.
+
+## Reproduce the smallest failing request
+
+Remove optional fields until you can explain which input changes the outcome. If a browser fails but the same call works from `curl`, compare credentials, origins, cookies, redirects, and preflight behavior. Never share a raw `Authorization` header in a screenshot or reproduction.
 
 ## Related tools
 
@@ -29,9 +35,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [HTTP Request Tester](/tools/http-request-tester/) — Send an HTTP request from the page, import it from curl and export it back to curl.
 - [HTTP Status Codes](/tools/http-status-codes/) — Reference list of HTTP response status codes and their meaning.
 - [MIME Types](/tools/mime-types/) — Look up the MIME type for a file extension.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

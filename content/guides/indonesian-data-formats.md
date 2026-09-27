@@ -7,9 +7,15 @@ tags:
 - data
 ---
 
-NIK, phone numbers, spelled numbers, local salary estimates, maps links, and Indonesian text checks.
+Indonesian phone numbers, NIK values, and rupiah amounts can look straightforward until you move them between forms, APIs, and spreadsheets. The first question is whether you need to display a value or validate it.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Preserve identifiers as text
+
+A phone number or NIK is an identifier, not a number to calculate with. Keeping it as text prevents spreadsheets from dropping leading zeroes or changing long values. A format check can catch an obvious typo; it cannot prove an identity or ownership.
+
+## Keep formatting separate
+
+`Rp1.000` and `1,000` depend on locale conventions. Store numeric amounts in a format your system understands, then format them for the reader at the edge. Check the expected decimal and thousands separators before importing a file.
 
 ## Related tools
 
@@ -17,9 +23,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [Google Maps Link Parser](/tools/maps-link-parser/) — Pull the latitude and longitude out of a Google Maps link and export it as JSON, CSV, SQL or GeoJSON.
 - [NIK Parser](/tools/nik-parser/) — Parse Indonesian NIK into region codes, birth date, gender and serial number.
 - [Phone Parser](/tools/phone-parser/) — Parse and format phone numbers by country.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

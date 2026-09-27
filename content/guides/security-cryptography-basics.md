@@ -21,9 +21,15 @@ aliases:
 - /posts/how-to-use-otp-codes-without-mystery/
 ---
 
-Hashing, encoding, signatures, keys, passwords, tokens, and crypto terms developers often meet while debugging systems.
+Encoding, hashing, and encryption solve different problems. Base64 changes how bytes are written and is easy to reverse. A hash produces a fixed-size digest. Encryption protects content only when the key and the way you use it are appropriate.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Ask what you are protecting against
+
+For checking whether a downloaded file matches a published checksum, compare hashes from a trusted source. For password storage, use a password hashing algorithm designed to be slow, not a plain fast hash. For confidentiality, choose authenticated encryption and protect the key; hiding the ciphertext is not the same as protecting the secret.
+
+## Treat generated secrets as secrets
+
+A key or token is useful only if it is generated securely and kept out of logs, URLs, screenshots, and shared documents. A tool may process data locally and still leave it in clipboard history or a downloaded file. Check what your workflow exposes.
 
 ## Related tools
 
@@ -41,9 +47,3 @@ This guide is the canonical guide page for related tools on ilham.dev. It should
 - [SNAP BI Asymmetric Signature](/tools/snap-signature/) — Build, sign and verify the SHA256withRSA signature used by Bank Indonesia's SNAP BI standard.
 - [SSH Key Generator](/tools/ssh-key-generator/) — Generate an Ed25519, ECDSA or RSA key pair, with the OpenSSH public key and fingerprints.
 - [Token Generator](/tools/token-generator/) — Generate random tokens and passwords of a chosen length and charset.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.

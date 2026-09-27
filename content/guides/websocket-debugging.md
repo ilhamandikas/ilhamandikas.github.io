@@ -9,17 +9,17 @@ aliases:
 - /posts/how-to-parse-a-websocket-frame/
 ---
 
-How to test browser WebSocket connections, inspect frames, and think about proxy-related failures.
+A WebSocket connection starts as an HTTP request that asks to upgrade protocols. A page loading successfully tells you very little about whether that upgrade works.
 
-This guide is the canonical guide page for related tools on ilham.dev. It should grow into practical explanations, caveats, examples, and references instead of creating one thin article per utility.
+## Check the handshake first
+
+In the Network tab, find the WebSocket request. Look at the URL, response status, and upgrade headers. If a reverse proxy sits in between, confirm it forwards the upgrade correctly and sends the request to the service that expects it.
+
+## Then inspect messages
+
+A successful connection can still exchange the wrong data. Check the message format and whether the server closes the connection with a code or reason. Avoid pasting authentication-bearing WebSocket URLs into public tools: query strings can end up in logs and history.
 
 ## Related tools
 
 - [WebSocket Frame Parser](/tools/websocket-frame-parser/) — Decode a raw WebSocket frame from hex and explain its opcode, length and payload.
 - [WebSocket Tester](/tools/websocket-tester/) — Open a WebSocket from the page, send frames and watch what the server sends back.
-
-## Notes for future edits
-
-- Keep the guide reusable and factual.
-- Link to personal posts only when there is a real incident, measurement, migration, or lesson.
-- For sensitive inputs, mention whether the related tool runs locally in the browser and warn against pasting production secrets without understanding the trust boundary.
