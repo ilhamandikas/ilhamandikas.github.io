@@ -438,12 +438,14 @@ textarea.tool-input { min-height: 96px; }
   color: var(--accent);
 }
 
+.tool-learn,
 .tool-about {
   margin-top: 40px;
   padding-top: 24px;
   border-top: 1px solid var(--border);
   max-width: 68ch;
 }
+.tool-learn h2,
 .tool-about h2 {
   font-size: 15px;
   font-weight: 650;
@@ -452,6 +454,7 @@ textarea.tool-input { min-height: 96px; }
   color: var(--muted);
   margin: 0 0 10px;
 }
+.tool-learn p,
 .tool-about h2 + p { margin: 0 0 26px; color: var(--text); line-height: 1.65; }
 .tool-faq { margin: 0; }
 .tool-faq dt { font-weight: 650; color: var(--text); margin-bottom: 4px; }

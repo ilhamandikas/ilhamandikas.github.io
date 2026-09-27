@@ -9,7 +9,8 @@
 {{- $guides := index site.Data "tool-guides" | default dict -}}
 {{- $overlay := index site.Data "tool-ai" | default dict -}}
 {{- $base := site.BaseURL -}}
-{{- $defaultFeatures := slice "Runs in the browser" "No login required" "No data uploaded" -}}
+{{- $defaultFeatures := slice "Runs in the browser" "No login required" -}}
+{{- $thirdPartyTools := slice "cors-checker" "dns-lookup" "grpc-tester" "http-request-tester" "ip-lookup" "webhook-tester" "whois-lookup" -}}
 {{- $tools := slice -}}
 {{- range site.Data.tools -}}
   {{- $category := . -}}
@@ -28,20 +29,54 @@
     {{- range (.keywords | default slice) -}}
       {{- $keywords = $keywords | append (printf "%v" .) -}}
     {{- end -}}
+    {{- $canonicalURL := printf "%stools/%s/" $base $slug -}}
+    {{- $markdownURL := printf "%stools/%s/index.md" $base $slug -}}
+    {{- $features := index $ai "features" | default $defaultFeatures -}}
+    {{- $processing := "client-side" -}}
+    {{- $dataUploaded := false -}}
+    {{- $requiresBackend := false -}}
+    {{- if in $thirdPartyTools $slug -}}
+      {{- $processing = "third-party-api" -}}
+      {{- $dataUploaded = true -}}
+    {{- end -}}
+    {{- with index $ai "privacy" -}}
+      {{- with .processing }}{{ $processing = . }}{{ end -}}
+      {{- if isset . "data_uploaded" }}{{ $dataUploaded = .data_uploaded }}{{ end -}}
+      {{- if isset . "requires_backend" }}{{ $requiresBackend = .requires_backend }}{{ end -}}
+    {{- end -}}
+    {{- $offlineCapable := not $dataUploaded -}}
+    {{- if isset $ai "offline_capable" }}{{ $offlineCapable = index $ai "offline_capable" }}{{ end -}}
+    {{- $privacy := dict "processing" $processing "data_uploaded" $dataUploaded -}}
+    {{- with index $ai "privacy" }}{{ with .provider }}{{ $privacy = merge $privacy (dict "provider" .) }}{{ end }}{{ end -}}
     {{- $entry := dict
         "id" $slug
         "name" (printf "%v" .name)
-        "url" (printf "%stools/%s/" $base $slug)
-        "documentation" (printf "%stools/%s/index.md" $base $slug)
+        "url" $canonicalURL
+        "canonical_url" $canonicalURL
+        "documentation" $markdownURL
+        "markdown_url" $markdownURL
+        "api_url" nil
+        "mcp_available" true
+        "client_side" (not $requiresBackend)
+        "offline_capable" $offlineCapable
+        "requires_backend" $requiresBackend
+        "requires_login" false
+        "requires_api_key" false
+        "stores_user_data" false
         "category" $category.slug
         "category_name" $category.name
         "description" (printf "%v" .desc)
         "keywords" $keywords
         "examples" $examples
-        "features" (index $ai "features" | default $defaultFeatures)
+        "features" $features
+        "use_cases" (index $ai "use_cases" | default slice)
+        "input" (index $ai "input" | default (dict "type" "text"))
+        "output" (index $ai "output" | default (dict "type" "text"))
+        "privacy" $privacy
+        "limitations" (index $ai "limitations" | default slice)
+        "related_tools" (index $ai "related_tools" | default slice)
         "status" (.status | default "done") -}}
     {{- with index $ai "keywords" }}{{ $entry = merge $entry (dict "keywords" .) }}{{ end -}}
-    {{- with index $ai "use_cases" }}{{ $entry = merge $entry (dict "use_cases" .) }}{{ end -}}
     {{- $tools = $tools | append $entry -}}
   {{- end -}}
 {{- end -}}

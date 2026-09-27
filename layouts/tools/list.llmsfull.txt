@@ -1,0 +1,40 @@
+{{- $tools := partial "tools/registry.html" . -}}
+# ilham.dev Tools Full LLM Index
+
+This expanded tool index is generated from the same registry as the site and MCP server.
+
+Concise index: {{ "tools/llms.txt" | absURL }}
+Registry JSON: {{ "tools/tools.json" | absURL }}
+Search index: {{ "tools/search-index.json" | absURL }}
+MCP discovery: https://mcp.ilham.dev/
+
+{{ range site.Data.tools -}}
+## {{ .name }}
+
+{{ range .tools -}}
+{{- $slug := .slug -}}
+{{- $tool := dict -}}
+{{- range $tools }}{{ if eq .id $slug }}{{ $tool = . }}{{ end }}{{ end -}}
+### {{ $tool.name }}
+
+{{ $tool.description }}
+
+- ID: `{{ $tool.id }}`
+- Category: {{ $tool.category_name }} (`{{ $tool.category }}`)
+- URL: {{ $tool.canonical_url }}
+- Markdown: {{ $tool.markdown_url }}
+- Keywords: {{ delimit $tool.keywords ", " }}
+- Privacy: {{ $tool.privacy.processing }}; data uploaded: {{ $tool.privacy.data_uploaded }}
+- Offline capable: {{ $tool.offline_capable }}
+- Requires login: {{ $tool.requires_login }}
+- Requires API key: {{ $tool.requires_api_key }}
+
+{{ with $tool.features }}Features:
+{{ range . }}- {{ . }}
+{{ end }}{{ end }}{{ with $tool.use_cases }}Use cases:
+{{ range . }}- {{ . }}
+{{ end }}{{ end }}{{ with $tool.examples }}Example questions:
+{{ range . }}- {{ . }}
+{{ end }}{{ end }}
+{{ end }}
+{{ end -}}

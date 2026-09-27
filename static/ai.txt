@@ -1,0 +1,9 @@
+AI resources for ilham.dev:
+
+https://ilham.dev/llms.txt
+https://ilham.dev/tools/llms.txt
+https://ilham.dev/posts/llms.txt
+https://ilham.dev/tools/tools.json
+https://ilham.dev/tools/search-index.json
+https://ilham.dev/posts/posts.json
+https://mcp.ilham.dev/

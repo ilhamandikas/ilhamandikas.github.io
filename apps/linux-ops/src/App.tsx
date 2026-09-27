@@ -67,11 +67,20 @@ export default function App() {
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
+      if (event.repeat) return;
+
       const target = event.target as HTMLElement | null;
       const typing = Boolean(target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA'));
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      if ((event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        setPaletteOpen((open) => !open);
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        setTab('commands');
+        setPaletteOpen(false);
+        window.setTimeout(() => {
+          searchRef.current?.focus();
+          searchRef.current?.select();
+        }, 0);
         return;
       }
       if (event.key === '/' && !typing) {
@@ -80,8 +89,8 @@ export default function App() {
       }
       if (event.key === 'Escape') setPaletteOpen(false);
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    window.addEventListener('keydown', handler, true);
+    return () => window.removeEventListener('keydown', handler, true);
   }, []);
 
   const sensitiveQuery = detectSensitive(query);

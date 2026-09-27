@@ -1,5 +1,7 @@
 {{- $tools := partial "tools/registry.html" . -}}
 {{- dict
+    "schema_version" "1.0"
+    "generated_at" (now.UTC.Format "2006-01-02T15:04:05Z")
     "name" site.Title
     "description" site.Params.description
     "url" (printf "%stools/" site.BaseURL)

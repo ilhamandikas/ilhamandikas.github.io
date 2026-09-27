@@ -8,28 +8,64 @@
 
 {{ $tool.description }}
 
-- Category: {{ $tool.category_name }} ({{ $tool.category }})
-- URL: {{ $tool.url }}
-- Documentation: {{ $tool.documentation }}
-- Keywords: {{ delimit $tool.keywords ", " }}
-{{ with $tool.use_cases }}
-## Useful for
+## URL
 
-{{ range . }}- {{ . }}
-{{ end }}{{ end }}
-## Example questions
+{{ $tool.canonical_url }}
 
-{{ range $tool.examples }}- {{ . }}
-{{ end }}
-## Properties
+## What It Does
+
+{{ with $guide.about }}{{ . }}{{ else }}{{ $tool.description }}{{ end }}
+
+## Features
 
 {{ range $tool.features }}- {{ . }}
 {{ end }}
-{{ with $guide.about }}
-## About
+## Input
 
-{{ . }}
+{{ with $tool.input.format }}{{ . }} {{ end }}{{ $tool.input.type | default "text" }} input.
+
+## Output
+
+{{ with $tool.output.format }}{{ . }} {{ end }}{{ $tool.output.type | default "text" }} output.
+
+## Privacy
+
+{{ if eq $tool.privacy.processing "client-side" -}}
+Processing happens locally in the browser.
+
+No input data is uploaded to ilham.dev.
+{{- else if eq $tool.privacy.processing "third-party-api" -}}
+This tool sends the necessary request data to a third-party API or to the endpoint you provide so it can complete the lookup or test.
+{{ with $tool.privacy.provider }}
+Provider: {{ . }}.
+{{ end -}}
+{{- else -}}
+Processing: {{ $tool.privacy.processing }}.
+{{- end }}
+
+- Requires login: {{ $tool.requires_login }}
+- Requires API key: {{ $tool.requires_api_key }}
+- Stores user data: {{ $tool.stores_user_data }}
+
+{{ with $tool.use_cases }}
+## Use Cases
+
+{{ range . }}- {{ . }}
+{{ end }}{{ end }}
+## Examples
+
+{{ range $tool.examples }}- {{ . }}
 {{ end }}
+{{ with $tool.limitations }}
+## Limitations
+
+{{ range . }}- {{ . }}
+{{ end }}{{ end }}
+{{ with $tool.related_tools }}
+## Related Tools
+
+{{ range . }}- {{ printf "%stools/%s/" site.BaseURL . }}
+{{ end }}{{ end }}
 {{ with $guide.faq }}
 ## Questions
 

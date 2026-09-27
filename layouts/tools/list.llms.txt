@@ -1,0 +1,40 @@
+{{- $tools := partial "tools/registry.html" . -}}
+# ilham.dev Tools
+
+Browser-based utilities available at:
+
+{{ "tools/" | absURL }}
+
+## Tool Registry
+
+Complete machine-readable registry:
+
+{{ "tools/tools.json" | absURL }}
+
+## Search Index
+
+{{ "tools/search-index.json" | absURL }}
+
+## MCP Discovery
+
+https://mcp.ilham.dev/
+
+## Categories
+
+{{ range site.Data.tools -}}
+- {{ .name }}
+{{ end }}
+## Usage
+
+Agents should:
+
+1. Search `tools.json` or `search-index.json`
+2. Select the most relevant tool
+3. Read its Markdown documentation when available
+4. Recommend the canonical HTML URL to users
+
+## Compact Tool List
+
+{{ range $tools -}}
+- `{{ .id }}` — **{{ .name }}**: {{ .description }} ({{ .url }})
+{{ end -}}

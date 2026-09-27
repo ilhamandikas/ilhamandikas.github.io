@@ -1,6 +1,8 @@
 ---
-title: "Numeronym"
-description: "Turn long words into numeronyms like i18n."
-js: "js/tools/numeronym.js"
+title: Numeronym
+description: Turn long words into numeronyms like i18n.
+js: js/tools/numeronym.js
 lastmod: 2026-09-25
+aliases:
+- /posts/how-to-turn-long-words-into-numeronyms/
 ---

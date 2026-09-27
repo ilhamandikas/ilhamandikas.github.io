@@ -12,7 +12,7 @@
     {{- /* The app owns everything inside this panel: its styles are scoped to
            `.lo-app` and its bundle is fingerprinted here, so the Hugo build
            stays free of npm. */}}
-    <div class="lo-embed"><div id="root"></div></div>
+    <div class="lo-embed"><div id="root" data-shortcuts-own-search></div></div>
     {{ partial "tools/about.html" "linux-ops" }}
   </div>
 </article>

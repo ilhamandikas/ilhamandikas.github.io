@@ -1,0 +1,34 @@
+# ilham.dev Posts
+
+Technical notes and documentation by Ilham Andika.
+
+## Posts Registry
+
+{{ "posts/posts.json" | absURL }}
+
+## Search Index
+
+{{ "posts/search-index.json" | absURL }}
+
+## Main Topics
+
+- Linux
+- DevOps
+- Networking
+- Docker
+- Nginx
+- PostgreSQL
+- MySQL
+- Cloudflare
+- Infrastructure
+- APIs
+- Troubleshooting
+- Browser-based developer tools
+
+## Usage
+
+Agents should prefer individual Markdown versions of posts when available.
+
+Post Markdown URLs follow this pattern:
+
+`https://ilham.dev/posts/<slug>/index.md`

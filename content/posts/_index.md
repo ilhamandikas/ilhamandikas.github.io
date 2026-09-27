@@ -1,9 +1,18 @@
 ---
-title: "Posts"
-description: "Notes on backend, servers, infrastructure, and automation — what I build, what breaks, and what I fix."
-# Match /tools/: the section emits a JSON registry, a search index and a
-# Markdown version; every post emits a Markdown twin of its own.
-outputs: ["HTML", "RSS", "PostsJSON", "SearchIndex", "Markdown"]
+title: Posts
+description: Notes from things I've built, broken, debugged, and learned along the
+  way. Mostly infrastructure, servers, networking, deployments, and the occasional
+  problem that took longer to solve than it should have.
+outputs:
+- HTML
+- RSS
+- PostsJSON
+- SearchIndex
+- Markdown
+- LLMS
+- LLMSFull
 cascade:
-  outputs: ["HTML", "Markdown"]
+  outputs:
+  - HTML
+  - Markdown
 ---

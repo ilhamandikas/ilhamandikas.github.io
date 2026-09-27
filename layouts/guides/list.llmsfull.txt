@@ -1,0 +1,15 @@
+# ilham.dev Guides Full LLM Index
+
+{{ .Description }}
+
+{{ range .RegularPages -}}
+## {{ .Title }}
+
+URL: {{ .Permalink }}
+Markdown: {{ printf "%sindex.md" .Permalink }}
+
+{{ .Description }}
+
+{{ .RawContent }}
+
+{{ end -}}

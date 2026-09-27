@@ -6,7 +6,9 @@
       "description" .Description
       "date" (.Date.Format "2006-01-02")
       "url" .Permalink
+      "canonical_url" .Permalink
       "markdown" (printf "%sindex.md" .Permalink)
+      "markdown_url" (printf "%sindex.md" .Permalink)
       "tags" (.Params.tags | default slice)
       "reading_minutes" .ReadingTime
       "word_count" .WordCount
@@ -15,6 +17,8 @@
       "content_text" (.Plain | htmlUnescape)) -}}
 {{- end -}}
 {{- dict
+    "schema_version" "1.0"
+    "generated_at" (now.UTC.Format "2006-01-02T15:04:05Z")
     "name" .Title
     "description" .Description
     "url" .Permalink

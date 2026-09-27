@@ -4,8 +4,15 @@
   {{- $index = $index | append (dict
       "id" .id
       "name" .name
+      "description" .description
       "category" .category
+      "category_name" .category_name
       "keywords" .keywords
-      "url" .url) -}}
+      "features" .features
+      "use_cases" .use_cases
+      "examples" .examples
+      "url" .url
+      "canonical_url" .canonical_url
+      "markdown_url" .markdown_url) -}}
 {{- end -}}
-{{- $index | jsonify -}}
+{{- $index | jsonify (dict "indent" "  ") -}}

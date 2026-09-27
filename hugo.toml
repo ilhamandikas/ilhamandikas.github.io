@@ -50,6 +50,12 @@ timeZone = "Asia/Jakarta"
   isPlainText = true
   notAlternative = true
 
+[outputFormats.LLMSFull]
+  mediaType = "text/plain"
+  baseName = "llms-full"
+  isPlainText = true
+  notAlternative = true
+
 [outputFormats.ToolsJSON]
   mediaType = "application/json"
   baseName = "tools"
@@ -75,8 +81,8 @@ timeZone = "Asia/Jakarta"
   notAlternative = true
 
 [outputs]
-  home = ["HTML", "RSS", "LLMS"]
+  home = ["HTML", "RSS", "LLMS", "LLMSFull"]
   page = ["HTML"]
-  section = ["HTML", "RSS"]
+  section = ["HTML", "RSS", "LLMS"]
   taxonomy = ["HTML", "RSS"]
   term = ["HTML", "RSS"]

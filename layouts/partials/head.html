@@ -16,6 +16,7 @@
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="{{ .Permalink }}">
+  <link rel="describedby" href="{{ "llms.txt" | absURL }}">
 
   <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
   <link rel="icon" href="{{ "favicon.ico" | relURL }}" sizes="32x32">
@@ -86,3 +87,5 @@
          than through a layout's own script block. */}}
   {{- $shortcuts := resources.Get "js/shortcuts.js" | js.Build (dict "minify" true) | fingerprint }}
   <script type="module" src="{{ $shortcuts.RelPermalink }}" integrity="{{ $shortcuts.Data.Integrity }}"></script>
+  {{- $infinite := resources.Get "js/infinite-posts.js" | js.Build (dict "minify" true) | fingerprint }}
+  <script type="module" src="{{ $infinite.RelPermalink }}" integrity="{{ $infinite.Data.Integrity }}"></script>

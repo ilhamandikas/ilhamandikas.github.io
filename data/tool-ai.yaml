@@ -66,3 +66,134 @@ jwt-parser:
   examples:
     - How do I read the claims in a JWT?
     - When does this token expire?
+
+json-formatter:
+  keywords:
+    - json
+    - json formatter
+    - json beautifier
+    - pretty print json
+    - json pretty printer
+    - json validator
+    - json checker
+    - json minifier
+    - sort json object keys
+    - api response formatter
+  features:
+    - Format JSON
+    - Validate JSON syntax
+    - Minify JSON
+    - Sort object keys
+    - Show parse errors
+  use_cases:
+    - Debug API responses
+    - Format JSON configuration files
+    - Validate JSON syntax before pasting into an application
+    - Minify JSON for compact storage or transport
+  input:
+    type: text
+    format: JSON
+  output:
+    type: text
+    format: JSON
+  limitations:
+    - Sorting only changes object keys
+    - Array order is preserved
+  related_tools:
+    - json-minifier
+    - json-viewer
+    - json-to-yaml
+
+nik-parser:
+  keywords:
+    - nik
+    - ktp
+    - nomor induk kependudukan
+    - parse nik indonesia
+    - indonesian identity number
+    - indonesia identity card
+    - tanggal lahir nik
+    - kode wilayah indonesia
+    - kode provinsi
+    - kode kabupaten
+    - administrative region indonesia
+
+number-to-words:
+  keywords:
+    - angka ke kata
+    - terbilang
+    - rupiah terbilang
+    - indonesian number words
+    - spell indonesian numbers
+    - invoice amount in words
+
+snap-signature:
+  keywords:
+    - snap bi
+    - bank indonesia snap
+    - asymmetric signature
+    - tanda tangan digital snap
+    - verify snap signature
+    - api banking indonesia
+
+take-home-pay-calculator:
+  keywords:
+    - take home pay indonesia
+    - gaji bersih
+    - pph 21
+    - bpjs
+    - salary calculator indonesia
+    - payroll indonesia
+
+typo-spotter:
+  keywords:
+    - typo bahasa indonesia
+    - cek typo indonesia
+    - ejaan indonesia
+    - indonesian typo checker
+    - spelling indonesia
+
+dns-lookup:
+  privacy:
+    processing: third-party-api
+    provider: Cloudflare DNS or Google DNS over HTTPS
+    data_uploaded: true
+
+whois-lookup:
+  privacy:
+    processing: third-party-api
+    provider: RDAP providers
+    data_uploaded: true
+
+ip-lookup:
+  privacy:
+    processing: third-party-api
+    provider: ipwho.is or freeipapi.com
+    data_uploaded: true
+
+cors-checker:
+  privacy:
+    processing: third-party-api
+    provider: User-provided URL
+    data_uploaded: true
+
+http-request-tester:
+  privacy:
+    processing: third-party-api
+    provider: User-provided URL
+    data_uploaded: true
+
+webhook-tester:
+  privacy:
+    processing: third-party-api
+    provider: User-provided URL
+    data_uploaded: true
+
+grpc-tester:
+  privacy:
+    processing: third-party-api
+    provider: User-provided gRPC-Web endpoint
+    data_uploaded: true
+
+javascript-playground:
+  offline_capable: false

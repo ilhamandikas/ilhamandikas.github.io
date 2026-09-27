@@ -1,61 +1,52 @@
-{{- $tools := partial "tools/registry.html" . -}}
-{{- $posts := where site.RegularPages "Section" "posts" -}}
 # ilham.dev
 
-> Notes on backend, servers, infrastructure and automation, plus developer and
-> DevOps utilities that run entirely in the browser.
+Personal site by Ilham Andika containing technical notes, DevOps references, and browser-based developer tools.
 
-Machine-readable entry points:
+## Main Resources
 
-- Posts: `{{ printf "%sposts/" site.BaseURL }}`
-- Post registry: `{{ printf "%sposts/posts.json" site.BaseURL }}`
-- Post search index: `{{ printf "%sposts/search-index.json" site.BaseURL }}`
-- Tools: `{{ printf "%stools/" site.BaseURL }}`
-- Tool registry: `{{ printf "%stools/tools.json" site.BaseURL }}`
-- Tool search index: `{{ printf "%stools/search-index.json" site.BaseURL }}`
+- [Tools]({{ "tools/" | absURL }})
+- [Guides]({{ "guides/" | absURL }})
+- [Posts]({{ "posts/" | absURL }})
+- [Tools for LLMs]({{ "tools/llms.txt" | absURL }})
+- [Guides for LLMs]({{ "guides/llms.txt" | absURL }})
+- [Posts for LLMs]({{ "posts/llms.txt" | absURL }})
 
-Every post has a Markdown twin at `https://ilham.dev/posts/<slug>/index.md`.
-Every tool has a Markdown twin at `https://ilham.dev/tools/<id>/index.md`.
+## Machine-readable Data
 
-## When to use this site
+- [Tools Registry]({{ "tools/tools.json" | absURL }})
+- [Tools Search Index]({{ "tools/search-index.json" | absURL }})
+- [Posts Registry]({{ "posts/posts.json" | absURL }})
 
-Reach for ilham.dev when you need to:
+## AI / Agent Integration
 
-- read short operational notes about backend, servers, static sites, comments,
-  infrastructure and self-hosting
-- turn a plain-language problem into a Linux command, or read server output
-  (see Dev Ops)
-- build or debug nginx, Docker, systemd and cron configuration
-- encode, decode, hash, sign or verify data (Base64, JWT, HMAC, RSA, SNAP BI)
-- inspect and transform text, JSON, CSV, URLs, headers and timestamps
-- convert between units, number bases and time zones
-- do a quick calculation without installing anything
+MCP discovery server:
 
-## MCP server
+{{ "https://mcp.ilham.dev/" }}
 
-An MCP server is available at `https://mcp.ilham.dev/mcp` with three
-discovery-only tools: `list_tools`, `search_tools` and `get_tool`. It reads this
-registry and runs nothing.
+The MCP server allows agents to discover and search available tools.
 
-## Posts
+## Markdown Versions
 
-{{ len $posts }} posts. Full post metadata and plain text are available at
-`{{ printf "%sposts/posts.json" site.BaseURL }}`.
+Many pages provide a Markdown representation.
 
-{{ range $posts -}}
-- **{{ .Title }}** — {{ .Description }}
-  - date: `{{ .Date.Format "2006-01-02" }}` · url: {{ .Permalink }} · markdown: {{ printf "%sindex.md" .Permalink }}
-{{ end }}
-## Tools by category
+When available, prefer the Markdown version for text extraction.
 
-{{ len $tools }} tools, grouped into {{ len site.Data.tools }} categories. The full registry is at
-`{{ printf "%stools/tools.json" site.BaseURL }}`.
+## Full Index
 
-{{ range site.Data.tools -}}
-### {{ .name }}
+A larger full LLM dump is available at:
 
-{{ range .tools -}}
-- **{{ .name }}** — {{ .desc }}
-  - id: `{{ .slug }}` · {{ printf "%stools/%s/" site.BaseURL .slug }}
-{{ end }}
-{{ end -}}
+- [Full LLM index]({{ "llms-full.txt" | absURL }})
+
+## About
+
+ilham.dev focuses on practical tools and notes related to:
+
+- DevOps
+- Linux
+- Networking
+- Containers
+- APIs
+- Web development
+- Infrastructure
+- Data utilities
+- Developer productivity

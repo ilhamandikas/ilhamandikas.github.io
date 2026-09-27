@@ -8,7 +8,7 @@
 
     {{- $pag := .Paginate .Pages }}
     {{- if $pag.Pages }}
-    <ul class="post-list">
+    <ul class="post-list" data-infinite-list>
       {{- range $pag.Pages }}
       <li class="post-item">
         <a class="post-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
@@ -23,7 +23,13 @@
       </li>
       {{- end }}
     </ul>
-    {{ template "_internal/pagination.html" . }}
+    {{- if $pag.HasNext }}
+    <div class="infinite-pager" data-infinite-pager>
+      <a class="btn" href="{{ $pag.Next.URL }}" data-infinite-next>Load more posts</a>
+      <p class="infinite-status" data-infinite-status aria-live="polite"></p>
+      <noscript>{{ template "_internal/pagination.html" . }}</noscript>
+    </div>
+    {{- end }}
     {{- else }}
     <p class="subtitle">No posts yet.</p>
     {{- end }}

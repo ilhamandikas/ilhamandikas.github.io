@@ -5,3 +5,14 @@ resources/
 # Only needed to regenerate assets/js/vendor (which is committed).
 node_modules/
 assets/jsconfig.json
+
+# Local agent/context notes.
+/AGENTS.md
+/AI_COMPATIBILITY_CONTEXT.md
+/AI-COMPATIBILITY-CONTEXT.md
+/CONTENT-GUIDELINES.md
+/SITE-KNOWLEDGE.md
+/TOOL-CATALOG.md
+/TOOLS-GUIDELINES.md
+/DESIGN-SYSTEM.md
+/SEO-CHECKLIST.md

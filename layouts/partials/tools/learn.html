@@ -1,0 +1,8 @@
+{{- $slug := . -}}
+{{- $links := index site.Data "tool-guide-links" | default dict -}}
+{{- with index $links $slug }}
+<section class="tool-learn">
+  <h2>Learn</h2>
+  <p><a href="{{ .url | relURL }}">{{ .title }}</a></p>
+</section>
+{{- end }}

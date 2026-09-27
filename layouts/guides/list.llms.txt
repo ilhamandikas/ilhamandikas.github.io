@@ -1,0 +1,9 @@
+# ilham.dev Guides
+
+{{ .Description }}
+
+## Guides
+
+{{ range .RegularPages -}}
+- [{{ .Title }}]({{ .Permalink }}) — {{ .Description }}
+{{ end -}}

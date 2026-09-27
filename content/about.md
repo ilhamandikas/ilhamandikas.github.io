@@ -1,7 +1,9 @@
 ---
-title: "About"
-description: "Ilham Andika — backend, servers, infrastructure, and automation."
+title: About
+description: Ilham Andika — backend, servers, infrastructure, and automation.
 lastmod: 2026-09-20
+aliases:
+- /posts/hello-world/
 ---
 
 Hi, I'm Ilham.

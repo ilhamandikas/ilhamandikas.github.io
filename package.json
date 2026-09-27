@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "vendor": "node scripts/build-vendor.mjs",
-    "test:dom": "node scripts/domtest/smoke.cjs && node scripts/domtest/e2e.cjs"
+    "test:dom": "node scripts/domtest/smoke.cjs && node scripts/domtest/e2e.cjs",
+    "check:ai": "node scripts/check-ai-compatibility.js"
   },
   "dependencies": {
     "@scure/bip39": "^1.3.0",

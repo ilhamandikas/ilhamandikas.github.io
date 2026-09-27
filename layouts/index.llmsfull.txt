@@ -1,0 +1,58 @@
+{{- $tools := partial "tools/registry.html" . -}}
+{{- $posts := where site.RegularPages "Section" "posts" -}}
+{{- $guides := where site.RegularPages "Section" "guides" -}}
+# ilham.dev Full LLM Index
+
+This is the expanded AI-readable index for ilham.dev. For concise discovery, use {{ "llms.txt" | absURL }}.
+
+## Machine-readable entry points
+
+- Posts: {{ "posts/" | absURL }}
+- Post registry: {{ "posts/posts.json" | absURL }}
+- Post search index: {{ "posts/search-index.json" | absURL }}
+- Tools: {{ "tools/" | absURL }}
+- Tool registry: {{ "tools/tools.json" | absURL }}
+- Tool search index: {{ "tools/search-index.json" | absURL }}
+- Tools LLM index: {{ "tools/llms.txt" | absURL }}
+- Guides: {{ "guides/" | absURL }}
+- Guides LLM index: {{ "guides/llms.txt" | absURL }}
+- Posts LLM index: {{ "posts/llms.txt" | absURL }}
+
+Every post has a Markdown twin at `https://ilham.dev/posts/<slug>/index.md`.
+Every guide has a Markdown twin at `https://ilham.dev/guides/<slug>/index.md`.
+Every tool has a Markdown twin at `https://ilham.dev/tools/<id>/index.md`.
+
+## MCP server
+
+MCP discovery server: https://mcp.ilham.dev/
+
+Discovery-only capabilities: `list_tools`, `search_tools` and `get_tool`.
+
+## Posts
+
+{{ len $posts }} posts. Full post metadata and plain text are available at {{ "posts/posts.json" | absURL }}.
+
+{{ range $posts -}}
+- **{{ .Title }}** — {{ .Description }}
+  - date: `{{ .Date.Format "2006-01-02" }}` · url: {{ .Permalink }} · markdown: {{ printf "%sindex.md" .Permalink }}
+{{ end }}
+## Guides
+
+{{ len $guides }} guides. The guide index is at {{ "guides/llms.txt" | absURL }}.
+
+{{ range $guides -}}
+- **{{ .Title }}** — {{ .Description }}
+  - url: {{ .Permalink }} · markdown: {{ printf "%sindex.md" .Permalink }}
+{{ end }}
+## Tools by category
+
+{{ len $tools }} tools, grouped into {{ len site.Data.tools }} categories. The full registry is at {{ "tools/tools.json" | absURL }}.
+
+{{ range site.Data.tools -}}
+### {{ .name }}
+
+{{ range .tools -}}
+- **{{ .name }}** — {{ .desc }}
+  - id: `{{ .slug }}` · {{ printf "%stools/%s/" site.BaseURL .slug }} · markdown: {{ printf "%stools/%s/index.md" site.BaseURL .slug }}
+{{ end }}
+{{ end -}}

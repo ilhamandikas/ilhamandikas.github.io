@@ -1,0 +1,20 @@
+# ilham.dev Posts Full LLM Index
+
+This expanded post index lists available technical notes and their Markdown twins.
+
+Concise index: {{ "posts/llms.txt" | absURL }}
+Registry JSON: {{ "posts/posts.json" | absURL }}
+Search index: {{ "posts/search-index.json" | absURL }}
+
+{{ range .RegularPages -}}
+## {{ .Title }}
+
+{{ with .Description }}{{ . }}{{ end }}
+
+- ID: `{{ .File.ContentBaseName }}`
+- Date: {{ .Date.Format "2006-01-02" }}
+- URL: {{ .Permalink }}
+- Markdown: {{ printf "%sindex.md" .Permalink }}
+{{ with .Params.tags }}- Tags: {{ delimit . ", " }}
+{{ end }}
+{{ end -}}

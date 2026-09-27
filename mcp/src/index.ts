@@ -113,7 +113,13 @@ export default {
       return transport.handleRequest(request);
     }
 
-    if (url.pathname === "/" || url.pathname === "/health") {
+    if (url.pathname === "/") {
+      const registry = await loadRegistry(registryUrl);
+      const body = `# ilham.dev MCP Server\n\nThis MCP server provides discovery access to tools available on ilham.dev.\n\n## Capabilities\n\n- List available tools\n- Search tools\n- Retrieve detailed tool metadata\n\n## Intended Use\n\nAI agents can use the MCP server to discover tools relevant to a user's problem.\n\nThe MCP server does not automatically execute browser tools on behalf of users.\n\n## Endpoints\n\n- MCP: ${url.origin}/mcp\n- REST tools: ${url.origin}/api/tools\n- REST search: ${url.origin}/api/search?q=json\n- REST tool detail: ${url.origin}/api/tool/json-formatter\n\n## Registry\n\n- Source: ${registry.url}\n- Tool count: ${registry.count}\n`;
+      return new Response(body, { headers: { "content-type": "text/markdown; charset=utf-8", "access-control-allow-origin": "*" } });
+    }
+
+    if (url.pathname === "/health") {
       const registry = await loadRegistry(registryUrl);
       return json({
         ok: true,

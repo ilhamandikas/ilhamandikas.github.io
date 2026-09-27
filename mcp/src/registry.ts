@@ -10,7 +10,9 @@ export interface Tool {
   id: string;
   name: string;
   url: string;
+  canonical_url?: string;
   documentation: string;
+  markdown_url?: string;
   category: string;
   category_name: string;
   description: string;
@@ -18,6 +20,8 @@ export interface Tool {
   use_cases?: string[];
   examples?: string[];
   features: string[];
+  privacy?: Record<string, unknown>;
+  offline_capable?: boolean;
   status: string;
 }
 
@@ -35,11 +39,15 @@ export interface Brief {
   name: string;
   url: string;
   documentation: string;
+  markdown_url?: string;
   category: string;
   description: string;
   keywords: string[];
+  features: string[];
   use_cases: string[];
   examples: string[];
+  privacy?: Record<string, unknown>;
+  offline_capable?: boolean;
 }
 
 const strings = (value: unknown): string[] => (Array.isArray(value) ? value.map((item) => String(item)) : []);
@@ -86,13 +94,17 @@ export function brief(tool: Tool): Brief {
   return {
     id: tool.id,
     name: tool.name,
-    url: tool.url,
-    documentation: tool.documentation,
+    url: tool.canonical_url ?? tool.url,
+    documentation: tool.markdown_url ?? tool.documentation,
+    markdown_url: tool.markdown_url ?? tool.documentation,
     category: tool.category_name,
     description: tool.description,
     keywords: tool.keywords ?? [],
+    features: tool.features ?? [],
     use_cases: tool.use_cases ?? [],
     examples: tool.examples ?? [],
+    privacy: tool.privacy,
+    offline_capable: tool.offline_capable,
   };
 }
 
