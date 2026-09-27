@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/security-cryptography-basics/
 ---
 
-Compute MD5, SHA-1, SHA-256 and SHA-512 digests of any text. SHA-256 and SHA-512 use the browser's WebCrypto implementation; MD5 and SHA-1 are here because they still turn up in checksums and older protocols, not because they are safe for anything that matters.
+A hash turns text into a fixed-length string called a *digest*. You cannot use the digest as a simple way to read the original text back. [Hash Text](/tools/hash-text/) shows several digest algorithms side by side; they make different-looking results from the same input.
 
-## Open the tool
+## Hash a tiny example
 
-[Use Hash Text](/tools/hash-text/).
+Type `abc` in **Text**. Look at **SHA-256**: the digest starts with `ba7816bf`. Change the input to `abcd`, and that digest changes. Change it back to `abc`, and it returns to the earlier value. The tool hashes the exact text you entered as UTF-8; a space after `abc` is a different input.
+
+Tick or untick **MD5**, **SHA-1**, **SHA-256**, and **SHA-512** to show only the algorithms you need. **Uppercase** changes how the digest is written, not what was hashed. Use the **Copy** button beside the digest you want.
+
+## Do not use this to store passwords
+
+Fast hashes such as SHA-256 are useful for checksums but not a password-storage recipe. Passwords need a dedicated, slow password-hashing method such as bcrypt or Argon2, plus a unique salt. MD5 and SHA-1 remain here for old checksums; do not choose them for new security-sensitive work. Do not paste a production secret into a public example, even if processing happens locally in this browser.
 
 ## Where your input goes
 

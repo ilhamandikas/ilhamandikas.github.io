@@ -10,11 +10,19 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Show the Unicode code points behind a piece of text, as U+XXXX escapes and as decimal values, and turn those escapes back into text. It is the quickest way to find out what an invisible or look-alike character actually is.
+Unicode gives characters numbers called *code points*. [Text to Unicode](/tools/text-to-unicode/) shows those numbers so you can tell similar-looking characters apart. `U+` means the number is written in hexadecimal (base 16).
 
-## Open the tool
+## Turn a letter into a code point
 
-[Use Text to Unicode](/tools/text-to-unicode/).
+1. Leave **Direction** on **Text → code points** and type `A` in **Text or code points**. **Result** should show `U+0041`.
+2. Change **Direction** to **Code points → text** and replace the input with `U+0041`. The result should show `A` again.
+3. Try `AB` in text mode. You should see `U+0041 U+0042`, one number for each of those letters.
+
+The result updates as you type. This is different from **Text to Binary**: one Unicode code point is not necessarily one byte. UTF-8 is one way a computer stores code points as bytes.
+
+## When a character looks strange
+
+A copied space may not be the ordinary space you typed on your keyboard. Put the suspect text in the tool and compare the codes. The tool can show what is there; it cannot decide whether that character belongs in your document. If you paste an invalid code point in decode mode, the tool will report an error rather than invent a replacement.
 
 ## Where your input goes
 

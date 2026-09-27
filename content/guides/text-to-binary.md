@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Convert text to its UTF-8 bytes written in binary, and back again. Each character is shown as the eight bits that encode it, which is the clearest way to see how a string becomes bytes on the wire.
+Computers store text as bytes. A *byte* is eight bits, and each bit is a `0` or `1`. [Text to Binary](/tools/text-to-binary/) shows those bytes, using UTF-8 for the text.
 
-## Open the tool
+## Try one letter
 
-[Use Text to Binary](/tools/text-to-binary/).
+Open the tool and type `A` in **Text or binary**. Leave **Decode binary to text** off. **Result** should show `01000001`. Count the digits: there are eight, so this is one byte.
+
+Now type `AB`. The result should be `01000001 01000010`. The space is only there to help you see the two bytes. To go back, turn on **Decode binary to text**, replace the input with `01000001 01000010`, and check that the result says `AB`.
+
+## If one character takes more space
+
+Try `é`. In UTF-8, it needs more than one byte, so you will see more than one eight-bit group. This is normal. When decoding, the tool keeps `0` and `1` and ignores other characters in the input. If the number of bits is not a multiple of eight, it reports an error; check that you copied every digit. Binary is a representation of text, **not** a way to keep text secret.
 
 ## Where your input goes
 

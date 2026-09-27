@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Convert a colour between HEX, RGB, RGBA, HSL, HSLA and CMYK, with a live preview. It accepts shorthand hex and alpha channels, and reports the nearest CSS colour name when there is one.
+A screen colour can be written in several ways. A HEX value like `#FF0000` and an RGB value like `rgb(255, 0, 0)` can describe the same red. [Color Converter](/tools/color-converter/) shows several spellings of one colour.
 
-## Open the tool
+## Convert a colour you know
 
-[Use Color Converter](/tools/color-converter/).
+Type `#FF0000` in **Color (hex, rgb, hsl or CSS name)**. In **All formats**, look for `RGB: rgb(255, 0, 0)` and `HSL: hsl(0, 100%, 50%)`. The first RGB number is the amount of red; the next two are green and blue. This example is all red, with no green or blue.
+
+Replace the input with `red`. You should get the same HEX and RGB values. This is because `red` is a CSS colour name the browser understands. The output changes as you type; there is no Convert button. Use **Copy** to take all the displayed formats.
+
+## What to watch for
+
+**RGBA** includes an extra value for transparency, but the plain **HEX** row only shows red, green, and blue. If you enter a partly transparent colour, copying that HEX value alone loses the transparency. **CMYK** is only a simple screen-to-ink estimate; printing depends on the printer and its colour profile. If the tool says **Unrecognised color**, check the spelling or try a HEX value such as `#FF0000`.
 
 ## Where your input goes
 
@@ -28,7 +34,7 @@ CMYK describes ink on paper and depends on the printer profile. The value here i
 
 ### Does HSL use degrees?
 
-Yes. Hue is 0–360 degrees, while saturation and lightness are percentages.
+Yes. Hue describes a position around a colour wheel, from 0 to 360 degrees. Saturation and lightness are shown as percentages.
 
 ## Related guide
 

@@ -10,11 +10,29 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Compare two blocks of text line by line and see exactly which lines were added, removed or left alone. Useful for checking what actually changed between two versions of a config, a query or a paragraph.
+Sometimes you have an old copy of a file and a new one, but cannot see what changed. [Text Diff](/tools/text-diff/) puts the lines beside the question: which lines stayed, which disappeared, and which were added?
 
-## Open the tool
+## Compare two short lists
 
-[Use Text Diff](/tools/text-diff/).
+Paste this into **Original text**:
+
+```text
+apple
+banana
+```
+
+Paste this into **Changed text**:
+
+```text
+apple
+orange
+```
+
+Choose **Compare**. The result keeps `apple` as an unchanged line, shows `- banana` for the removed line, and `+ orange` for the added line. The status should show one addition and one removal. Read `-` as “in the old copy but not here now” and `+` as “in the new copy”.
+
+## If you expected no changes
+
+This is a **line-by-line** comparison. A space at the end of a line can make two lines different even if they look identical on screen. Check line breaks and whitespace if the result surprises you. For two JSON documents where key order should not matter, use [JSON Diff](/tools/json-diff/) instead. Neither diff tool changes the originals.
 
 ## Where your input goes
 

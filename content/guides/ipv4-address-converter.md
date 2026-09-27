@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/network-debugging/
 ---
 
-Convert an IPv4 address between dotted-decimal, a single 32-bit integer, hexadecimal, octal and binary, and show the four octets broken out.
+An IPv4 address usually appears as four numbers with dots, such as `192.168.1.1`. Computers can write the **same address** as one number or as bits. [IPv4 Address Converter](/tools/ipv4-address-converter/) lets you compare those forms.
 
-## Open the tool
+## Check a small address
 
-[Use IPv4 Address Converter](/tools/ipv4-address-converter/).
+Type `0.0.0.1` in **IPv4 address**. In **Representations**, look for `Dotted: 0.0.0.1`, `Decimal: 1`, and `Hex: 0x00000001`. The **Binary** row should end in `1` after a line of zeroes. Nothing moved to a new network: these are just different ways to write one address.
+
+Now replace the input with `1`. The **Dotted** result should still be `0.0.0.1`. To try a familiar private-network example, type `192.168.1.1` and compare its dotted, decimal, hex, and binary forms. Use **Copy** if you need the whole result.
+
+## If the input is rejected
+
+A dotted IPv4 address needs exactly four parts; each part must be between `0` and `255`. `192.168.1.999` cannot be an IPv4 address. This tool changes the **representation**, not the subnet or routing rules. If you need a network and host range, use the related [IPv4 Subnet Calculator](/tools/ipv4-subnet-calculator/).
 
 ## Where your input goes
 
