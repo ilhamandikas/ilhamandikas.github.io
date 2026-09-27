@@ -10,11 +10,40 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Paste JSON and this validates it, pretty-prints it at the indentation you choose, or minifies it back down. The optional sort control reorders object keys at every level, ascending or descending, while leaving array order alone — which is exactly what you want when two API responses differ only in key order. Parsing uses the browser's own JSON parser, so it fails on exactly what a real parser fails on.
+JSON is text that stores information as names and values. In `"name":"Ana"`, `name` is the name of a piece of information, and `Ana` is its value. Long JSON is hard to read when everything sits on one line. [JSON Formatter](/tools/json-formatter/) adds spacing so you can see what belongs where.
 
-## Open the tool
+## Try one small example
 
-[Use JSON Formatter](/tools/json-formatter/).
+1. Open the tool and paste this into **Input JSON**:
+
+   ```json
+   {"user":{"name":"Ana","active":true},"roles":["editor","reader"]}
+   ```
+
+2. Leave **Indent** at `2` and choose **Format**. Look in **Output**. You should see:
+
+   ```json
+   {
+     "user": {
+       "name": "Ana",
+       "active": true
+     },
+     "roles": [
+       "editor",
+       "reader"
+     ]
+   }
+   ```
+
+The braces `{ }` group names and values together. The square brackets `[ ]` hold a list: here, two roles. The spaces and new lines help you read the data; the values have not changed.
+
+## Try the other controls
+
+Choose **Minify** to put the same data back on one line. This removes extra spacing, not the names or values. Turn on key sorting to arrange names inside an object; the order of the two roles in the list should stay the same. Use **Copy** to take the result elsewhere.
+
+## If it says the JSON is invalid
+
+Try pasting `{name:"Ana"}`. This will fail because JSON needs quotes around a name such as `"name"`. Fix it to `{"name":"Ana"}` and format it again. Keep the input visible while fixing an error; you do not need to start from scratch.
 
 ## Where your input goes
 
