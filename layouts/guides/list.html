@@ -9,39 +9,31 @@
     {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
 
     {{- if .Pages }}
-    {{- $topicGuides := slice -}}
+    {{- $topicCount := 0 -}}
     {{- $toolGuideCount := 0 -}}
     {{- range .Pages -}}
       {{- if .Params.tool_guide_slug -}}
         {{- $toolGuideCount = add $toolGuideCount 1 -}}
-      {{- else if not .Params.tool_guides_index -}}
-        {{- $topicGuides = $topicGuides | append . -}}
+      {{- else if and (not .Params.tool_guides_index) (not .Params.topic_guides_index) -}}
+        {{- $topicCount = add $topicCount 1 -}}
       {{- end -}}
     {{- end -}}
 
-    <section class="tool-learn" aria-labelledby="tool-guides-callout">
-      <h2 id="tool-guides-callout">Need notes for one tool?</h2>
-      <p>I keep tool-specific notes on a separate page so this one stays readable. Browse <a href="{{ "/guides/tools/" | relURL }}">all {{ $toolGuideCount }} tool guides</a>.</p>
-    </section>
+    <div class="grid guide-choice-grid" aria-label="Guide sections">
+      <a class="card guide-choice-card" href="{{ "/guides/topics/" | relURL }}">
+        <span class="guide-choice-arrow" aria-hidden="true">→</span>
+        <h2>Topic notes</h2>
+        <p>Linux, networking, Docker, APIs, servers, debugging, deployments, and small infra details I come back to often.</p>
+        <span class="guide-choice-meta">{{ $topicCount }} notes</span>
+      </a>
 
-    <section aria-labelledby="topic-guides">
-      <h2 id="topic-guides">Notes by topic</h2>
-      <p class="subtitle">Things I come back to often. {{ len $topicGuides }} notes.</p>
-      <ul class="post-list">
-        {{- range sort $topicGuides "Title" }}
-        <li class="post-item">
-          <a class="post-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
-          <p class="post-summary">{{ .Description | default (.Summary | plainify) | truncate 220 }}</p>
-          <p class="post-meta">
-            {{ .ReadingTime }} min read
-            {{- with .Params.tags }} &middot;
-            {{- range . }} <a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}/">#{{ . }}</a>{{ end }}
-            {{- end }}
-          </p>
-        </li>
-        {{- end }}
-      </ul>
-    </section>
+      <a class="card guide-choice-card" href="{{ "/guides/tools/" | relURL }}">
+        <span class="guide-choice-arrow" aria-hidden="true">→</span>
+        <h2>Tool notes</h2>
+        <p>Short notes for individual tools: what they do, what input they expect, and things to watch out for.</p>
+        <span class="guide-choice-meta">{{ $toolGuideCount }} tool notes</span>
+      </a>
+    </div>
     {{- else }}
     <p class="subtitle">No guides yet.</p>
     {{- end }}

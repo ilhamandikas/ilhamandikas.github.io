@@ -21,6 +21,24 @@
 {{- end }}
 {{- end }}
 {{- end -}}
+{{- else if .Params.topic_guides_index -}}
+# {{ .Title }}
+
+{{ with .Description }}{{ . }}
+
+{{ end -}}
+- URL: {{ .Permalink }}
+- Tool notes: {{ "guides/tools/" | absURL }}
+
+{{- $topicGuides := slice -}}
+{{- range site.RegularPages -}}
+  {{- if and (eq .Section "guides") (not .Params.tool_guide_slug) (not .Params.tool_guides_index) (not .Params.topic_guides_index) -}}
+    {{- $topicGuides = $topicGuides | append . -}}
+  {{- end -}}
+{{- end }}
+{{- range sort $topicGuides "Title" }}
+- [{{ .Title }}]({{ .Permalink }}) — {{ .Description }}
+{{- end -}}
 {{- else -}}
 {{- with .Params.tool_guide_slug -}}
 {{- $slug := . -}}

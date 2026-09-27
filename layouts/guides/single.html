@@ -33,6 +33,39 @@
       {{- end }}
     </div>
   </article>
+{{- else if .Params.topic_guides_index -}}
+  <article class="page">
+    <div class="container">
+      <div class="page-header">
+        <p class="tool-crumb"><a href="{{ "/guides/" | relURL }}">Guides</a></p>
+        <h1>{{ .Title }}</h1>
+        {{- with .Description }}<p class="updated">{{ . }}</p>{{ end }}
+      </div>
+      <div class="prose">
+        <p>These are the broader notes. If you need notes for one specific tool, use the <a href="{{ "/guides/tools/" | relURL }}">tool notes</a> page.</p>
+      </div>
+      {{- $topicGuides := slice -}}
+      {{- range site.RegularPages -}}
+        {{- if and (eq .Section "guides") (not .Params.tool_guide_slug) (not .Params.tool_guides_index) (not .Params.topic_guides_index) -}}
+          {{- $topicGuides = $topicGuides | append . -}}
+        {{- end -}}
+      {{- end -}}
+      <ul class="post-list">
+        {{- range sort $topicGuides "Title" }}
+        <li class="post-item">
+          <a class="post-link" href="{{ .RelPermalink }}">{{ .Title }}</a>
+          <p class="post-summary">{{ .Description | default (.Summary | plainify) | truncate 220 }}</p>
+          <p class="post-meta">
+            {{ .ReadingTime }} min read
+            {{- with .Params.tags }} &middot;
+            {{- range . }} <a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}/">#{{ . }}</a>{{ end }}
+            {{- end }}
+          </p>
+        </li>
+        {{- end }}
+      </ul>
+    </div>
+  </article>
 {{- else -}}
 {{- with .Params.tool_guide_slug -}}
   {{- $slug := . -}}
