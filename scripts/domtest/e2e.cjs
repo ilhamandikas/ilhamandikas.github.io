@@ -64,6 +64,13 @@ const check = (label, actual, expected) => {
     page.dom.window.close();
   }
 
+  {
+    const page = await run('url-parser', { '#url-input': 'https://example.com/?q=%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E' });
+    check('url parser shows untrusted query as text', page.w.document.querySelector('#url-results').textContent.includes('<img src=x onerror=alert(1)>'), true);
+    check('url parser does not create markup from query', page.w.document.querySelector('#url-results img'), null);
+    page.dom.window.close();
+  }
+
   console.log('\n=== round trips ===');
 
   // JSON -> YAML -> JSON

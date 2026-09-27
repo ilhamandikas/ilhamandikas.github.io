@@ -10,11 +10,26 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-A collapsible tree view of a YAML document, showing the structure and the value counts on each branch. Anchors and aliases are resolved, so you see the effective document rather than the shorthand.
+YAML is text that uses **indentation** to show what belongs inside what. [YAML Viewer](/tools/yaml-viewer/) turns it into a tree you can open one part at a time. It is for reading, not changing the file.
 
-## Open the tool
+## See what belongs under a name
 
-[Use YAML Viewer](/tools/yaml-viewer/).
+Paste this into **YAML**:
+
+```yaml
+service:
+  name: api
+  enabled: true
+ports:
+  - 80
+  - 443
+```
+
+You should see `service` and `ports` in **Tree**. Open `service` to find `name: api` and `enabled: true`. Open `ports` to see its two list items, `80` and `443`. The two-space indentation under `service` is why `name` and `enabled` appear inside it.
+
+Change the indentation or remove a colon to see how structure or parsing can change. If the status shows an error, check the line it mentions before editing the rest. **Parsed** means the tool could read the YAML; it does not check whether `service` or `ports` are valid settings for your application.
+
+This page processes the text in your browser. Configuration files can still contain secrets, so check a file before pasting its contents into a screenshot or sharing it elsewhere.
 
 ## Where your input goes
 

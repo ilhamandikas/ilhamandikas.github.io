@@ -11,11 +11,17 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Drop in a CSV, TSV or pipe-separated file and read it as a table. The delimiter is guessed from the first line, but you can sort by any column, type in the filter box to narrow the rows, and see the shape of the file at a glance. The file is parsed in the page, so nothing is uploaded.
+CSV is a simple table written as text. Each line is a row; commas usually separate its cells. [CSV Viewer](/tools/csv-viewer/) lays those lines out as a table so you can find and sort records without opening a spreadsheet.
 
-## Open the tool
+## Read the example already on the page
 
-[Use CSV Viewer](/tools/csv-viewer/).
+Open the tool and look at the example under **Or paste CSV, TSV or pipe-separated text**. The first line is `name,city,total`. With **First row is the header** checked, those words become the column headings. You should see rows for Budi, Ada, and Citra under **Table**.
+
+Type `Jakarta` into **Filter rows**. Only Ada's row should remain. Clear the filter, then click the **total** heading. The rows should sort from `95` to `143`; click it again to reverse the order. **Clear sort** restores the unsorted view. **Clear** removes the input too, so use it only when you want to start over.
+
+## Open your own file
+
+Choose a CSV, TSV, or text file with the file input, or paste its contents. The tool reads it in your browser; it does not upload it. It guesses whether columns are separated by commas, tabs, semicolons, or pipes. If the table has the wrong columns, check the source's separator and quoted fields. Large files may contain more than the first 500 rows shown on screen; use the row count, not only the visible table, to tell how many rows matched.
 
 ## Where your input goes
 

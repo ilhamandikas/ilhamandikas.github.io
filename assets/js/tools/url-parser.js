@@ -40,7 +40,11 @@ function render() {
     ...rows.map(([key, value]) => {
       const row = document.createElement('div');
       row.className = 'tool-result-row';
-      row.innerHTML = `<dt>${key}</dt><dd>${value}</dd>`;
+      const label = document.createElement('dt');
+    label.textContent = key;
+    const detail = document.createElement('dd');
+    detail.textContent = value;
+    row.append(label, detail);
       return row;
     }),
   );

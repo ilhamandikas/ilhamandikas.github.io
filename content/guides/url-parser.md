@@ -10,11 +10,24 @@ broader_guide:
   url: /guides/writing-for-the-web/
 ---
 
-Break a URL into its parts — scheme, host, port, path, query parameters and fragment — and show each one both raw and decoded. It is the quickest way to see what a tracking-heavy link is really carrying.
+A URL is a web address made of pieces. The **protocol** tells the browser how to connect; the **host** names where to go; the **path** points to a page. A **query** can carry extra values. [URL Parser](/tools/url-parser/) lists those pieces so you can read them separately.
 
-## Open the tool
+## Take apart a safe example
 
-[Use URL Parser](/tools/url-parser/).
+Replace the text in **URL** with `https://example.com/docs?q=hello%20world#intro`. Look for:
+
+- **Protocol:** `https:` — use HTTPS.
+- **Hostname:** `example.com` — the named host.
+- **Pathname:** `/docs` — the path on that host.
+- **Query:** `?q=hello%20world` — the query exactly as it appears in the URL.
+- **Param · q:** `hello world` — the browser has decoded `%20` into a space.
+- **Hash:** `#intro` — the fragment, often used to point to part of a page.
+
+The results update as you type. Nothing is fetched: this tool reads the address as text. A **Valid URL** result means its shape can be parsed; it does not mean the website exists or is safe to visit.
+
+## If it says the URL is invalid
+
+Type the full address, including `https://`. `example.com/docs` alone is not an absolute URL for this tool. Do not paste a link containing a live password or token into a shared screenshot. A URL's query can appear in browser history and server logs.
 
 ## Where your input goes
 
@@ -24,7 +37,7 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### Why is each parameter shown twice?
 
-Once percent-encoded exactly as it appears in the URL, and once decoded. The difference between the two is usually the interesting part.
+The **Query** row shows the encoded query as part of the URL. Individual **Param** rows show decoded values. Not every URL part gets a raw-and-decoded pair.
 
 ### Why does a repeated parameter appear twice in the list?
 

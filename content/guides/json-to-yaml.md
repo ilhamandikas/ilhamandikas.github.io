@@ -10,11 +10,23 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Convert JSON to YAML, preserving the structure rather than reformatting the text. It is the usual way to move a config between a tool that speaks one and a file that is written in the other.
+JSON and YAML can hold the same simple data in different-looking text. JSON uses braces and square brackets; YAML often uses indentation and dashes. [JSON to YAML](/tools/json-to-yaml/) reads the JSON first, then writes the data as YAML.
 
-## Open the tool
+## Convert a name and a list
 
-[Use JSON to YAML](/tools/json-to-yaml/).
+Paste this into **JSON**:
+
+```json
+{"name":"Ana","tags":["editor","reader"]}
+```
+
+Look in **YAML** for `name: Ana`, then a `tags:` line with `- editor` and `- reader` below it. The exact spacing is chosen by the YAML writer, but `tags` should still contain two values. Use **Copy** or **Download** if you need the result in another file.
+
+## If it does not convert
+
+Check the JSON first. For example, `{name:"Ana"}` is not valid JSON because `name` needs quotation marks. The tool cannot fix invalid input or decide whether the YAML keys are right for your application. After converting configuration, review the output before replacing a working file.
+
+This converts data, not comments: standard JSON has no comments to bring over. For nested data or unfamiliar values, compare the output with the original rather than assuming a different-looking result means the same thing.
 
 ## Where your input goes
 
@@ -28,7 +40,7 @@ JSON has no comments, so converting JSON to YAML cannot invent any. Going the ot
 
 ### Why does my document fail to convert?
 
-Usually an anchor or a custom tag with no equivalent, or a duplicate key. The error names the position.
+This tool parses **JSON** input, not YAML. A missing quote or comma in JSON can cause an error. YAML-only features such as anchors are not valid input here; start with valid JSON instead.
 
 ## Related guide
 
