@@ -11,11 +11,25 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Two reads of one JSON document. The tree view collapses every branch, with a count of the nested values inside it and buttons to expand or collapse everything at once. The table view lays a list of records out as a grid, one row per record and one column per key, which is usually the fastest way to scan an API response. Both views are built for finding your way around a payload you have not seen before — an API response, a config file, a webhook body. The document is parsed locally.
+JSON can hold one item or a list of items. When the list is long, it is easy to lose track of which value belongs to which item. [JSON Viewer](/tools/json-viewer/) shows the same data as a tree you can open and close, or as a table with rows and columns.
 
-## Open the tool
+## Look at two records
 
-[Use JSON Viewer](/tools/json-viewer/).
+Paste this into **JSON**:
+
+```json
+[{"name":"Ana","role":"editor"},{"name":"Bo","role":"reader","active":true}]
+```
+
+You should see a **Tree** first. The square brackets mean this is a list. Open each item to see its names and values. **Expand all** opens everything; **Collapse all** helps when there are too many parts on screen.
+
+Choose **Table**. You should see two rows, one for Ana and one for Bo. The columns include `name`, `role`, and `active`. Ana's `active` cell is empty because that name was not present in her record; it does **not** mean `false`. Bo's cell shows `true`.
+
+This tool is for **reading**, not changing or copying a formatted document. If you need formatted text to paste elsewhere, use the related [JSON Formatter](/tools/json-formatter/).
+
+## If nothing appears
+
+Make sure the text is valid JSON: names such as `"name"` need quotation marks, and each list item needs a comma between it and the next one. The status near the controls shows parsing errors. Fix the input first; changing Tree to Table cannot repair broken JSON.
 
 ## Where your input goes
 

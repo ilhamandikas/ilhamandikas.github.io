@@ -10,11 +10,19 @@ broader_guide:
   url: /guides/security-cryptography-basics/
 ---
 
-Encode UTF-8 text to Base64, or decode it back, with an optional URL-safe alphabet where + and / become - and _ and the padding is dropped. Multi-byte characters are handled correctly because the text is encoded to UTF-8 bytes first, so accented letters and emoji round-trip without corruption.
+Base64 changes text into a set of letters and numbers that is easier to carry through systems that expect plain text. It does **not** hide the text. [Base64 Text](/tools/base64-string-converter/) has two boxes: the top turns text into Base64, and the bottom turns it back.
 
-## Open the tool
+## Try a round trip
 
-[Use Base64 Text](/tools/base64-string-converter/).
+1. Type `Hi` into the top **Text** box. The **Base64** box below it should show `SGk=`. The `=` is part of the Base64 format.
+2. Copy `SGk=` into the lower **Base64** input. The **Text** output should say `Hi` again. This is a *round trip*: you changed the representation and then changed it back.
+3. Try a word with an accent, such as `café`. It should return as the same word after you encode and decode it. The tool handles the text as UTF-8 bytes, so it does not have to throw away the accent.
+
+No button is needed: each output updates as you type. Each **Copy** button copies the result beside it, not the text in the other box.
+
+## If decoding fails
+
+Check that you copied only the Base64 text. A missing character or an extra space inside the string can make it invalid. **URL-safe** changes two characters used by normal Base64 (`+` and `/`) to `-` and `_`; select the matching option when decoding URL-safe input. It is still readable by anyone who decodes it, so do not use Base64 to protect a password or token.
 
 ## Where your input goes
 

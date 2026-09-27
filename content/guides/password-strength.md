@@ -10,11 +10,20 @@ broader_guide:
   url: /guides/security-cryptography-basics/
 ---
 
-Estimate how much work a password represents by measuring its entropy, assuming a specific number of guesses per second, and reporting how long a cracking rig would need. It is an estimate with stated assumptions rather than a verdict, which is the honest way to present this.
+A password is harder to guess when it is not obvious or reused. [Password Strength](/tools/password-strength/) shows a **rough estimate**, not a promise that a password is safe. The tool cannot know whether a password was already leaked or whether someone knows your personal details.
 
-## Open the tool
+## Try a fake password
 
-[Use Password Strength](/tools/password-strength/).
+1. Open the tool and type `password123` in **Password**. Use this only as an example; never use it as a real password.
+2. Look at **Strength**. It says **Weak** because the tool recognises the common word `password`, even though numbers were added.
+3. Look at **Length** and **Character sets**. They describe what you typed. **Search space**, **Entropy**, and **Time to crack** are estimates made from a simple model; they are not measurements of an attacker.
+4. Change the test value and watch what the tool reports. A longer result or a bigger “time” still does not prove the new value is safe if people can guess its pattern.
+
+The field shows what you type in plain text. Do **not** paste a real password where someone can see your screen. This tool calculates in the browser, but your screen and clipboard still matter.
+
+## What to take away
+
+For a real account, use a password manager to make a long, unique password, and turn on an extra sign-in factor when the service offers one. Treat this tool as a way to understand a few signals, not as a test that certifies a password.
 
 ## Where your input goes
 
@@ -24,11 +33,11 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### Why does my password score badly?
 
-Usually because it is short, or built from a predictable pattern. Length adds entropy far faster than swapping letters for symbols, so a long passphrase nearly always beats a short complicated string.
+It may be short or include one of the common words this tool checks. The estimate mostly uses length and character types; it cannot spot every predictable pattern. A high score is not a reason to reuse a password.
 
 ### Is my password sent anywhere?
 
-No. The estimate is computed in the page and nothing is transmitted.
+The tool computes its estimate in your browser. Still, the field displays your text openly. Use made-up examples, not a password from a real account.
 
 ## Related guide
 
