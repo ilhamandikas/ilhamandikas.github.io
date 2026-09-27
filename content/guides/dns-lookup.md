@@ -10,11 +10,20 @@ broader_guide:
   url: /guides/network-debugging/
 ---
 
-Resolve A, AAAA, CNAME, MX, TXT, NS, SOA, CAA and SRV records over DNS-over-HTTPS, so the query travels over an encrypted connection instead of plain UDP on port 53. It asks Cloudflare first, falls back to Google, and reports which resolver answered.
+DNS is the system that helps turn a domain name into information a browser or mail server can use. An **A record** gives an IPv4 address. An **MX record** points to a mail server. [DNS Lookup](/tools/dns-lookup/) asks a public DNS resolver for those records; it does not read your computer's own DNS cache.
 
-## Open the tool
+## Look up a safe example domain
 
-[Use DNS Lookup](/tools/dns-lookup/).
+1. Type `example.com` in **Domain**. This is a reserved example name, not a private hostname.
+2. Set **Record** to **A** and choose **Look up**. If the request works, look for a table with **Type**, **Name**, **TTL**, and **Value**. **Value** holds the answer; **TTL** says how long a resolver may cache it, in seconds. The exact address and TTL can change, so do not copy an example result into your configuration.
+3. Choose **MX** to ask a different question about the same name. A domain may have no record of the type you asked for; **No MX records** is not the same as a broken website.
+4. **Copy as JSON** copies the lookup result if you need to share it. Check it for private names before sharing.
+
+## If your server sees something else
+
+The tool asks **Cloudflare** over HTTPS first; if that request fails, it tries **Google**. The chosen public resolver may have a different cached answer from your own network. Check the resolver named in the result and compare it with the DNS server your application actually uses. An invalid domain gets an error before a lookup; a valid-looking name can still have no records.
+
+The domain you type is sent to the public resolver. Do not use a sensitive internal hostname unless you intend to disclose that name to the resolver.
 
 ## Where your input goes
 
@@ -28,7 +37,7 @@ Both Cloudflare and Google refuse ANY over DoH and return NOTIMP. Querying each 
 
 ### Is this the same as dig?
 
-Same records, different transport. dig speaks DNS on port 53; this uses HTTPS, so it works from networks that block port 53 and cannot be tampered with in transit.
+They can ask for the same records, but this page uses HTTPS to a public resolver, while `dig` normally uses the DNS resolver configured for your device. The route, cache, and answer may differ. HTTPS protects the connection to the selected resolver; it does not prove the DNS record itself is correct.
 
 ### Why do I get a different answer than my own resolver?
 

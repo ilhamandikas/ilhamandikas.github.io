@@ -11,11 +11,21 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Drop in a JPEG, PNG, GIF or WebP and read the metadata the file actually carries: camera make and model, exposure settings, orientation, dimensions, colour profile, PNG text chunks and, where present, GPS coordinates with a link that opens the location in Google Maps. The parsing happens in the page, so the picture is never uploaded. A raw JSON panel shows every tag that was read, which is what you want when a field looks wrong.
+A photo can carry information **besides the picture**. That extra information is called *metadata*. It might include a camera model, a date, or even a location. [Image Metadata Viewer](/tools/image-metadata/) reads what is present in a file you choose; it does not add or remove anything.
 
-## Open the tool
+## Inspect an image you can share safely
 
-[Use Image Metadata Viewer](/tools/image-metadata/).
+Start with a test image or a screenshot that contains no personal information. Choose it in **Image**, or drop it onto the file area. The tool accepts JPEG, PNG, GIF, and WebP files. After it reads the file:
+
+1. Check **What is in the file** for the preview, file name, size, and any metadata blocks the tool found.
+2. Check **Everything that was found** under **Raw JSON** if you want a text version of the report. **Copy as JSON** and **Download JSON** export the report, not a cleaned image.
+3. If the status says there is no EXIF, that is normal for many screenshots and exported images. **EXIF** is one kind of photo metadata; “no EXIF” does not mean the file has no information at all.
+
+If a photo contains GPS data, the tool shows coordinates and a Google Maps link. **Opening that link** sends the coordinates to Google. You do not need to click it to inspect the rest of the report.
+
+## Before sharing a photo
+
+This viewer reads files locally in your browser; it does not upload your selected image. But it also **does not remove metadata**. If the report shows a location or other detail you do not want to share, make a separate cleaned copy with a tool that removes metadata, then check **that new file** here. Do not assume an image is clean just because the preview looks ordinary.
 
 ## Where your input goes
 

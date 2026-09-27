@@ -10,11 +10,23 @@ broader_guide:
   url: /guides/writing-for-the-web/
 ---
 
-Escape and unescape HTML special characters, choosing between named entities and numeric ones, so text can be embedded safely in a page or a snippet read back to see what it really contains. It escapes what needs escaping rather than every non-ASCII character, which keeps the output readable.
+HTML uses `<` and `>` to mark tags, and `&` to start special character codes called *entities*. If you want to **show** `<b>` as text instead of treating it as a tag, you must write those characters differently. [HTML Entities](/tools/html-entities/) makes that text easy to copy.
 
-## Open the tool
+## Turn tags into plain text
 
-[Use HTML Entities](/tools/html-entities/).
+Type `<b>Hi & bye</b>` in **Text or HTML**. Leave **Decode instead of encode** off. The **Result** should say:
+
+```text
+&lt;b&gt;Hi &amp; bye&lt;/b&gt;
+```
+
+`&lt;` means `<`, `&gt;` means `>`, and `&amp;` means `&`. In HTML source, that result displays the characters `<b>Hi & bye</b>` as text, rather than making **Hi & bye** bold. Use **Copy** if you need the encoded text.
+
+Now turn on **Decode instead of encode**, replace the input with `&lt;b&gt;Hi &amp; bye&lt;/b&gt;`, and check that the result is `<b>Hi & bye</b>` again.
+
+## What this tool does not do
+
+It converts text; it does not check whether an entire HTML document is safe to show to visitors. When adding untrusted text to a page, prefer your framework's normal text rendering rather than inserting the result as raw HTML. If the output does not look right, check whether **Decode instead of encode** is on.
 
 ## Where your input goes
 

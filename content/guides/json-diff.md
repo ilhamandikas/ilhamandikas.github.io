@@ -10,11 +10,19 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Compare two JSON documents and see what was added, removed or changed, key by key. Because both sides are parsed first, differences in whitespace and key order are ignored and only real changes are reported — which makes it far more useful than eyeballing two formatted blobs.
+When an API response or configuration changes, comparing two walls of text is tiring. [JSON Diff](/tools/json-diff/) reads both pieces of JSON and points to values that were added, removed, or changed.
 
-## Open the tool
+## Compare two tiny objects
 
-[Use JSON Diff](/tools/json-diff/).
+Paste `{"user":{"name":"Ana","active":true}}` in **Original JSON**. Paste `{"user":{"name":"Ana","active":false}}` in **Changed JSON**, then choose **Compare**.
+
+You should see a line starting with `~ user.active: true → false`. Read it like this: inside `user`, the value named `active` changed from `true` to `false`. The `~` means changed. If a value exists only on the right, it starts with `+`; if it exists only on the left, it starts with `-`.
+
+Now set `active` to `true` on **both** sides. Reverse the order of `name` and `active` on the right, but leave their values alone. Choose **Compare** again. The result should say **Identical**: moving names around in a JSON object did not change the data.
+
+## If the result surprises you
+
+Check which side you put into each box: left is *original*, right is *changed*. Both must be valid JSON; a missing quote or comma produces an error instead of a partial comparison. This tool compares array items by their positions, so moving a list item may look like several changes. It shows differences; it does not merge files or decide which version is correct.
 
 ## Where your input goes
 

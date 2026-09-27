@@ -10,11 +10,25 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Move between the two shapes that CSV and JSON use for tabular data. Going to JSON, each row becomes an object keyed by the header; going to CSV, the keys become the header and any key a row is missing is left empty. The delimiter is detected for CSV input and can be set by hand.
+CSV is a table written as lines of text. JSON can describe the same rows using names and values. [CSV and JSON Converter](/tools/csv-json-converter/) moves between those two shapes. It does not guess which values are dates or numbers.
 
-## Open the tool
+## Turn two CSV rows into JSON
 
-[Use CSV and JSON Converter](/tools/csv-json-converter/).
+Open the tool. Leave **Direction** on **CSV to JSON**, **Delimiter** on **Detect automatically**, and **First row is the header** checked. The input already contains this sample:
+
+```csv
+name,city,total
+Ada,Jakarta,120
+Budi,Surabaya,95
+```
+
+Look at **Output**. You should see a list of two JSON objects. The first row supplies the names `name`, `city`, and `total`. Ada's row becomes an object with `"name": "Ada"`, `"city": "Jakarta"`, and `"total": "120"`. Notice the quotes around `"120"`: CSV cells are text, so this tool does not turn it into the number `120`.
+
+## Go the other way
+
+Choose **JSON to CSV**. The tool switches its unchanged example input to a JSON list. You should see a header row followed by rows for Ada and Budi. If you paste your own JSON, make it a list such as `[{"name":"Ana"},{"name":"Bo"}]`; one object without square brackets is not accepted. **Copy** or **Download** takes the current output.
+
+If columns split in the wrong place, check **Delimiter**. A comma and a semicolon are different separators. If the first row holds data rather than column names, turn off **First row is the header** and inspect the result before using it elsewhere.
 
 ## Where your input goes
 

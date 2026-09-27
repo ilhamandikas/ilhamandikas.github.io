@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/ids-and-test-data/
 ---
 
-Generate version 4 UUIDs, one at a time or in bulk, using the browser's cryptographic random number generator. They are suitable for database keys, request IDs and anything else that has to be unique without coordinating with a central authority.
+An ID is a label used to tell one thing from another. A UUID is a long label that different programs can create without asking one central server for the next number. [UUID Generator](/tools/uuid-generator/) makes random version 4 UUIDs in your browser.
 
-## Open the tool
+## Make a few IDs
 
-[Use UUID Generator](/tools/uuid-generator/).
+Open the tool. **How many** starts at `5`, so you should already see five lines. Each line is one UUID. It looks roughly like `xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx`, where the `x` and `y` positions vary. Do not expect the exact same result twice: the tool makes new random values.
+
+Set **How many** to `2` and choose **Generate**. You should now see two lines. If you turn on **Uppercase**, the letters become capital letters; **Wrap in braces** puts `{` and `}` around each ID. These options change how the IDs are written, so check the format the receiving program expects. Use **Copy** when you need the list.
+
+## What these IDs do not prove
+
+A UUID helps avoid accidental duplicates; it does not prove who created a record or make a URL secret. Never use a visible ID alone as an access check. If you need one ID for a test record, generate one and keep a note of where you used it rather than guessing you can recreate the same value later.
 
 ## Where your input goes
 
