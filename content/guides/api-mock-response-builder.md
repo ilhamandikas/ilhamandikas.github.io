@@ -9,3 +9,35 @@ broader_guide:
   title: API Testing
   url: /guides/api-testing/
 ---
+
+Describe a response shape once as name: type pairs and the page generates a realistic JSON body with the number of records you ask for. It is the quick way to stub an endpoint, seed a fixture or show a frontend what the real payload will look like before the API exists.
+
+## Open the tool
+
+[Use API Mock Response Builder](/tools/api-mock-response-builder/).
+
+## Where your input goes
+
+Processing runs in your browser. The tool does not upload your input to ilham.dev.
+
+## Questions you might have
+
+### What types can I use?
+
+string, word, name, firstname, lastname, email, phone, city, country, address, company, product, url, image, uuid, id, number, integer, price, age, boolean, date, datetime, timestamp, color, object and array(n). Anything else is reported and skipped rather than guessed.
+
+### How do I get a list of values in one field?
+
+Write array(3) for three items or array for a default of three. Each item is a short word, which is enough to fill a tags or categories field while you build the UI.
+
+### Are the values random every time?
+
+Yes. Each render draws new values, and the Regenerate button does the same. If you need the exact same payload twice, paste the generated JSON into a file instead of regenerating.
+
+### Is the data based on anything real?
+
+No. Names, addresses and emails are made up from small built-in word lists. They are deliberately fake so nothing generated can collide with a real person or mailbox.
+
+## Related guide
+
+For more background, read [API Testing](/guides/api-testing/).

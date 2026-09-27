@@ -42,11 +42,6 @@
 {{- else -}}
 {{- with .Params.tool_guide_slug -}}
 {{- $slug := . -}}
-{{- $tool := dict -}}
-{{- range partial "tools/registry.html" $ -}}
-  {{- if eq .id $slug }}{{ $tool = . }}{{ end -}}
-{{- end -}}
-{{- $guide := partial "tools/guide.html" $slug -}}
 # {{ $.Title }}
 
 {{ with $.Description }}{{ . }}
@@ -59,61 +54,7 @@
 - Broader guide: {{ .title }} ({{ .url | absURL }})
 {{- end }}
 
-{{ $tool.description }}
-
-## What it does
-
-{{ with $guide.about }}{{ . }}{{ else }}{{ $tool.description }}{{ end }}
-
-## What to try
-
-Open {{ printf "%stools/%s/" site.BaseURL $slug }} and start with a small example or the controls on the page. Check what happens before moving to real data. The questions below cover details that may not be obvious from the first result.
-
-## What goes in and comes out
-
-- Input: {{ with $tool.input.format }}{{ . }} {{ end }}{{ $tool.input.type | default "text" }}.
-- Output: {{ with $tool.output.format }}{{ . }} {{ end }}{{ $tool.output.type | default "text" }}.
-- Find it under: {{ $tool.category_name }}.
-
-## Where your input goes
-
-{{- if eq $tool.privacy.processing "client-side" }}
-Processing happens locally in your browser. This tool does not upload the input to ilham.dev.
-{{- else if eq $tool.privacy.processing "third-party-api" }}
-This tool needs a network request to complete the lookup or test. Send only data you are comfortable sharing with the target service.
-{{- else }}
-Processing model: {{ $tool.privacy.processing }}.
-{{- end }}
-
-{{- with $tool.use_cases }}
-
-## When it helps
-
-{{- range . }}
-- {{ . }}
-{{- end }}
-{{- end }}
-
-{{- with $tool.limitations }}
-
-## What to watch for
-
-{{- range . }}
-- {{ . }}
-{{- end }}
-{{- end }}
-
-{{- with $guide.faq }}
-
-## Questions you might have
-
-{{- range . }}
-
-### {{ .q }}
-
-{{ .a }}
-{{- end }}
-{{- end -}}
+{{ $.RawContent }}
 {{- else -}}
 # {{ $.Title }}
 
