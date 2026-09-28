@@ -12,9 +12,11 @@ broader_guide:
 
 Turn a note, a receipt or a block of plain text into a PDF. The text is wrapped to the page width and carried onto a new page when the space runs out, with a choice of page size, font, size, margin and line spacing.
 
-## Open the tool
+## Turn a note into a PDF
 
-[Use Text to PDF](/tools/text-to-pdf/).
+The **Text** box opens with a short receipt, and the **Result** panel reports **Pages**, **Lines** and **File size** as you type; with the sample text that is one page. Change **Page size**, **Font**, **Font size (pt)** (`12`), **Margin (mm)** (`20`) and **Line spacing** (`1.4`) and watch the layout follow, then switch **Page numbers** off and on to see the footer appear or vanish. Choose **Download PDF** to save `text.pdf`.
+
+Words are measured with the chosen font, so a long line breaks at the margin rather than at a guess. The three standard fonts cover Latin-1, which is enough for English and Indonesian; characters outside that range, such as emoji or Cyrillic, cannot be drawn and the status reports how many were left out. There is no option to embed your own font in this version, and the input is capped at 200,000 characters.
 
 ## Where your input goes
 

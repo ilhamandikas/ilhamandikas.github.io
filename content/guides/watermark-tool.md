@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Put a name, a site or a date onto a picture so it travels with the image. You choose a corner, a size as a share of the shorter side, a colour and an opacity, and the text is drawn into the pixels when you download.
+[Watermark Tool](/tools/watermark-tool/) draws a line of text into the pixels of a picture in your browser, so the mark travels with the image instead of sitting in a layer that can be switched off. The size is a percentage of the shorter side, which keeps it in proportion on tall or wide pictures.
 
-## Open the tool
+## Watermark a throwaway image
 
-[Use Watermark Tool](/tools/watermark-tool/).
+Choose a disposable image under **Image**. Leave **Text** as `© ilham.dev`, **Position** on **Bottom right**, **Size** at `4%` and **Opacity** at `80%`, with **Dark outline for contrast** ticked. The **Preview** should show the text in the bottom-right corner. Tick **Add today's date** and the caption gains a `· YYYY-MM-DD` suffix. Clear **Dark outline for contrast** and the text gets harder to read over a busy area. Choose **Download** to save `<name>-watermarked.png`.
+
+The output is always a PNG with a `-watermarked` suffix, so the original file is untouched. The mark is baked into the pixels, which means it survives sharing and screenshots, but someone determined can crop or edit it out; treat a watermark as a deterrent, not a lock.
 
 ## Where your input goes
 

@@ -12,9 +12,11 @@ broader_guide:
 
 Paste an OpenAPI or Swagger document and read it as a list of operations rather than as a wall of YAML. Each endpoint shows its method, its parameters, its request body and the responses it can return, with references resolved so a schema appears where it is used.
 
-## Open the tool
+## Read the sample specification
 
-[Use OpenAPI Viewer](/tools/openapi-viewer/).
+The **Specification** box opens with a small Orders API in YAML. Click **Read specification**; **Overview** should show the title `Orders API`, a version, the server URL `https://api.example.com/v1` and `3` operations. The **Operations** list shows `GET /orders`, `POST /orders` and `GET /orders/{id}`, each with its **Parameters**, **Request body** and **Responses** tables. Type `orders/` into the **Filter** box and the list narrows to the paths that match.
+
+A `$ref` inside the document is resolved so the referenced schema appears where it is used; a reference to another file is shown as a reference, because the tool never fetches anything. Paste a document with no `paths` key and it says so rather than showing an empty list. The format is detected from the text; set **Format** if the guess is wrong, or pick a `.json` or `.yaml` file with **File**.
 
 ## Where your input goes
 

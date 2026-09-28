@@ -13,9 +13,18 @@ broader_guide:
 
 Turn a wall of log text into rows you can read. The page detects the shape of the log — JSON Lines, Apache/Nginx access logs (common and combined), syslog (RFC 3164 and 5424), nginx error logs, logfmt and plain timestamp-level-message lines — then pulls out the time, the level and the message, and keeps every other field as its own column. Filter by level, search with a substring or a regular expression, and copy or download the result as JSON or CSV. Nothing is uploaded.
 
-## Open the tool
+## Parse a few nginx lines
 
-[Use Log Parser](/tools/log-parser/).
+Paste two access-log lines into **Log content**:
+
+```text
+192.168.1.10 - - [10/Oct/2000:13:55:36 -0700] "GET /index.html HTTP/1.0" 200 2326
+192.168.1.10 - - [10/Oct/2000:13:55:37 -0700] "GET /missing HTTP/1.0" 404 153
+```
+
+Press **Parse**. **Format** reports `combined`, **Entries** is `2`, and the two **First timestamp** and **Last timestamp** rows show the same times converted to ISO 8601. The level chips read `info 1` and `warn 1`, because the parser maps the 404 status to `warn` and 200 to `info`, and the table gives each request its own row with `ip`, `method`, `path` and `status` columns.
+
+Use the **Level** dropdown to keep only `warn`, then type `missing` in **Search** to narrow further; **Search** also accepts a regular expression written as `/404|500/`. A line that does not fit the detected shape is not dropped — the **Unparsed lines** row counts it and it stays visible as plain text. **Copy JSON**, **Copy CSV** and **Download JSON** export whatever is currently in the table, not just the rows on screen; up to 2,000 rows are shown and the first 8 extra fields get a column.
 
 ## Where your input goes
 

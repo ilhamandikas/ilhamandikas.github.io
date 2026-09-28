@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Make the background of a photo transparent. Pixels along the edge are flooded inwards and everything close enough in colour goes, which turns a product shot on a plain surface or a screenshot on a flat colour into a cut-out PNG in one step.
+[Background Remover](/tools/background-remover/) makes the background of a picture transparent by flooding inward from pixels along the edge and clearing anything close enough in colour. It suits a product shot on a plain surface or a screenshot on a flat colour, not a busy scene.
 
-## Open the tool
+## Cut out a flat-background test image
 
-[Use Background Remover](/tools/background-remover/).
+Choose a disposable image under **Image**. Leave **Colour match** at `24%`, **Start from** on **Every edge pixel**, **Edge softness** at `1` and **Output format** on **PNG**. The status should report the percentage of pixels removed, and **Removed** in the **Result** panel shows the same figure. Raise **Colour match** and more of the background goes; if part of the subject disappears too, lower it again. Try **The four corners** when only the corners are a reliable sample. Choose **Download** for a transparent PNG or WebP.
+
+If **Nothing matched the background** appears, the edges are not one flat colour, so raise the colour match or change the seed pixels. The match is colour-based, not object recognition, so a street, a room or a crowd comes out ragged. Images larger than four megapixels are scaled down to work faster, and **Working size** says when that happened. JPEG cannot store transparency, which is why the output is PNG or WebP only.
 
 ## Where your input goes
 

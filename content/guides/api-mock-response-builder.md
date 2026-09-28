@@ -12,9 +12,22 @@ broader_guide:
 
 Describe a response shape once as name: type pairs and the page generates a realistic JSON body with the number of records you ask for. It is the quick way to stub an endpoint, seed a fixture or show a frontend what the real payload will look like before the API exists.
 
-## Open the tool
+## Describe a shape and get a payload
 
-[Use API Mock Response Builder](/tools/api-mock-response-builder/).
+Paste a small field list into **Fields**, for example:
+
+```text
+id: id
+name: name
+email: email
+active: boolean
+created_at: datetime
+tags: array(3)
+```
+
+With **Records** on `3`, the **Response** box immediately holds a `{ "data": [ … ] }` object with three rows, and the status reports how many were generated. Each field gets a value that fits its type: `id` counts up from 1, `name` draws from small built-in name lists, `email` looks like `ava.santos@example.com` (the domain is one of a few safe samples such as `example.com`, `mail.test` or `sample.io`), `datetime` is an ISO string, and `tags` is a three-item array of short words.
+
+Press **Regenerate** and the values change while the shape stays the same — the payload is random every time, so if you need the exact same body twice, copy the JSON into a file rather than pressing the button again. Change **Records** to `10` and the array grows; it is capped at 50. Write a line the builder does not recognise, such as `score: rating`, and it is skipped and listed in the status instead of being guessed at, while a line with no colon like `notes` is treated as a string. Nothing is fetched: the names, addresses and emails come from local word lists, so nothing generated can collide with a real person or mailbox.
 
 ## Where your input goes
 

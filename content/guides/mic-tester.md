@@ -13,9 +13,11 @@ broader_guide:
 
 Find out whether a microphone is picking anything up, and how loudly, then keep a clip of it. The browser opens the input and the level is measured on a bar with a peak marker, so a quiet headset or a muted laptop mic is obvious at a glance. Press Record and the same signal is captured, so the recording can be played back on the page straight away or downloaded as a file.
 
-## Open the tool
+## Check a microphone
 
-[Use Microphone Recorder](/tools/mic-tester/).
+Click **Start microphone** and grant permission when the browser asks. Speak, and the **Level** bar should move: **Level** shows the current reading in dBFS and **Peak** remembers the loudest moment since you started, with a peak near 0 meaning the input clipped. Click **Record**, speak a sentence, then click **Stop recording**. The **Recording** panel appears with a player, the length, the size and the format; **Download** saves the clip and **Discard** throws it away.
+
+If the bar barely moves, the wrong input device may be selected or the system gain is low. This tool asks for the raw signal without echo cancellation or automatic gain. **Stop microphone** releases the device. The clip lives in memory and is never uploaded, so the only way it leaves the browser is your own download.
 
 ## Where your input goes
 

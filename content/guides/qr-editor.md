@@ -12,9 +12,11 @@ broader_guide:
 
 A QR code generator with the full set of style controls: module shape, finder-corner shape, a two-colour gradient, a transparent background, and a logo with its own size, padding, corner radius and background box. Six presets set the whole look at once if you would rather not tune each part. The encoder runs in the page, so the text and any logo you load stay on your machine. The hint under the Logo heading tracks the error-correction budget as you resize the logo and tells you when the code is likely to stop scanning.
 
-## Open the tool
+## Restyle an existing QR code
 
-[Use QR Code Editor](/tools/qr-editor/).
+Choose a QR image under **QR image**. The tool decodes it locally; when it succeeds, the **Content**, **Style**, **Logo** and **Preview** sections open and the decoded text is filled into **Text or URL**. If it says **No QR code found in that image**, the picture was too small or too blurry to read — try a larger, sharper one. Editing the text redraws the **Preview** live.
+
+Click a preset such as **Dots** or **Ocean** to set several controls at once, or adjust them by hand. **Modules** and **Corners** change the shape of the dots and the corner squares, **Gradient** adds a second colour and an angle, and **Transparent background** drops the quiet-zone colour. Under **Logo**, add a PNG and watch the hint line beneath it: it turns red when the logo is likely too big for the chosen **Error correction** level. **Download PNG** gives a raster image; **Download SVG** gives vector output that stays sharp at any size.
 
 ## Where your input goes
 

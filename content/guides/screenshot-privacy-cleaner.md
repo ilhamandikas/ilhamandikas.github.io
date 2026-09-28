@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Screenshots are easy to share and easy to over-share. Drag a box over an email address, a phone number, an IP address or a line of text, and either pixelate it or cover it with a solid black rectangle, then download the cleaned-up copy.
+[Screenshot Privacy Cleaner](/tools/screenshot-privacy-cleaner/) lets you draw boxes over parts of a screenshot and burn them out before sharing. It does not hunt for sensitive text for you; you mark each area by hand with the mouse or a touch.
 
-## Open the tool
+## Blur out a line of a test screenshot
 
-[Use Screenshot Privacy Cleaner](/tools/screenshot-privacy-cleaner/).
+Choose a disposable screenshot under **Image**. Leave **Redaction** on **Pixelate** and **Pixel block** at `24 px`, then drag a box across a line you want to hide. The status should report `1 redaction applied`. Switch **Redaction** to **Black box** and drag over another line: that area becomes solid black. **Undo last** removes the most recent box and **Reset** clears them all, because the untouched pixels are kept aside while you work. Choose **Download** to save `<name>-redacted.png`.
+
+Review the preview before you download; nothing is saved until then. Pixelation keeps an average of the pixels underneath and a coarse block makes them unreadable, but for anything truly secret the **Black box** mode is safer. Only the areas you mark are hidden — everything else in the screenshot stays visible, so check the whole picture, not just the boxes.
 
 ## Where your input goes
 

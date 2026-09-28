@@ -13,9 +13,15 @@ broader_guide:
 
 A loan is repaid in equal instalments, but the split inside each instalment changes every month: early on almost all of it is interest, and by the end almost all of it is principal. This works out the instalment with the annuity formula, builds the schedule behind it, and draws the balance as it falls. It also shows what happens when a little extra is paid each month, which shortens the term instead of lowering the instalment.
 
-## Open the tool
+## A 15-year home loan
 
-[Use Loan Calculator](/tools/loan-calculator/).
+The defaults are a `Rp 300000000` loan at `7.5`% a year over `15` years with no extra payment. **Monthly payment** shows about `Rp 2,781,000 a month`, and **Totals** reports roughly `Rp 200,600,000` of interest on top of the amount borrowed — the status line puts that at 67% of the principal. **Year by year** shows why: in the first year almost all of each instalment is interest, and the interest share shrinks as the balance falls.
+
+Read the two charts under **Where the money goes**: the first splits the whole loan between principal and interest, the second does the same for just the **first instalment**, where the interest sliver is at its largest. **Balance over the life of the loan** draws the remaining balance falling to zero.
+
+Now type `500000` into **Extra payment per month**. The instalment stays the same — the extra goes straight to principal — but the **Interest saved** and **Time saved** rows appear, the loan ends sooner, and the status says by how much. Clear it again and the panel hides. Change **Currency** to `$` to reuse the same figures in another currency, pick a **Loan type** preset such as **Vehicle** to load typical values, and try **Interest rate per year** `0`: a 0% loan is allowed and simply divides the amount across the months.
+
+This models one fixed rate for the whole term. A loan with a fixed period followed by a floating rate, or with arrangement fees and insurance on top, will differ.
 
 ## Where your input goes
 

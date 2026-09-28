@@ -13,9 +13,13 @@ broader_guide:
 
 Fill in a form and get a Dockerfile. Start from a preset for Node, Python, Go, a static site on Nginx, PHP or a Java Maven build, or from scratch, then adjust the base image, workdir, ENV, ARG, COPY, RUN, EXPOSE, VOLUME, USER, LABEL, HEALTHCHECK, ENTRYPOINT and CMD. Multi-stage builds get a builder stage and copy the artifacts into the runtime image. The output is built in the page and can be copied or downloaded as a Dockerfile.
 
-## Open the tool
+## Generate a Node image from a preset
 
-[Use Dockerfile Builder](/tools/dockerfile-builder/).
+Open the **Preset** list and choose **Node.js (build + run)**. The **Dockerfile** panel fills in immediately, and the toolbar reports the line count. Read it top to bottom: an `# syntax` line, a `build` stage that copies `package*.json`, runs `npm ci` and `npm run build`, then a runtime stage that copies `dist` out of the build stage with `COPY --from=build`, runs the production install, exposes port 3000 and ends with a `CMD`.
+
+Now switch **Preset** to **Go (static binary)** and compare: the runtime stage uses a distroless base and an `ENTRYPOINT` instead of a `CMD`, because a Go binary needs no package manager at runtime. Tick and untick **Multi-stage build** and watch the **Build stage** fields appear and disappear from the form. Turn on **Join RUN commands with &&** to see several commands collapse into one layer, and turn off **Add section comments** to drop the `#` headings.
+
+Change **Base image** to something wrong, such as empty it, and the status asks you to pick one. Put a bad value like `3000, 8080` in **EXPOSE** and it becomes `EXPOSE 3000 8080`. **Copy** takes the text and **Download** saves it as a file literally named `Dockerfile`.
 
 ## Where your input goes
 

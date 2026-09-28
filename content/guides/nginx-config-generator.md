@@ -13,9 +13,15 @@ broader_guide:
 
 Build an nginx server block by answering a few questions: which hostnames, static files or a reverse proxy, TLS or plain HTTP, caching, compression, security headers and logging. The output is a complete file you can drop into sites-available, and every line of a nested block is indented so it reads as the block it is. Anything the tool could not do properly is written into the output as a # !! comment rather than left in a status line, so a config that would not load cannot be mistaken for one that will.
 
-## Open the tool
+## Generate a static-site config and read it
 
-[Use nginx Config Generator](/tools/nginx-config-generator/).
+**Server names** already holds `example.com www.example.com`, **Serve** is **Files from a directory**, and **Serve HTTPS** and **Send HSTS** are ticked, so the **Config** panel fills in as soon as the page loads and the meta line reads `2 names · HTTPS · static`.
+
+Skim the file in order. First the `www` redirect: a `server` block on port 80 whose `server_name` is `www.example.com` and whose only rule is `return 301 $scheme://example.com$request_uri`. It is written as one literal pair rather than one clever regex because nginx has no variable meaning \"this host without the leading www\". Then the port-80 block for `example.com` that answers `/.well-known/acme-challenge/` and redirects everything else to HTTPS, and finally the port-443 block with the certificate paths, gzip, the security headers and the `try_files $uri $uri/ =404;` location.
+
+Click the **Reverse proxy** preset: **Serve** switches to **A program on another port**, the document-root row is replaced by **Forward to**, **Cache static assets for a year** switches off, and an `upstream` block plus `map $http_upgrade $connection_upgrade` appear at the top. Now break something on purpose by typing `exa mple.com` into **Server names**. The status turns red and a `# !! not a valid server name …` comment is written into the file itself, so a config nginx would refuse to start cannot be mistaken for a good one. A comma-separated list such as `example.com, www.example.com` is split into two names instead of becoming one invalid host.
+
+The output is checked structurally — balanced braces, consistent indentation, hostnames against a pattern — not with `nginx -t`, because nginx is not installed here. **Copy** and **Download .conf** save the text, and the note under the file points out that `http2 on;` needs nginx 1.25.1 or newer.
 
 ## Where your input goes
 

@@ -992,21 +992,21 @@ jwt-editor:
 
 http-request-tester:
   about: >-
-    A request builder that also speaks curl. Paste a curl command and it is parsed
-    into method, URL, headers and body; fill the form in and you can copy the
-    equivalent curl command back out. The request itself is sent from your browser
-    with fetch, straight to the address you type — nothing is relayed through this
-    site, and no server of ours sees it. That also means the browser's own rules
-    apply, which is the one thing this page cannot work around.
+    A request builder that sends the request from your browser with fetch,
+    straight to the address you type, and shows the status, headers and body
+    that come back. Nothing is relayed through this site and no server of ours
+    sees the request. Because the request is made by the browser, the browser's
+    own rules apply — most visibly the same-origin policy, which is the one
+    thing this page cannot work around.
   faq:
     - q: "Why did a request fail with a CORS error instead of returning a response?"
       a: "Because a page cannot ignore the same-origin policy. The target has to allow cross-origin reads by answering with Access-Control-Allow-Origin, and if it does not, the browser blocks the reply before any script can read it. This is a rule of the browser, not a bug in the tool, and a static site has no server to proxy the request through — a proxy would also mean your headers, cookies and body passing through somebody else's machine. The page says this in the error rather than pretending the server is down."
-    - q: "Which curl flags are supported?"
-      a: "The ones that describe a request: -X, -H, -d, --data-raw, --data-binary, --data-urlencode, --json, -G, -I, -u, -b, -A, -e, -m, --url and the common clusters such as -sSL. Flags that ask for something a page cannot do — -k, -o, --http2, --cert, --limit-rate — are named in a \"Left out\" list rather than silently dropped, and flags that ask for something the browser already does, such as --compressed or -L, are reported as adjustments instead. The two lists are kept separate on purpose: mixing them teaches you to ignore the one that matters."
-    - q: "Is the curl command I export the same as the one I pasted?"
-      a: "For the parts that describe the request, yes — and where it differs, the page says so. Two examples it will tell you about: --data-binary sends no Content-Type at all in curl, while this form always sends one; and --data-urlencode encodes its value as a whole, where curl encodes only the part after the first =. Everything else, including -G moving data into the query string with the values percent-encoded, round-trips unchanged."
+    - q: "Can I paste a curl command here?"
+      a: "No — the form is the only way in on this page. To paste, explain and rebuild a curl command, use the curl Tester, which parses one into method, URL, headers and body and reports the flags it cannot honour instead of dropping them silently. Keeping the two tools separate means the request builder does exactly one thing."
+    - q: "Why was the body left off my GET request?"
+      a: "Because a GET or HEAD is defined not to carry one. If you selected a body type and typed a body while the method was GET or HEAD, the page refuses to send and tells you the body was left off rather than sending a request that no server would interpret the way you expect. Switch to POST, PUT or PATCH for a request with a body."
     - q: "Can I send cookies to another site?"
-      a: "Only if the request is same-origin or the target explicitly allows credentials. Cross-origin fetch with credentials requires the server to answer with Access-Control-Allow-Credentials as well as a specific origin, and never a wildcard. The credentials dropdown lets you ask; the browser decides."
+      a: "Only if the request is same-origin or the target explicitly allows credentials. Cross-origin fetch with credentials requires the server to answer with Access-Control-Allow-Credentials as well as a specific origin, and never a wildcard. The Send cookies checkbox lets you ask; the browser decides."
 
 nginx-config-generator:
   about: >-

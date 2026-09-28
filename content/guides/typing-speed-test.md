@@ -12,9 +12,13 @@ broader_guide:
 
 A focused typing test. Pick a time goal (15, 30, 60 or 120 seconds) or a word goal (10 to 100 words), optionally add punctuation and numbers, then start typing. The timer starts on your first keystroke, every character is coloured as you go, and the result panel reports net and raw WPM, accuracy, consistency, character counts and total time. Everything runs on your device and nothing is uploaded.
 
-## Open the tool
+## Take a 30-second test
 
-[Use Typing Speed Test](/tools/typing-speed-test/).
+The page opens on **Time · 30s** with punctuation and numbers off. Click the text so the input has focus and start typing: the timer does not move until your first keystroke, then counts down in the **seconds left** box. The characters of the current word are coloured as you go — green where you matched, red where you did not, with a caret at your position — and the word scrolls into the middle of the panel as you advance. **Backspace** fixes the word you are on.
+
+When the clock reaches zero the **Result** panel appears with **Net WPM**, **Raw WPM**, **Accuracy**, **Consistency**, **Characters**, **Keystrokes**, **Time** and **Mode**. Net WPM counts correct characters ÷ 5 ÷ minutes; raw WPM counts every character you typed, so the gap between the two is what inaccuracy is costing you. **Consistency** is a steadiness score sampled once per second, not a speed, and the status invites you to press Enter to go again.
+
+The live **accuracy** figure and the red characters measure different things. Red shows the current state of the text, so fixing a mistake turns the character back to normal; accuracy is counted from keystrokes, so a wrong press stays wrong even after you backspace. That is why a finished run can read below 100% with nothing red on screen. Switch **Mode** to a word goal such as **Words · 50** and the test ends when you reach the last character instead of on the clock; **punctuation** and **numbers** mix in extra characters, and **Restart** or a mode change starts a fresh word list.
 
 ## Where your input goes
 

@@ -12,9 +12,15 @@ broader_guide:
 
 A guided way to write a reverse proxy server block. Step through the domain, the upstream pool (one or more hosts, a balancing method and keepalive), TLS with a plain-HTTP redirect, and the extras an app usually needs — WebSocket upgrade, streaming, security headers and upload size. The config is built live beside the steps and can be copied or downloaded.
 
-## Open the tool
+## Step through a proxy config
 
-[Use nginx Reverse Proxy Wizard](/tools/nginx-reverse-proxy-wizard/).
+Step **1 · Domain** holds `app.example.com` in **Server names** with **Canonical host** set to **Keep every name as typed**. The **Config** panel is already filled, so watch it change as you answer. Press **Next** to reach **2 · Upstream**, where **Upstream target** is `http://127.0.0.1:3000`, **Balancing** is **Round robin** and **Keepalive connections** is `32`.
+
+On **3 · TLS**, clear **Serve HTTPS and redirect plain HTTP**: the certificate rows and **Send HSTS** disappear from the form, and the config loses its `ssl_certificate` lines and the port-80 redirect block. Turn it back on. On **4 · Extras**, clear **WebSocket / SSE upgrade** and the `map $http_upgrade $connection_upgrade` block near the top disappears along with the two `Upgrade`/`Connection` proxy headers; it takes a map because nginx cannot choose between `upgrade` and `close` inline. Clear **Disable buffering (streaming)** and `proxy_buffering off;` goes with it.
+
+Put one host per line in **Extra upstream servers** and the upstream block grows a `server` line for each, with the balancing method sitting above them. Switch **Balancing** to **Sticky by IP (ip_hash)** and that directive replaces the default. Change **Upstream target** to `https://127.0.0.1:3000` and the wizard adds a comment that keepalive was skipped, because an HTTPS upstream cannot reuse connections the same way. Type `127.0.0.1:3000` with no scheme and the config empties while the status asks for a URL shaped like `http://host:port`.
+
+The numbered step buttons jump straight to a section, **Back** and **Next** walk through them, and **Copy** and **Download** take the current file.
 
 ## Where your input goes
 

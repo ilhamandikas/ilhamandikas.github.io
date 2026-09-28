@@ -13,9 +13,15 @@ broader_guide:
 
 A calculator for the interest methods that are easy to mix up: simple, compound, tiered, step-up, floating, flat, effective and annuity. Enter a principal, a rate and a tenor and the page shows the formula it used, the result as gross, tax and net where tax applies, and a period-by-period breakdown. The product presets follow the tax and day-count conventions commonly used in Indonesia and are marked ID; everything is computed in the browser.
 
-## Open the tool
+## Work out a one-month deposit
 
-[Use Interest Calculator](/tools/interest-calculator/).
+The page opens on **Bank deposit (deposito) — ID** with **Simple interest (flat) — ID**, a principal of `10000000`, a rate of `8`% a year, a tenor of `1 month`, **Tax on interest** `20`% and an **Actual/365** basis. **Result** fills in as you type: **Gross interest** `Rp 65,753`, **Tax 20%** `− Rp 13,151`, **Net interest** `Rp 52,603`, **Ending balance** `Rp 10,052,603`, plus net per day, per month and per year. **How the method works** prints the formula the page used, so you can check it by hand: 10,000,000 × 0.08 × (30 ÷ 365).
+
+A tenor in months counts as 30 days each, and **Day-count basis** decides whether a year is 365 or 360 days — which is why one month is not exactly one twelfth of the year. Switch **Tenor** to `12 months` and the gross comes to about `Rp 789,041`; switch the basis to **30/360** and it rises, because every month is now exactly one twelfth.
+
+Change **Interest method** to **Compound interest** and two controls appear: **Compounding frequency** (monthly by default) and **Roll over interest (ARO)**. With ARO ticked each period's net interest is added to the balance so the next period earns interest on it, and **Gross EAY** / **Net EAY** show the annualised effect. Change **Product type** to **Government bond (SBN) — ID** and the preset moves the tax to 10% and the tenor to one year; **Bank deposit** brings it back to 20%. **Tiered interest** opens a **Balance brackets** box (`upper_limit rate` per line, `*` for the top bracket), while **Step-up** and **Floating** open a rate-per-period box; the flat, effective and annuity loan methods replace the deposit rows with a monthly **Instalment schedule**.
+
+The tax defaults (deposit 20%, bond 10%, money market 0%) and the Actual/365 basis are Indonesian conventions marked **ID**; the formulas are the same everywhere. **Copy result** takes the summary as plain text.
 
 ## Where your input goes
 

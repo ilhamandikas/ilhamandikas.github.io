@@ -13,9 +13,11 @@ broader_guide:
 
 Pick a handful of files and get one zip back, without installing anything. The archive is assembled in the page from the bytes already on your disk, so nothing is uploaded, and a compression level lets you trade a little time for a smaller download.
 
-## Open the tool
+## Bundle two small files
 
-[Use Zip Builder](/tools/zip-builder/).
+Choose one or two throwaway files with **Files**. The **Contents** table should list each one with the name it will carry inside the zip and its size, and the **Archive** line shows the total compressed size. Switch **Compression** to **Store only, no compression**, then to **Fastest**, and watch the **Archive** size change. Choose **Download zip** to save the archive under **Archive name**, and **Remove** a row to drop a file.
+
+A zip cannot hold two entries under one name, so a second file with the same name becomes `name-1`, then `name-2`, and the table shows the rename rather than losing a file. **Store only** is the right choice for files that are already compressed, such as JPEGs or another zip. The archive is assembled in memory, so a few hundred megabytes is fine on a desktop but heavy on a phone, and the files are never uploaded.
 
 ## Where your input goes
 

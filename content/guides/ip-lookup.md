@@ -13,9 +13,11 @@ broader_guide:
 
 Show the public IP address you are connecting from, or look up any address, along with its country, region, city, coordinates, timezone and ISP. This is one of the few tools on this site that talks to the internet: it uses free, key-less services and falls back to a second one if the first is unavailable.
 
-## Open the tool
+## Look up an address
 
-[Use IP & Geolocation Lookup](/tools/ip-lookup/).
+Leave **IP address** empty and click **Look up** to geolocate the connection you are using. The result shows the address, its **Location**, **Coordinates**, **Timezone** and **ISP**, and the **Source** line names which provider answered. You can also type an address such as `8.8.8.8` and click **Look up**; that one should resolve to a Google DNS range in the United States. **Copy as JSON** copies the raw fields for pasting into a ticket.
+
+This is one of the few tools here that leaves your browser: the address goes to ipwho.is first, with freeipapi.com as a fallback. A private address such as `192.168.1.10` or `10.0.0.5` belongs to your own network and has no public geolocation, so the services will not place it. Results come from the address your ISP registered, so they can land on a nearby city rather than your exact position.
 
 ## Where your input goes
 

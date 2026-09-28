@@ -12,9 +12,11 @@ broader_guide:
 
 Show the registrar, registration and expiry dates, status codes and nameservers for a domain. It reads the registry's own RDAP service, discovered from the IANA bootstrap directory, so there is no third-party proxy in the middle. When a registry publishes no RDAP service at all, the tool says so instead of guessing.
 
-## Open the tool
+## Look up a domain
 
-[Use WHOIS Lookup](/tools/whois-lookup/).
+Type a domain such as `example.com` into **Domain** and click **Look up**. The result lists the **Registrar**, the **Registered**, **Last changed** and **Expires** dates, the **Nameservers**, the **Status** codes and whether **DNSSEC** is signed, and the **Source** line names who answered. **Copy as JSON** copies the structured record for a ticket.
+
+The request goes to the registry's RDAP service, discovered through the IANA bootstrap directory, with rdap.org as a fallback; it does not pass through ilham.dev. Many private registrations are redacted under privacy law, and the page notes when that has happened. A typo usually comes back as a "does not look like a domain name" error rather than a result.
 
 ## Where your input goes
 
@@ -24,7 +26,7 @@ Some actions send a request to RDAP providers. Check what you are sending before
 
 ### Why do some domains return nothing?
 
-A few registries publish no RDAP endpoint at all — .io, .co, .de and several other ccTLDs among them. Without one there is no machine-readable record to fetch.
+A few registries still publish no RDAP endpoint. Without one there is no machine-readable record for the tool to fetch, so it reports that instead of showing an empty panel.
 
 ### Why is the registrant hidden?
 

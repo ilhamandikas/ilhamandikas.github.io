@@ -12,9 +12,11 @@ broader_guide:
 
 Combine several PDFs into a single document. The files are listed in the order they will appear, and the order can be changed before the result is built, which matters when a cover page or an appendix has to land in the right place.
 
-## Open the tool
+## Merge two throwaway PDFs
 
-[Use PDF Merger](/tools/pdf-merger/).
+Choose two disposable PDFs with **PDF files**. The **Order** panel lists them with their page counts, and the status reports the total. Use **Up** and **Down** in the **Actions** column to move a document, and **Remove** to drop one; each change rebuilds the result and updates the **Pages** total. Choose **Download merged PDF** to save it under **Output name** (default `merged.pdf`).
+
+Files are taken in the order the picker returned them, which is usually the order your file browser shows, so set the order explicitly rather than assuming it. Each page keeps its own size, so a mixed document has pages of different dimensions. A file that cannot be read, such as an encrypted PDF, is named in the status and skipped while the rest are merged. The original files are not modified.
 
 ## Where your input goes
 

@@ -13,9 +13,13 @@ broader_guide:
 
 A browser-based infrastructure management game. You run an internet service with one application server and a small budget. Traffic grows on its own, every served request earns money, and servers, bandwidth and the database all cost money to keep running. Buy capacity before the load outruns it, and answer incidents — CPU overload, disk full, database overload, traffic spikes, crashes — before users give up. The simulation is a simple one-second tick and everything runs on this page.
 
-## Open the tool
+## Run your first minute of infrastructure
 
-[Use DevOps Tycoon](/tools/devops-tycoon/).
+Press **Play** and watch the **Dashboard** tick once a second. **Traffic** starts at `20 req/s` against a **Capacity** of `150 req/s`, so CPU and the database sit idle and **Money** climbs as each successful request earns a little. A server costs upkeep every tick whether or not it is busy, so the aim is to buy capacity just before traffic outgrows it, not long after.
+
+Open **Shop** and buy a **Load balancer** for `Rp 35,000`. That single purchase is the game's lesson about scaling: without it a second app server is only partly effective, and with it each server contributes its full capacity. **Redis cache** cuts database load by 30%, **CDN** serves 40% of traffic from the edge, and **WAF** filters bot traffic before it costs money. Level items such as **CPU upgrade** and **Database upgrade** can be bought repeatedly and get more expensive each time. The **1×**, **2×** and **4×** buttons change the pace once you understand the loop, and **Step** advances a single tick when you are watching one number.
+
+When **Incidents** fills in, read the situation and the options. A quick fix is cheap but temporary — restarting the service buys a few ticks — while the matching upgrade, such as **Enable log rotation** for a full disk or **Add a server** for a CPU overload, fixes the cause. Choosing **Ignore** lets the error rate keep climbing until the incident times out and costs you satisfaction and money. Watch **SLA**, **Uptime** and **Satisfaction**: if satisfaction reaches zero, or the bills push **Money** far enough into the red, the run ends, and **Reset** starts over. Everything lives in memory, so reloading clears it and nothing is stored or sent anywhere.
 
 ## Where your input goes
 

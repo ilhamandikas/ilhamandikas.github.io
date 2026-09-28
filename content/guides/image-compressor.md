@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Pick a JPEG, PNG, GIF or WebP, cap its width and height, choose the output format and quality, then download the result — all in the page, so the file is never uploaded. The resize is a plain canvas re-encode: the dimensions are treated as ceilings, so a photo is only ever shrunk and a smaller image is left at its own size. Re-encoding also drops EXIF, GPS and camera settings, which is a useful side effect when you want to share a picture without the location it was taken.
+[Image Compressor](/tools/image-compressor/) shrinks a picture in your browser by redrawing it on a canvas and re-encoding the pixels. **Max width** and **Max height** act as ceilings: the image scales down to fit inside both, the aspect ratio is kept, and a smaller image is never enlarged.
 
-## Open the tool
+## Compress a throwaway image
 
-[Use Image Compressor](/tools/image-compressor/).
+Choose a disposable photo under **Image**. Set **Max width** to `200` and leave **Max height** empty. When **Result** appears, **Compressed** should start with `200×` and **Saving** should show a percentage. Drag **Quality** down to `50`; the preview gets softer and the JPEG or WebP file usually gets smaller. Choose **Download** to save `<name>-compressed.jpg`.
+
+**Keep original** leaves PNG and WebP as they are, but GIF and everything else come out as JPEG. Because JPEG has no transparency, a transparent image switched to JPEG gets a filled background, so keep PNG or WebP selected when that matters. Width and height are ceilings, so setting them larger than the source does nothing.
 
 ## Where your input goes
 

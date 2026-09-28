@@ -13,9 +13,11 @@ broader_guide:
 
 A workbench for the asymmetric signature in Bank Indonesia's SNAP BI standard, the scheme banks and payment providers use for API requests and notifications. It builds the string to sign from the HTTP method, endpoint, a SHA-256 hash of the minified body and the X-TIMESTAMP, then signs it with an RSA private key or verifies it with the sender's public key. Both operations run in the browser with the Web Crypto API.
 
-## Open the tool
+## Check the built-in sample
 
-[Use SNAP BI Asymmetric Signature](/tools/snap-signature/).
+The page opens in **Verify (public key)** mode with a sample request and a matching signature. Click **Verify** without changing anything; **Signature / verdict** should read `true` and the status should say **Signature is valid.** The **String to sign** panel shows the exact `POST:/v1.0/debit/notify:…:2024-05-02T14:43:08+07:00` line that was hashed and signed, with the minified body and its SHA-256 just above it.
+
+To run your own flow, click **Generate key pair** for a throwaway 2048-bit RSA pair, switch **Action** to **Generate (private key)** and click **Sign**; **Signature / verdict** then holds a base64 signature. Switch back to **Verify (public key)** and click **Verify** to see `true`. **Load sample** restores the original request. **Now** fills **X-TIMESTAMP** with a real value, but it uses a UTC `…Z` timestamp while SNAP BI examples are usually written with a `+07:00` offset, so check which one your counterparty expects.
 
 ## Where your input goes
 

@@ -13,9 +13,13 @@ broader_guide:
 
 Paste a timestamp the way it appears in a log — for example "Sep 26, 2026 @ 00:24:20.437" — pick the zone it was written in, and every row shows that same instant in another zone. The default source is UTC because that is what most servers and container runtimes log, which is exactly the thing that is easy to forget when reading an incident. The conversion uses the browser's own time zone database, so daylight-saving changes are handled at the instant you enter, not by a fixed offset.
 
-## Open the tool
+## Read a log timestamp in every zone
 
-[Use Time Zone Converter](/tools/time-zone-converter/).
+Type the timestamp the **Date and time** field suggests, `Sep 26, 2026 @ 00:24:20.437`, and leave **The time above is in** at its default, `UTC`. Every row fills in at once: **Instant (UTC)** reads `2026-09-26T00:24:20.437Z`, **Unix (s)** reads `1789863860`, and below those one row per zone shows the same instant as that zone's wall clock with its offset and the weekday. The **Jakarta · WIB** row is `07:24:20`, and **New York** is `20:24:20` on the previous day.
+
+Press **Use current UTC time** to fill the field with now, or paste a value you are actually debugging. The parser accepts ISO-like dates, month-name forms, bare dates, Unix seconds or milliseconds, and anything carrying an explicit `Z` or `+07:00` — a value with its own offset is an absolute instant and the source selector is ignored. Switch **The time above is in** to `Local (this browser)` for a log written on your own machine in local time.
+
+The offset is looked up for the exact instant you entered, not for today, so a time that falls near a daylight-saving change resolves with the rule in force at that moment. **Copy table** copies the plain-text version, which drops neatly into a ticket.
 
 ## Where your input goes
 

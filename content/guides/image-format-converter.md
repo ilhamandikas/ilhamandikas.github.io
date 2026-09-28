@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Save a picture in another format so it fits where it is going. JPEG keeps photographs small, PNG keeps sharp edges and transparency, WebP often beats both, and AVIF is offered when the browser can actually write it.
+[Image Format Converter](/tools/image-format-converter/) re-encodes a picture into another format inside your browser. JPEG, PNG and WebP are always offered; AVIF appears only when the browser can actually write it. The **Change** line shows whether the new file is smaller or larger.
 
-## Open the tool
+## Convert a throwaway image
 
-[Use Image Format Converter](/tools/image-format-converter/).
+Choose a disposable image under **Image**, leave **Convert to** on **JPEG**, and read **Input**, **Output** and **Change**. Switch **Convert to** to **PNG**; **Output** should now say `PNG` and **Change** often flips to `% larger`, because PNG is lossless. Move **Quality** down to `40` with JPEG or WebP selected and the output gets smaller. Choose **Download** to save the file with the matching extension.
+
+If the list shows **AVIF (not supported here)**, that browser cannot encode AVIF even if it can display it; pick another format. JPEG cannot store transparency, so this tool paints a white layer under the picture first, which means a transparent PNG converted to JPEG picks up a white background. As with any re-encode, EXIF metadata does not carry over.
 
 ## Where your input goes
 

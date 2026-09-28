@@ -13,9 +13,13 @@ broader_guide:
 
 A console for trying JavaScript without leaving the page, built on the Monaco editor — the same editor that powers Visual Studio Code — so the code gets syntax highlighting, bracket matching, code folding and a formatter. Write or paste a snippet, press Run, and see everything it logs, the value it returns and how long it took. Monaco is a large bundle, so it is fetched from a CDN only when you press Enable Monaco; until then, and if the fetch fails, the page uses a plain text area with the same run, copy, download and clear actions. Nothing you type is ever sent anywhere.
 
-## Open the tool
+## Run the sample snippet
 
-[Use JavaScript Playground](/tools/javascript-playground/).
+The **Text** area opens with a snippet that doubles some numbers, logs the result and returns their sum. With the **Plain editor** badge showing, press **Run** (or Ctrl/Cmd + Enter). The **Output** panel should show a `log` line with the doubled array and a `result` line with `20`, and the status reports how long the run took.
+
+Delete the code and try `await Promise.resolve('hi')` on its own line. Because the snippet is wrapped in an async function, top-level `await` works and `return` hands back a value. Change the sample to throw, `throw new Error('boom')`, and read the error row; anything logged before the throw is still listed. **Clear** empties the editor and output, and **Copy** takes the code away as plain text.
+
+Press **Enable Monaco** to fetch the real editor from a CDN; the badge changes to **Monaco** and highlighting, folding and **Format** become available. If the CDN is blocked the status says so and the plain text area keeps working. This is the one action here that touches the network — the snippet itself always runs inside your page, so only run code you trust, exactly as with a browser console.
 
 ## Where your input goes
 
