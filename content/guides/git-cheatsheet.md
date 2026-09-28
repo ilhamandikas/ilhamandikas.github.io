@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/linux-command-line/
 ---
 
-A searchable reference for the Git commands that come up less often: undoing a commit, recovering a deleted branch, rewriting history, and finding which commit introduced a line.
+Git records changes to files in a repository. [Git Cheatsheet](/tools/git-cheatsheet/) is a short list of commands you can search when you forget a name. It **does not run Git** or inspect your repository.
 
-## Open the tool
+## Start with a command that only looks
 
-[Use Git Cheatsheet](/tools/git-cheatsheet/).
+Type `status` in the search box. Find `git status`, which shows changed, staged, and untracked files. You can run that in a repository to see what is happening **without** discarding changes. Search for `diff --staged` next: that command shows what has been staged for the next commit.
+
+If you need to undo a commit already shared with others, search for `git revert`. It creates a **new** commit reversing an earlier one. This differs from `git reset --hard HEAD~1`, which moves your local branch and **discards local changes**. Read the description and check your branch before choosing an undo command.
+
+## What a cheatsheet cannot know
+
+The right command depends on whether changes are only in your working files, staged, committed, or already pushed. Search finds a command by its text or description, but it does not know your repository's state. Make a backup or ask a teammate before rewriting shared history.
 
 ## Where your input goes
 

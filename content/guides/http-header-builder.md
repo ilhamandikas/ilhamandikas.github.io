@@ -11,11 +11,24 @@ broader_guide:
   url: /guides/http-api-debugging/
 ---
 
-A small workbench for building a header block. Type one Name: value pair per line, tick any common security headers you want added, and the page validates the names, keeps the last value for a repeat and emits a clean block ready to paste into a request or a server config.
+[HTTP Header Builder](/tools/http-header-builder/) turns lines such as `Content-Type: application/json` into a tidy block you can copy. Each line has a **name**, a colon, and a **value**. It builds text; it does not send a web request or update a server.
 
-## Open the tool
+## Build two simple headers
 
-[Use HTTP Header Builder](/tools/http-header-builder/).
+Paste this into **Headers, one per line**:
+
+```text
+Content-Type: application/json
+X-Demo: hello
+```
+
+Under **Header block**, you should see both lines. Tick **X-Content-Type-Options**. A new line, `X-Content-Type-Options: nosniff`, should appear. That checkbox offers a starting value; whether to use a security header depends on your application's needs and configuration.
+
+Try typing `Bad Name: test`. The space makes the header name invalid, so the tool skips that line and shows a warning. Correct it to `X-Bad-Name: test` if you meant to keep it. **Sort by name** changes the order of the output, not the values.
+
+## Before using a header block
+
+This builder uses the **last value** when you repeat the **exact same name**. Names typed with different letter casing may remain as two lines here even though HTTP field names are case-insensitive. Review duplicates yourself. Do not paste a live `Authorization` value into a screenshot, log, or shared example. Copying the block is not the same as safely configuring a web server.
 
 ## Where your input goes
 
@@ -29,11 +42,11 @@ A header name is an HTTP token: letters, digits and a small set of symbols, with
 
 ### What happens if I list the same header twice?
 
-The last value wins. That matches how most tools and servers resolve a duplicated field, and it means you can put a placeholder near the top and override it further down without editing the earlier line.
+The last line wins when its name uses exactly the **same spelling and case** as an earlier line. This builder can leave `Content-Type` and `content-type` as separate lines, even though HTTP treats field names case-insensitively. Review the output before using it.
 
 ### Which security headers can I add?
 
-HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, a starter Content-Security-Policy, Permissions-Policy and a no-store Cache-Control. They are added only when you have not already set that header yourself, so your own value is never overwritten.
+HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, a starter Content-Security-Policy, Permissions-Policy and a no-store Cache-Control. They are added only if the builder has not seen the same **case-sensitive name** in your input. Review any duplicate with different capitalization; the offered values are starting points, not a complete security policy.
 
 ### Does the page send the headers anywhere?
 

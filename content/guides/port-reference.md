@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/network-debugging/
 ---
 
-A compact, offline table of the ports that come up most often when you read configs, logs and firewall rules. Each row gives the port number, whether it is TCP, UDP or both, the usual service name and a one-line note on what it carries. Search by number or name.
+A **port** is a number used to direct a network connection to a service on a machine. [Port Reference](/tools/port-reference/) lists common port numbers and the services usually associated with them. It does **not** scan a server to find out what is running.
 
-## Open the tool
+## Look up a familiar port
 
-[Use Port Reference](/tools/port-reference/).
+Type `22` in **Search**. Look for port **22**, protocol **TCP**, and service **SSH**. SSH is commonly used for remote shell access. Clear the search and type `53`; you should find **DNS** listed for both **TCP and UDP**.
+
+Choose **UDP** under **Protocol** while searching for `53`. The DNS row should still be there. Search for `22` with UDP selected and the SSH row should disappear because the table lists it as TCP.
+
+## Treat names as clues
+
+Any application can be configured to use a different port. Seeing `22` in a log is a reason to check for SSH, **not proof** that the service is SSH. This is a short local reference, not a complete registry or a live network lookup. To identify a running process, check the machine or service configuration you are allowed to inspect.
 
 ## Where your input goes
 

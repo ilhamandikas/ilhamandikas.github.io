@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/regex-testing/
 ---
 
-A searchable reference for regular-expression syntax: character classes, anchors, quantifiers, groups, lookarounds and the flags that change how matching behaves.
+A regular expression, or **regex**, is a pattern for finding text. Small symbols can have special meanings. [Regex Cheatsheet](/tools/regex-cheatsheet/) lists common symbols so you can look one up while building a pattern.
 
-## Open the tool
+## Find the symbol for a digit
 
-[Use Regex Cheatsheet](/tools/regex-cheatsheet/).
+Type `digit` in the search box. Look for `\d`, which means one digit such as `0` through `9` in the basic example. If you want **three** digits together, combine `\d` with `{3}` to make `\d{3}`. Search for `Exactly three` to find the `{3}` entry.
+
+For example, `\d{3}` can find `123` inside `x123y`. If you want a whole string of three digits rather than a fragment, add `^` at the start and `$` at the end: `^\d{3}$`. The cheatsheet explains the pieces; use the related [Regex Tester](/tools/regex-tester/) to try the complete pattern with examples that should and should not match.
+
+## Use it as a reference, not a validator
+
+Search filters the list; it does not test your data. The **Everyday patterns** section contains rough starting points, not complete validators for email addresses, dates, or passwords. Regex rules can differ between JavaScript, grep, and other tools, so test the pattern in the program where you will actually use it.
 
 ## Where your input goes
 

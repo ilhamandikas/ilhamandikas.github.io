@@ -11,11 +11,26 @@ broader_guide:
   url: /guides/http-api-debugging/
 ---
 
-Paste a raw header block from curl, a proxy log or the browser network panel and the page turns it into a clean table. A status line is optional, folded continuation lines are rejoined, and repeated fields such as Set-Cookie are kept and marked so nothing is silently dropped.
+HTTP **headers** are lines of information that travel with a request or response. A line has a name, a colon, and a value. [HTTP Header Parser](/tools/http-header-parser/) separates a pasted block into rows so you can read it without overlooking repeated names.
 
-## Open the tool
+## Read a harmless example
 
-[Use HTTP Header Parser](/tools/http-header-parser/).
+Paste this into **Raw header block**:
+
+```text
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Demo: one
+X-Demo: two
+```
+
+Under **Summary**, you should see the status line and **Headers: 3**. The first line is not counted as a header; the other three lines are. Under **Headers**, it keeps both `X-Demo` values; the second name is marked **(repeated)**. This is useful because repeated headers are not always safe to merge.
+
+The tool does not contact the URL or server that produced a block. It only reads what you paste.
+
+## Check before pasting real headers
+
+A block from a browser or `curl` may include `Authorization`, cookies, or internal hostnames. Remove secrets before putting it in a screenshot or sending it to someone else. This page parses locally, but copying its visible result into a ticket can still disclose that data. A line without a colon is marked unrecognised instead of being guessed.
 
 ## Where your input goes
 
