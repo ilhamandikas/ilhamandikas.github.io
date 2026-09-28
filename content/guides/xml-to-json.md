@@ -10,11 +10,21 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Convert XML to JSON. XML is a document format and JSON is a data format, so the mapping has to make decisions — attributes, text content and repeated elements all need a shape — and the tool states which convention it uses.
+XML uses tags and attributes; JSON uses named fields and lists. [XML to JSON](/tools/xml-to-json/) chooses a way to represent each XML part in JSON. That choice matters when a tag appears more than once.
 
-## Open the tool
+## Read a repeated tag
 
-[Use XML to JSON](/tools/xml-to-json/).
+Paste this into **XML**:
+
+```xml
+<root><item id="1">one</item><item id="2">two</item></root>
+```
+
+In **JSON**, look for a `root` object with an `item` **array** of two entries. Each entry has `"@id"` for the XML `id` attribute and `"#text"` for the text inside the tag. The values `"1"` and `"2"` are strings because XML attributes are text, even when they look like numbers.
+
+## Before you rely on the result
+
+The tool cannot make every XML document round-trip exactly. For example, when an element has both text **and** child elements, its text may not appear in the output. Try a small representative sample first and compare the JSON with the original XML. An unclosed tag should produce **Invalid XML**; fix the source rather than trusting partial output.
 
 ## Where your input goes
 
@@ -24,7 +34,7 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### Is the conversion reversible?
 
-Not always, and no converter can promise that. XML can express things JSON cannot, such as mixed text and elements, or the same attribute twice. Check the output before relying on a round trip.
+Not always. XML can mix text with child elements; this converter does not preserve all mixed content. It also turns repeated sibling tags into arrays. Check the result against the original if you plan to convert it back.
 
 ## Related guide
 

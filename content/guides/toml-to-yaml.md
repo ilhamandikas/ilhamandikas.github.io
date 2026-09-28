@@ -10,11 +10,23 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Convert TOML to YAML, turning tables into nested mappings and arrays of tables into sequences. Handy when a tool wants YAML but the config is written in TOML.
+A TOML `[server]` heading groups the settings below it. YAML shows that grouping by indenting lines. [TOML to YAML](/tools/toml-to-yaml/) changes the format without deciding whether those settings are right for your application.
 
-## Open the tool
+## See a table become indentation
 
-[Use TOML to YAML](/tools/toml-to-yaml/).
+Paste this into **TOML**:
+
+```toml
+title = "Demo"
+[server]
+port = 8080
+```
+
+In **YAML**, look for `title: Demo`, then `server:` with an indented `port: 8080` underneath. The number is still a number. If you change `[server]` to `[database]`, the group name in the YAML should change too. Use **Download** if you want a YAML file to inspect before using it elsewhere.
+
+## What does not come along
+
+Comments explaining why a TOML setting exists do not automatically survive conversion. Keep the original file until you have reviewed the new one. A date or time can also be written differently by the YAML writer; check how the receiving application reads it instead of assuming it keeps TOML's type rules.
 
 ## Where your input goes
 
@@ -24,7 +36,7 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### How are TOML dates represented?
 
-As ISO 8601 strings. YAML does have a timestamp type, but writing one that other parsers agree on is unreliable, so plain strings are the safer output.
+Date and time values need extra care because parsers may infer types differently. Check the actual YAML output and how the program that will read it treats that value; do not assume a date round-trips unchanged.
 
 ## Related guide
 

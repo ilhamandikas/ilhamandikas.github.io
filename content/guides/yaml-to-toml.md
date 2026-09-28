@@ -10,11 +10,23 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Convert YAML to TOML, preserving nesting, arrays and types. TOML has no null, so a null value is reported rather than quietly dropped or turned into an empty string.
+YAML groups settings with indentation. TOML groups them with headings such as `[server]`. [YAML to TOML](/tools/yaml-to-toml/) reads the YAML values and writes TOML for programs that expect it.
 
-## Open the tool
+## Move one group of settings
 
-[Use YAML to TOML](/tools/yaml-to-toml/).
+Paste this into **YAML**:
+
+```yaml
+title: Demo
+server:
+  port: 8080
+```
+
+In **TOML**, look for `title = "Demo"`, then `[server]` with `port = 8080` under it. The TOML heading takes the place of YAML's indentation under `server`. Use **Copy** if you need to paste the output into a configuration file.
+
+## If the conversion fails
+
+TOML requires a mapping (named values) at the top of the document. A YAML list by itself cannot become a complete TOML document in this tool. TOML also has **no null value**. **This tool can silently leave out a YAML field set to `null`**, so compare the output with the source. An omitted field and an empty string are not necessarily the same setting. Comments are not carried across by this data conversion.
 
 ## Where your input goes
 
@@ -24,11 +36,11 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### What happens to a null value?
 
-TOML has no null type, so it cannot be represented. The converter tells you which key it was, so you can decide what the absence should mean.
+TOML has no null type. This conversion cannot faithfully carry a YAML null across. In the current tool, a null field may be omitted **without an error**. Check the output, then decide whether the receiving program expects an absent field or a different explicit value.
 
 ### Does key order survive?
 
-Yes, and it matters in TOML, because keys have to be defined before any table that uses them. The converter keeps the order it was given.
+Do not rely on key order alone to decide whether a conversion is correct. Check the resulting tables and values against the source and against what the receiving program expects.
 
 ## Related guide
 
