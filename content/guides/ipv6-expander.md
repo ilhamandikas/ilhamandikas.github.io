@@ -11,11 +11,17 @@ broader_guide:
   url: /guides/network-debugging/
 ---
 
-Paste an IPv6 address in any spelling and the page shows the full eight-group form, the canonical compressed form and what kind of address it is. Prefixes, zone indexes and embedded IPv4 addresses are understood, and everything is computed in the browser.
+An IPv6 address has eight groups of hexadecimal digits (numbers and letters `a` through `f`). Long runs of zeroes can be shortened with `::`. [IPv6 Expander](/tools/ipv6-expander/) shows the long and short forms of the **same address**.
 
-## Open the tool
+## Open up a short address
 
-[Use IPv6 Expander](/tools/ipv6-expander/).
+The **IPv6 address** box starts at `2001:db8::1`. Look at **Expanded**. It should say `2001:0db8:0000:0000:0000:0000:0000:0001`. The `::` stood for the missing groups of zeroes. **Compressed** shows the short form again. **Type** should say **Documentation**: `2001:db8::/32` is reserved for examples, so this is safe to put in a tutorial.
+
+Now try `::1`. The expanded value should be seven `0000` groups followed by `0001`; its **Type** is **Loopback**. This is a local address on a machine, not a way to contact another computer across a network.
+
+## If the address is rejected
+
+A group may contain at most four hexadecimal digits. `::` can stand for missing groups only once in an address. You can include a `/64` suffix if you want the **Prefix** row to show it, but the tool does not calculate which network owns the address. Expansion is about **writing** an address, not testing whether a host is reachable.
 
 ## Where your input goes
 

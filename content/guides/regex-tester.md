@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/regex-testing/
 ---
 
-Test a regular expression against sample text and see every match highlighted as you type, with the capture groups listed separately. It uses JavaScript's own regex engine, so what you see here is what you get in a script.
+A *regular expression*, or *regex*, is a pattern for finding text. [Regex Tester](/tools/regex-tester/) lets you try a pattern on a small sample before using it on a larger file.
 
-## Open the tool
+## Find two copies of a word
 
-[Use Regex Tester](/tools/regex-tester/).
+Type `cat` in **Pattern** and `cat dog cat` in **Test text**. Leave **Flags** as `g`. Both copies of `cat` should be marked under **Highlighted**, and **Matches** should list two results. The `g` means *global*: keep looking after the first match.
+
+Remove `g` from **Flags**. Now you should see only the first `cat`. Add `g` back when you want all matches. To see a *capture group*, change the pattern to `(cat)`. The match list shows `$1=cat`: `$1` is the text caught inside the first pair of parentheses.
+
+## If the match is not what you meant
+
+Some characters have a special meaning in regex. A dot `.` means “any character” in many patterns, not only a literal dot. To find an actual dot, use `\.` in **Pattern**. An invalid pattern reports an error; correct it before copying it into code. This tool uses JavaScript regex rules, which can differ from grep or Python.
 
 ## Where your input goes
 
