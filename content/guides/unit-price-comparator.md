@@ -11,11 +11,24 @@ broader_guide:
   url: /guides/calculators-and-unit-conversion/
 ---
 
-Compare pack sizes on a level footing. List each product as name, price, quantity and unit, and the page ranks them by price per unit, marking the cheapest in each group. Millilitres and litres, or grams and kilograms, are normalised first, so a 600 ml bottle and a 1.5 litre bottle can be judged against each other.
+A bigger package can cost more at the checkout but **less for each unit**. [Unit Price Comparator](/tools/unit-price-comparator/) works out the cost for the same amount of two products, so you can compare them fairly.
 
-## Open the tool
+## Compare two bottles
 
-[Use Unit Price Comparator](/tools/unit-price-comparator/).
+Replace the example in **One product per line: name, price, quantity, unit** with:
+
+```text
+Tea A, 3000, 500, ml
+Tea B, 5000, 1000, ml
+```
+
+Read each line as **name, total price, amount in the bottle, unit**. Under **Ranked by unit price**, Tea A costs `600 per 100 ml` and Tea B costs `500 per 100 ml`. A star marks Tea B as cheaper *per 100 ml*, even though its bottle costs more. The output changes as you type.
+
+## Keep unlike things separate
+
+The tool can compare litres with millilitres because both measure volume. It can also compare kilograms with grams because both measure mass. It puts volume and mass into different groups; a price per ml is not comparable to a price per g. Enter prices as plain numbers like `3000`, **not** `3.000`, because dots here are read as decimal points in the input.
+
+If it says a line is invalid, check that it has four comma-separated parts, a positive price and quantity, and a recognised unit. Cheap per unit is not always best: you may not need the whole larger pack before it expires.
 
 ## Where your input goes
 

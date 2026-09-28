@@ -11,11 +11,17 @@ broader_guide:
   url: /guides/calculators-and-unit-conversion/
 ---
 
-Four everyday discount questions in one place: the final price after a discount, the discount percent between two prices, the original price when you only know what you paid, and several discounts stacking one after another. Switch the mode and the fields relabel themselves, then the result shows the price, the discount and the amount saved.
+A discount takes part of a price away. [Discount Calculator](/tools/discount-calculator/) can work out the final price, the percent off, or what happens when discounts are applied one after another.
 
-## Open the tool
+## Start with one discount
 
-[Use Discount Calculator](/tools/discount-calculator/).
+Leave **What do you want to work out?** on **Final price from a price and a discount**. Type `100000` in **Original price** and `20` in **Discount (%)**. Under **Result**, you should see **You save: 20.000** and **Final price: 80.000**. The dots are thousands separators in the site's Indonesian number format; `80.000` means eighty thousand, not eighty with a decimal fraction.
+
+## Try two discounts in order
+
+Switch to **Stacked discounts, applied one after another**. Keep **Original price** at `100000`. In **Discounts, one per line**, enter `20` on the first line and `10` on the next. The price becomes `80.000` after the first discount and `72.000` after the second. **Effective discount** should say `28%`, not `30%`: the second ten percent comes off 80,000, not the original 100,000.
+
+The field labels change with the mode, so read them again after switching. Use **Copy** if you need the displayed breakdown. Enter plain numbers here; check taxes, shipping, and store rules separately because this tool does not add them.
 
 ## Where your input goes
 
@@ -29,11 +35,11 @@ Pick the second mode, enter the full price and the price you actually paid, and 
 
 ### Why does it need a price and a final price for the reverse?
 
-A percentage on its own is not enough. Two prices give the ratio between them, which is all the discount percent is; with only one price there is nothing to compare against.
+In **Original price from a final price and a discount** mode, enter the final price and the discount percentage. The tool works backward to the original price. A final price alone is not enough; many different discounts could have produced it.
 
 ### Can the discount be over 100%?
 
-The final price can fall to zero but not below it, so a discount of 100% or more has no original price. The page says so rather than returning a negative result.
+In reverse mode, a discount of 100% or more cannot be used to calculate a unique original price, so the tool reports an error. In the standard final-price mode, it does **not** enforce that limit: a value over 100% may produce a negative price. Treat that as invalid for an ordinary sale.
 
 ### How does the stacked mode work?
 

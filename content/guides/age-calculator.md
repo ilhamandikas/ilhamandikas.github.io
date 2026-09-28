@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/dates-times-and-time-zones/
 ---
 
-Work out an age the way a birthday works: whole years, then whole months, then the leftover days. Alongside that it shows the totals in days, weeks, months and hours, the weekday someone was born on, and how long until the next birthday. Move the second date to see an age at any point.
+An age in years changes on a birthday, not every time another 365 days pass. [Age Calculator](/tools/age-calculator/) compares a birth date with the date you choose under **Age as of**.
 
-## Open the tool
+## Try a birthday
 
-[Use Age Calculator](/tools/age-calculator/).
+Set **Date of birth** to `2000-01-01` and **Age as of** to `2024-01-01`. Under **Result**, **Age** should say `24 years, 0 months, 0 days`. The birthday happened on the date you chose. **Next birthday** should say **today** for this example because it is measured *as of* that date, even if the real date today is different.
+
+Now change **Age as of** to `2023-12-31`. The person has not reached the 2024 birthday yet, so the age should be **23 years**, plus months and days. The tool also shows total days, weeks, and hours; those are ways to measure the same span, not separate ages.
+
+## If it refuses your dates
+
+The birth date must be on or before **Age as of**. The second date starts at today, but you can choose a past date for a record or a future date for planning. For an official form, check which date it asks you to calculate the age on. Do not put a real person's date of birth in a public screenshot unless they agreed to share it.
 
 ## Where your input goes
 
