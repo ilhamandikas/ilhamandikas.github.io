@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/web-metadata/
 ---
 
-Generate the meta tags a page needs for search and for social sharing: title, description, canonical, Open Graph and Twitter card tags, with a preview of how the result will look.
+**Meta tags** are lines of HTML that describe a page to browsers and link-preview services. [Meta Tag Generator](/tools/meta-tag-generator/) writes description, Open Graph, and Twitter-card tags as *text* you can copy into a page's `<head>`. It does **not** show a visual preview, produce a `<title>` element, or generate a canonical link.
 
-## Open the tool
+## Read the default output
 
-[Use Meta Tag Generator](/tools/meta-tag-generator/).
+The form begins with **Title** `My page`, **Description** `A short description`, and example.com URLs. In **HTML**, look for `<meta name="description" content="A short description">` and `<meta property="og:title" content="My page">`. Change the **Title** to `Example docs`; both the `name="title"` and `og:title` lines update. **Copy** and **Download** take the HTML text, not a preview image.
+
+Before publishing, add and verify a real `<title>` and a `<link rel="canonical" href="…">` if your site needs them. Replace example URLs with your own public page and image URLs. The generated `robots` line says `index, follow`; remove it or choose an appropriate policy for a page that should not be indexed. Check the output in an actual deployed page rather than treating a generated tag list as complete SEO configuration.
 
 ## Where your input goes
 
@@ -24,11 +26,11 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### How long should a meta description be?
 
-Around 150–160 characters. Search engines truncate past that, and they will sometimes replace your description with text lifted from the page.
+Write a concise description of the actual page. There is no universal length that guarantees a particular search snippet; search engines may display different text. This generator does not enforce a length limit.
 
 ### Do Open Graph tags affect ranking?
 
-Not directly. They affect how a shared link looks, which affects whether people click it — and clicks are a signal.
+Open Graph tags are chiefly for link previews on platforms that use them. They do not replace the page title, description, or canonical URL, and this tool cannot predict search rankings.
 
 ## Related guide
 

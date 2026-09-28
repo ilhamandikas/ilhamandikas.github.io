@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/network-debugging/
 ---
 
-Write an ssh tunnel without memorising the -L, -R and -D shapes. Pick the direction, fill in the ports, and the page assembles the command with the keepalive and failure options most people forget. The bind address is optional, and -D hides the destination fields because a SOCKS proxy has none.
+An **SSH tunnel** forwards a network connection through SSH. [SSH Tunnel Builder](/tools/ssh-tunnel-builder/) writes a command; it does not open a connection, check host identity, or install a key.
 
-## Open the tool
+## Build a local-forward example
 
-[Use SSH Tunnel Builder](/tools/ssh-tunnel-builder/).
+Leave **Forward direction** on **Local forward (-L)**. Fill **Bind address** with `127.0.0.1`, **Local port** with `15432`, **Destination host** with `127.0.0.1`, **Destination port** with `5432`, **SSH user** with `demo`, and **SSH host** with `example.com`. **Command** should contain `-L 127.0.0.1:15432:127.0.0.1:5432 demo@example.com`. This *describes* how a service reachable from the SSH host could be reached through a local port. It does not confirm that the service or host exists. **Copy** takes the command; **Download .sh** saves the text as a script—inspect it before running it.
+
+The defaults include **Background (-f)**, **No remote command (-N)**, a keepalive, and failure-on-forward-error. For debugging, uncheck **Background** and watch terminal errors. **Remote forward (-R)** can expose a service from the other side, depending on SSH server configuration and bind address; confirm who can reach it before running a command. Use only hosts and keys you are authorized to access.
 
 ## Where your input goes
 
@@ -33,7 +35,7 @@ Together they put the tunnel in the background and run no remote command, which 
 
 ### Does this connect for me?
 
-No. It only writes the command; you copy it and run it in your own terminal, so no key or password ever touches the page.
+No. The page writes text only. You may enter an identity *file path*, but it does not read the private key or request a password. Running the copied command in your terminal performs the real connection.
 
 ## Related guide
 

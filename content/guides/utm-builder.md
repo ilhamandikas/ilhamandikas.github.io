@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/web-metadata/
 ---
 
-Build a campaign URL with the standard utm_source, utm_medium, utm_campaign, utm_term, utm_content and utm_id parameters, or paste an existing URL to see which UTM values it carries. Existing query parameters are preserved.
+**UTM parameters** are labels in a URL that an analytics setup may use to identify where a visit came from. [UTM Builder](/tools/utm-builder/) adds or reads these labels as text; it does not send the link to an analytics service.
 
-## Open the tool
+## Build and inspect a harmless link
 
-[Use UTM Builder](/tools/utm-builder/).
+Set **Base URL** to `https://example.com/docs` and **Source (utm_source)** to `newsletter`. Leave the other UTM fields blank. **Result** should show `https://example.com/docs?utm_source=newsletter`. Press **Copy URL** for that result. Paste it into **URL to inspect** under **Parse a URL**; after a brief pause, you should see a `utm_source` row with value `newsletter`.
+
+Existing non-UTM query parameters are kept, but **blank UTM fields remove matching UTM parameters** already present in the base URL. A missing scheme is treated as HTTPS. Review the result before sharing: URLs can appear in browser history, server logs, and referrer data. Never put personal data or secrets into UTM values.
 
 ## Where your input goes
 

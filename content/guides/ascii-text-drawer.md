@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Render text as large ASCII-art banners using a bundled FIGlet-compatible font, and copy the result as plain text. It is for README headers, code comments and terminal output.
+**ASCII art** arranges plain-text characters to look like large letters. [ASCII Text](/tools/ascii-text-drawer/) uses bundled FIGlet fonts; it does not turn your text into an image.
 
-## Open the tool
+## Make a short banner
 
-[Use ASCII Text](/tools/ascii-text-drawer/).
+Replace **Text** with `Hi`. Leave **Font** on **Standard** and **Width** at `80`. **Result** should show several lines of large letters made from text characters. Choose **Big** to change their shape; **Width** controls when longer text wraps. **Copy** takes the displayed characters so you can paste them into a code block or a terminal message. Empty **Text** clears the result.
+
+Paste the result into a **monospaced** font or a fenced code block. In a proportional font, different character widths break the alignment. Test a long banner at the actual width of the place you will publish it, especially on narrow screens.
 
 ## Where your input goes
 

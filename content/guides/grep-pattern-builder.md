@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/linux-command-line/
 ---
 
-Put together a grep command with the right regex flavour and the flags that keep the output readable. Pick extended, basic, fixed or Perl patterns, choose recursion, case, line numbers, context and file filters, and the page builds the command with the pattern safely quoted.
+**`grep`** searches lines of files for a pattern. [grep Pattern Builder](/tools/grep-pattern-builder/) assembles a shell command from the choices you make; it does **not** search files in the browser.
 
-## Open the tool
+## Find a marker in a test folder
 
-[Use grep Pattern Builder](/tools/grep-pattern-builder/).
+Set **Pattern** to `TODO` and **Path** to `src` (use a folder you actually have before running the command). Leave the defaults on: **Extended regex (-E)**, **Recursive (-r)**, **Ignore case (-i)**, **Line numbers (-n)**, and **Skip binary files (-I)**. The displayed command should contain `grep -E -r -i -n -I TODO src`. If you ran it against a suitable folder, matching lines would include file names and line numbers; an empty result might mean the folder has no matches, not that the command failed.
+
+Try **Fixed string (-F)** when the pattern is literal text such as `a.b`, where the dot should *not* mean “any character.” **Include files** accepts one glob such as `*.js`, not a comma-separated list. The **Path** is left unquoted so shell globs can expand: review it before running, particularly if it came from someone else. **Copy** takes the command, not search results.
 
 ## Where your input goes
 
@@ -29,11 +31,11 @@ When you are searching for literal text that contains regex characters, such as 
 
 ### What is the difference between -E and -P?
 
--E uses POSIX extended regular expressions, which are portable and cover word boundaries, groups and alternation. -P uses PCRE for lookaround and lazy quantifiers, but it is a GNU feature and not available on every system.
+`-E` uses extended regular expressions for groups and alternation. `-P` requests Perl-compatible patterns such as lookarounds, but not every version of grep supports it. Test on the machine where you will run the command.
 
 ### How do I pass several extensions?
 
-Type one include pattern at a time, or a shell expansion such as a brace list you write yourself. The builder writes one --include for whatever you enter.
+The builder writes **one** `--include` for the exact text in the field and shell-quotes it. To use several patterns, add separate `--include` options to the copied command yourself; brace expansion inside the quoted field will not expand.
 
 ## Related guide
 

@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-A rule checker for the mistakes that spellcheck misses. It flags double spaces, a space before a comma or a full stop, a missing space after punctuation, repeated words such as the same word twice, runs of exclamation marks and spaces hugging brackets. Turn on the informal switch and it also lists common Indonesian short forms like yg, tdk and diatas with the fuller word to use instead.
+[Typo Spotter](/tools/typo-spotter/) scans text for a short list of **patterns**, not for correct grammar or spelling. It reports where a pattern starts by line and column. It does not edit your text automatically.
 
-## Open the tool
+## Spot a small mistake
 
-[Use Typo Spotter](/tools/typo-spotter/).
+Replace **Text** with `Hello  world`. There are **two** spaces between the words. Under **Findings**, you should see `Line 1, col 6: double space (2 spaces)`. Remove one space; the page should say **No obvious typos found.** With **Flag informal Indonesian short forms** checked, entering `yg` also gives a suggestion to use `yang` in formal writing; uncheck it to hide that suggestion.
+
+A report is a prompt to review, not proof of an error: abbreviations, punctuation inside URLs, and intentional repeated words can trigger rules. **Copy** copies the findings, not the corrected text. Proofread the original yourself before publishing; avoid putting private drafts into public screenshots.
 
 ## Where your input goes
 

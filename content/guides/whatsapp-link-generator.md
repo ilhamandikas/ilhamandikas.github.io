@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Build a wa.me link that opens a chat with a number and a message already filled in. Enter the country code and the phone number, type the message, and the page writes the click-to-chat link, ready to paste into a page, an email or a QR code.
+A `wa.me` **click-to-chat link** asks WhatsApp to open a conversation with a number, optionally prefilling a message. [WhatsApp Link Generator](/tools/whatsapp-link-generator/) builds that URL locally; it does not check whether the number has WhatsApp or send the message.
 
-## Open the tool
+## Make a disposable example
 
-[Use WhatsApp Link Generator](/tools/whatsapp-link-generator/).
+Set **Country code** to `62`, **Phone number** to `081234567890`, and **Message** to `Hello`. **Click-to-chat link** should show `https://wa.me/6281234567890?text=Hello`. The tool removes a leading zero before adding the country code. Add a space to the message and you should see `%20` for that space in the URL. **Copy link** copies the result; **Open** leaves this site and opens the `wa.me` URL in a new tab.
+
+**Do not put private messages, credentials, or someone else's number in a link you publish.** URLs are visible in history, logs, previews, and screenshots. Check both number and text before using **Open**, and remember that opening a chat does not mean a message was sent.
 
 ## Where your input goes
 

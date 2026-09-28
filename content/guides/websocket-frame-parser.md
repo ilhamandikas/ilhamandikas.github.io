@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/websocket-debugging/
 ---
 
-Paste the hex bytes of a single WebSocket frame and the page decodes the bits the RFC defines: FIN, the reserved bits, the opcode, whether the frame is masked, the payload length, the masking key and the payload itself. Text frames are unmasked and shown as readable text.
+A WebSocket **frame** carries a piece of a message, with a header that says what kind of data follows. [WebSocket Frame Parser](/tools/websocket-frame-parser/) reads the hex bytes of **one** frame; it does not connect to a server or reassemble a conversation.
 
-## Open the tool
+## Decode a tiny text frame
 
-[Use WebSocket Frame Parser](/tools/websocket-frame-parser/).
+Paste `81 02 48 69` into **Frame bytes (hex)**. In **Frame**, you should see **FIN** yes, **Opcode** `0x1 · Text`, **Masked** no, and **Payload length** `2 bytes`. In **Payload**, the text should read `Hi`: `48 69` are its UTF-8 bytes. Remove the final `69` and you should see an error explaining that two payload bytes were declared but only one is present.
+
+This parser accepts pairs of hex digits with spaces between them, not a `0x` prefix on every byte. For a **masked** client frame, it uses the four-byte mask key to show the unmasked payload. A decoded payload can contain credentials or private messages: use invented bytes for examples and do not paste production frame captures into public tickets.
 
 ## Where your input goes
 
@@ -36,7 +38,7 @@ Client-to-server frames are masked, so the bytes on the wire are XORed with a fo
 
 ### Does this connect to a server?
 
-No. It reads bytes you paste and nothing else. There is no socket and no request, so it is safe for frames that contain tokens or message payloads from production.
+No connection is made by this parser, and bytes are decoded in the browser. That does not make production tokens safe to share: the decoded text appears on your screen, and pasted captures may remain in your clipboard or screenshots.
 
 ## Related guide
 

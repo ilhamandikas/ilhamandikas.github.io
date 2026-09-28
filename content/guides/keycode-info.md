@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/browser-debugging/
 ---
 
-Press a key and see everything the browser reports about it: the key name, the legacy keyCode and whichCode, the physical position on the keyboard, and which modifier keys were held. It is for wiring up a shortcut without guessing.
+Browsers describe keyboard presses using **`key`** (the character or action) and **`code`** (the key's physical position). [Keycode Info](/tools/keycode-info/) shows those values plus older numeric fields and modifiers so you can design a keyboard shortcut.
 
-## Open the tool
+## Press a key
 
-[Use Keycode Info](/tools/keycode-info/).
+Click or tab to **Press any key**, then press `a`. On a typical US-layout keyboard, **key** will be `a` and **code** will be `KeyA`. Press Shift and `a` together: **Modifiers** should include `Shift`, and **key** may become `A`. The field is read-only; pressing a key *records the event* instead of typing into the input. The status says **Captured**.
+
+If you get different values, check your keyboard layout and browser. Use `key` when the *meaning* matters, and `code` when physical position matters. The `keyCode` and `which` numbers are legacy fields—avoid new shortcut logic that relies on them.
 
 ## Where your input goes
 

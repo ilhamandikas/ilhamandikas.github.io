@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/linux-command-line/
 ---
 
-Build a cron expression from its five fields and read it back in plain English, so you can check a schedule before it quietly does the wrong thing at 3am. It also covers the special strings like @daily and @reboot.
+**Cron** is a scheduler that uses five fields: minute, hour, day of month, month, and day of week. [Crontab Generator](/tools/crontab-generator/) assembles those five fields and writes a rough English description. It does **not** schedule a job, check future run times, or support special strings like `@reboot`.
 
-## Open the tool
+## Pick a preset
 
-[Use Crontab Generator](/tools/crontab-generator/).
+Choose **Every 5 minutes** under **Preset**. **Expression** should read `*/5 * * * *`, meaning minutes divisible by five in each hour. **Copy** takes only that expression, not a command to run. Choose **Weekdays at 09:00** to see `0 9 * * 1-5`; note that the time is interpreted by *your cron environment*, not this page.
+
+You can also edit **Minute**, **Hour**, and the other fields yourself, but this builder does **not** validate the values: `99` in Minute would still appear in the output. Check the syntax and timezone in the scheduler you actually use before installing a job. For times that cross daylight-saving changes, test the schedule in its intended timezone.
 
 ## Where your input goes
 
@@ -22,9 +24,9 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ## Questions you might have
 
-### Why does 0 0 * * * run at midnight UTC?
+### Is `0 0 * * *` always midnight UTC?
 
-Cron uses the server's timezone. On most servers that is UTC unless the crontab sets CRON_TZ, or the machine itself is configured otherwise.
+No. It means midnight according to the cron implementation's configured timezone, often the host's local timezone. This tool does not read that setting or convert times to UTC.
 
 ### Does this schedule the job?
 

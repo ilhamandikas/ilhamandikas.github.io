@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-Create a placeholder image as an SVG: pick the size, background and text colour and get a small vector file to drop into a layout while the real image is being produced.
+**SVG** is a text-based image format that stays sharp at different display sizes. [SVG Placeholder](/tools/svg-placeholder/) generates a solid rectangle with a centered label, useful while a real image is being prepared.
 
-## Open the tool
+## Make a small sample
 
-[Use SVG Placeholder](/tools/svg-placeholder/).
+Set **Width** to `320`, **Height** to `180`, **Background** to `#eeeeee`, **Text colour** to `#333333`, and **Text** to `Demo`. The **Preview** should show a 320-by-180 rectangle with `Demo` in the middle. The **SVG** box contains an `<svg>` tag with `width="320"` and `height="180"`. **Copy** takes the markup; **Download** saves `placeholder.svg`.
+
+If you erase **Text**, the tool falls back to a dimension label such as `320 × 180`. The preview only checks how it looks in your browser; inspect the downloaded file before embedding it elsewhere. Use an appropriate contrast between the text and background so the label remains readable.
 
 ## Where your input goes
 

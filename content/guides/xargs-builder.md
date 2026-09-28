@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/linux-command-line/
 ---
 
-Build an xargs command and see what each flag means. Choose how the input is split, how many items go to each command, how many commands run at once, and whether a replace string is used. The page writes the command and lists a plain-language note for every flag it added.
+**`xargs`** takes a stream of items and passes them as arguments to another command. [xargs Builder](/tools/xargs-builder/) assembles the command line and explains its flags, but it does not execute anything.
 
-## Open the tool
+## Read a safe example first
 
-[Use xargs Builder](/tools/xargs-builder/).
+Enter `find . -name '*.log' -print0` as **Upstream command**, `echo` as **Command to run**, and `1` as **Arguments per command (-n)**. Leave **Null-delimited input (-0)** and **Skip when input is empty (-r)** checked. The result should be `find . -name '*.log' -print0 | xargs -0 -r -n 1 echo`. If you ran it, `find` would supply matching paths and `echo` would print them one at a time; nothing is deleted. The **Command** panel also explains each flag.
+
+**`-print0` and `-0` must agree**: the first emits null-separated file names; the second reads them without splitting on spaces. Selecting **Use a replace string (-I)** drops the `-n` option in the generated command. The upstream and target command fields are pasted into a shell command as written. Check them before copying or running; never run a destructive command just because the builder produced it.
 
 ## Where your input goes
 

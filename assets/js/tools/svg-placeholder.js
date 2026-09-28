@@ -11,7 +11,7 @@ const fields = {
 const preview = document.querySelector('#svg-preview');
 const output = document.querySelector('#svg-output');
 
-const escapeXml = (value) => value.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+const escapeXml = (value) => value.replace(/[<>&"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
 
 function render() {
   const w = Math.max(16, Math.min(4000, Number(fields.w.value) || 600));

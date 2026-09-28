@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/network-debugging/
 ---
 
-Generate a random IPv6 unique local address prefix in fd00::/8, following RFC 4193, for a network that should never be routed on the public internet.
+An IPv6 **unique local address (ULA)** prefix is for addressing within a site or interconnected private sites, not for normal routing on the public Internet. [IPv6 ULA Generator](/tools/ipv6-ula-generator/) creates random `/48` prefixes starting with `fd` in your browser.
 
-## Open the tool
+## Get two example prefixes
 
-[Use IPv6 ULA Generator](/tools/ipv6-ula-generator/).
+Set **How many** to `2` and click **Generate**. Under **ULA prefixes (/48)**, you should see two lines shaped like `fdxx:xxxx:xxxx::/48`, where each `x` is a hexadecimal digit. The exact values change each run. **Copy** takes both lines; **Download** saves `ipv6-ula.txt`.
+
+The 40 random bits make a collision less likely, but this tool does not consult other networks or reserve a prefix. Record which prefix you actually deploy, especially if two networks may later connect. A ULA is **not** an access-control rule: configure routing and firewall policy separately, and do not assume the prefix alone keeps traffic private.
 
 ## Where your input goes
 

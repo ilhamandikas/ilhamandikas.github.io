@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/linux-command-line/
 ---
 
-Build the sed command you would otherwise look up again. Choose between a substitution, deleting matching lines or printing only the matches, then set the regex style, the delimiter and the flags. The page escapes the delimiter inside the pattern and quotes the whole expression, so a copy-paste into the shell behaves the same way it did here.
+**`sed`** is a command that edits lines of text. [sed Replacement Builder](/tools/sed-replacement-builder/) **writes a command** for replacement, deletion, or printing matching lines; it does not run the command or touch your files.
 
-## Open the tool
+## Build a harmless replacement
 
-[Use sed Replacement Builder](/tools/sed-replacement-builder/).
+Leave **What should sed do?** on **Replace text**, enter `cat` as **Pattern**, and `dog` as **Replacement**. Leave **Files** empty and **Global (g)** and **Extended regex (-E)** checked. **Command** should show `sed -E s/cat/dog/g`. With no file, `sed` would read standard input. For example, piping the test line `cat cat` through this command would produce `dog dog`.
+
+For a real file, use a disposable copy first. **Edit in place (-i)** modifies the named file, and **Keep a .bak backup** only takes effect when in-place editing is on. If **Files** is empty and in-place editing is enabled, the tool asks for a file. File names and globs are inserted as typed—not shell-escaped—so inspect the *entire* command before running it, and quote file names with spaces yourself. Do not paste untrusted file text into a shell command.
 
 ## Where your input goes
 
@@ -25,7 +27,7 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### Is an in-place edit reversible?
 
-Only with the backup. With -i.bak on, sed leaves the original next to the file with a .bak suffix; turn the backup off and there is no undo.
+When both **Edit in place** and **Keep a .bak backup** are checked, the generated command uses `-i.bak` so sed normally writes a `.bak` copy of each file. Check that copy yourself before relying on it; without a backup there is no tool-provided undo.
 
 ### What does the I flag do?
 
@@ -33,7 +35,7 @@ It makes the pattern match without regard to case. It is a GNU extension, so it 
 
 ### Why does it quote the expression in single quotes?
 
-A sed expression is full of characters the shell would otherwise interpret, like spaces, pipes, stars and dollar signs. Single quotes hand the whole expression to sed untouched.
+The builder shell-quotes the sed expression **when its characters require it**; this simple `cat` example needs no quotes. The **Files** field is *not* quoted by the builder; a path with spaces or shell metacharacters needs manual review.
 
 ## Related guide
 
