@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/http-api-debugging/
 ---
 
-Build the Authorization: Basic header value from a username and password, and optionally produce a ready-to-use curl command. The encoding is plain Base64, which is exactly why it is only safe over HTTPS.
+**HTTP Basic authentication** turns `username:password` into Base64 text for an HTTP `Authorization` header. [Basic Auth Header](/tools/basic-auth-generator/) produces the *value* of that header, not a curl command. Base64 is reversible; it does not encrypt the credentials.
 
-## Open the tool
+## Check the default example
 
-[Use Basic Auth Header](/tools/basic-auth-generator/).
+The page starts with **Username** `user` and **Password** `pass`. The **Authorization header** box should show `Basic dXNlcjpwYXNz`. The letters after `Basic ` are Base64 for `user:pass`. Change either field and the output updates automatically. **Copy** takes the full header value; **Copy prefix** copies only `Basic `, not your credentials.
+
+When entering a value in an HTTP client, use header name `Authorization` and the tool's entire output as the value. For a real account, only send this header over **HTTPS** to a service you trust. The password is visible in this page's plain-text field and can remain in your clipboard after copying; prefer disposable credentials for learning.
 
 ## Where your input goes
 

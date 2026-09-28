@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/email-debugging/
 ---
 
-Normalise an email address to a canonical form: lowercase the domain, strip a +tag from the local part, and remove dots for providers where they are ignored. Useful for deduplicating a mailing list.
+[Email Normalizer](/tools/email-normalizer/) applies a few text rules to one address **per line**. This is a *convenience transform*, **not** a universal canonical form. Different mail providers can treat the same spelling differently; never automatically merge user accounts based only on this output.
 
-## Open the tool
+## See what the tool changes
 
-[Use Email Normalizer](/tools/email-normalizer/).
+Paste `John.Doe+news@Gmail.com` into **Email address(es)**. **Normalised** should show `johndoe@gmail.com`. The tool lowercases the address, removes the Gmail dots and `+news`, and changes `googlemail.com` to `gmail.com` too. Add `First.Last+demo@example.com` on another line: the output keeps the dot but removes `+demo` and lowercases the letters.
+
+This tool removes everything after a `+` **at every domain**, even where the provider does not promise that this is an alias. It also lowercases the local part, which not every receiving system treats as interchangeable. For sensitive mail or account records, keep the original address and verify provider-specific rules separately. Do not paste real customer lists into screenshots or shared documents.
 
 ## Where your input goes
 
@@ -24,7 +26,7 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### Is removing dots always safe?
 
-No. Dots are only ignorable at specific providers — Gmail and a few others. At most providers first.last and firstlast are genuinely different mailboxes, so only apply this when you know the domain.
+No. This implementation removes dots only for `gmail.com` and `googlemail.com`, but removes a `+` suffix for *all* domains. That second rule may also merge different addresses at some providers. Keep the original address; do not use normalized text as proof two people are the same.
 
 ## Related guide
 

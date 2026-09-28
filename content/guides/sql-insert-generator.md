@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/sql-formatting-and-test-data/
 ---
 
-Paste a JSON array of objects or simple CSV and get SQL INSERT statements. Column names are collected from the rows, values are quoted per dialect, and you can emit one statement per row or a single multi-row INSERT.
+An SQL **INSERT** adds rows to a table. [SQL Insert Generator](/tools/sql-insert-generator/) writes example statements from a JSON object, a JSON array of objects, or **simple** comma-separated rows. It does not connect to your database or execute the SQL.
 
-## Open the tool
+## Make a test statement
 
-[Use SQL Insert Generator](/tools/sql-insert-generator/).
+Leave **Table name** as `users`, **Dialect** as **MySQL / MariaDB**, and **One INSERT per row** checked. Paste `[ {"name":"Ada","age":30} ]` into **Rows (JSON array or CSV)**. **Output** should contain `INSERT INTO \`users\``, quoted column names, and `('Ada', 30)`. Uncheck **One INSERT per row** and you will get a multi-row-statement layout even for this one row. **Copy SQL** and **Download .sql** take the displayed text.
+
+For CSV, the first row is treated as column names, but the parser simply splits on commas; it is **not** a full CSV parser for quoted commas or multiline fields. Use JSON for those cases. The SQL is a draft to inspect and test, not a replacement for parameterized queries in application code. Different database dialects handle string escaping and types differently; review the statement against your target before executing it.
 
 ## Where your input goes
 
@@ -25,7 +27,7 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### How are objects and arrays stored?
 
-Nested objects and arrays are serialised to JSON text and escaped as a string, which is the safe default across dialects.
+They are serialized to JSON text and enclosed in an SQL string literal. Check your target database's escaping and column types before executing; this tool does not make application input safe to concatenate into SQL. Use parameterized queries for that.
 
 ## Related guide
 

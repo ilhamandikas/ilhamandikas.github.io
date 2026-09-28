@@ -1,6 +1,6 @@
 ---
 title: Benchmark Builder Guide
-description: Compare a set of measured values and their ratios.
+description: Run a JavaScript snippet repeatedly in your browser and display approximate timings.
 date: '2026-09-27'
 tags:
 - math
@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/calculators-and-unit-conversion/
 ---
 
-Compare a set of measured values and see each one as a ratio against the fastest, so the differences are readable without doing the arithmetic.
+[Benchmark Builder](/tools/benchmark-builder/) **runs JavaScript code** in your browser repeatedly and measures how long it took. It does **not** compare several measured values or compute ratios. Only use code you wrote and understand: unlike a text-only converter, this page executes the snippet with access to the page's JavaScript environment.
 
-## Open the tool
+## Try harmless arithmetic
 
-[Use Benchmark Builder](/tools/benchmark-builder/).
+Replace **JavaScript to run** with `let total = 0; for (let i = 0; i < 10; i++) total += i;`. Set **Iterations** to `100` and click **Run benchmark**. You should see **Total time**, **Iterations** `100`, **Average**, and **Throughput** (approximate runs per second). The exact times depend on your device and browser; do not compare them to someone else's screenshot.
+
+The tool first runs the snippet **once as a warm-up**, then runs it 100 more times for this example. A syntax error shows a status instead of measurements. An endless loop or expensive code can freeze the page; reload the tab if that happens. Do not paste untrusted snippets, passwords, or production data. Repeated timings here are rough observations, not a controlled benchmark.
 
 ## Where your input goes
 
@@ -22,9 +24,9 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ## Questions you might have
 
-### Why ratios rather than percentages?
+### Can I use this to compare two snippets?
 
-Because 2.4× slower is easier to act on than 140% slower, and it does not break down when the baseline is the smallest value.
+Run one snippet at a time, under the same browser and conditions, then compare the recorded results yourself. This tool has no multi-snippet comparison or ratio view.
 
 ## Related guide
 

@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/calculators-and-unit-conversion/
 ---
 
-Evaluate a mathematical expression with the usual operators, parentheses, functions and constants, and assign variables to reuse an intermediate result.
+[Math Evaluator](/tools/math-evaluator/) calculates arithmetic you type as an **expression**—a line such as `2 * (3 + 4)`. It supports numbers, parentheses, operators, named functions like `sqrt`, and constants like `pi`. It does **not** support assigning variables.
 
-## Open the tool
+## Check the order of operations
 
-[Use Math Evaluator](/tools/math-evaluator/).
+Enter `2 * (3 + 4)` into **Expression**. **Result** should be `14`: the parentheses make `3 + 4` happen before multiplication. Try `sqrt(9)` and you should get `3`. The result updates as you type; **Copy** takes it and **Download** saves `result.txt`.
+
+If the tool reports **Unknown name**, check the available function names in the hint under the input; arbitrary variables and JavaScript commands are not accepted. A malformed expression, such as a missing `)`, reports an error instead of a number. This is a quick calculator using floating-point numbers, not an exact decimal or financial calculator.
 
 ## Where your input goes
 

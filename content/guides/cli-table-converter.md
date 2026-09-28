@@ -11,11 +11,21 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Turn the columns printed by docker ps, ps, df or kubectl into a table you can paste into a document or a ticket. The separator is detected from the text, and the output can be a Markdown table, CSV or TSV. Rows of different lengths are padded so the result is always rectangular.
+Terminal commands often print **aligned columns**, but pasting them into a document loses the table. [CLI Table Converter](/tools/cli-table-converter/) splits lines into cells and rewrites them as Markdown, CSV (comma-separated), or TSV (tab-separated) text.
 
-## Open the tool
+## Convert a tiny terminal table
 
-[Use CLI Table Converter](/tools/cli-table-converter/).
+Replace **Paste command output** with:
+
+```text
+NAME  STATUS
+api   ready
+web   pending
+```
+
+Leave **How the columns are separated** on **Detect automatically**, **Output** on **Markdown table**, and **First row is the header** checked. The output should include `| NAME | STATUS |` as its first line and `| api | ready |` below the separator. Switch **Output** to **CSV**: the first row becomes `NAME,STATUS`. **Copy** uses whatever output is currently shown.
+
+The automatic detector uses two-or-more spaces for aligned columns when it finds enough of them; otherwise it may split on *every* space. If a multiword cell gets split incorrectly, select the right separator yourself and review each row. This is a text converter, not a full parser for every command's format. Redact hostnames, IPs, and tokens before pasting terminal output into a shared document.
 
 ## Where your input goes
 

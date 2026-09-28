@@ -9,14 +9,14 @@ Internal writing tracker. Not a page on the site.
 - Some generated guides repeat `data/tool-guides.yaml` FAQ material used by tool pages. Check any discrepancy before introducing a new claim.
 
 ## Encoding (4)
-- [ ] `content/guides/base64-file-converter.md` — Base64 File
-- [ ] `content/guides/string-obfuscator.md` — String Obfuscator
-- [ ] `content/guides/safelink-decoder.md` — SafeLink Decoder
-- [ ] `content/guides/basic-auth-generator.md` — Basic Auth Header
+- [x] `content/guides/base64-file-converter.md` — Base64 File
+- [x] `content/guides/string-obfuscator.md` — String Obfuscator
+- [x] `content/guides/safelink-decoder.md` — SafeLink Decoder
+- [x] `content/guides/basic-auth-generator.md` — Basic Auth Header
 
 ## Formats (2)
-- [ ] `content/guides/sql-prettify.md` — SQL Prettify
-- [ ] `content/guides/markdown-to-html.md` — Markdown to HTML
+- [x] `content/guides/sql-prettify.md` — SQL Prettify
+- [x] `content/guides/markdown-to-html.md` — Markdown to HTML
 
 ## Crypto (9)
 - [x] `content/guides/ssh-key-generator.md` — SSH Key Generator
@@ -95,37 +95,37 @@ Internal writing tracker. Not a page on the site.
 - [ ] `content/guides/time-zone-converter.md` — Time Zone Converter
 
 ## Text (10)
-- [ ] `content/guides/lorem-ipsum.md` — Lorem Ipsum
-- [ ] `content/guides/emoji-picker.md` — Emoji Picker
-- [ ] `content/guides/numeronym.md` — Numeronym
+- [x] `content/guides/lorem-ipsum.md` — Lorem Ipsum
+- [x] `content/guides/emoji-picker.md` — Emoji Picker
+- [x] `content/guides/numeronym.md` — Numeronym
 - [ ] `content/guides/ascii-text-drawer.md` — ASCII Text
-- [ ] `content/guides/env-key-sorter.md` — .env Key Sorter
+- [x] `content/guides/env-key-sorter.md` — .env Key Sorter
 - [ ] `content/guides/sed-replacement-builder.md` — sed Replacement Builder
 - [ ] `content/guides/grep-pattern-builder.md` — grep Pattern Builder
-- [ ] `content/guides/currency-formatter.md` — Currency Formatter
+- [x] `content/guides/currency-formatter.md` — Currency Formatter
 - [ ] `content/guides/typo-spotter.md` — Typo Spotter
-- [ ] `content/guides/whatsapp-formatter.md` — WhatsApp Message Formatter
+- [x] `content/guides/whatsapp-formatter.md` — WhatsApp Message Formatter
 
 ## Convert (3)
-- [ ] `content/guides/fuel-economy-converter.md` — Fuel Economy Converter
-- [ ] `content/guides/cli-table-converter.md` — CLI Table Converter
-- [ ] `content/guides/maps-link-parser.md` — Google Maps Link Parser
+- [x] `content/guides/fuel-economy-converter.md` — Fuel Economy Converter
+- [x] `content/guides/cli-table-converter.md` — CLI Table Converter
+- [x] `content/guides/maps-link-parser.md` — Google Maps Link Parser
 
 ## Math (8)
-- [ ] `content/guides/math-evaluator.md` — Math Evaluator
-- [ ] `content/guides/eta-calculator.md` — ETA Calculator
+- [x] `content/guides/math-evaluator.md` — Math Evaluator
+- [x] `content/guides/eta-calculator.md` — ETA Calculator
 - [ ] `content/guides/interest-calculator.md` — Interest Calculator
 - [ ] `content/guides/take-home-pay-calculator.md` — Take-Home Pay Calculator
 - [ ] `content/guides/loan-calculator.md` — Loan Calculator
-- [ ] `content/guides/chronometer.md` — Chronometer
-- [ ] `content/guides/benchmark-builder.md` — Benchmark Builder
+- [x] `content/guides/chronometer.md` — Chronometer
+- [x] `content/guides/benchmark-builder.md` — Benchmark Builder
 - [x] `content/guides/random-generator.md` — Random Generator
 
 ## Data (7)
-- [ ] `content/guides/sql-insert-generator.md` — SQL Insert Generator
-- [ ] `content/guides/email-normalizer.md` — Email Normalizer
-- [ ] `content/guides/phone-parser.md` — Phone Parser
-- [ ] `content/guides/iban-validator.md` — IBAN Validator
+- [x] `content/guides/sql-insert-generator.md` — SQL Insert Generator
+- [x] `content/guides/email-normalizer.md` — Email Normalizer
+- [x] `content/guides/phone-parser.md` — Phone Parser
+- [x] `content/guides/iban-validator.md` — IBAN Validator
 - [ ] `content/guides/nik-parser.md` — NIK Parser
 - [ ] `content/guides/json-schema-validator.md` — JSON Schema Validator
 - [ ] `content/guides/json-path-explorer.md` — JSON Path Explorer

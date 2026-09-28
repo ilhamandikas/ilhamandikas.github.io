@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/indonesian-data-formats/
 ---
 
-Parse and format a phone number by country, showing the international and national forms, the country calling code and whether the number is valid for that region.
+[Phone Parser](/tools/phone-parser/) tries to read a number using country-specific numbering rules. **Possible** means its shape or length could fit; **Valid** means it matches the library's rules. Neither means the number belongs to someone or can receive a call.
 
-## Open the tool
+## Inspect the example number
 
-[Use Phone Parser](/tools/phone-parser/).
+The page starts with **Phone number** `+1 202 555 0147` and **Default country** set to the US. It should show **Calling code** `+1` and an **E.164** form without spaces: `+12025550147`. E.164 is a common international representation beginning with `+` and a country calling code. The **International** and **National** rows add human-readable spacing, while **RFC 3966** gives a `tel:` URI.
+
+Try removing the leading `+1` and changing **Default country**: the same digits can be interpreted differently. If parsing fails, check the country choice and include a calling code. Use public example numbers, not a real contact list, when demonstrating the result. Validation is not proof the line is active.
 
 ## Where your input goes
 

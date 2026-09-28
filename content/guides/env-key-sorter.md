@@ -11,11 +11,22 @@ broader_guide:
   url: /guides/configuration-files/
 ---
 
-Put a .env file in alphabetical order without shuffling the comments that belong to each setting. The top comment block stays first, a comment above a key travels with that key, and blank lines are closed up. Duplicate keys can be collapsed to the last value, and the equals signs can be lined up for a tidier read.
+A **`.env` file** is a list of settings written as `KEY=value`. [`.env Key Sorter`](/tools/env-key-sorter/) sorts the recognizable keys in your browser without loading the configuration into an application.
 
-## Open the tool
+## Sort three harmless settings
 
-[Use .env Key Sorter](/tools/env-key-sorter/).
+Replace **.env contents** with:
+
+```text
+PORT=3000
+# Display theme
+THEME=dark
+APP_NAME=demo
+```
+
+With **Order** at **A → Z**, **Sorted** should put `APP_NAME` first, then `PORT`, then `# Display theme` above `THEME=dark`. That comment stays attached to the key following it. Switch **Order** to **Z → A** to reverse the key order. **Drop duplicate keys** keeps only the last occurrence of each key; review duplicates before relying on that rule. **Align values** inserts padding *before* the equals signs.
+
+This tool does not parse the application's `.env` dialect or check whether the values work. Compare the output with the original before replacing a config file. Real `.env` files often contain passwords or API keys: use dummy values for a tutorial, avoid screenshots, and protect the downloaded or copied output.
 
 ## Where your input goes
 
@@ -25,11 +36,11 @@ Processing runs in your browser. The tool does not upload your input to ilham.de
 
 ### Does it change the values?
 
-No. Only whole lines are moved, so spacing, quotes and inline comments inside a value are untouched. Alignment only pads the space before the equals sign.
+Without **Align values** and **Drop duplicate keys**, recognized key lines are moved as text. The tool removes blank lines. **Align values** adds spaces before `=`, and **Drop duplicate keys** removes earlier entries—either change may matter to a particular config loader.
 
 ### Which duplicate value wins?
 
-The last one, which is what most .env loaders use when a key appears twice.
+When **Drop duplicate keys** is checked, this tool keeps the last matching entry (respecting **Ignore case**). Do not assume your application's loader handles duplicates in the same way.
 
 ### Is my file uploaded?
 

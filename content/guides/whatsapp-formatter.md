@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Write a WhatsApp message without remembering which character makes what bold. Select some text and press a button to wrap it, or press a list button to prefix each line, then watch the preview update to show how the message will look. Bold, italic, strikethrough and monospace are all supported, and the raw marker characters stay in the text so you can copy it straight into the chat box.
+WhatsApp uses simple characters around text to show emphasis. [WhatsApp Message Formatter](/tools/whatsapp-formatter/) adds those characters for you and shows an approximate **Preview**. The preview is not a message sent to WhatsApp.
 
-## Open the tool
+## Format a test message
 
-[Use WhatsApp Message Formatter](/tools/whatsapp-formatter/).
+Replace **Message** with `Ready to ship`. Select only `Ready`, then press **Bold**. The message should become `*Ready* to ship`, while **Preview** shows **Ready** in bold. Press **Copy message** to copy the text *with* the asterisks; paste it into a draft to inspect it before sending. You can also select lines and press **Bullet list** or **Numbered list** to add a prefix to each line.
+
+If nothing is selected, the emphasis buttons insert a pair of markers with the cursor between them, ready for typing. The list buttons work on the current line even without a selection. **Preview** follows this tool's simplified formatting rules; check the actual result in WhatsApp, especially for combined or unusual markers. Do not put private chat content in a shared screenshot.
 
 ## Where your input goes
 

@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/calculators-and-unit-conversion/
 ---
 
-A one-in, four-out fuel economy converter. Type a figure, choose the unit it is in, and km/L, L/100 km and both MPG figures update as you type. All four units are defined by an exact conversion to km/L and back, so a value and its round trip agree. The maths runs in the page and nothing is uploaded.
+**Fuel economy** says how far a vehicle travels per amount of fuel. [Fuel Economy Converter](/tools/fuel-economy-converter/) shows four ways of writing the *same* consumption: km/L, L/100 km, US MPG, and UK MPG. **MPG** means miles per gallon; US and UK gallons differ.
 
-## Open the tool
+## Try an easy reciprocal
 
-[Use Fuel Economy Converter](/tools/fuel-economy-converter/).
+Set **Value** to `10` and **Unit** to **L/100 km**. The table should show `10` for L/100 km and `10` for km/L, because `100 ÷ 10 = 10`. The US and UK MPG rows should show about `23.521` and `28.248`, respectively. Change **Value** to `0`: the numbers become dashes and the page asks for a value greater than zero. Correct the value to resume.
+
+There is no copy button; read the table or note the values you need. These are unit conversions, not a prediction of your actual vehicle's fuel use. Outputs are rounded to at most three decimal places for display, so do not expect a copied rounded number to reproduce the original with unlimited precision.
 
 ## Where your input goes
 
@@ -36,11 +38,11 @@ It is the reciprocal relationship: L/100 km equals 100 divided by km/L, and km/L
 
 ### What are the exact MPG factors?
 
-One km/L is 2.352145833 MPG (US) and 2.824809 MPG (UK). Equivalently, MPG (US) is 235.214583 divided by L/100 km and MPG (UK) is 282.480936 divided by L/100 km. Those constants come from the litre-to-gallon definitions and are exact to the digits shown.
+This implementation multiplies km/L by `2.352145833` for US MPG and `2.824809` for UK MPG. Those factors are rounded constants in the code, not a claim of exact precision beyond the displayed digits.
 
 ### Is the result rounded?
 
-Each figure is shown to three decimal places, which is finer than any dashboard or pump can measure. The underlying value is not rounded before conversion, so the four outputs stay consistent with one another.
+Each value is rounded to at most three decimal places for display, with trailing zeros omitted. The calculation happens before this display rounding.
 
 ## Related guide
 

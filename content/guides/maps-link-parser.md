@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/indonesian-data-formats/
 ---
 
-Paste a Google Maps link and the page pulls out the latitude and longitude, then writes them the way you need them: a plain pair, degrees minutes and seconds, JSON, CSV, a SQL INSERT or a GeoJSON point. A label you type is carried into the formats that have a place for it.
+A **coordinate pair** is a latitude (north/south) and a longitude (east/west). [Google Maps Link Parser](/tools/maps-link-parser/) extracts a pair from some full Maps links or from plain coordinates, then writes it in another format. It does not open the map or check that the pin is accurate.
 
-## Open the tool
+## Start with a plain pair
 
-[Use Google Maps Link Parser](/tools/maps-link-parser/).
+Replace **Maps link or coordinates** with `0, 10` and change **Label** to `Demo`. Leave **Output format** on **Decimal degrees**: **Output** should read `0, 10`. Choose **JSON** to see the label, latitude `0`, and longitude `10` as named fields. Choose **GeoJSON**: its point coordinates are `[10, 0]` because **GeoJSON uses longitude first**, unlike the input. **Copy** takes the displayed text; **Download** saves it as `location.txt` regardless of selected format.
+
+For a full link such as `https://www.google.com/maps/@-6.2088,106.8456,15z`, the tool first takes coordinates after `@`. If none are found, it tries other patterns. A short redirect link cannot be expanded here; open it yourself only if you trust it, then paste a full URL. **No coordinates found in that link** means the text did not match a supported pair; check the link or enter the coordinates directly. Location information can be sensitive—use example coordinates when sharing output.
 
 ## Where your input goes
 
@@ -33,7 +35,7 @@ The viewport centre after the @ sign comes first, then the place coordinates mar
 
 ### Why are the coordinates rounded?
 
-Six decimal places is about ten centimetres on the ground, which is finer than any map pin. Rounding there keeps the numbers readable without losing meaningful precision.
+Decimal and export formats round the parsed coordinates to six places for readability. This does not improve the accuracy of the original map location; do not treat the last digit as a measurement guarantee.
 
 ## Related guide
 

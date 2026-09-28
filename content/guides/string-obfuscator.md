@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Hide part of a string while leaving enough of it visible to recognise — the usual way to show a card number, an API key or an email address in a log, a ticket or a screenshot without exposing the whole value.
+[String Obfuscator](/tools/string-obfuscator/) replaces characters in the middle of a string with a mask. It is useful for **displaying** part of a test identifier, not for securely erasing a secret from a file.
 
-## Open the tool
+## Try a disposable value
 
-[Use String Obfuscator](/tools/string-obfuscator/).
+Type `AB12345678` into **Text**. Leave **Keep first** and **Keep last** at `2`, and **Mask with** at `*`. **Obfuscated** should read `AB******78`. The result updates as you type. Set **Keep last** to `0` and the whole part after `AB` becomes masked; set **Mask with** to `#` to change the visible replacement. The **Copy** and **Download** buttons use the displayed result.
+
+Spaces and line breaks remain visible even in the masked part. If **Keep first** plus **Keep last** covers the whole string, there is nothing left to hide. Check the result visually before sharing it. This operation does not delete the original from the source document, clipboard history, or screenshots you already took; for real credentials, rotate them if exposed.
 
 ## Where your input goes
 

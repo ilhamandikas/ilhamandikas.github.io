@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/text-formatting-and-cleanup/
 ---
 
-Turn a long word into a numeronym — the first letter, the number of letters omitted and the last letter, so internationalization becomes i18n.
+A **numeronym** shortens a long word by counting the characters between its first and last letters. For example, `internationalization` has 18 letters between `i` and `n`, so it becomes `i18n`. [Numeronym](/tools/numeronym/) makes these abbreviations as you type.
 
-## Open the tool
+## Shorten two words
 
-[Use Numeronym](/tools/numeronym/).
+Type `internationalization accessibility` into **Words**. **Numeronyms** should show `i18n a11y`. The space stays between the two results. Words of three letters or fewer, like `cat`, remain unchanged. Punctuation is not converted as part of a word: `cat!` also remains as entered.
+
+This tool recognizes groups of letters separated by whitespace. A hyphenated phrase and other punctuation may stop the whole token from being shortened. Use **Copy** or **Download** for the output, and keep the full spelling nearby when abbreviations would confuse readers.
 
 ## Where your input goes
 

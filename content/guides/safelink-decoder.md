@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/working-with-urls/
 ---
 
-Extract the real destination from an Outlook SafeLink, which wraps the original URL in a redirect through Microsoft's safelinks service. It decodes the url parameter and shows where the link genuinely goes.
+A **wrapped link** puts one web address inside another, often as a `url=` query parameter. [SafeLink Decoder](/tools/safelink-decoder/) extracts a likely destination from Microsoft SafeLinks and other redirect links. It does **not** visit the destination or check whether it is safe.
 
-## Open the tool
+## Unwrap a harmless sample
 
-[Use SafeLink Decoder](/tools/safelink-decoder/).
+Paste `https://example.com/redirect?url=https%3A%2F%2Fexample.org%2Fdocs` into **Wrapped link**. The **Decoded destination** should become `https://example.org/docs`. `%3A` and `%2F` are encoded characters for `:` and `/`. There is no submit button: the result changes as you edit the input. You can **Copy** or **Download** the resulting text.
+
+If you paste an ordinary URL with no recognized destination parameter, this tool returns the original URL. It can follow up to five nested wrappers, but does not confirm that an outer service would actually send a browser to the displayed address. Inspect the domain carefully, especially for lookalike names, and avoid clicking a suspicious result. Never treat extraction as a malware or phishing scan.
 
 ## Where your input goes
 

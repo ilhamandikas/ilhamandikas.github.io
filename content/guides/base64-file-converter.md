@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/browser-file-tools/
 ---
 
-Turn any file into a Base64 string, or a Base64 string back into a file. It is most useful for embedding a small image or font directly in a stylesheet as a data URI, or for working out what a data URI you were handed actually contains. The file is read locally through the File API.
+**Base64** writes file bytes as text so you can transport them in a text-only field. It is an encoding, not encryption. [Base64 File](/tools/base64-file-converter/) reads a selected file in the browser and can turn encoded text back into a download.
 
-## Open the tool
+## Decode a known example
 
-[Use Base64 File](/tools/base64-file-converter/).
+Paste `SGVsbG8=` into **Base64 → File** and choose **Decode to file**. The status should say **5 bytes ready**, and a **Download file** link appears. Download it: the default name is `decoded.bin`, and its contents are `Hello`. The `.bin` extension is used because bare Base64 has no filename or file-type information. An invalid string instead shows a decoding error; correct the input and try again.
+
+## Encode your own small test file
+
+Create a plain-text file containing exactly `Hello` (no trailing newline). Choose it under **File → Base64** and press **Encode file**. **Base64** should show `SGVsbG8=`. Enable **Include the data URL prefix**, then encode again; the output also includes a `data:` header and a comma before the Base64 text. That header records the browser-reported file type. **Copy** and **Download text** save the *text*, not the original file.
+
+The tool processes file bytes in this tab. Avoid copying sensitive file contents into tickets or shared chats; anyone can decode Base64. Large files create even larger text output and use browser memory.
 
 ## Where your input goes
 
