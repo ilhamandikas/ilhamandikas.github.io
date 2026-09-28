@@ -11,11 +11,16 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-A JSONPath workbench. Paste a JSON document, type an expression such as $..author or $.store.book[?(@.price < 10)].title, and the page lists every match with the exact path that reaches it. The tree below the editor shows the whole document: click any key to load that value's path into the expression box, which is the quickest way to learn the syntax. The JSONPath engine is vendored and runs entirely in the page.
+**JSONPath** is a way to select values from JSON using a path starting with `$`, the document's root. [JSON Path Explorer](/tools/json-path-explorer/) displays matches and a clickable tree; it does not query an API or change the JSON.
 
-## Open the tool
+## Select two names
 
-[Use JSON Path Explorer](/tools/json-path-explorer/).
+Replace **JSON** with `{"items":[{"name":"A"},{"name":"B"}]}` and set **JSONPath** to `$.items[*].name`. Click **Evaluate**. The summary should say **2 matches**, and the results should display `A` and `B` with their individual paths. `[*]` means “each item in this array.” **Copy result** copies a JSON array of values, `[
+  "A",
+  "B"
+]`, rather than the on-screen path labels.
+
+Under **Tree**, expand `items`, then click a **name** key to load its exact path into the input and see one value. If the result says **No matches**, check the JSON property names and array indices; a malformed document shows a **JSON error** instead. Everything is parsed locally, but avoid sharing JSON containing passwords or customer records just to demonstrate an expression.
 
 ## Where your input goes
 

@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/browser-games-and-practice-tools/
 ---
 
-A full Tetris in a single page: seven-bag randomiser, next-piece preview, hold slot, a faint ghost showing where the piece will land, levels and scoring. Arrow keys move and rotate, Down soft-drops, Space hard-drops, C holds and P pauses. The board is drawn with DOM cells rather than a canvas, so it stays crisp at any size and needs no plugins.
+[Tetris](/tools/tetris/) is a falling-block game: move and rotate four-square pieces to complete horizontal rows. The board is ten columns by twenty rows; a filled row disappears and earns points. This version runs in the browser and uses **keyboard controls**, not an on-screen touch pad.
 
-## Open the tool
+## Play a first piece
 
-[Use Tetris](/tools/tetris/).
+Open the tool. **Score** and **Lines** start at `0`; **Level** starts at `1`. A piece falls automatically. Press **Left** or **Right** to move it, **Up** to rotate, **Down** to drop one row faster, and **Space** to drop it immediately. **Next** shows the upcoming piece; the faint **ghost** shows where the active piece would land. Press **C** to put the piece in **Hold** (once until a piece locks). **P** or **Pause** stops the fall; **New game** resets the board and counters.
+
+Clearing one line earns `100 × level`, while four at once earns `800 × level`; soft and hard drops also add points. The level rises after every ten total cleared lines. If a new piece cannot enter the board, the round ends. There is no saved score, and a phone without a hardware keyboard may not be practical for this game.
 
 ## Where your input goes
 

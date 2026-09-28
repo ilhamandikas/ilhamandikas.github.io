@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/browser-games-and-practice-tools/
 ---
 
-Minesweeper with first-click safety and three board sizes. Click a cell to open it and right-click to flag a suspected mine. Opening an empty cell clears its neighbours automatically, numbers count the mines touching a cell, and the round is won when every safe cell is open. A timer and a mines-left counter sit above the grid.
+[Minesweeper](/tools/minesweeper/) hides mines on a grid. Open safe cells; a number tells you how many mines touch it in the eight surrounding positions. Open **every non-mine cell** to win; you do not have to mark every mine.
 
-## Open the tool
+## Make a safe first move
 
-[Use Minesweeper](/tools/minesweeper/).
+Leave **Difficulty** on **Easy · 9 × 9 · 10 mines**. **Mines left** starts at `10`, and **Time** at `0s`. Click any cell: the first click and its immediate neighbors are kept free of mines. An empty cell can reveal a group of safe neighbors; a numbered cell shows how many adjacent mines there are. Right-click a closed cell to add a flag; right-click again to remove it. **Mines left** is `10` minus your flags, *not* a verified count of unmarked mines. **New game** resets the round.
+
+The timer starts on your first reveal, not on the first flag. A later click on a mine ends the round. If right-click is unavailable on your device, note that this interface provides no separate flag button—try a device with a context-menu gesture. The board is randomized each game; do not assume a marked cell is actually a mine.
 
 ## Where your input goes
 

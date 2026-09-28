@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/browser-games-and-practice-tools/
 ---
 
-A memory game with three board sizes. Cards start face down; flip two at a time and a matching pair stays up. The page counts your moves and times the round from the first flip to the last pair, so you can see whether a bigger board costs you speed or accuracy. Symbols are shuffled on every new game.
+[Memory Match](/tools/memory-match/) hides pairs of fruit and vegetable symbols on a board. Reveal two cards at a time and remember where each symbol appeared. A matching pair stays face up; a mismatch turns back after about 700 milliseconds.
 
-## Open the tool
+## Play a short round
 
-[Use Memory Match](/tools/memory-match/).
+Leave **Difficulty** on **Easy · 4 × 4**. **Moves** starts at `0` and **Time** at `0s`. Choose any hidden card, then a second card. **Moves** becomes `1`: it counts *pairs of flips*, not individual clicks. A matching pair stays visible; if the cards differ, wait for them to turn over again. The timer starts when you flip the first card and stops once all **eight pairs** are found. **New game** reshuffles and resets both counters.
+
+Switch **Difficulty** to **Medium · 6 × 4** or **Hard · 6 × 6** for twelve or eighteen pairs. The board is random, so there is no fixed solution to memorize between rounds. No account or score upload is involved.
 
 ## Where your input goes
 
@@ -36,7 +38,7 @@ They were not a pair. A mismatch is shown for a moment so you can memorise the s
 
 ### Does a new game reshuffle the same symbols?
 
-Yes, the same set of symbols is reused but their positions are shuffled every time. Switching difficulty also deals a fresh board immediately.
+A new game reshuffles the chosen difficulty's symbols. Changing difficulty deals a new board, and larger difficulties include *more* symbols than Easy.
 
 ### Is the board different every time?
 

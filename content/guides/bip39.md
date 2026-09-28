@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/security-cryptography-basics/
 ---
 
-Generate a BIP-39 mnemonic phrase from a chosen word count and derive the seed from it, which is how a cryptocurrency wallet backs up a key as words. It also checks a phrase you were given for a valid checksum.
+A **BIP-39 mnemonic** is a list of words used as input to a wallet's key-derivation process. [BIP39 Mnemonic](/tools/bip39/) generates an English phrase and shows its entropy and derived seed *using an empty optional passphrase*. It can check the word list and checksum of a phrase, but cannot verify ownership of any wallet.
 
-## Open the tool
+## Try with a disposable phrase only
 
-[Use BIP39 Mnemonic](/tools/bip39/).
+Leave **Entropy** on **128 bits · 12 words** and click **Generate**. **Mnemonic** should contain 12 space-separated English words; **Entropy (hex)** and **Seed (hex, empty passphrase)** fill in. The words will differ every time. For this throwaway phrase only, paste the words into **Validate a mnemonic**. The status should read **Valid mnemonic**. Replacing a word may produce **Not a valid mnemonic**, but a valid checksum alone does not prove that a particular wallet or balance exists.
+
+**Never use a tutorial phrase to hold funds.** Anyone who sees the mnemonic or derived seed can potentially access the associated wallet. Copying puts it on your clipboard, and this page offers no offline-wallet setup, secure backup, or way to enter a BIP-39 passphrase for seed derivation. Do not paste an existing wallet's recovery phrase into this page.
 
 ## Where your input goes
 

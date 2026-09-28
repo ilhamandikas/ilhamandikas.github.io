@@ -128,7 +128,11 @@ function card(signature) {
   for (const [key, value] of rows) {
     const row = document.createElement('div');
     row.className = 'tool-result-row';
-    row.innerHTML = `<dt>${key}</dt><dd>${String(value)}</dd>`;
+    const label = document.createElement('dt');
+    label.textContent = key;
+    const detail = document.createElement('dd');
+    detail.textContent = String(value);
+    row.append(label, detail);
     list.appendChild(row);
   }
   wrapper.appendChild(list);

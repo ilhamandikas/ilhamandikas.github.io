@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/indonesian-data-formats/
 ---
 
-Parse an Indonesian NIK/KTP number locally in the browser. The tool splits the 16 digits into province, regency or city, district, encoded birth date, gender marker and serial number, then looks up the region names from an offline copy of Indonesian administrative codes. It does not verify whether a NIK belongs to a real person; it only explains the structure of the number you typed.
+A **NIK** is an Indonesian national identity number containing coded fields. [NIK Parser](/tools/nik-parser/) reads those fields and looks up region codes in a bundled list. It does not contact Dukcapil or prove that an identity exists.
 
-## Open the tool
+## Explore a deliberately invalid example
 
-[Use NIK Parser](/tools/nik-parser/).
+Replace **National ID number (NIK)** with `0000000101900001` (a dummy value with an unrecognized region). Under **Result**, **Clean NIK** should repeat those 16 digits, **Province code** should say `00`, **Gender** should indicate the day code `01` is not above 40, and **Birth date** should show 1 January with a year inferred from the current year (for example, **01 January 1990** in 2026). The status warns about missing region codes; that is expected for this fake example.
+
+If fewer than 16 digits remain, the page asks for exactly 16. Non-digit characters are removed as you type. For a two-digit birth year, the tool chooses 2000–current year or the previous century, so an older or future date may be guessed incorrectly. Region codes change over time; a parsed date and region are **not** proof of a real person. Never paste a real NIK into a public screenshot or share a result containing one.
 
 ## Where your input goes
 

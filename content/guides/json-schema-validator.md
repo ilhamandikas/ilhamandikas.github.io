@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/working-with-structured-data/
 ---
 
-Paste a JSON Schema and a JSON document and the document is checked against it in the page. The validator covers the parts of draft-07 that carry most real API contracts: type, enum, const, numeric and string bounds, arrays and objects, required and additional properties, $ref, allOf/anyOf/oneOf/not and if/then/else. Every problem is reported at once, with the JSON Pointer path that leads to it, so a document can be fixed in a single pass.
+A **JSON Schema** describes rules for JSON data. [JSON Schema Validator](/tools/json-schema-validator/) compares your **Document** to a **Schema** directly in the browser. It implements a useful subset of draft-07, not every keyword in the standard.
 
-## Open the tool
+## Find a missing field
 
-[Use JSON Schema Validator](/tools/json-schema-validator/).
+Choose **Load example**. The status should say **Valid**, and the **Result** summary says the document matches the schema. The example requires `id` and `email`. Delete the `email` property from **JSON value to validate** while keeping the JSON syntax valid. The result should report a **missing required property "email"** at the root path `#`. Put the property back and the error clears. **Clear** empties both editors; it does not fix invalid input for you.
+
+A path such as `#/id` points to the `id` field in the JSON document; `#` means its root. Some problems may produce multiple messages because keywords are checked independently. Local `$ref` references are supported, but remote references are not fetched. Treat **Valid** as “matches the rules this tool implements,” not as proof that the JSON meets every draft-07 rule or that an API will accept it.
 
 ## Where your input goes
 

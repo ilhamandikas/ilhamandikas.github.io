@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/network-debugging/
 ---
 
-A snapshot of the connection and device facts a browser exposes to a page: online state, the Network Information values where they exist, screen and viewport size, pixel ratio, language, CPU threads, memory hint and time zone. It is read locally and never uploaded.
+[Network Info](/tools/network-info/) displays a local snapshot of what the browser reports about your connection and device. It does **not** test a remote host, discover a private IP address, or measure your real download speed.
 
-## Open the tool
+## Read and refresh the snapshot
 
-[Use Network Info](/tools/network-info/).
+Open the tool. Under **Details**, find **Online**, **Screen**, **Viewport**, and **Time zone**. Resize the browser window and press **Refresh**: **Viewport** should reflect the new page area, while the physical **Screen** value usually stays the same. Where supported, **Downlink** is shown in Mbps and **Round-trip time** in milliseconds; other browsers display a dash because they do not expose those estimates.
+
+**Online: Yes** means the browser thinks it has network connectivity, not that `example.com` or your API is reachable. The network information values are coarse hints, not speed-test results. The page reads browser properties locally; consider what user-agent, locale, and screen details you include before posting a screenshot.
 
 ## Where your input goes
 

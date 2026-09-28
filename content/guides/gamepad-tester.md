@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/browser-debugging/
 ---
 
-Inspect a connected controller: every axis with its travel, every button with its pressure, and a running note of the last input seen. It is the quick answer to whether a pad works, which stick drifts and which button has stopped registering.
+[Gamepad Tester](/tools/gamepad-tester/) reads the browser's Gamepad API and displays controllers it reports, including stick **axes** (typically -1 to 1) and button values (typically 0 to 1). It cannot determine whether a controller is physically broken or test vibration.
 
-## Open the tool
+## Check a controller
 
-[Use Gamepad Tester](/tools/gamepad-tester/).
+Connect a gamepad, open the page, then press one of its buttons. **Connected** should show a controller count and a panel with its name, axes, and buttons. Press a face button: its value should rise while pressed, and **Last input** names that button if the browser provides the standard mapping. Move a stick: watch the relevant axis change from around `0` and return toward it when released. With no accessible controller, the page prompts you to press a button or reports that the API is unavailable.
+
+Browsers often reveal a gamepad only *after* interaction. The exact names and readings depend on the device and browser; small nonzero values at rest are not a diagnosis by themselves. No controller readings are uploaded by this tool.
 
 ## Where your input goes
 
@@ -29,7 +31,7 @@ Browsers hide gamepads until an input event proves one is being used, which is a
 
 ### A stick reports a small value while untouched. Is it broken?
 
-A little drift below about 0.05 is normal on worn analogue sticks and browsable games compensate with a dead zone. A value that keeps climbing on its own, or a stick that never reaches 1 at full travel, points to a real fault.
+This page reports values rounded to two decimals; it does not apply a configurable dead zone or diagnose hardware. Compare repeated readings at rest and while moving the stick, then check your game or OS calibration before deciding something is faulty.
 
 ### Can it test vibration or the light bar?
 

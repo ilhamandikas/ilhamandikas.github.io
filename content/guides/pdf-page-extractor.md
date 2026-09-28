@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/working-with-pdfs/
 ---
 
-Pull the pages you want out of a long PDF, or cut the pages you do not want by listing only the ones to keep. The chosen pages are copied into a new document, so the parts you left out are genuinely absent from the result rather than merely hidden.
+[PDF Page Extractor](/tools/pdf-page-extractor/) copies selected pages from a PDF into a **new** file in your browser. It does not alter the original file on disk.
 
-## Open the tool
+## Keep just one page
 
-[Use PDF Page Extractor](/tools/pdf-page-extractor/).
+Choose a disposable two-page PDF under **PDF file**. In **Pages to keep**, enter `2`. After processing, **Source** should say `2 pages`, **Kept** should say `1 of 2 pages`, and **Output** should show the new file size. Choose **Download** to save it under the **Output name** (by default `extracted.pdf`). Open the downloaded file and check it contains only the second page. Typing `3` for this file instead reports a page-range error and does not offer a new download until you correct it.
+
+For more pages, `1-3, 7, 10-` means the first three, page seven, and page ten to the end; selected pages are sorted into source order and duplicate numbers are collapsed. Do not rely on removing a page to remove **all** sensitive content, metadata, links, or annotations without inspecting the resulting PDF. The tool cannot open an encrypted PDF without a compatible reader and permission.
 
 ## Where your input goes
 
@@ -32,7 +34,7 @@ No. The file on your disk is only read. The result is a separate download, and t
 
 ### Do links and form fields survive?
 
-The page content comes across, but annotations such as form fields and internal links are not carried over, because only the pages themselves are copied into the new document.
+Do not assume either way. This tool copies pages using pdf-lib, and annotations, forms, links, and metadata may need separate inspection in the exported PDF. Review the result before sending it.
 
 ## Related guide
 

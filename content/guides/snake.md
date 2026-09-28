@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/browser-games-and-practice-tools/
 ---
 
-A grid Snake that runs entirely in the page. Steer with the arrow keys or WASD, or the on-screen pad on touch. The snake starts on your first turn, grows by one each time it eats, and speeds up as the score rises. The game ends on a wall or on the snake's own body, and Space pauses. The best score is kept on this device.
+[Snake](/tools/snake/) is a grid game: steer toward the food without hitting a wall or the snake's body. Each food adds one segment and one point. The game runs in your browser; only the **Best** score is stored locally.
 
-## Open the tool
+## Start and pause a round
 
-[Use Snake](/tools/snake/).
+Open the tool. **Score** starts at `0`, and the snake is not moving yet. Press **Up** (arrow key, `W`, or the on-screen ▲ button) to start in that direction. The snake continues moving even if you do not press another key. **Pause** stops it; the button becomes **Resume**. Press **New game** to reset the current score and position while keeping **Best**. Pressing Space also pauses or resumes.
+
+The snake starts facing right and ignores an immediate left turn, since that would reverse into its body. Avoid the edges and steer toward the food square. The step interval gets shorter as your score rises, so plan the next turn early. **Best** survives a reload in this browser's local storage but is not synchronized across devices.
 
 ## Where your input goes
 

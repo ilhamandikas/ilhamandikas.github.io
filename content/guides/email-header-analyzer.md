@@ -10,11 +10,20 @@ broader_guide:
   url: /guides/email-debugging/
 ---
 
-Paste the raw headers of a message and the page lays out the delivery path: each Received hop in order, the hosts and IP addresses involved, the time between hops, and the SPF, DKIM and DMARC verdicts from the Authentication-Results header. Nothing leaves the browser.
+Mail servers add **headers** recording how a message traveled. [Email Header Analyzer](/tools/email-header-analyzer/) reads raw headers pasted into the browser, lists `Received` hops from oldest to newest, and extracts any SPF, DKIM, and DMARC **reported verdicts**. It does not verify those authentication methods independently.
 
-## Open the tool
+## Inspect a harmless sample
 
-[Use Email Header Analyzer](/tools/email-header-analyzer/).
+Paste these two lines into **Raw email headers**:
+
+```text
+Received: from mail.example.com ([203.0.113.10]) by mx.example.net; Tue, 1 Oct 2024 10:00:03 -0700
+Authentication-Results: mx.example.net; spf=pass; dkim=pass; dmarc=pass
+```
+
+Under **Summary**, SPF, DKIM, and DMARC should each say `pass`. Under **Delivery path**, you should see **1 delivery hop**, from `mail.example.com` to `mx.example.net`. With one hop, **Delay** is a dash; the tool needs two parseable hop timestamps to calculate a difference. Those verdicts are *text copied from the header*, not a live check of the sending domain.
+
+If you see **No headers found**, paste the header block rather than only the message body. Header chains and displayed sender names can be forged; check trusted receiving-server records for an incident. Real mail headers include personal addresses and internal IPs, so redact them before sharing a screenshot.
 
 ## Where your input goes
 

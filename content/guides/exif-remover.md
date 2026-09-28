@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/practical-image-tools/
 ---
 
-A photo carries more than the picture: the camera model, the time it was taken, the software that saved it and often the exact place on the map. Re-encoding the pixels through a canvas rebuilds the image without any of that, so what you share carries only what you can see.
+**EXIF** is image metadata that can include capture time, camera details, or GPS location. [EXIF Remover](/tools/exif-remover/) redraws an image in a browser canvas and exports new pixels. This generally drops embedded EXIF and other original file metadata, but visible details in the picture remain visible.
 
-## Open the tool
+## Try a harmless photo
 
-[Use EXIF Remover](/tools/exif-remover/).
+Choose a disposable image under **Image**. **Result** should show **Original** and **Clean** dimensions and file sizes after the conversion finishes. Leave **Output format** on **Keep original** for JPEG, PNG, or WebP, or pick a specific format. **Quality** defaults to `90` and affects JPEG/WebP output; PNG ignores this quality value. Choose **Download clean image** to save a new file with `-clean` added to its name. Your original file is not overwritten.
+
+**Keep original** does not preserve GIF as GIF: this implementation converts unsupported originals, including GIF, to JPEG. Animated frames and transparency can be lost or change appearance. Re-encoding may also change file size and visual quality. Check the output with [Image Metadata](/tools/image-metadata/) and inspect the pixels before sharing sensitive images; canvas conversion is not a guarantee that every identifying detail has been removed.
 
 ## Where your input goes
 
@@ -33,7 +35,7 @@ The original may have been compressed very hard or stored as a smaller size. Re-
 
 ### Is the metadata really gone?
 
-Yes. The output is written fresh from the canvas, and a canvas only holds pixels, so EXIF, GPS, XMP and any embedded thumbnail have no way to come along.
+Original file metadata is generally not transferred when canvas pixels are encoded into a new file. Verify the downloaded file using a metadata viewer, and remember that text, faces, or locations *visible in the pixels* are not removed.
 
 ## Related guide
 

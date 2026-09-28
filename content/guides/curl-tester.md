@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/http-api-debugging/
 ---
 
-Parse a curl command locally, show the HTTP method, URL, headers and body it contains, then rebuild a cleaner command. It is split from the HTTP Request Tester so command conversion does not clutter the actual request/response UI.
+[curl Tester](/tools/curl-tester/) **reads and rewrites text** from a `curl` command. It displays a parsed HTTP method, URL, headers, and body, then builds a new command. It does not run `curl` or make a network request.
 
-## Open the tool
+## Parse a safe GET
 
-[Use curl Tester](/tools/curl-tester/).
+Type `curl https://example.com/docs` into **Paste a curl command**, then press **Clean & parse**. Under **Parsed request**, **Method** should be `GET` and **URL** should be `https://example.com/docs`. **Rebuilt curl** should start with `curl --location --request GET https://example.com/docs`. **Copy clean curl** copies that rewritten command, not the original.
+
+The rewritten command always includes `--location`, which follows redirects; that may not match your input. Other unsupported options appear in **Notes** or may not be reproduced faithfully. Before running anything, compare the rewritten URL, method, headers, and body with the original. Never paste live authorization headers or cookies into a public example or share a copied command that contains them.
 
 ## Where your input goes
 

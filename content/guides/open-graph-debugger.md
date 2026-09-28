@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/web-metadata/
 ---
 
-Paste a page's HTML and the page pulls out its Open Graph and Twitter Card tags, the title and the canonical link, then draws a preview of the card a link would produce. It is the quick way to see why a shared link shows the wrong title or no image.
+**Open Graph** tags tell some social platforms what title, summary, and image to show when sharing a page. [Open Graph Debugger](/tools/open-graph-debugger/) reads **HTML you paste**; it does not fetch a page from a URL or contact a crawler.
 
-## Open the tool
+## Preview two tags
 
-[Use Open Graph Debugger](/tools/open-graph-debugger/).
+Paste `<meta property="og:title" content="Demo article"><meta property="og:description" content="A short summary">` into **Page HTML**. **Preview** should show `Demo article` and `A short summary`. Under **Tags**, both metadata rows should appear. Add `<meta property="og:image" content="https://example.com/card.png">`: the preview shows that image **URL as text**, not the image pixels.
+
+The tool prefers `og:title` over `twitter:title` and then the page's `<title>` as a fallback. A platform may use different rules, cache old tags, or fail to load an image even when a tag exists. Inspect the real deployed page with the platform's own debugger before assuming the preview matches a public card. Do not paste private staging HTML into a screenshot.
 
 ## Where your input goes
 
@@ -33,7 +35,7 @@ Open Graph is preferred over Twitter Card, and both are preferred over the plain
 
 ### The image is missing from the preview. Why?
 
-The parser only reads the tag; it does not fetch the image. If og:image is absent or empty, the card shows no image. Use an absolute URL, since relative image paths are unreliable for crawlers.
+The tool does not load images: it only displays the image URL as text when present. If the tag is missing, the preview has no image section. On a live page, verify that the URL is absolute and publicly reachable using the platform you care about.
 
 ### Is the page fetched for me?
 

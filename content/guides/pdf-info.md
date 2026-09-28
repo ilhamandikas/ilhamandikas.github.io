@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/working-with-pdfs/
 ---
 
-Open a PDF to see what it is made of: how many pages there are, the exact size of each one, the format version and the document information the producer wrote, such as the title and the author.
+A **PDF page size** is usually stored in points (72 points per inch). [PDF Page Counter and Info](/tools/pdf-info/) opens a file in your browser to list its page count, dimensions in points and approximate millimeters, PDF version, and any embedded document information. It does not upload the file.
 
-## Open the tool
+## Check a one-page test PDF
 
-[Use PDF Page Counter and Info](/tools/pdf-info/).
+Make or download a disposable one-page PDF containing only the word `Demo`. Choose it with **PDF file**; there is no separate Run button. If it can be read, **Report** should show **Pages: 1 page**. In the **Pages** table, find page 1's width, height, and **Orientation** (Portrait, Landscape, or Square according to the page dimensions). **Version** comes from the PDF header. If your file has no title or author in its internal metadata, the report does not invent them.
+
+A PDF can contain personal metadata even if the visible page looks harmless; review fields before sharing a screenshot. Only the first **300 page-size rows** are displayed for a longer file, though the overall page count covers the document. An encrypted or damaged file shows an error rather than a report.
 
 ## Where your input goes
 

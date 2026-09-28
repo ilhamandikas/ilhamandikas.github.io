@@ -11,11 +11,13 @@ broader_guide:
   url: /guides/jwt-debugging/
 ---
 
-Load a JWT, edit its iat, nbf and exp claims with date pickers, and re-encode the token. Use the quick +15m / +1h / +1d buttons to extend an expiry, then re-sign with HS256, HS384 or HS512, or strip the signature entirely for local testing. Everything runs in the browser.
+JWTs can contain three time claims measured in **seconds since 1970 UTC**: `iat` (issued), `nbf` (not before), and `exp` (expires). [JWT Expiry Editor](/tools/jwt-expiry-editor/) decodes a token and lets you change these times; it can re-sign using an HMAC test secret or produce an unsigned token. **Editing a claim invalidates the original signature.**
 
-## Open the tool
+## Change a disposable token
 
-[Use JWT Expiry Editor](/tools/jwt-expiry-editor/).
+First make a test HS256 token with `{"sub":"demo"}` and `demo-only-key` at [JWT Encode](/tools/jwt-editor/). Paste it into **Token** here. After a brief pause, the **Claims** editor appears; set **Secret** to the same `demo-only-key` and choose **+1h**. **Expires at (exp)** should fill with a date/time about one hour from now, **Updated token** should have three dot-separated sections, and the status should say **Signed with HS256**. **Copy token** copies that *new* token. The date inputs are in your browser's local timezone, while the JWT stores UTC epoch seconds.
+
+The quick buttons add time to the *current expiry*, or from now if there is none; they do not set a fixed duration from original issuance. When a secret is missing in HMAC mode, the output has an empty signature and is **not** a valid HMAC token. **none** also removes the signature and should be refused by real verifiers. Only use invented claims and disposable secrets here. This tool does not prove that your server will accept the new token.
 
 ## Where your input goes
 

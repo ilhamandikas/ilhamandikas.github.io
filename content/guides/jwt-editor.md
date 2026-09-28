@@ -10,11 +10,13 @@ broader_guide:
   url: /guides/jwt-debugging/
 ---
 
-Build and sign a JSON Web Token in the browser. You edit the header and the payload as JSON, and the token line at the top is rebuilt as you type. Signing happens locally with WebCrypto, using a secret for HS256/384/512 or a PEM private key for RS, PS and ES algorithms — the key never leaves the page. The alg field in the header is rewritten to match the algorithm you choose, so the token cannot claim one algorithm while being signed with another.
+A **JWT** is three dot-separated sections: a JSON header, a JSON payload (**claims**), and a signature. [JWT Encode](/tools/jwt-editor/) builds and signs a **test token** when you choose **Encode / sign**; it does **not** verify a token or rebuild automatically as you type.
 
-## Open the tool
+## Make a throwaway token
 
-[Use JWT Encode](/tools/jwt-editor/).
+Keep **Algorithm** on **HS256**, set **Claims as JSON** to `{"sub":"demo"}`, and type `demo-only-key` into **Shared secret**. Click **Encode / sign**. **Result** should contain three sections separated by two dots, and the status should say **HS256 signature written**. The token text depends on your input; **Copy** and **Download** take the generated token. The editor rewrites the header's `alg` to match the selected algorithm.
+
+If the payload is not a JSON *object*, or the secret is empty for HS256, you get an error rather than a valid signature. **none** creates an unsigned token, not an authentication token. For asymmetric algorithms, this tool expects the appropriate PEM private key. Do not paste a real signing key or production JWT into a screenshot, URL, or shared test; anyone with the secret can forge tokens accepted by the system using it. To check a signature, use [JWT Parser](/tools/jwt-parser/) with the matching test key.
 
 ## Where your input goes
 

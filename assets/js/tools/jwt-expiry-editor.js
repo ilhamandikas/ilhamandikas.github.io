@@ -53,17 +53,23 @@ function paint() {
   return parts;
 }
 
-async function update() {
+async function update(changedDates = false, changedPayload = false) {
   if (!header) return;
   try {
-    applyClaim('iat', iatField);
-    applyClaim('nbf', nbfField);
-    applyClaim('exp', expField);
-    if (payloadField.value.trim()) {
+    if (changedPayload) {
       payload = JSON.parse(payloadField.value);
+      iatField.value = toLocal(payload.iat);
+      nbfField.value = toLocal(payload.nbf);
+      expField.value = toLocal(payload.exp);
     }
-    const [h, p] = paint();
+    if (changedDates) {
+      applyClaim('iat', iatField);
+      applyClaim('nbf', nbfField);
+      applyClaim('exp', expField);
+    }
     const alg = algSelect.value;
+    header.alg = alg;
+    const [h, p] = paint();
     if (alg === 'none') {
       output.value = `${h}.${p}.`;
       tk.setStatus(status, 'Signature removed', '');
@@ -103,6 +109,8 @@ function load() {
     nbfField.value = toLocal(payload.nbf);
     expField.value = toLocal(payload.exp);
     if (header.alg && ALGORITHMS[header.alg]) algSelect.value = header.alg;
+    else algSelect.value = 'none';
+    payloadField.value = JSON.stringify(payload, null, 2);
     update();
   } catch (error) {
     header = null;
@@ -116,14 +124,20 @@ document.querySelectorAll('[data-jwe-shift]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const base = fromLocal(expField.value) ?? Math.floor(Date.now() / 1000);
     expField.value = toLocal(base + Number(btn.dataset.jweShift));
-    update();
+    update(true);
   });
 });
 
 tokenField.addEventListener('input', tk.debounce(load, 200));
-[iatField, nbfField, expField, algSelect, secretField, payloadField].forEach((el) => {
-  el.addEventListener('change', update);
-  el.addEventListener('input', tk.debounce(update, 200));
+[iatField, nbfField, expField].forEach((el) => {
+  el.addEventListener('change', () => update(true));
+  el.addEventListener('input', tk.debounce(() => update(true), 200));
+});
+payloadField.addEventListener('change', () => update(false, true));
+payloadField.addEventListener('input', tk.debounce(() => update(false, true), 200));
+[algSelect, secretField].forEach((el) => {
+  el.addEventListener('change', () => update());
+  el.addEventListener('input', tk.debounce(() => update(), 200));
 });
 
 load();
