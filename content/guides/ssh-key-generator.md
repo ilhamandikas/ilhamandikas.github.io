@@ -10,11 +10,19 @@ broader_guide:
   url: /guides/security-cryptography-basics/
 ---
 
-Generate an SSH key pair in the browser — Ed25519, ECDSA on P-256, P-384 or P-521, or RSA at 2048, 3072 or 4096 bits — and download the private key in the format your own ssh reads. The private key is OpenSSH's native openssh-key-v1 container, which is what ssh-keygen writes and what ssh accepts, with a PKCS#8 PEM copy offered beside it for tools that want one. Keys are generated locally with WebCrypto and are never sent anywhere.
+An SSH **key pair** has two parts. The **public key** can be placed on a server to grant access; the **private key** stays with you and must not be shared. [SSH Key Generator](/tools/ssh-key-generator/) creates both in your browser. It cannot recover a private key you lose.
 
-## Open the tool
+## Make a test pair
 
-[Use SSH Key Generator](/tools/ssh-key-generator/).
+1. Leave **Type** on **Ed25519**, add a harmless **Comment** such as `test-laptop`, then choose **Generate key pair**. Some browsers do not support every key type; read the status if generation fails.
+2. Under **Public key**, find an **authorized_keys line** beginning with `ssh-ed25519`. **Download .pub** saves that public line. The comment at its end is a label, not part of the cryptographic check.
+3. Under **Private key**, you should see an **OpenSSH private key**. **Download** saves that sensitive half. Do not paste it into a ticket or chat. The **PKCS#8 PEM** panel is another format of the same private key for software that expects it—not a second public key.
+
+The **Fingerprint** shown here describes **your generated public key**. It is **not** the host-key fingerprint your SSH client shows when connecting to a server for the first time. Do not use it as a substitute for checking the server's identity.
+
+## Before using a real key
+
+The downloaded OpenSSH private key has **no passphrase** at first. Save it somewhere you control, restrict access (for example, `chmod 600` on an appropriate Unix private-key file), and add a passphrase with `ssh-keygen -p` if you need one. Put **only the public key** in the server's `authorized_keys`. Generating a pair does not install it or grant access by itself.
 
 ## Where your input goes
 

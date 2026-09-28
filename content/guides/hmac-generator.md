@@ -10,11 +10,20 @@ broader_guide:
   url: /guides/security-cryptography-basics/
 ---
 
-Compute an HMAC over a message using SHA-256, SHA-384 or SHA-512 and a shared secret, then copy the result as hex or base64. Paste an expected HMAC to check it against the message and key, which is how a webhook signature is normally verified. The computation uses WebCrypto.
+An **HMAC** is a short result made from **both a message and a secret key**. If either changes, the result changes. [HMAC Generator](/tools/hmac-generator/) lets you inspect that relationship with test values; it is not a place to publish a real signing key.
 
-## Open the tool
+## Make and compare a test signature
 
-[Use HMAC Generator](/tools/hmac-generator/).
+1. Type `hello` in **Text** and replace the default **Key** with `demo-key`. Leave **Algorithm** on **SHA-256** and **Output** on **Hex**.
+2. The **HMAC (hex)** output should start with `716539aa`. **Copy** takes the full result. The output updates after you type.
+3. Paste that output into **Verify (paste an expected HMAC)**. You should see **Signature matches.**
+4. Change the message to `hello!` but leave the expected HMAC alone. You should now see **Signature does not match.**
+
+**Base64** writes the same signature bytes in another alphabet. Choose the form the system you are working with actually expects. **SHA-1** is offered for compatibility with old integrations; prefer a modern algorithm when you control both sides. If an expected signature does not match, check the exact message bytes, key, algorithm, and output format before blaming the other system.
+
+## Keep real secrets out of examples
+
+The calculation happens in your browser, but the key is visible in the input and a copied value goes to your clipboard. Use disposable values when learning. This page compares signatures for debugging; a production webhook verifier should follow the provider's rules for canonical bytes, request age, and safe comparison rather than copying browser-tool logic.
 
 ## Where your input goes
 

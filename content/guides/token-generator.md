@@ -10,11 +10,17 @@ broader_guide:
   url: /guides/security-cryptography-basics/
 ---
 
-Generate random tokens and passwords of a chosen length from a chosen character set, drawn from the browser's cryptographic random source. Useful for API keys, session secrets and share links.
+A **token** is a string a program may use as a secret or as an identifier. [Token Generator](/tools/token-generator/) makes random strings using your browser's cryptographic random source. The **output itself** is sensitive if you use it as a real secret.
 
-## Open the tool
+## Check the controls with throwaway values
 
-[Use Token Generator](/tools/token-generator/).
+Set **How many** to `2` and **Length** to `12`, then choose **Generate**. Under **Tokens**, you should see two lines with twelve characters each. The exact characters are different each time. **a-z**, **A-Z**, and **0-9** are checked by default; **symbols** adds punctuation if you enable it.
+
+If you uncheck everything, this implementation falls back to lowercase letters rather than returning an error. A checked set makes characters *available*; it does not guarantee every generated string contains one character from every selected set. If an application demands a particular character type, inspect the result against that rule.
+
+## Before using a real token
+
+Choose the length and allowed characters your receiving application expects. Store the result in a secret manager or another appropriate place; do not put it in a URL, issue comment, or screenshot. **Copy** puts it on the clipboard, where other software on your device may read it. The generator does not upload the values, but it cannot protect what you do with them afterward.
 
 ## Where your input goes
 
