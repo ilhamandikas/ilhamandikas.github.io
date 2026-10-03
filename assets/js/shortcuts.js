@@ -310,6 +310,25 @@ if (helpButton) {
   helpButton.addEventListener('click', () => (help.hidden ? openHelp() : closeHelp()));
 }
 
+// A visible control for people who do not know the shortcut. It focuses the
+// page's own field when there is one, and opens the global overlay otherwise.
+const searchButton = document.querySelector('#nav-search');
+if (searchButton) {
+  if (localSearch || globalSearchAvailable()) {
+    const navToggle = document.querySelector('#nav-toggle');
+    const toolNavToggle = document.querySelector('#tool-nav-toggle');
+    searchButton.addEventListener('click', () => {
+      // Tapping search on mobile should put the main menu away, and reveal the
+      // tool list when its search field lives inside a collapsed panel.
+      if (navToggle) navToggle.checked = false;
+      if (toolNavToggle) toolNavToggle.checked = true;
+      openSearch();
+    });
+  } else {
+    searchButton.hidden = true;
+  }
+}
+
 /* ---------------------------------------------------------------- the keys */
 
 let armed = false;

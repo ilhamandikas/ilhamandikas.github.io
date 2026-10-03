@@ -668,6 +668,15 @@ const check = (label, actual, expected) => {
     key({ key: 'k', ctrlKey: true });
     check('shortcuts: Ctrl+K too', globalSearch.hidden, false);
 
+    key({ key: 'Escape' });
+    const searchButton = document.querySelector('#nav-search');
+    check('shortcuts: the header search button is visible', Boolean(searchButton) && searchButton.hidden === false, true);
+    searchButton.click();
+    check('shortcuts: the header search button opens the global search', globalSearch.hidden, false);
+    check('shortcuts: the header search button focuses the field', document.activeElement === globalInput, true);
+    key({ key: 'Escape' });
+    check('shortcuts: the header search button leaves the list shut', help.hidden, true);
+
     check('shortcuts: no uncaught errors', page.finish().thrown.length + page.finish().errors.length, 0);
     page.dom.window.close();
   }
@@ -689,6 +698,13 @@ const check = (label, actual, expected) => {
     check('shortcuts: / focuses the field instead of leaving', document.activeElement === input, true);
     check('shortcuts: / does not open the list', help.hidden, true);
 
+    // The header button is the discovery path for people who do not use keys.
+    const searchButton = document.querySelector('#nav-search');
+    input.blur();
+    searchButton.click();
+    check('shortcuts: the header search button focuses the catalog field', document.activeElement === input, true);
+    check('shortcuts: the header search button does not open the global search', document.querySelector('#global-search'), null);
+
     // A field keeps its letters: no sequence, no list, and nothing swallowed.
     check('shortcuts: a letter typed in a field is not taken', key({ key: 'g' }), true);
     key({ key: 'h' });
@@ -698,6 +714,23 @@ const check = (label, actual, expected) => {
 
     const result = page.finish();
     check('shortcuts: no uncaught errors on the catalog', result.thrown.length + result.errors.length, 0);
+    page.dom.window.close();
+  }
+
+  console.log('\n=== the header search button on a tool page ===');
+  {
+    const page = loadFile(path.join(ROOT, 'tools', 'pdf-info', 'index.html'), 'https://ilham.dev/tools/pdf-info/');
+    const { document } = page.w;
+    const button = document.querySelector('#nav-search');
+    const toggle = document.querySelector('#tool-nav-toggle');
+    const field = document.querySelector('#tool-nav-search');
+    check('search button: the tool sidebar starts collapsed', toggle.checked, false);
+    button.click();
+    check('search button: it opens the tool sidebar', toggle.checked, true);
+    check('search button: it focuses the tool field', document.activeElement === field, true);
+    check('search button: it does not open the global search', document.querySelector('#global-search'), null);
+    const result = page.finish();
+    check('search button: no uncaught errors', result.thrown.length + result.errors.length, 0);
     page.dom.window.close();
   }
 
