@@ -5,6 +5,8 @@ Browser-based utilities available at:
 
 {{ "tools/" | absURL }}
 
+There are {{ len $tools }} tools in total.
+
 ## Tool Registry
 
 Complete machine-readable registry:

@@ -1,8 +1,12 @@
 // Copy a chosen set of pages into a fresh PDF, which is also how pages are
 // removed: whatever is not listed simply does not come across.
-import { PDFDocument } from '../vendor/pdf-lib.js';
-
 const { tk } = window;
+
+let pdfLibPromise = null;
+const loadPdfLib = () => {
+  pdfLibPromise = pdfLibPromise || import(window.__toolVendors.pdfLib);
+  return pdfLibPromise;
+};
 
 const els = {
   file: document.querySelector('#ppe-file'),
@@ -77,6 +81,7 @@ async function run() {
   }
 
   try {
+    const { PDFDocument } = await loadPdfLib();
     const out = await PDFDocument.create();
     const copied = await out.copyPages(source.doc, pages.map((page) => page - 1));
     copied.forEach((page) => out.addPage(page));
@@ -106,6 +111,7 @@ async function onFile() {
   const bytes = new Uint8Array(await file.arrayBuffer());
 
   try {
+    const { PDFDocument } = await loadPdfLib();
     const doc = await PDFDocument.load(bytes);
     source = { doc, count: doc.getPageCount(), size: file.size };
     if (source.count === 1 && els.range.value.trim() === '1-2') els.range.value = '1';

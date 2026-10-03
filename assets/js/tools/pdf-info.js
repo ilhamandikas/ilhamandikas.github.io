@@ -2,9 +2,13 @@
 // is, and whatever document information the producer left behind.
 // updateMetadata is off so loading the file does not stamp a producer and a
 // modification date of its own over what the file actually says.
-import { PDFDocument, PDFName } from '../vendor/pdf-lib.js';
-
 const { tk } = window;
+
+let pdfLibPromise = null;
+const loadPdfLib = () => {
+  pdfLibPromise = pdfLibPromise || import(window.__toolVendors.pdfLib);
+  return pdfLibPromise;
+};
 
 const els = {
   file: document.querySelector('#pdi-file'),
@@ -32,7 +36,7 @@ function clean(value) {
 
 // Read a string straight out of the Info dictionary, so the report keeps to
 // what the file actually says.
-function textEntry(dict, name) {
+function textEntry(dict, PDFName, name) {
   try {
     const value = dict.get(PDFName.of(name));
     return value && typeof value.decodeText === 'function' ? clean(value.decodeText()) : '';
@@ -42,8 +46,8 @@ function textEntry(dict, name) {
 }
 
 // A PDF date looks like D:20240115090000+07'00'; the date part is enough here.
-function dateEntry(dict, name) {
-  const match = textEntry(dict, name).match(/^D:(\d{4})(\d{2})?(\d{2})?/);
+function dateEntry(dict, PDFName, name) {
+  const match = textEntry(dict, PDFName, name).match(/^D:(\d{4})(\d{2})?(\d{2})?/);
   return match ? [match[1], match[2], match[3]].filter(Boolean).join('-') : '';
 }
 
@@ -83,7 +87,10 @@ async function onFile() {
   const bytes = new Uint8Array(await file.arrayBuffer());
 
   let doc;
+  let PDFDocument;
+  let PDFName;
   try {
+    ({ PDFDocument, PDFName } = await loadPdfLib());
     doc = await PDFDocument.load(bytes, { updateMetadata: false });
   } catch (error) {
     const encrypted = /encrypt/i.test(String((error && error.message) || ''));
@@ -98,14 +105,14 @@ async function onFile() {
 
   const info = doc.getInfoDict();
   const entries = [
-    ['Title', textEntry(info, 'Title')],
-    ['Author', textEntry(info, 'Author')],
-    ['Subject', textEntry(info, 'Subject')],
-    ['Keywords', textEntry(info, 'Keywords')],
-    ['Creator', textEntry(info, 'Creator')],
-    ['Producer', textEntry(info, 'Producer')],
-    ['Created', dateEntry(info, 'CreationDate')],
-    ['Modified', dateEntry(info, 'ModDate')],
+    ['Title', textEntry(info, PDFName, 'Title')],
+    ['Author', textEntry(info, PDFName, 'Author')],
+    ['Subject', textEntry(info, PDFName, 'Subject')],
+    ['Keywords', textEntry(info, PDFName, 'Keywords')],
+    ['Creator', textEntry(info, PDFName, 'Creator')],
+    ['Producer', textEntry(info, PDFName, 'Producer')],
+    ['Created', dateEntry(info, PDFName, 'CreationDate')],
+    ['Modified', dateEntry(info, PDFName, 'ModDate')],
   ].filter(([, value]) => value);
 
   els.meta.replaceChildren(...(entries.length ? entries.map(([label, value]) => row(label, value)) : [row('Document information', 'None stored in this file')]));

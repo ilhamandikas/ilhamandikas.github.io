@@ -608,7 +608,8 @@ const check = (label, actual, expected) => {
     check('shortcuts: g a is About', labelFor('g a'), 'About');
     check('shortcuts: g c is Contact', labelFor('g c'), 'Contact');
     check('shortcuts: g r is the feed', labelFor('g r'), 'RSS feed');
-    check('shortcuts: / is the search', labelFor('/'), 'Search the tools');
+    const searchRow = rows.find((row) => row.querySelector('.kbd-help-label').textContent === 'Search tools, guides, and posts');
+    check('shortcuts: the global search is listed', Boolean(searchRow), true);
     check('shortcuts: ? is the list itself', labelFor('?'), 'Open or close this list');
     check('shortcuts: a row points where the header points', rowFor('g t').getAttribute('href'), '/tools/');
     check('shortcuts: a page without neighbours has no bracket rows', ['[', ']'].filter((k) => rowFor(k)), []);
@@ -649,13 +650,23 @@ const check = (label, actual, expected) => {
     key({ key: 'z' });
     check('shortcuts: a lone letter does nothing', seen, []);
 
+    const globalSearch = document.querySelector('#global-search');
+    const globalInput = document.querySelector('#global-search-input');
+    check('shortcuts: the global search starts closed', globalSearch.hidden, true);
+
+    seen.length = 0;
     key({ key: '/' });
-    check('shortcuts: / leaves for the catalog search', seen, ['/tools/#search']);
+    check('shortcuts: / opens the global search', globalSearch.hidden, false);
+    check('shortcuts: / focuses the global field', document.activeElement === globalInput, true);
+    key({ key: 'Escape' });
+    check('shortcuts: Escape closes the global search', globalSearch.hidden, true);
+
     seen.length = 0;
     key({ key: 'k', metaKey: true });
-    check('shortcuts: Cmd+K goes the same way', seen, ['/tools/#search']);
+    check('shortcuts: Cmd+K opens the global search', globalSearch.hidden, false);
+    check('shortcuts: Cmd+K focuses the global field', document.activeElement === globalInput, true);
     key({ key: 'k', ctrlKey: true });
-    check('shortcuts: Ctrl+K too', seen, ['/tools/#search', '/tools/#search']);
+    check('shortcuts: Ctrl+K too', globalSearch.hidden, false);
 
     check('shortcuts: no uncaught errors', page.finish().thrown.length + page.finish().errors.length, 0);
     page.dom.window.close();
@@ -718,7 +729,7 @@ const check = (label, actual, expected) => {
     check('shortcuts: ] points at the next post', brackets[1].getAttribute('href'), next.getAttribute('href'));
 
     // One neighbour only: the row for the missing side must be absent.
-    const lone = loadFile(path.join(ROOT, 'posts', 'hello-world', 'index.html'), 'https://ilham.dev/posts/hello-world/');
+    const lone = loadFile(path.join(ROOT, 'posts', 'why-this-site-is-static', 'index.html'), 'https://ilham.dev/posts/why-this-site-is-static/');
     const loneKeys = [...lone.w.document.querySelectorAll('.kbd-help-row')].map((row) => row.querySelector('kbd').textContent);
     check('shortcuts: a post with one neighbour lists one bracket key', loneKeys.includes('[') || loneKeys.includes(']'), true);
     check('shortcuts: and not the other', loneKeys.includes('[') && loneKeys.includes(']'), false);
@@ -1088,8 +1099,8 @@ const check = (label, actual, expected) => {
       parsed = JSON.parse(rules[1].trim());
     } catch { /* left null */ }
     check('wiring: speculation rules survive minification as valid JSON', Boolean(parsed), true);
-    check('wiring: prerender waits for a hover, not every link', parsed && parsed.prerender[0].eagerness, 'moderate');
-    check('wiring: feeds are excluded from prerendering', JSON.stringify(parsed).includes('/*.xml'), true);
+    check('wiring: prefetch is enabled for likely next pages', parsed && parsed.prefetch[0].eagerness, 'moderate');
+    check('wiring: feeds are excluded from prefetching', JSON.stringify(parsed).includes('/*.xml'), true);
 
     // jsdom cannot run a view transition, so the only checkable part is that the
     // rules are there: the sidebar is named so it is held still rather than
@@ -3409,7 +3420,7 @@ const check = (label, actual, expected) => {
     check('search index: it lists every tool', index.length, TOOL_COUNT);
     check('search index: every entry keeps its keywords', index.every((e) => Array.isArray(e.keywords) && e.keywords.length > 0), true);
 
-    const llms = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
+    const llms = fs.readFileSync(path.join(ROOT, 'tools', 'llms.txt'), 'utf8');
     check('llms.txt: it names the catalog', llms.startsWith('# ilham.dev Tools'), true);
     check('llms.txt: it states the tool count', llms.includes(`${TOOL_COUNT} tools`), true);
     check('llms.txt: it links the registry', llms.includes('https://ilham.dev/tools/tools.json'), true);

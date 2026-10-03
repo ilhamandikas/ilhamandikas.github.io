@@ -15,7 +15,7 @@
 import { buildIndex, search as runSearch, shortcutLabel } from './tools-search.js';
 
 const SEQUENCE_TIMEOUT = 1600;
-const NAV_KEYS = { Home: 'h', Posts: 'p', Tools: 't', 'Dev Ops': 'd', Games: 'g', Playground: 'j', About: 'a', Contact: 'c' };
+const NAV_KEYS = { Home: 'h', Posts: 'p', Guides: 'u', Tools: 't', 'Dev Ops': 'd', Games: 'g', Playground: 'j', About: 'a', Contact: 'c' };
 
 const nav = document.querySelector('#site-nav');
 const toolsLink = nav && [...nav.querySelectorAll('a')].find((link) => link.textContent.trim() === 'Tools');
@@ -335,10 +335,11 @@ function focusSearch() {
   return true;
 }
 
-// `/`, the header button and a click on the row all land here. Without a field
-// on this page the row is followed instead, which carries `#search` to the
-// catalog and lets it focus the box on arrival.
+// `/`, the header button and a click on the row all land here. The global
+// search opens on its own pages; elsewhere the local field takes focus, and
+// without one the row is followed instead, carrying `#search` to the catalog.
 function openSearch() {
+  if (globalSearchAvailable() && openGlobalSearch()) return;
   if (focusSearch()) return;
   if (searchEntry && searchEntry.node) searchEntry.node.click();
 }
@@ -394,7 +395,7 @@ document.addEventListener('keydown', (event) => {
   // The open list owns the keyboard, and a focused field owns its letters.
   if (!help.hidden || !globalSearch.hidden || isTyping(document.activeElement)) return;
 
-  if (event.key === '/' && searchEntry) {
+  if (event.key === '/' && (searchEntry || globalSearchAvailable())) {
     event.preventDefault();
     openSearch();
     return;

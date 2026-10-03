@@ -1,6 +1,13 @@
-import jsQR from '../vendor/jsqr.js';
 import * as qr from '../qr.js';
 const { tk } = window;
+
+// jsQR is only needed to read a QR image, so it is fetched the first time a
+// source image is decoded instead of on every editor load.
+let jsqrPromise = null;
+const loadJsQR = () => {
+  jsqrPromise = jsqrPromise || import(window.__toolVendors.jsqr).then(() => window.jsQR);
+  return jsqrPromise;
+};
 
 const sourceInput = document.querySelector('#qre-source');
 const sourceStatus = document.querySelector('#qre-source-status');
@@ -76,6 +83,7 @@ function readImageData(file) {
 async function decodeSource(file) {
   try {
     const image = await readImageData(file);
+    const jsQR = await loadJsQR();
     const found = jsQR(image.data, image.width, image.height);
     if (!found || !found.data) throw new Error('No QR code found in that image');
     text.value = found.data;

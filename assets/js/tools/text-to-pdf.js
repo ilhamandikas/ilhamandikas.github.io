@@ -1,8 +1,12 @@
 // Lay plain text out on pages and write a PDF. Words are measured with the
 // embedded font, so a long line breaks where it should rather than at a guess.
-import { PDFDocument, StandardFonts, rgb } from '../vendor/pdf-lib.js';
-
 const { tk } = window;
+
+let pdfLibPromise = null;
+const loadPdfLib = () => {
+  pdfLibPromise = pdfLibPromise || import(window.__toolVendors.pdfLib);
+  return pdfLibPromise;
+};
 
 const els = {
   text: document.querySelector('#ttp-text'),
@@ -21,7 +25,7 @@ const els = {
 };
 
 const SIZES = { a4: [595.28, 841.89], letter: [612, 792], a5: [419.53, 595.28] };
-const FONTS = { Helvetica: StandardFonts.Helvetica, TimesRoman: StandardFonts.TimesRoman, Courier: StandardFonts.Courier };
+const FONT_KEYS = { Helvetica: 'Helvetica', TimesRoman: 'TimesRoman', Courier: 'Courier' };
 const MAX_CHARS = 200000;
 
 let outputBlob = null;
@@ -73,8 +77,9 @@ function build() {
       const lineHeight = size * leading;
       const maxWidth = width - margin * 2;
 
+      const { PDFDocument, StandardFonts, rgb } = await loadPdfLib();
       const doc = await PDFDocument.create();
-      const font = await doc.embedFont(FONTS[els.font.value] || StandardFonts.Helvetica);
+      const font = await doc.embedFont(StandardFonts[FONT_KEYS[els.font.value]] || StandardFonts.Helvetica);
 
       const lines = [];
       text.split('\n').forEach((paragraph) => {

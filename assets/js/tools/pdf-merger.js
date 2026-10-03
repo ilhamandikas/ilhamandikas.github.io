@@ -1,8 +1,12 @@
 // Join several PDFs into one. Each file is parsed once, and its pages are
 // copied into a new document in the order the list shows.
-import { PDFDocument } from '../vendor/pdf-lib.js';
-
 const { tk } = window;
+
+let pdfLibPromise = null;
+const loadPdfLib = () => {
+  pdfLibPromise = pdfLibPromise || import(window.__toolVendors.pdfLib);
+  return pdfLibPromise;
+};
 
 const els = {
   file: document.querySelector('#pdm-file'),
@@ -72,6 +76,7 @@ async function build() {
 
   const id = ++runId;
   try {
+    const { PDFDocument } = await loadPdfLib();
     const out = await PDFDocument.create();
     for (const item of items) {
       const copied = await out.copyPages(item.doc, item.doc.getPageIndices());
@@ -108,6 +113,7 @@ async function onFiles() {
 
   for (const file of files) {
     try {
+      const { PDFDocument } = await loadPdfLib();
       const doc = await PDFDocument.load(new Uint8Array(await file.arrayBuffer()));
       items.push({ name: file.name || 'document.pdf', doc, count: doc.getPageCount(), key: tk.fileKey(file) });
     } catch {

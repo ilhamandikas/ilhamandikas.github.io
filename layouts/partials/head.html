@@ -11,8 +11,16 @@
   <title>{{ $title }}</title>
   <meta name="description" content="{{ $desc }}">
   <meta name="author" content="{{ site.Params.author }}">
+  {{- /* Tag taxonomy pages are navigational and mostly duplicate the lists they
+         link to, so they stay out of search results. Everything else keeps the
+         full snippet and large preview. */}}
+  {{- $noindex := or (eq .Kind "taxonomy") (eq .Kind "term") .Params.noindex -}}
+  {{- if $noindex -}}
+  <meta name="robots" content="noindex, follow">
+  {{- else -}}
   {{- /* Ask for the full snippet and a large preview image; both are opt-in. */}}
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  {{- end }}
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#ffffff">
   <link rel="canonical" href="{{ .Permalink }}">
@@ -83,57 +91,7 @@
     {"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.xml"}},{"not":{"selector_matches":"[data-no-prerender]"}}]},"eagerness":"moderate"}]}
   </script>
 
-  {{- /* Shortcuts are useful but not required for first paint, so a tiny loader
-         waits until the visitor asks for them. The actual module stays
-         fingerprinted and shared by every page. */}}
+  {{- /* Keyboard shortcuts run on every page, so they are loaded here rather
+         than through a layout's own script block. */}}
   {{- $shortcuts := resources.Get "js/shortcuts.js" | js.Build (dict "minify" true) | fingerprint }}
-  <script type="module">
-    const shortcutsSrc = {{ $shortcuts.RelPermalink | jsonify | safeJS }};
-    const shortcutsIntegrity = {{ $shortcuts.Data.Integrity | jsonify | safeJS }};
-    const helpButton = document.querySelector('#nav-help');
-    let shortcutsReady;
-    const loadShortcuts = () => {
-      if (!shortcutsReady) {
-        shortcutsReady = new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.type = 'module';
-          script.src = shortcutsSrc;
-          script.integrity = shortcutsIntegrity;
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.append(script);
-        });
-      }
-      return shortcutsReady;
-    };
-    const replayKey = (event) => {
-      document.removeEventListener('keydown', onShortcutKey);
-      loadShortcuts().then(() => document.dispatchEvent(new KeyboardEvent('keydown', {
-        key: event.key,
-        ctrlKey: event.ctrlKey,
-        metaKey: event.metaKey,
-        altKey: event.altKey,
-        bubbles: true,
-      })));
-    };
-    function onShortcutKey(event) {
-      if (event.defaultPrevented || event.repeat || event.altKey) return;
-      const typing = document.activeElement && /^(input|textarea|select)$/i.test(document.activeElement.tagName || '');
-      const key = event.key.toLowerCase();
-      if (!typing && (event.key === '?' || event.key === '/' || key === 'g') || ((!event.altKey && (event.ctrlKey || event.metaKey)) && key === 'k')) {
-        event.preventDefault();
-        replayKey(event);
-      }
-    }
-    document.addEventListener('keydown', onShortcutKey);
-    if (helpButton) {
-      helpButton.hidden = false;
-      const onHelpClick = (event) => {
-        event.preventDefault();
-        helpButton.removeEventListener('click', onHelpClick);
-        document.removeEventListener('keydown', onShortcutKey);
-        loadShortcuts().then(() => helpButton.click());
-      };
-      helpButton.addEventListener('click', onHelpClick);
-    }
-  </script>
+  <script type="module" src="{{ $shortcuts.RelPermalink }}" integrity="{{ $shortcuts.Data.Integrity }}"></script>

@@ -39,10 +39,25 @@
 {{ end }}
 
 {{ define "scripts" }}
-{{- $toolkit := resources.Get "js/toolkit.js" | js.Build (dict "minify" true) | fingerprint }}
-<script type="module" src="{{ $toolkit.RelPermalink }}" integrity="{{ $toolkit.Data.Integrity }}"></script>
 {{- $nav := resources.Get "js/tools-nav.js" | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $nav.RelPermalink }}" integrity="{{ $nav.Data.Integrity }}"></script>
+{{- $toolkit := resources.Get "js/toolkit.js" | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $toolkit.RelPermalink }}" integrity="{{ $toolkit.Data.Integrity }}"></script>
+{{- $slug := .File.ContentBaseName -}}
+{{- if in (slice "pdf-info" "pdf-merger" "pdf-page-extractor" "text-to-pdf") $slug }}
+{{- $pdfLib := resources.Get "js/vendor/pdf-lib.js" | fingerprint }}
+<script>window.__toolVendors=Object.assign(window.__toolVendors||{}, {pdfLib: {{ $pdfLib.RelPermalink | jsonify | safeJS }}});</script>
+{{- end }}
+{{- if eq $slug "qr-editor" }}
+{{- /* jsQR ships as a UMD file that registers window.jsQR, so it is served on
+       its own and fetched only when a QR image is decoded. */}}
+{{- $jsqr := resources.Get "js/vendor/jsqr.js" | minify | fingerprint }}
+<script>window.__toolVendors=Object.assign(window.__toolVendors||{}, {jsqr: {{ $jsqr.RelPermalink | jsonify | safeJS }}});</script>
+{{- end }}
+{{- if eq $slug "ascii-text-drawer" }}
+{{- $figlet := resources.Get "js/vendor/figlet.js" | fingerprint }}
+<script>window.__toolVendors=Object.assign(window.__toolVendors||{}, {figlet: {{ $figlet.RelPermalink | jsonify | safeJS }}});</script>
+{{- end }}
 {{- with .Params.js }}
 {{- $js := resources.Get . | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>

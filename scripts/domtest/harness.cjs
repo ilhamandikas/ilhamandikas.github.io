@@ -11,6 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const { pathToFileURL } = require('url');
 const { JSDOM, VirtualConsole } = require('jsdom');
 
 const ROOT = path.join(__dirname, '..', '..', 'public');
@@ -40,6 +41,19 @@ function resolveScripts(html) {
     .filter((src) => src && src.startsWith('/') && !src.startsWith('//'))
     .map((src) => path.join(ROOT, src))
     .filter((file) => fs.existsSync(file));
+}
+
+// Plain inline scripts run in document order before the modules, the way a
+// browser does it. The vendor map is one of them.
+function resolveInlineScripts(html) {
+  const out = [];
+  for (const m of html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
+    if (/\ssrc\s*=/.test(m[1])) continue;
+    const type = (m[1].match(/\stype\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/) || []).slice(1).find(Boolean);
+    if (type) continue;
+    if (m[2].trim()) out.push(m[2]);
+  }
+  return out;
 }
 
 // jsdom has no WebSocket and Node has one that talks to the real network, which a
@@ -110,6 +124,8 @@ function makeWebSocket() {
 
 function installGlobals(w) {
   globalThis.window = w;
+  // UMD bundles (jsQR) attach to `self`; a browser has one, so tests should too.
+  globalThis.self = w;
 
   // jsdom has no layout engine and never implemented this one.
   if (!w.Element.prototype.scrollIntoView) w.Element.prototype.scrollIntoView = function () {};
@@ -195,11 +211,36 @@ function loadFile(htmlPath, url, { onConsole, prerendering = false, session = nu
   const rejections = [];
   rejectionSink = rejections;
 
+  for (const code of resolveInlineScripts(html)) {
+    try {
+      vm.runInThisContext(`(function(){${code}\n})();`, {
+        filename: `${path.basename(htmlPath)}#inline`,
+        importModuleDynamically: (specifier) => import(specifier),
+      });
+    } catch (error) {
+      thrown.push(`inline: ${error.message}`);
+    }
+  }
+
+  // Vendor files are served as separate modules now, so point the page's map at
+  // the real files. Dynamic import() then resolves them without a network.
+  if (w.__toolVendors) {
+    for (const key of Object.keys(w.__toolVendors)) {
+      const url = w.__toolVendors[key];
+      if (typeof url === 'string' && url.startsWith('/')) w.__toolVendors[key] = pathToFileURL(path.join(ROOT, url)).href;
+    }
+  }
+
   const scripts = resolveScripts(html);
   for (const file of scripts) {
     const code = fs.readFileSync(file, 'utf8');
     try {
-      vm.runInThisContext(`(function(){${code}\n})();`, { filename: file });
+      // importModuleDynamically lets the separate vendor modules (pdf-lib and
+      // friends) resolve their file:// URLs from inside this context.
+      vm.runInThisContext(`(function(){${code}\n})();`, {
+        filename: file,
+        importModuleDynamically: (specifier) => import(specifier),
+      });
     } catch (error) {
       thrown.push(`${path.basename(file)}: ${error.message}`);
     }
