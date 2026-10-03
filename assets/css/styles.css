@@ -122,7 +122,7 @@ img, svg { max-width: 100%; }
   min-height: 40px;
   min-width: 40px;
   justify-content: center;
-  padding: 8px 14px;
+  padding: 8px 12px;
   font: inherit;
   font-size: 15px;
   font-weight: 500;
@@ -684,7 +684,13 @@ a.kbd-help-row:hover .kbd-help-label { color: var(--accent); }
   .site-nav a { padding: 11px 4px; font-size: 15px; }
   .site-nav .nav-help { padding: 11px 4px; text-align: left; }
   .nav-search { padding: 8px; }
-  .nav-search-label { display: none; }
+}
+
+@media (min-width: 769px) {
+  /* Nav links first on the right, then the search icon at the very end,
+     after the shortcuts button. */
+  .site-nav { order: 1; margin-left: auto; }
+  .nav-search { order: 2; margin-left: 0; }
 }
 
 @media (max-width: 640px) {

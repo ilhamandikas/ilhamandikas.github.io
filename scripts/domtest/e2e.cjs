@@ -595,11 +595,12 @@ const check = (label, actual, expected) => {
 
     // The destinations come from the header, so the two can never disagree.
     const navLinks = [...document.querySelectorAll('#site-nav a')];
+    check('shortcuts: home does not link to itself', navLinks.some((link) => link.getAttribute('href') === '/'), false);
     const sequenceHrefs = rows
       .filter((row) => (row.getAttribute('aria-keyshortcuts') || '').startsWith('g '))
       .map((row) => row.getAttribute('href'));
     check('shortcuts: every header link has a sequence', navLinks.every((link) => sequenceHrefs.includes(link.getAttribute('href'))), true);
-    check('shortcuts: g h is Home', labelFor('g h'), 'Home');
+    check('shortcuts: no Home row on the home page', labelFor('g h'), null);
     check('shortcuts: g p is Posts', labelFor('g p'), 'Posts');
     check('shortcuts: g t is Tools', labelFor('g t'), 'Tools');
     check('shortcuts: g d is Dev Ops', labelFor('g d'), 'Dev Ops');
@@ -635,13 +636,9 @@ const check = (label, actual, expected) => {
     seen.length = 0;
     key({ key: 'g' });
     check('shortcuts: waiting on g, the chip says so', chip.hidden, false);
-    key({ key: 'h' });
-    check('shortcuts: g h goes home', seen, ['/']);
-    check('shortcuts: choosing a destination puts the chip away', chip.hidden, true);
-
-    key({ key: 'g' });
     key({ key: 't' });
-    check('shortcuts: g t goes to the tools', seen, ['/', '/tools/']);
+    check('shortcuts: g t goes to the tools', seen, ['/tools/']);
+    check('shortcuts: choosing a destination puts the chip away', chip.hidden, true);
 
     seen.length = 0;
     key({ key: 'g' });
@@ -688,6 +685,9 @@ const check = (label, actual, expected) => {
     const key = (init) => document.dispatchEvent(new page.w.KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init }));
     const input = document.querySelector('#tools-search');
     const help = document.querySelector('#kbd-help');
+    check('shortcuts: other pages still offer a way home', [...document.querySelectorAll('#site-nav a')].some((link) => link.getAttribute('href') === '/'), true);
+    const homeRow = [...document.querySelectorAll('.kbd-help-row')].find((row) => row.querySelector('.kbd-help-label') && row.querySelector('.kbd-help-label').textContent === 'Home');
+    check('shortcuts: non-home pages keep the Home shortcut', homeRow && homeRow.getAttribute('href'), '/');
 
     input.blur();
     key({ key: 'k', ctrlKey: true });
