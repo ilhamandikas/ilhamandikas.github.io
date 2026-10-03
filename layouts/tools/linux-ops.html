@@ -18,9 +18,14 @@
 </article>
 {{ end }}
 
-{{ define "scripts" }}
+{{ define "styles" }}
+{{- $toolsCSS := resources.Get "css/tools.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $toolsCSS.RelPermalink }}" integrity="{{ $toolsCSS.Data.Integrity }}">
 {{- $css := resources.Get "linux-ops/app.css" | fingerprint }}
 <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+{{ end }}
+
+{{ define "scripts" }}
 {{- $js := resources.Get "linux-ops/app.js" | fingerprint }}
 <script defer src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
 {{ end }}

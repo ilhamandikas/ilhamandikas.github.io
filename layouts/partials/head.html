@@ -72,20 +72,68 @@
 
   {{ partial "schema.html" . }}
 
-  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") (resources.Get "css/tools.css") | resources.Concat "css/bundle.css" | minify | fingerprint }}
+  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") | resources.Concat "css/site.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 
-  {{- /* Warm up the next page on hover. A browser that understands this renders
-         the page in the background so the click lands on something already
-         built; one that doesn't ignores the tag entirely. Feeds are left out,
-         and any link can opt out with data-no-prerender. */}}
+  {{- /* Warm up likely next pages without rendering or executing them in the
+         background. Prefetch keeps navigation snappy without paying the full
+         cost of a hidden tool page. Feeds are left out, and any link can opt
+         out with data-no-prerender for compatibility with the existing markup. */}}
   <script type="speculationrules">
-    {"prerender":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.xml"}},{"not":{"selector_matches":"[data-no-prerender]"}}]},"eagerness":"moderate"}]}
+    {"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.xml"}},{"not":{"selector_matches":"[data-no-prerender]"}}]},"eagerness":"moderate"}]}
   </script>
 
-  {{- /* Keyboard shortcuts run on every page, so they are loaded here rather
-         than through a layout's own script block. */}}
+  {{- /* Shortcuts are useful but not required for first paint, so a tiny loader
+         waits until the visitor asks for them. The actual module stays
+         fingerprinted and shared by every page. */}}
   {{- $shortcuts := resources.Get "js/shortcuts.js" | js.Build (dict "minify" true) | fingerprint }}
-  <script type="module" src="{{ $shortcuts.RelPermalink }}" integrity="{{ $shortcuts.Data.Integrity }}"></script>
-  {{- $infinite := resources.Get "js/infinite-posts.js" | js.Build (dict "minify" true) | fingerprint }}
-  <script type="module" src="{{ $infinite.RelPermalink }}" integrity="{{ $infinite.Data.Integrity }}"></script>
+  <script type="module">
+    const shortcutsSrc = {{ $shortcuts.RelPermalink | jsonify | safeJS }};
+    const shortcutsIntegrity = {{ $shortcuts.Data.Integrity | jsonify | safeJS }};
+    const helpButton = document.querySelector('#nav-help');
+    let shortcutsReady;
+    const loadShortcuts = () => {
+      if (!shortcutsReady) {
+        shortcutsReady = new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.type = 'module';
+          script.src = shortcutsSrc;
+          script.integrity = shortcutsIntegrity;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.append(script);
+        });
+      }
+      return shortcutsReady;
+    };
+    const replayKey = (event) => {
+      document.removeEventListener('keydown', onShortcutKey);
+      loadShortcuts().then(() => document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: event.key,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        altKey: event.altKey,
+        bubbles: true,
+      })));
+    };
+    function onShortcutKey(event) {
+      if (event.defaultPrevented || event.repeat || event.altKey) return;
+      const typing = document.activeElement && /^(input|textarea|select)$/i.test(document.activeElement.tagName || '');
+      const key = event.key.toLowerCase();
+      if (!typing && (event.key === '?' || event.key === '/' || key === 'g') || ((!event.altKey && (event.ctrlKey || event.metaKey)) && key === 'k')) {
+        event.preventDefault();
+        replayKey(event);
+      }
+    }
+    document.addEventListener('keydown', onShortcutKey);
+    if (helpButton) {
+      helpButton.hidden = false;
+      const onHelpClick = (event) => {
+        event.preventDefault();
+        helpButton.removeEventListener('click', onHelpClick);
+        document.removeEventListener('keydown', onShortcutKey);
+        loadShortcuts().then(() => helpButton.click());
+      };
+      helpButton.addEventListener('click', onHelpClick);
+    }
+  </script>

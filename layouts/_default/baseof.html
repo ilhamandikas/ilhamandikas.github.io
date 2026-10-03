@@ -2,6 +2,7 @@
 <html lang="{{ site.LanguageCode | default "en" }}">
 <head>
   {{ partial "head.html" . }}
+  {{ block "styles" . }}{{ end }}
   {{- /* The per-page script block only ever holds type=module tags, and modules
          are deferred, so they never block parsing. Keeping it here instead of
          at the end of <body> means the browser starts downloading them while

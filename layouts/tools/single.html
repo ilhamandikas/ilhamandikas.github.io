@@ -33,6 +33,11 @@
 </article>
 {{ end }}
 
+{{ define "styles" }}
+{{- $toolsCSS := resources.Get "css/tools.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $toolsCSS.RelPermalink }}" integrity="{{ $toolsCSS.Data.Integrity }}">
+{{ end }}
+
 {{ define "scripts" }}
 {{- $toolkit := resources.Get "js/toolkit.js" | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $toolkit.RelPermalink }}" integrity="{{ $toolkit.Data.Integrity }}"></script>

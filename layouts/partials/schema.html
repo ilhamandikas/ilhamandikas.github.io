@@ -68,17 +68,16 @@
       {{- $graph = $graph | append (dict "@type" "FAQPage" "mainEntity" $questions) -}}
     {{- end -}}
   {{- else -}}
-    {{- $parts := slice -}}
+    {{- $items := slice -}}
+    {{- $position := 0 -}}
     {{- range site.Data.tools -}}
       {{- range .tools -}}
-        {{- $parts = $parts | append (dict
-            "@type" "SoftwareApplication" "name" .name
-            "description" .desc
-            "url" (printf "%stools/%s/" $home .slug)
-            "applicationCategory" "UtilitiesApplication"
-            "operatingSystem" "Any"
-            "isAccessibleForFree" true
-            "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")) -}}
+        {{- $position = add $position 1 -}}
+        {{- $items = $items | append (dict
+            "@type" "ListItem"
+            "position" $position
+            "name" .name
+            "url" (printf "%stools/%s/" $home .slug)) -}}
       {{- end -}}
     {{- end -}}
     {{- $graph = $graph | append (dict
@@ -90,7 +89,7 @@
           "name" "Tool registry (JSON)"
           "encodingFormat" "application/json"
           "url" (printf "%stools/tools.json" $home))
-        "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $parts) "itemListElement" $parts)) -}}
+        "mainEntity" (dict "@type" "ItemList" "numberOfItems" (len $items) "itemListElement" $items)) -}}
   {{- end -}}
   {{- $graph = $graph | append (dict "@type" "BreadcrumbList" "itemListElement" $crumbs) -}}
 

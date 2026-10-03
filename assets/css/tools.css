@@ -242,9 +242,6 @@
 
 .tool-main { min-width: 0; }
 .tool-header { margin-bottom: 26px; }
-.tool-crumb { margin: 0 0 8px; font-size: 13.5px; font-family: var(--mono); }
-.tool-crumb a { color: var(--muted); }
-.tool-crumb a:hover { color: var(--accent); }
 .tool-body { max-width: 840px; }
 
 .tool-panel {

@@ -36,3 +36,8 @@
   </div>
 </section>
 {{ end }}
+
+{{ define "scripts" }}
+{{- $infinite := resources.Get "js/infinite-posts.js" | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $infinite.RelPermalink }}" integrity="{{ $infinite.Data.Integrity }}"></script>
+{{ end }}

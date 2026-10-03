@@ -45,6 +45,11 @@
 </section>
 {{ end }}
 
+{{ define "styles" }}
+{{- $toolsCSS := resources.Get "css/tools.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $toolsCSS.RelPermalink }}" integrity="{{ $toolsCSS.Data.Integrity }}">
+{{ end }}
+
 {{ define "scripts" }}
 {{- $js := resources.Get "js/tools-catalog.js" | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
