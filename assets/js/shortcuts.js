@@ -150,7 +150,11 @@ globalSearch.innerHTML = `
     <div class="global-search-results" id="global-search-results"></div>
   </div>`;
 globalSearch.querySelector('.global-search-kbd').textContent = shortcutLabel();
-if (globalSearchAvailable()) document.body.append(globalSearch);
+// Always in the DOM so the header button works everywhere, even where the
+// page owns the keyboard shortcut. The hint is dropped there so it does not
+// advertise a key that belongs to the app.
+if (!globalSearchAvailable()) globalSearch.querySelector('.global-search-kbd').hidden = true;
+document.body.append(globalSearch);
 
 const globalInput = globalSearch.querySelector('#global-search-input');
 const globalResults = globalSearch.querySelector('#global-search-results');
@@ -245,7 +249,6 @@ async function updateGlobalSearch() {
 }
 
 function openGlobalSearch() {
-  if (!globalSearchAvailable()) return false;
   disarm();
   closeHelp();
   globalLastFocus = document.activeElement;
@@ -310,23 +313,19 @@ if (helpButton) {
   helpButton.addEventListener('click', () => (help.hidden ? openHelp() : closeHelp()));
 }
 
-// A visible control for people who do not know the shortcut. It focuses the
-// page's own field when there is one, and opens the global overlay otherwise.
+// Always visible: hiding it on one page shifted the nav and made the header
+// jump during page transitions. It is only revealed once the script runs.
 const searchButton = document.querySelector('#nav-search');
 if (searchButton) {
-  if (localSearch || globalSearchAvailable()) {
-    const navToggle = document.querySelector('#nav-toggle');
-    const toolNavToggle = document.querySelector('#tool-nav-toggle');
-    searchButton.addEventListener('click', () => {
-      // Tapping search on mobile should put the main menu away, and reveal the
-      // tool list when its search field lives inside a collapsed panel.
-      if (navToggle) navToggle.checked = false;
-      if (toolNavToggle) toolNavToggle.checked = true;
-      openSearch();
-    });
-  } else {
-    searchButton.hidden = true;
-  }
+  const navToggle = document.querySelector('#nav-toggle');
+  const toolNavToggle = document.querySelector('#tool-nav-toggle');
+  searchButton.addEventListener('click', () => {
+    // Tapping search on mobile should put the main menu away, and reveal the
+    // tool list when its search field lives inside a collapsed panel.
+    if (navToggle) navToggle.checked = false;
+    if (toolNavToggle) toolNavToggle.checked = true;
+    openSearch();
+  });
 }
 
 /* ---------------------------------------------------------------- the keys */
@@ -358,8 +357,8 @@ function focusSearch() {
 // search opens on its own pages; elsewhere the local field takes focus, and
 // without one the row is followed instead, carrying `#search` to the catalog.
 function openSearch() {
-  if (globalSearchAvailable() && openGlobalSearch()) return;
   if (focusSearch()) return;
+  if (openGlobalSearch()) return;
   if (searchEntry && searchEntry.node) searchEntry.node.click();
 }
 

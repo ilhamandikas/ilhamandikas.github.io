@@ -703,7 +703,7 @@ const check = (label, actual, expected) => {
     input.blur();
     searchButton.click();
     check('shortcuts: the header search button focuses the catalog field', document.activeElement === input, true);
-    check('shortcuts: the header search button does not open the global search', document.querySelector('#global-search'), null);
+    check('shortcuts: the header search button leaves the global search shut', document.querySelector('#global-search').hidden, true);
 
     // A field keeps its letters: no sequence, no list, and nothing swallowed.
     check('shortcuts: a letter typed in a field is not taken', key({ key: 'g' }), true);
@@ -728,9 +728,25 @@ const check = (label, actual, expected) => {
     button.click();
     check('search button: it opens the tool sidebar', toggle.checked, true);
     check('search button: it focuses the tool field', document.activeElement === field, true);
-    check('search button: it does not open the global search', document.querySelector('#global-search'), null);
+    check('search button: it leaves the global search shut', document.querySelector('#global-search').hidden, true);
     const result = page.finish();
     check('search button: no uncaught errors', result.thrown.length + result.errors.length, 0);
+    page.dom.window.close();
+  }
+
+  console.log('\n=== the header search button on Dev Ops ===');
+  {
+    const page = loadFile(path.join(ROOT, 'tools', 'linux-ops', 'index.html'), 'https://ilham.dev/tools/linux-ops/');
+    const { document } = page.w;
+    const button = document.querySelector('#nav-search');
+    // The header has to look the same here as everywhere else, or the named
+    // view transition makes the nav jump and ghost between pages.
+    check('search button: it stays visible on Dev Ops', button.hidden, false);
+    button.click();
+    check('search button: Dev Ops still opens a search', document.querySelector('#global-search').hidden, false);
+    check('search button: it focuses the global field on Dev Ops', document.activeElement === document.querySelector('#global-search-input'), true);
+    const result = page.finish();
+    check('search button: no uncaught errors on Dev Ops', result.thrown.length + result.errors.length, 0);
     page.dom.window.close();
   }
 
