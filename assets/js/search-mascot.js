@@ -24,6 +24,8 @@ export function initSearchMascot(openSearch) {
   const wire = createFlexibleWire(root);
   const searchDialog = document.querySelector('#global-search');
   const helpDialog = document.querySelector('#kbd-help');
+  const guide = root.dataset.guideUrl
+    ? { url: root.dataset.guideUrl, title: root.dataset.guideTitle || '' } : null;
   const contextMessages = {
     home: ['Tools, guides, and a few engineering stories.', 'Something to explore?'],
     guides: ['Looking for an explanation?', 'Need a guide for your next step?'],
@@ -31,7 +33,9 @@ export function initSearchMascot(openSearch) {
     tools: ['Need another tool?', 'Looking for something to help with the next step?'],
     page: ['Looking for something else?', 'Tools, guides, and posts are a search away.'],
   };
-  const messages = contextMessages[root.dataset.pageKind] || contextMessages.page;
+  const messages = guide
+    ? ['There’s a guide for this tool.', ...(contextMessages[root.dataset.pageKind] || contextMessages.page)]
+    : contextMessages[root.dataset.pageKind] || contextMessages.page;
   const motion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const key = 'ilham-search-companion-v1';
   let side = 'right';
@@ -70,7 +74,7 @@ export function initSearchMascot(openSearch) {
   try { quoteStorage = window.localStorage; } catch { /* Optional quote cache. */ }
   const quoteDeck = createQuoteDeck({ storage: quoteStorage, fetcher: window.fetch?.bind(window) });
   let idleQuote = null;
-  let idlePhase = 'search';
+  let idlePhase = guide ? 'context' : 'search';
   let contextIndex = 0;
   let idleTimer = 0;
   let quoteLoading = false;

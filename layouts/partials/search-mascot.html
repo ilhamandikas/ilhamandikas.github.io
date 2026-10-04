@@ -1,4 +1,11 @@
-<aside id="search-mascot" class="search-mascot" aria-label="Search companion" data-page-kind="{{ if .IsHome }}home{{ else if eq .Section "guides" }}guides{{ else if eq .Section "posts" }}posts{{ else if eq .Section "tools" }}tools{{ else }}page{{ end }}" hidden>
+{{- /* On tool pages the companion can point at the matching guide. The Learn
+       section stays in the page as well; this is a second, in-context signpost. */}}
+{{- $guide := false -}}
+{{- if and (eq .Section "tools") .File -}}
+  {{- $links := index site.Data "tool-guide-links" | default dict -}}
+  {{- with index $links .File.ContentBaseName -}}{{- $guide = . -}}{{- end -}}
+{{- end -}}
+<aside id="search-mascot" class="search-mascot{{ if $guide }} has-guide{{ end }}" aria-label="Search companion" data-page-kind="{{ if .IsHome }}home{{ else if eq .Section "guides" }}guides{{ else if eq .Section "posts" }}posts{{ else if eq .Section "tools" }}tools{{ else }}page{{ end }}"{{ with $guide }} data-guide-url="{{ .url | relURL }}" data-guide-title="{{ .title }}"{{ end }} hidden>
   <button type="button" class="search-mascot-main" aria-label="Search tools, guides, and posts" aria-haspopup="dialog" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown H" aria-describedby="search-mascot-hint">
     <svg class="search-mascot-art" viewBox="0 0 80 100" fill="none" aria-hidden="true">
       <g class="search-mascot-body">
@@ -41,5 +48,14 @@
     </svg>
   </button>
   <span class="search-mascot-bubble" aria-hidden="true">Want to search something?</span>
+  {{ with $guide }}
+  <a class="search-mascot-guide" href="{{ .url | relURL }}" aria-label="Read the guide: {{ .title }}">
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+      <path d="M8 3.2C6.6 2.2 4.6 2 2.5 2v9.3c2.1 0 4.1.2 5.5 1.2 1.4-1 3.4-1.2 5.5-1.2V2c-2.1 0-4.1.2-5.5 1.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path>
+      <path d="M8 3.2v9.3" stroke="currentColor" stroke-width="1.3"></path>
+    </svg>
+    <span>Guide</span>
+  </a>
+  {{ end }}
   <span class="search-mascot-hint" id="search-mascot-hint">Activate to search. Drag outward past either screen edge to hide. Use arrow keys to move, or H to hide when focused.</span>
 </aside>

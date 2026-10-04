@@ -761,6 +761,17 @@ Behavior lives in `assets/js/search-mascot.js`; an idle page must schedule no an
 
 Do not turn it into an assistant that reads content, remembers searches, or starts conversations.
 
+On tool pages that have a guide, the companion shows one extra affordance: a small
+persistent `Guide` link inside the companion, pointing at `/guides/<slug>/`. It is a
+real anchor (keyboard reachable), it is hidden whenever the companion is tucked or
+dragging, and it only appears when Hugo found a matching entry in
+`data/tool-guide-links.yaml`. The page should still render its own `Learn` section;
+the chip is a second signpost, not a replacement.
+
+Reading a post aloud is a separate, opt-in control owned by the post layout
+(`assets/js/read-aloud.js`), built on the browser's speech synthesis. It is not part
+of the companion and must not become a companion behavior.
+
 ---
 
 # Real Experience Is Valuable

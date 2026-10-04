@@ -16,6 +16,16 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   if (options.viewport) dom.window.visualViewport = options.viewport;
   if (fetcher) dom.window.fetch = fetcher;
   dom.window.document.querySelector('#search-mascot').dataset.pageKind = options.pageKind || 'home';
+  // The raw Go template leaks its guide attributes when parsed as plain HTML,
+  // so only keep them for the guide scenario.
+  const guideRoot = dom.window.document.querySelector('#search-mascot');
+  if (options.guide) {
+    guideRoot.dataset.guideUrl = options.guide.url;
+    guideRoot.dataset.guideTitle = options.guide.title;
+  } else {
+    delete guideRoot.dataset.guideUrl;
+    delete guideRoot.dataset.guideTitle;
+  }
   if (options.clock) dom.window.performance.now = options.clock;
   if (options.modal) {
     const dialog = dom.window.document.createElement('div');
@@ -243,4 +253,17 @@ page.pointer('pointerdown', 40, 200);
 assert.equal(page.root.classList.contains('is-arriving'), false, 'interaction cancels the entrance animation before it fights a drag');
 page.pointer('pointerup', 40, 200);
 page.close();
-console.log('Search companion: flexible wire, expressions/sleep, staged peek, contextual quotes, gaze, docking, hide, keyboard, resize, entrance animation and reduced motion passed.');
+// Tool pages with a matching guide introduce it; pages without one stay unchanged.
+page = setup(null, false, false, undefined, { pageKind: 'tools', guide: { url: '/guides/example/', title: 'Example Guide' } });
+assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'There’s a guide for this tool.',
+  'a tool page with a guide introduces it in the bubble');
+page.pointer('pointerenter', 900, 600);
+assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Click me!', 'hover still wins over the guide prompt');
+page.pointer('pointerleave', 800, 500);
+assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'There’s a guide for this tool.', 'guide prompt returns after hover');
+page.close();
+page = setup(null, false, false, undefined, { pageKind: 'tools' });
+assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Want to search something?',
+  'a tool page without a guide uses the normal prompt');
+page.close();
+console.log('Search companion: flexible wire, expressions/sleep, staged peek, contextual quotes, gaze, docking, hide, keyboard, resize, entrance animation, guide prompt and reduced motion passed.');
