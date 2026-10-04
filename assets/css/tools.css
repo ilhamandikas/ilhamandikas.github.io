@@ -1,7 +1,7 @@
 .tools-catalog-page { padding-bottom: 60px; }
 
-/* The Linux Ops app is a self-contained panel; only its outer spacing is ours. */
-.lo-embed { margin: 0 0 2.5rem; }
+/* Reserve the React panel's height before it mounts to avoid shifting content. */
+.lo-embed { min-height: max(70vh, 560px); margin: 0 0 2.5rem; }
 
 /* Machine-readable siblings of the catalog, linked for humans and crawlers. */
 .tools-machine {
