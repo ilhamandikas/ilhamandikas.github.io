@@ -10,10 +10,18 @@ ilham-dev/
 ├── hugo.toml              # site config (title, author, email for Gravatar, params)
 ├── content/
 │   ├── posts/*.md         # blog posts (Markdown + front matter)
+│   ├── guides/*.md        # topic guides and per-tool walkthroughs
+│   ├── tools/*.md         # tool pages (front matter only, written by sync-tools.py)
 │   └── *.md               # profile and legal pages
+├── data/
+│   ├── tools.yaml         # tool catalog (single source of truth)
+│   ├── tool-guide-links.yaml  # slug -> /guides/<slug>/ link
+│   └── tool-ai.yaml       # optional AI use cases/examples per tool
 ├── layouts/               # templates (flat-white theme) + robots.txt
 ├── assets/css/            # styles.css + generated chroma.css, bundled at build
 ├── static/                # copied as-is: favicon, og.png, .well-known/
+├── scripts/               # sync-tools.py, vendor build, domtest, AI check
+├── mcp/                   # optional MCP server exposing the catalog
 ├── deploy.sh              # optional: publish to a static web root
 └── new-post.sh            # scaffold a new draft post
 ```
@@ -80,8 +88,10 @@ source of truth for the catalog page, the sidebar menu, search and the "soon" ba
 
 ```
 ├── data/tools.yaml                     # catalog: slug, name, description, keywords, status
-├── data/tool-guides.yaml               # long-form prose + FAQ per tool, keyed by slug
+├── data/tool-guide-links.yaml          # slug -> standalone tool guide at /guides/<slug>/
+├── data/tool-ai.yaml                   # optional AI use cases/examples per tool
 ├── content/tools/<slug>.md             # front matter only (title, description, js)
+├── content/guides/<slug>.md            # per-tool walkthrough + about/faq (tool_guide_slug)
 ├── layouts/tools/list.html             # catalog + search
 ├── layouts/tools/single.html           # one tool page (sidebar + body partial)
 ├── layouts/partials/tools/body/*.html  # the UI for each tool (one partial per tool)
@@ -101,8 +111,8 @@ rm -rf public && hugo --gc --minify
 That script is also where three mistakes are caught before they ship, because each
 one is silent otherwise: a catalog entry with no content page (a dead link in the
 menu), a body partial with no catalog entry (a page nothing links to), and a tool
-that is done but has no entry in `data/tool-guides.yaml` (a page with a form and no
-prose for a crawler to read).
+that is done but has no tool guide under `content/guides/` (a page with a form and
+no prose for a crawler to read).
 
 Shared building blocks keep the per-tool code small:
 
@@ -178,7 +188,7 @@ never downloads it — that is the whole point of the module split.
 
 The QR bundle is the outlier because it carries the encoder. Splitting the encoder
 out would turn one request into two for the three pages that need it and save
-nothing for the ninety-five that do not.
+nothing for the one hundred and seventy-three that do not.
 
 That last one is worth a note, because the obvious implementation is backwards.
 The WebCrypto ECDSA sign steps say to *"convert r to a byte sequence of length n and
@@ -295,7 +305,7 @@ whichever tool happens to come first in the menu. The field lives inside the
 collapsible `.tool-nav`, so on narrow screens it appears with "Browse all tools"
 rather than pushing the tool down the page.
 
-The index is built from the 98 names already in the sidebar plus a
+The index is built from the 176 names already in the sidebar plus a
 `data-keywords` attribute per link: **+1.7 KB gzip per tool page** (5.3 KB →
 7.0 KB, measured by gzipping the built page with and without the attributes), no
 extra request. Moving the keywords into the shared JS bundle would save that, but
@@ -310,12 +320,12 @@ matcher.
 
 **The sidebar survives a navigation.** Pressing Enter on a result replaces the
 whole document, so a query that only lived in `tools-nav.js` vanished and the
-list snapped back to its full 98 entries — which reads as a page refresh. The
+list snapped back to its full 176 entries — which reads as a page refresh. The
 query and the sidebar's scroll offset now go into `sessionStorage` on `pagehide`
 (`pagehide`, not `beforeunload`, so the back/forward cache is covered too) and
 are restored before the first paint. The effect is that you can keep narrowing a
 search from one tool to the next: delete a character and more tools appear,
-clear the field and all 98 come back.
+clear the field and all 176 come back.
 
 `.tool-aside` also carries `view-transition-name: tool-nav`, so a cross-document
 view transition holds the panel still instead of fading it out with the rest of
@@ -338,15 +348,26 @@ crawlable text, which is not enough for a search engine to decide the page is
 about anything in particular. Two things fix that, and one thing deliberately
 isn't done.
 
-- **Written content, per tool.** `data/tool-guides.yaml` holds an `about`
-  paragraph and a short `faq` for each tool, and `partials/tools/about.html`
-  renders them under the tool. All 98 tools are written up, by hand — there is
+- **Written content, per tool.** Each tool's guide under `content/guides/<slug>.md`
+  carries the `about` paragraph and the `faq` in its front matter, and
+  `partials/tools/about.html` and `partials/guides/faq.html` render them under the
+  tool and the guide. All 176 tools are written up, by hand — there is
   deliberately **no generated fallback**, because padding a page with
   near-identical filler would be worse for a reader and worse for a crawler than
-  leaving it short. To add or change one, edit the file; `sync-tools.py` fails the
-  build if a key does not match a real slug, and it also fails if a tool is done
-  and has no entry at all, because "I will write it later" is how a page ends up
-  with no prose.
+  leaving it short. To add or change one, edit the guide; `sync-tools.py` fails
+  the build if a guide's `tool_guide_slug` does not match a real tool, if a tool
+  is done and has no guide at all, or if a guide is missing its `about`/`faq`
+  front matter.
+- **A guide page per tool.** Each tool has a standalone walkthrough under
+  `content/guides/<slug>.md`, linked from the tool through
+  `data/tool-guide-links.yaml`. It explains how to read the result on a small
+  example, so the prose is not buried in a form. Topic guides (for example
+  `/guides/debugging-cors/`) live in the same section. There is one source for the
+  prose: the guide. See `GUIDE-GUIDELINES.md`.
+- **AI discoverability.** `data/tool-ai.yaml` adds optional use cases and example
+  questions per tool, and `npm run check:ai` validates the machine-readable
+  surfaces (`llms.txt`, the tool catalog, structured data). See
+  `AI-COMPATIBILITY.md`.
 - **Structured data.** `partials/schema.html` emits one `@graph` per page. Tool
   pages get `SoftwareApplication` (free, browser-based, `offers.price` of `0`)
   plus a `BreadcrumbList`, and an `FAQPage` when the tool has written questions.
@@ -357,10 +378,9 @@ isn't done.
   commit that touched that tool's **JS and body partial only** — the content file
   is generated by the same script, so counting it would make every sync look like
   a change to every tool and the dates would drift forever. If git history is
-  unavailable the previously stamped date is kept rather than dropped. The same
-  limitation applies to `data/tool-guides.yaml`: it is one file covering every
-  tool, so a prose change cannot be attributed to a single page and does not move
-  that page's date.
+  unavailable the previously stamped date is kept rather than dropped. The guide
+  prose lives in a separate file, so a guide edit does not move the tool page's
+  date; it follows the guide's own `date`, not the tool's `lastmod`.
 
 `head.html` also asks for the full search snippet:
 `max-snippet:-1, max-image-preview:large, max-video-preview:-1`.

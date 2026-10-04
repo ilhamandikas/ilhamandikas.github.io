@@ -8,6 +8,17 @@ tool_guide_slug: meta-tag-generator
 broader_guide:
   title: Web Metadata
   url: /guides/web-metadata/
+about: 'Generate the meta tags a page needs for search and for social sharing: title, description,
+  canonical, Open Graph and Twitter card tags, with a preview of how the result will look.'
+faq:
+- q: How long should a meta description be?
+  a: Write a concise description of the actual page. There is no universal length that guarantees
+    a particular search snippet; search engines may display different text. This generator
+    does not enforce a length limit.
+- q: Do Open Graph tags affect ranking?
+  a: Open Graph tags are chiefly for link previews on platforms that use them. They do not
+    replace the page title, description, or canonical URL, and this tool cannot predict search
+    rankings.
 ---
 
 **Meta tags** are lines of HTML that describe a page to browsers and link-preview services. [Meta Tag Generator](/tools/meta-tag-generator/) writes description, Open Graph, and Twitter-card tags as *text* you can copy into a page's `<head>`. It does **not** show a visual preview, produce a `<title>` element, or generate a canonical link.
@@ -21,16 +32,6 @@ Before publishing, add and verify a real `<title>` and a `<link rel="canonical" 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How long should a meta description be?
-
-Write a concise description of the actual page. There is no universal length that guarantees a particular search snippet; search engines may display different text. This generator does not enforce a length limit.
-
-### Do Open Graph tags affect ranking?
-
-Open Graph tags are chiefly for link previews on platforms that use them. They do not replace the page title, description, or canonical URL, and this tool cannot predict search rankings.
 
 ## Related guide
 

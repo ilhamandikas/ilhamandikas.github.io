@@ -8,6 +8,14 @@ tool_guide_slug: mac-address-generator
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Generate random MAC addresses, optionally holding a prefix so the result stays inside
+  a vendor range you specify.
+faq:
+- q: Can I use a generated MAC on a real network?
+  a: Only after checking your network's rules and that the result does not clash with another
+    device. The tool does not check the network or set the locally administered bit for you.
+    Choosing an appropriate first byte helps avoid impersonating a vendor, but it is **not**
+    a collision guarantee.
 ---
 
 A **MAC address** is a six-byte label used by network interfaces on a local link. It is often written as six pairs of hexadecimal digits, like `02:00:00:aa:bb:cc`. [MAC Address Generator](/tools/mac-address-generator/) makes example labels; it cannot reserve one on a real network.
@@ -23,12 +31,6 @@ A random result is not proof of uniqueness. Two devices on the same network can 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Can I use a generated MAC on a real network?
-
-Only after checking your network's rules and that the result does not clash with another device. The tool does not check the network or set the locally administered bit for you. Choosing an appropriate first byte helps avoid impersonating a vendor, but it is **not** a collision guarantee.
 
 ## Related guide
 

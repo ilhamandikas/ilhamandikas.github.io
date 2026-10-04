@@ -8,6 +8,13 @@ tool_guide_slug: yaml-viewer
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: A collapsible tree view of a YAML document, showing the structure and the value counts
+  on each branch. Anchors and aliases are resolved, so you see the effective document rather
+  than the shorthand.
+faq:
+- q: Are YAML anchors expanded?
+  a: Yes, which means the tree shows what the document means rather than how it was written.
+    That is usually what you want, but it does hide where the reuse came from.
 ---
 
 YAML is text that uses **indentation** to show what belongs inside what. [YAML Viewer](/tools/yaml-viewer/) turns it into a tree you can open one part at a time. It is for reading, not changing the file.
@@ -34,12 +41,6 @@ This page processes the text in your browser. Configuration files can still cont
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Are YAML anchors expanded?
-
-Yes, which means the tree shows what the document means rather than how it was written. That is usually what you want, but it does hide where the reuse came from.
 
 ## Related guide
 

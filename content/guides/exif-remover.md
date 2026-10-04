@@ -9,6 +9,23 @@ tool_guide_slug: exif-remover
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
+about: 'A photo carries more than the picture: the camera model, the time it was taken, the
+  software that saved it and often the exact place on the map. Re-encoding the pixels through
+  a canvas rebuilds the image without any of that, so what you share carries only what you
+  can see.'
+faq:
+- q: Does re-encoding change how the picture looks?
+  a: It redraws the same pixels, so it looks the same to the eye. A JPEG is saved again at
+    the chosen quality, which costs a little sharpness; choosing PNG or a high quality keeps
+    that to a minimum.
+- q: Why does the file sometimes get bigger?
+  a: The original may have been compressed very hard or stored as a smaller size. Re-encoding
+    at a high quality can produce more bytes than you started with, and the change line shows
+    that rather than hiding it.
+- q: Is the metadata really gone?
+  a: Original file metadata is generally not transferred when canvas pixels are encoded into
+    a new file. Verify the downloaded file using a metadata viewer, and remember that text,
+    faces, or locations *visible in the pixels* are not removed.
 ---
 
 **EXIF** is image metadata that can include capture time, camera details, or GPS location. [EXIF Remover](/tools/exif-remover/) redraws an image in a browser canvas and exports new pixels. This generally drops embedded EXIF and other original file metadata, but visible details in the picture remain visible.
@@ -22,20 +39,6 @@ Choose a disposable image under **Image**. **Result** should show **Original** a
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does re-encoding change how the picture looks?
-
-It redraws the same pixels, so it looks the same to the eye. A JPEG is saved again at the chosen quality, which costs a little sharpness; choosing PNG or a high quality keeps that to a minimum.
-
-### Why does the file sometimes get bigger?
-
-The original may have been compressed very hard or stored as a smaller size. Re-encoding at a high quality can produce more bytes than you started with, and the change line shows that rather than hiding it.
-
-### Is the metadata really gone?
-
-Original file metadata is generally not transferred when canvas pixels are encoded into a new file. Verify the downloaded file using a metadata viewer, and remember that text, faces, or locations *visible in the pixels* are not removed.
 
 ## Related guide
 

@@ -8,6 +8,13 @@ tool_guide_slug: device-information
 broader_guide:
   title: Browser Debugging Utilities
   url: /guides/browser-debugging/
+about: 'Show what the browser reports about the current device: screen and viewport size,
+  pixel ratio, platform, language, timezone, CPU core count, memory where it is exposed, and
+  whether the device claims to support touch.'
+faq:
+- q: Why is the reported platform sometimes wrong?
+  a: User-agent strings are unreliable, and some browsers deliberately reduce them for privacy.
+    Treat what you see as a hint rather than a fact.
 ---
 
 [Device Information](/tools/device-information/) shows a **snapshot** of what this browser reports about your screen and environment. It does not scan the hardware or detect your exact device model.
@@ -21,12 +28,6 @@ Open the tool and look for **Screen** and **Viewport**. **Screen** reports displ
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is the reported platform sometimes wrong?
-
-User-agent strings are unreliable, and some browsers deliberately reduce them for privacy. Treat what you see as a hint rather than a fact.
 
 ## Related guide
 

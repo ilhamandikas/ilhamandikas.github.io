@@ -8,6 +8,16 @@ tool_guide_slug: regex-tester
 broader_guide:
   title: Testing Regex Before Shipping It
   url: /guides/regex-testing/
+about: Test a regular expression against sample text and see every match highlighted as you
+  type, with the capture groups listed separately. It uses JavaScript's own regex engine,
+  so what you see here is what you get in a script.
+faq:
+- q: Why does my pattern behave differently in Python or grep?
+  a: The dialects differ. JavaScript has no atomic groups or possessive quantifiers, and lookbehind
+    support is comparatively recent. The tool shows which flags it is applying.
+- q: Why does .* match more than I expected?
+  a: Greedy quantifiers take as much as they can and then backtrack. Append ? to make it lazy
+    — .*? stops at the first opportunity.
 ---
 
 A *regular expression*, or *regex*, is a pattern for finding text. [Regex Tester](/tools/regex-tester/) lets you try a pattern on a small sample before using it on a larger file.
@@ -25,16 +35,6 @@ Some characters have a special meaning in regex. A dot `.` means “any characte
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why does my pattern behave differently in Python or grep?
-
-The dialects differ. JavaScript has no atomic groups or possessive quantifiers, and lookbehind support is comparatively recent. The tool shows which flags it is applying.
-
-### Why does .* match more than I expected?
-
-Greedy quantifiers take as much as they can and then backtrack. Append ? to make it lazy — .*? stops at the first opportunity.
 
 ## Related guide
 

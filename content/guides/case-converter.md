@@ -8,6 +8,13 @@ tool_guide_slug: case-converter
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Switch text between camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, Title
+  Case and sentence case, with word boundaries inferred from the separators and capitalisation
+  already present.
+faq:
+- q: How does it split words that are already joined together?
+  a: It splits on separators and on the case boundaries it can see, so getHTTPResponse becomes
+    get, HTTP, Response. Where the input is ambiguous it can only ever be a guess.
 ---
 
 Code and file names often join several words into one name. The words can be written with capital letters, underscores, or dashes. [Case Converter](/tools/case-converter/) shows several versions at once so you can copy the one your project uses.
@@ -30,12 +37,6 @@ The tool splits on spaces, separators, and some changes from small to capital le
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How does it split words that are already joined together?
-
-It splits on separators and on the case boundaries it can see, so getHTTPResponse becomes get, HTTP, Response. Where the input is ambiguous it can only ever be a guess.
 
 ## Related guide
 

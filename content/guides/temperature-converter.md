@@ -8,6 +8,11 @@ tool_guide_slug: temperature-converter
 broader_guide:
   title: Calculators and Unit Conversion
   url: /guides/calculators-and-unit-conversion/
+about: Convert between Celsius, Fahrenheit and Kelvin, with the formulas shown so you can
+  check the arithmetic rather than trusting it.
+faq:
+- q: Is there a temperature where Celsius and Fahrenheit agree?
+  a: Yes, at −40 degrees. It is the single point where the two scales cross.
 ---
 
 Celsius, Fahrenheit, and Kelvin are three scales for describing temperature. The **same** temperature gets a different number on each scale. [Temperature Converter](/tools/temperature-converter/) shows all three numbers together.
@@ -25,12 +30,6 @@ The input must be a number. A temperature below absolute zero is rejected; on th
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is there a temperature where Celsius and Fahrenheit agree?
-
-Yes, at −40 degrees. It is the single point where the two scales cross.
 
 ## Related guide
 

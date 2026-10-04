@@ -9,6 +9,21 @@ tool_guide_slug: csv-viewer
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Drop in a CSV, TSV or pipe-separated file and read it as a table. The delimiter is
+  guessed from the first line, but you can sort by any column, type in the filter box to narrow
+  the rows, and see the shape of the file at a glance. The file is parsed in the page, so
+  nothing is uploaded.
+faq:
+- q: How does it pick the delimiter?
+  a: It counts commas, semicolons, tabs and pipes on the first non-empty line and uses whichever
+    appears most. A file with a single column falls back to the comma.
+- q: How large a file can it open?
+  a: The whole file is parsed, but only the first five hundred rows are drawn to keep the
+    page responsive. The row count in the corner always reflects the full file, not just what
+    is shown.
+- q: Does it read quoted fields?
+  a: Yes. A field wrapped in double quotes may contain the delimiter, a newline or a doubled
+    quote, and the viewer keeps it as one value rather than splitting it.
 ---
 
 CSV is a simple table written as text. Each line is a row; commas usually separate its cells. [CSV Viewer](/tools/csv-viewer/) lays those lines out as a table so you can find and sort records without opening a spreadsheet.
@@ -26,20 +41,6 @@ Choose a CSV, TSV, or text file with the file input, or paste its contents. The 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How does it pick the delimiter?
-
-It counts commas, semicolons, tabs and pipes on the first non-empty line and uses whichever appears most. A file with a single column falls back to the comma.
-
-### How large a file can it open?
-
-The whole file is parsed, but only the first five hundred rows are drawn to keep the page responsive. The row count in the corner always reflects the full file, not just what is shown.
-
-### Does it read quoted fields?
-
-Yes. A field wrapped in double quotes may contain the delimiter, a newline or a doubled quote, and the viewer keeps it as one value rather than splitting it.
 
 ## Related guide
 

@@ -8,6 +8,21 @@ tool_guide_slug: background-remover
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
+about: Make the background of a photo transparent. Pixels along the edge are flooded inwards
+  and everything close enough in colour goes, which turns a product shot on a plain surface
+  or a screenshot on a flat colour into a cut-out PNG in one step.
+faq:
+- q: Will this work on a photo with a busy background?
+  a: No, and no colour match can. A street, a room or a crowd needs a segmentation model that
+    understands what a person or an object is. This page is honest about that limit rather
+    than producing a ragged edge that has to be cleaned up by hand.
+- q: Why is part of the subject disappearing?
+  a: The subject shares a colour with the background and the match is too generous. Lower
+    the colour match until it stops, or start from the four corners when only the edges are
+    reliable.
+- q: What happens to the parts that are left?
+  a: They keep their colour and position exactly, and the cleared area becomes fully transparent.
+    The download is a PNG or a WebP because JPEG cannot store transparency at all.
 ---
 
 [Background Remover](/tools/background-remover/) makes the background of a picture transparent by flooding inward from pixels along the edge and clearing anything close enough in colour. It suits a product shot on a plain surface or a screenshot on a flat colour, not a busy scene.
@@ -21,20 +36,6 @@ If **Nothing matched the background** appears, the edges are not one flat colour
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Will this work on a photo with a busy background?
-
-No, and no colour match can. A street, a room or a crowd needs a segmentation model that understands what a person or an object is. This page is honest about that limit rather than producing a ragged edge that has to be cleaned up by hand.
-
-### Why is part of the subject disappearing?
-
-The subject shares a colour with the background and the match is too generous. Lower the colour match until it stops, or start from the four corners when only the edges are reliable.
-
-### What happens to the parts that are left?
-
-They keep their colour and position exactly, and the cleared area becomes fully transparent. The download is a PNG or a WebP because JPEG cannot store transparency at all.
 
 ## Related guide
 

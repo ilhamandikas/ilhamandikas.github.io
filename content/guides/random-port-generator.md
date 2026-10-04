@@ -8,6 +8,12 @@ tool_guide_slug: random-port-generator
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Pick one or more port numbers, with the option to stay above 1024 and to avoid the
+  ports that are usually already taken.
+faq:
+- q: Does it check whether the port is free?
+  a: No. A browser cannot scan ports on another host. This picks numbers that are unlikely
+    to clash — you still have to check your own machine.
 ---
 
 A **port** is a number a network service listens on. [Random Port Generator](/tools/random-port-generator/) picks numbers from a range you choose. It cannot see which ports are already busy on your machine.
@@ -25,12 +31,6 @@ A generated number is only a candidate. The tool does not scan a host, avoid a f
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it check whether the port is free?
-
-No. A browser cannot scan ports on another host. This picks numbers that are unlikely to clash — you still have to check your own machine.
 
 ## Related guide
 

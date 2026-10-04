@@ -8,6 +8,12 @@ tool_guide_slug: json-to-xml
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Convert JSON to XML, with a root element you choose and a stated convention for arrays,
+  attributes and primitive values.
+faq:
+- q: What happens to an array?
+  a: Each item becomes an element with the same name, which is the standard convention. The
+    tool shows the rule it applied so the output is predictable.
 ---
 
 XML puts data between named tags such as `<item>one</item>`. JSON puts it behind names such as `"item":"one"`. [JSON to XML](/tools/json-to-xml/) follows a simple rule to move between these forms: each JSON name becomes a tag.
@@ -29,12 +35,6 @@ This tool uses the **first top-level JSON key** as the XML root. If you paste `{
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### What happens to an array?
-
-Each item becomes an element with the same name, which is the standard convention. The tool shows the rule it applied so the output is predictable.
 
 ## Related guide
 

@@ -9,6 +9,23 @@ tool_guide_slug: ssh-tunnel-builder
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Write an ssh tunnel without memorising the -L, -R and -D shapes. Pick the direction,
+  fill in the ports, and the page assembles the command with the keepalive and failure options
+  most people forget. The bind address is optional, and -D hides the destination fields because
+  a SOCKS proxy has none.
+faq:
+- q: What is the difference between -L, -R and -D?
+  a: 'A local forward (-L) makes a service on the far side reachable from a port on this machine.
+    A remote forward (-R) does the opposite: it publishes a service on this machine to the
+    far side. A dynamic forward (-D) opens a SOCKS proxy you can point a browser at.'
+- q: Why are -f and -N on by default?
+  a: Together they put the tunnel in the background and run no remote command, which is what
+    you usually want for a tunnel that only forwards ports. Turn them off if you also want
+    a shell on the host.
+- q: Does this connect for me?
+  a: No. The page writes text only. You may enter an identity *file path*, but it does not
+    read the private key or request a password. Running the copied command in your terminal
+    performs the real connection.
 ---
 
 An **SSH tunnel** forwards a network connection through SSH. [SSH Tunnel Builder](/tools/ssh-tunnel-builder/) writes a command; it does not open a connection, check host identity, or install a key.
@@ -22,20 +39,6 @@ The defaults include **Background (-f)**, **No remote command (-N)**, a keepaliv
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### What is the difference between -L, -R and -D?
-
-A local forward (-L) makes a service on the far side reachable from a port on this machine. A remote forward (-R) does the opposite: it publishes a service on this machine to the far side. A dynamic forward (-D) opens a SOCKS proxy you can point a browser at.
-
-### Why are -f and -N on by default?
-
-Together they put the tunnel in the background and run no remote command, which is what you usually want for a tunnel that only forwards ports. Turn them off if you also want a shell on the host.
-
-### Does this connect for me?
-
-No. The page writes text only. You may enter an identity *file path*, but it does not read the private key or request a password. Running the copied command in your terminal performs the real connection.
 
 ## Related guide
 

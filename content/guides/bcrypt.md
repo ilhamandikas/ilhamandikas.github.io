@@ -8,6 +8,17 @@ tool_guide_slug: bcrypt
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: Hash a password with bcrypt, or verify a password against an existing bcrypt hash.
+  The cost factor controls how much work each hash takes, and that expense is the whole point.
+faq:
+- q: Which cost factor should I use?
+  a: Test the cost on the system that will verify the passwords, and follow your application's
+    current security policy. Higher costs take more work. **This tool does not measure or
+    report hash duration**, so it cannot choose a cost for your server. Cost `4` in the example
+    above is for learning only.
+- q: Why does the same password give a different hash every time?
+  a: Because bcrypt generates a random salt per hash and stores it inside the result. That
+    is what stops two users who chose the same password from having the same hash.
 ---
 
 **bcrypt** turns a password into a value a server can store instead of storing the password itself. It also checks whether a password matches an existing bcrypt hash. [bcrypt](/tools/bcrypt/) shows both operations with test text in your browser.
@@ -25,16 +36,6 @@ Cost `4` keeps this walkthrough quick, not secure by default for your server. A 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Which cost factor should I use?
-
-Test the cost on the system that will verify the passwords, and follow your application's current security policy. Higher costs take more work. **This tool does not measure or report hash duration**, so it cannot choose a cost for your server. Cost `4` in the example above is for learning only.
-
-### Why does the same password give a different hash every time?
-
-Because bcrypt generates a random salt per hash and stores it inside the result. That is what stops two users who chose the same password from having the same hash.
 
 ## Related guide
 

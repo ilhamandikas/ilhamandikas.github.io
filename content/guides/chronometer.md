@@ -8,6 +8,12 @@ tool_guide_slug: chronometer
 broader_guide:
   title: Dates, Timestamps, and Time Zones
   url: /guides/dates-times-and-time-zones/
+about: A stopwatch with lap times, counting in tenths of a second, for timing something without
+  leaving the browser.
+faq:
+- q: Does it keep running if I switch tabs?
+  a: Yes. The elapsed time is computed from a clock reading rather than by counting ticks,
+    so a backgrounded tab cannot make it drift.
 ---
 
 [Chronometer](/tools/chronometer/) is a stopwatch. The last two digits in `00:00.00` are **hundredths of a second**, not tenths.
@@ -21,12 +27,6 @@ A lap can be recorded even before starting, in which case it reads `00:00.00`. T
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it keep running if I switch tabs?
-
-Yes. The elapsed time is computed from a clock reading rather than by counting ticks, so a backgrounded tab cannot make it drift.
 
 ## Related guide
 

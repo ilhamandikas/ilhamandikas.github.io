@@ -8,6 +8,15 @@ tool_guide_slug: ipv4-address-converter
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Convert an IPv4 address between dotted-decimal, a single 32-bit integer, hexadecimal,
+  octal and binary, and show the four octets broken out.
+faq:
+- q: Why does 127.0.0.1 become 2130706433?
+  a: 'The four octets are the bytes of one 32-bit number: 127×256³ + 0×256² + 0×256 + 1. That
+    is why some sites accept the decimal form as the same address.'
+- q: Why would I need the integer form?
+  a: Firewalls, access rules and some APIs store addresses as integers because they are cheaper
+    to compare and range-check than strings.
 ---
 
 An IPv4 address usually appears as four numbers with dots, such as `192.168.1.1`. Computers can write the **same address** as one number or as bits. [IPv4 Address Converter](/tools/ipv4-address-converter/) lets you compare those forms.
@@ -25,16 +34,6 @@ A dotted IPv4 address needs exactly four parts; each part must be between `0` an
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why does 127.0.0.1 become 2130706433?
-
-The four octets are the bytes of one 32-bit number: 127×256³ + 0×256² + 0×256 + 1. That is why some sites accept the decimal form as the same address.
-
-### Why would I need the integer form?
-
-Firewalls, access rules and some APIs store addresses as integers because they are cheaper to compare and range-check than strings.
 
 ## Related guide
 

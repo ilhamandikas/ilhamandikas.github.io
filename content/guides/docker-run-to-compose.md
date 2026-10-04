@@ -8,6 +8,13 @@ tool_guide_slug: docker-run-to-compose
 broader_guide:
   title: Docker Basics
   url: /guides/docker-basics/
+about: Turn a docker run command into a docker-compose.yml service, mapping ports, volumes,
+  environment variables, restart policy and the command into their Compose equivalents.
+faq:
+- q: Does it understand every flag?
+  a: No. The parser handles selected flags but silently skips some unknown options. It also
+    treats anything after the image name as a command. Compare every option against the source
+    before trusting or running the result.
 ---
 
 `docker run` starts one container; a **Compose** file describes services in YAML so you can review and run them as a group. [Docker Run to Compose](/tools/docker-run-to-compose/) rewrites a subset of common flags as **draft YAML**. It does not start containers or check the Docker installation.
@@ -21,12 +28,6 @@ Compare the output to your original command *flag by flag*. This parser recogniz
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it understand every flag?
-
-No. The parser handles selected flags but silently skips some unknown options. It also treats anything after the image name as a command. Compare every option against the source before trusting or running the result.
 
 ## Related guide
 

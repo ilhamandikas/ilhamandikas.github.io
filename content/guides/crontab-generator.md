@@ -8,6 +8,15 @@ tool_guide_slug: crontab-generator
 broader_guide:
   title: Linux Command Line Tasks Without Surprises
   url: /guides/linux-command-line/
+about: Build a cron expression from its five fields and read it back in plain English, so
+  you can check a schedule before it quietly does the wrong thing at 3am. It also covers the
+  special strings like @daily and @reboot.
+faq:
+- q: Is `0 0 * * *` always midnight UTC?
+  a: No. It means midnight according to the cron implementation's configured timezone, often
+    the host's local timezone. This tool does not read that setting or convert times to UTC.
+- q: Does this schedule the job?
+  a: No. It only builds and explains the expression. Nothing is scheduled and nothing runs.
 ---
 
 **Cron** is a scheduler that uses five fields: minute, hour, day of month, month, and day of week. [Crontab Generator](/tools/crontab-generator/) assembles those five fields and writes a rough English description. It does **not** schedule a job, check future run times, or support special strings like `@reboot`.
@@ -21,16 +30,6 @@ You can also edit **Minute**, **Hour**, and the other fields yourself, but this 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is `0 0 * * *` always midnight UTC?
-
-No. It means midnight according to the cron implementation's configured timezone, often the host's local timezone. This tool does not read that setting or convert times to UTC.
-
-### Does this schedule the job?
-
-No. It only builds and explains the expression. Nothing is scheduled and nothing runs.
 
 ## Related guide
 

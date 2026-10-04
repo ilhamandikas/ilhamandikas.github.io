@@ -8,6 +8,20 @@ tool_guide_slug: whois-lookup
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Show the registrar, registration and expiry dates, status codes and nameservers for
+  a domain. It reads the registry's own RDAP service, discovered from the IANA bootstrap directory,
+  so there is no third-party proxy in the middle. When a registry publishes no RDAP service
+  at all, the tool says so instead of guessing.
+faq:
+- q: Why do some domains return nothing?
+  a: A few registries still publish no RDAP endpoint. Without one there is no machine-readable
+    record for the tool to fetch, so it reports that instead of showing an empty panel.
+- q: Why is the registrant hidden?
+  a: Since GDPR, most registries redact personal details on private registrations. The tool
+    tells you when the response has been redacted rather than showing blanks.
+- q: What is the difference between RDAP and WHOIS?
+  a: RDAP is the structured HTTPS replacement for the old port-43 WHOIS protocol. It returns
+    JSON instead of free text, so the fields can be labelled reliably rather than pattern-matched.
 ---
 
 Show the registrar, registration and expiry dates, status codes and nameservers for a domain. It reads the registry's own RDAP service, discovered from the IANA bootstrap directory, so there is no third-party proxy in the middle. When a registry publishes no RDAP service at all, the tool says so instead of guessing.
@@ -21,20 +35,6 @@ The request goes to the registry's RDAP service, discovered through the IANA boo
 ## Where your input goes
 
 Some actions send a request to RDAP providers. Check what you are sending before using real data.
-
-## Questions you might have
-
-### Why do some domains return nothing?
-
-A few registries still publish no RDAP endpoint. Without one there is no machine-readable record for the tool to fetch, so it reports that instead of showing an empty panel.
-
-### Why is the registrant hidden?
-
-Since GDPR, most registries redact personal details on private registrations. The tool tells you when the response has been redacted rather than showing blanks.
-
-### What is the difference between RDAP and WHOIS?
-
-RDAP is the structured HTTPS replacement for the old port-43 WHOIS protocol. It returns JSON instead of free text, so the fields can be labelled reliably rather than pattern-matched.
 
 ## Related guide
 

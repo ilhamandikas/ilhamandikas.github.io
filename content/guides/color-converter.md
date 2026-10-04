@@ -8,6 +8,17 @@ tool_guide_slug: color-converter
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
+about: Convert a colour between HEX, RGB, RGBA, HSL, HSLA and CMYK, with a live preview. It
+  accepts shorthand hex and alpha channels, and reports the nearest CSS colour name when there
+  is one.
+faq:
+- q: Why is the CMYK value approximate?
+  a: CMYK describes ink on paper and depends on the printer profile. The value here is the
+    standard naive conversion, which is a reasonable starting point but not something to send
+    to a print house.
+- q: Does HSL use degrees?
+  a: Yes. Hue describes a position around a colour wheel, from 0 to 360 degrees. Saturation
+    and lightness are shown as percentages.
 ---
 
 A screen colour can be written in several ways. A HEX value like `#FF0000` and an RGB value like `rgb(255, 0, 0)` can describe the same red. [Color Converter](/tools/color-converter/) shows several spellings of one colour.
@@ -25,16 +36,6 @@ Replace the input with `red`. You should get the same HEX and RGB values. This i
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is the CMYK value approximate?
-
-CMYK describes ink on paper and depends on the printer profile. The value here is the standard naive conversion, which is a reasonable starting point but not something to send to a print house.
-
-### Does HSL use degrees?
-
-Yes. Hue describes a position around a colour wheel, from 0 to 360 degrees. Saturation and lightness are shown as percentages.
 
 ## Related guide
 

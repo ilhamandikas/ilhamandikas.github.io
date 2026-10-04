@@ -8,6 +8,26 @@ tool_guide_slug: qr-code-generator
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
+about: This builds a QR code in your browser from any text or URL, with a choice of error-correction
+  level and an adjustable margin. The code is produced locally by a bundled encoder, so the
+  text you type is never sent anywhere. You can take the result as a PNG for a chat message
+  or as an SVG, which is drawn as vector paths and therefore stays sharp at any print size.
+faq:
+- q: Do I need an account, or is there a limit?
+  a: No account, no API key and no quota. The generator runs entirely in the page.
+- q: Which error-correction level should I choose?
+  a: Start with M. If the code may be scratched or partly covered, try H. H adds more recovery
+    information but makes the pattern busier. Download and scan the final image; the setting
+    alone cannot guarantee that a phone will read it.
+- q: Why did the PNG download fail?
+  a: PNG download needs the browser to draw the image first. If that step fails, try **Download
+    SVG** instead. SVG stays sharp when you make it bigger for print. Open and scan the downloaded
+    file before sharing it.
+- q: How large can a logo be before the code stops scanning?
+  a: A logo hides squares that a phone needs to read. Make the logo small. The tool shows
+    a warning when its size is beyond what scanned in testing, but that limit is not a guarantee
+    for your image. Scan the downloaded file on a few phones, especially before printing many
+    copies.
 ---
 
 A QR code is a picture that can hold a short piece of text, such as a web address. Someone points a phone camera at the picture to read that text. [QR Code Generator](/tools/qr-code-generator/) makes the picture in your browser.
@@ -32,24 +52,6 @@ Check that **Text or URL** is not empty. If the tool says it could not build the
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Do I need an account, or is there a limit?
-
-No account, no API key and no quota. The generator runs entirely in the page.
-
-### Which error-correction level should I choose?
-
-Start with M. If the code may be scratched or partly covered, try H. H adds more recovery information but makes the pattern busier. Download and scan the final image; the setting alone cannot guarantee that a phone will read it.
-
-### Why did the PNG download fail?
-
-PNG download needs the browser to draw the image first. If that step fails, try **Download SVG** instead. SVG stays sharp when you make it bigger for print. Open and scan the downloaded file before sharing it.
-
-### How large can a logo be before the code stops scanning?
-
-A logo hides squares that a phone needs to read. Make the logo small. The tool shows a warning when its size is beyond what scanned in testing, but that limit is not a guarantee for your image. Scan the downloaded file on a few phones, especially before printing many copies.
 
 ## Related guide
 

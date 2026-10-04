@@ -8,6 +8,17 @@ tool_guide_slug: xml-formatter
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Pretty-print or minify XML at the indentation you choose. It parses the document first,
+  so mismatched and unclosed tags are reported instead of being passed through.
+faq:
+- q: Does it preserve CDATA and comments?
+  a: Do not assume it preserves every CDATA section, comment, or bit of significant whitespace
+    unchanged. It checks the XML with a parser, then formats the original text with a small
+    indenter. For documents that rely on exact text or mixed content, keep the original and
+    inspect the result closely.
+- q: Why does it refuse my file?
+  a: The parser is strict. A stray ampersand, an undeclared namespace prefix or a mismatched
+    tag will stop it, and the error names the position.
 ---
 
 XML uses opening and closing tags to group text. [XML Formatter](/tools/xml-formatter/) puts those tags on separate indented lines so you can see what belongs inside what. It checks that the XML can be parsed first.
@@ -25,16 +36,6 @@ This tool has **no Minify button** and **no indent selector**. Its small formatt
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it preserve CDATA and comments?
-
-Do not assume it preserves every CDATA section, comment, or bit of significant whitespace unchanged. It checks the XML with a parser, then formats the original text with a small indenter. For documents that rely on exact text or mixed content, keep the original and inspect the result closely.
-
-### Why does it refuse my file?
-
-The parser is strict. A stray ampersand, an undeclared namespace prefix or a mismatched tag will stop it, and the error names the position.
 
 ## Related guide
 

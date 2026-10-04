@@ -8,6 +8,13 @@ tool_guide_slug: toml-to-yaml
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Convert TOML to YAML, turning tables into nested mappings and arrays of tables into
+  sequences. Handy when a tool wants YAML but the config is written in TOML.
+faq:
+- q: How are TOML dates represented?
+  a: Date and time values need extra care because parsers may infer types differently. Check
+    the actual YAML output and how the program that will read it treats that value; do not
+    assume a date round-trips unchanged.
 ---
 
 A TOML `[server]` heading groups the settings below it. YAML shows that grouping by indenting lines. [TOML to YAML](/tools/toml-to-yaml/) changes the format without deciding whether those settings are right for your application.
@@ -31,12 +38,6 @@ Comments explaining why a TOML setting exists do not automatically survive conve
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How are TOML dates represented?
-
-Date and time values need extra care because parsers may infer types differently. Check the actual YAML output and how the program that will read it treats that value; do not assume a date round-trips unchanged.
 
 ## Related guide
 

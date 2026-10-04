@@ -9,6 +9,16 @@ tool_guide_slug: jwt-expiry-editor
 broader_guide:
   title: Understanding and Debugging JWTs
   url: /guides/jwt-debugging/
+about: Load a JWT, edit its iat, nbf and exp claims with date pickers, and re-encode the token.
+  Use the quick +15m / +1h / +1d buttons to extend an expiry, then re-sign with HS256, HS384
+  or HS512, or strip the signature entirely for local testing. Everything runs in the browser.
+faq:
+- q: The signature no longer verifies after editing — is that a bug?
+  a: No. Changing any claim changes the signed data. Re-sign with the same secret and algorithm
+    the issuer used, or the token will be rejected.
+- q: Can it sign with RS256 or ES256?
+  a: Not yet. This tool focuses on HMAC secrets for quick testing; use the JWT Encode tool
+    for PEM-based algorithms.
 ---
 
 JWTs can contain three time claims measured in **seconds since 1970 UTC**: `iat` (issued), `nbf` (not before), and `exp` (expires). [JWT Expiry Editor](/tools/jwt-expiry-editor/) decodes a token and lets you change these times; it can re-sign using an HMAC test secret or produce an unsigned token. **Editing a claim invalidates the original signature.**
@@ -22,16 +32,6 @@ The quick buttons add time to the *current expiry*, or from now if there is none
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### The signature no longer verifies after editing — is that a bug?
-
-No. Changing any claim changes the signed data. Re-sign with the same secret and algorithm the issuer used, or the token will be rejected.
-
-### Can it sign with RS256 or ES256?
-
-Not yet. This tool focuses on HMAC secrets for quick testing; use the JWT Encode tool for PEM-based algorithms.
 
 ## Related guide
 

@@ -55,6 +55,16 @@
 {{- end }}
 
 {{ $.RawContent }}
+{{- with $.Params.faq }}
+
+## Questions you might have
+{{- range . }}
+
+### {{ .q }}
+
+{{ .a }}
+{{- end }}
+{{- end }}
 {{- else -}}
 # {{ $.Title }}
 

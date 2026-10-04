@@ -9,6 +9,22 @@ tool_guide_slug: sed-replacement-builder
 broader_guide:
   title: Linux Command Line Tasks Without Surprises
   url: /guides/linux-command-line/
+about: Build the sed command you would otherwise look up again. Choose between a substitution,
+  deleting matching lines or printing only the matches, then set the regex style, the delimiter
+  and the flags. The page escapes the delimiter inside the pattern and quotes the whole expression,
+  so a copy-paste into the shell behaves the same way it did here.
+faq:
+- q: Is an in-place edit reversible?
+  a: When both **Edit in place** and **Keep a .bak backup** are checked, the generated command
+    uses `-i.bak` so sed normally writes a `.bak` copy of each file. Check that copy yourself
+    before relying on it; without a backup there is no tool-provided undo.
+- q: What does the I flag do?
+  a: It makes the pattern match without regard to case. It is a GNU extension, so it works
+    with GNU sed on Linux but not with the old BSD sed on macOS.
+- q: Why does it quote the expression in single quotes?
+  a: The builder shell-quotes the sed expression **when its characters require it**; this
+    simple `cat` example needs no quotes. The **Files** field is *not* quoted by the builder;
+    a path with spaces or shell metacharacters needs manual review.
 ---
 
 **`sed`** is a command that edits lines of text. [sed Replacement Builder](/tools/sed-replacement-builder/) **writes a command** for replacement, deletion, or printing matching lines; it does not run the command or touch your files.
@@ -22,20 +38,6 @@ For a real file, use a disposable copy first. **Edit in place (-i)** modifies th
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is an in-place edit reversible?
-
-When both **Edit in place** and **Keep a .bak backup** are checked, the generated command uses `-i.bak` so sed normally writes a `.bak` copy of each file. Check that copy yourself before relying on it; without a backup there is no tool-provided undo.
-
-### What does the I flag do?
-
-It makes the pattern match without regard to case. It is a GNU extension, so it works with GNU sed on Linux but not with the old BSD sed on macOS.
-
-### Why does it quote the expression in single quotes?
-
-The builder shell-quotes the sed expression **when its characters require it**; this simple `cat` example needs no quotes. The **Files** field is *not* quoted by the builder; a path with spaces or shell metacharacters needs manual review.
 
 ## Related guide
 

@@ -89,28 +89,40 @@ def main() -> None:
             front += f"\nlastmod: {changed}"
         path.write_text(f"---\n{front}\n---\n")
 
-    # 3) the long-form guide keys must match real tools, otherwise a typo would
-    #    silently render nothing and nobody would notice
-    guides_path = ROOT / "data/tool-guides.yaml"
-    if guides_path.exists():
-        guides = yaml.safe_load(guides_path.read_text()) or {}
-        unknown = sorted(set(guides) - set(meta))
-        if unknown:
-            sys.exit(
-                "data/tool-guides.yaml has entries for tools that do not exist: "
-                + ", ".join(unknown)
-            )
-        # The other direction matters too: a tool page with a form and some labels
-        # is nearly empty as far as a crawler is concerned, so a tool that ships is
-        # a tool that has something written about it. Checked here rather than left
-        # to memory, because "I will write it later" is how a page ends up with no
-        # prose at all.
-        undoc = sorted(slug for slug in meta if slug in bodies and slug not in guides)
-        if undoc:
-            sys.exit(
-                "these tools are done but have no entry in data/tool-guides.yaml: "
-                + ", ".join(undoc)
-            )
+    # 3) the tool guide pages are the single source of the About + FAQ prose.
+    #    A guide's `tool_guide_slug` must match a real tool, otherwise a typo
+    #    silently renders nothing. The other direction matters too: a tool page
+    #    with a form and some labels is nearly empty as far as a crawler is
+    #    concerned, so a tool that ships is a tool that has something written
+    #    about it.
+    guide_slugs: dict[str, pathlib.Path] = {}
+    for gpath in sorted((ROOT / "content/guides").glob("*.md")):
+        gtext = gpath.read_text()
+        gm = re.search(r"^tool_guide_slug:\s*(\S+)\s*$", gtext, re.M)
+        if gm:
+            guide_slugs[gm.group(1)] = gpath
+    unknown_guides = sorted(set(guide_slugs) - set(meta))
+    if unknown_guides:
+        sys.exit(
+            "these tool guides reference tools that do not exist: "
+            + ", ".join(unknown_guides)
+        )
+    undoc = sorted(slug for slug in meta if slug in bodies and slug not in guide_slugs)
+    if undoc:
+        sys.exit(
+            "these tools are done but have no tool guide under content/guides/: "
+            + ", ".join(undoc)
+        )
+    no_prose = sorted(
+        slug
+        for slug in guide_slugs
+        if "about:" not in guide_slugs[slug].read_text()
+        or "faq:" not in guide_slugs[slug].read_text()
+    )
+    if no_prose:
+        sys.exit(
+            "these tool guides have no about/faq front matter: " + ", ".join(no_prose)
+        )
 
     total = len(meta)
     implemented = bodies & set(meta)

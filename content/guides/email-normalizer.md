@@ -8,6 +8,15 @@ tool_guide_slug: email-normalizer
 broader_guide:
   title: Email Debugging
   url: /guides/email-debugging/
+about: 'Normalise an email address to a canonical form: lowercase the domain, strip a +tag
+  from the local part, and remove dots for providers where they are ignored. Useful for deduplicating
+  a mailing list.'
+faq:
+- q: Is removing dots always safe?
+  a: No. This implementation removes dots only for `gmail.com` and `googlemail.com`, but removes
+    a `+` suffix for *all* domains. That second rule may also merge different addresses at
+    some providers. Keep the original address; do not use normalized text as proof two people
+    are the same.
 ---
 
 [Email Normalizer](/tools/email-normalizer/) applies a few text rules to one address **per line**. This is a *convenience transform*, **not** a universal canonical form. Different mail providers can treat the same spelling differently; never automatically merge user accounts based only on this output.
@@ -21,12 +30,6 @@ This tool removes everything after a `+` **at every domain**, even where the pro
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is removing dots always safe?
-
-No. This implementation removes dots only for `gmail.com` and `googlemail.com`, but removes a `+` suffix for *all* domains. That second rule may also merge different addresses at some providers. Keep the original address; do not use normalized text as proof two people are the same.
 
 ## Related guide
 

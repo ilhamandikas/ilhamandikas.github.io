@@ -8,6 +8,29 @@ tool_guide_slug: rsa-key-pair
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: Generate an RSA key pair in the browser with WebCrypto, in PEM form, ready to paste
+  into an SSH or TLS configuration — and check whether a public key and a private key you
+  already have are actually a pair. The private key never leaves the page unless you copy
+  it out.
+faq:
+- q: How many bits should the key be?
+  a: 2048 is the accepted minimum today. 4096 is slower to generate and to use for a modest
+    margin, and 1024 should be treated as broken.
+- q: How do you tell whether two keys match?
+  a: WebCrypto cannot derive one key from the other, so the check signs a fixed throwaway
+    message with the private key and asks the public key to verify it. If the signature verifies,
+    the two halves share a modulus and are a genuine pair. The probe message is a constant,
+    so the same two keys always give the same answer.
+- q: Which key formats are accepted for the check?
+  a: PKCS#8 and PKCS#1 for private keys, SPKI and PKCS#1 for public keys — that is BEGIN PRIVATE
+    KEY, BEGIN RSA PRIVATE KEY, BEGIN PUBLIC KEY and BEGIN RSA PUBLIC KEY. The PKCS#1 forms
+    are what openssl genrsa and openssl rsa -RSAPublicKey_out print, so they are wrapped into
+    PKCS#8 or SPKI before WebCrypto sees them rather than rejected.
+- q: Is a key generated in a browser trustworthy?
+  a: WebCrypto generates the key material in your browser, but the private key is displayed
+    as unencrypted text. The safety of a real key also depends on the browser, device, page
+    integrity, storage, and how you later use it. Follow your organization's key-generation
+    and handling policy.
 ---
 
 An RSA **key pair** has a public half and a private half. [RSA Key Pair](/tools/rsa-key-pair/) generates PEM text in the browser and can test whether an RSA public/private pair matches. These are generic **SPKI public** and **PKCS#8 private** PEM formats—not an `authorized_keys` line or a ready-made TLS certificate.
@@ -21,24 +44,6 @@ Only the public half is meant to be shared. The private PEM is unencrypted text 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How many bits should the key be?
-
-2048 is the accepted minimum today. 4096 is slower to generate and to use for a modest margin, and 1024 should be treated as broken.
-
-### How do you tell whether two keys match?
-
-WebCrypto cannot derive one key from the other, so the check signs a fixed throwaway message with the private key and asks the public key to verify it. If the signature verifies, the two halves share a modulus and are a genuine pair. The probe message is a constant, so the same two keys always give the same answer.
-
-### Which key formats are accepted for the check?
-
-PKCS#8 and PKCS#1 for private keys, SPKI and PKCS#1 for public keys — that is BEGIN PRIVATE KEY, BEGIN RSA PRIVATE KEY, BEGIN PUBLIC KEY and BEGIN RSA PUBLIC KEY. The PKCS#1 forms are what openssl genrsa and openssl rsa -RSAPublicKey_out print, so they are wrapped into PKCS#8 or SPKI before WebCrypto sees them rather than rejected.
-
-### Is a key generated in a browser trustworthy?
-
-WebCrypto generates the key material in your browser, but the private key is displayed as unencrypted text. The safety of a real key also depends on the browser, device, page integrity, storage, and how you later use it. Follow your organization's key-generation and handling policy.
 
 ## Related guide
 

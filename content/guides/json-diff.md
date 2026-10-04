@@ -8,6 +8,17 @@ tool_guide_slug: json-diff
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Compare two JSON documents and see what was added, removed or changed, key by key.
+  Because both sides are parsed first, differences in whitespace and key order are ignored
+  and only real changes are reported — which makes it far more useful than eyeballing two
+  formatted blobs.
+faq:
+- q: Does key order count as a difference?
+  a: No. Both documents are parsed and compared as structures, so reordering keys is not a
+    change.
+- q: Can it merge the two documents?
+  a: No. It reports differences. Merging is a separate decision that depends on which side
+    should win, and that is a judgement the tool cannot make for you.
 ---
 
 When an API response or configuration changes, comparing two walls of text is tiring. [JSON Diff](/tools/json-diff/) reads both pieces of JSON and points to values that were added, removed, or changed.
@@ -27,16 +38,6 @@ Check which side you put into each box: left is *original*, right is *changed*. 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does key order count as a difference?
-
-No. Both documents are parsed and compared as structures, so reordering keys is not a change.
-
-### Can it merge the two documents?
-
-No. It reports differences. Merging is a separate decision that depends on which side should win, and that is a judgement the tool cannot make for you.
 
 ## Related guide
 

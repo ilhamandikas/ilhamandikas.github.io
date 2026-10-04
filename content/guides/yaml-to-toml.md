@@ -8,6 +8,17 @@ tool_guide_slug: yaml-to-toml
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Convert YAML to TOML, preserving nesting, arrays and types. TOML has no null, so a
+  null value is reported rather than quietly dropped or turned into an empty string.
+faq:
+- q: What happens to a null value?
+  a: TOML has no null type. This conversion cannot faithfully carry a YAML null across. In
+    the current tool, a null field may be omitted **without an error**. Check the output,
+    then decide whether the receiving program expects an absent field or a different explicit
+    value.
+- q: Does key order survive?
+  a: Do not rely on key order alone to decide whether a conversion is correct. Check the resulting
+    tables and values against the source and against what the receiving program expects.
 ---
 
 YAML groups settings with indentation. TOML groups them with headings such as `[server]`. [YAML to TOML](/tools/yaml-to-toml/) reads the YAML values and writes TOML for programs that expect it.
@@ -31,16 +42,6 @@ TOML requires a mapping (named values) at the top of the document. A YAML list b
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### What happens to a null value?
-
-TOML has no null type. This conversion cannot faithfully carry a YAML null across. In the current tool, a null field may be omitted **without an error**. Check the output, then decide whether the receiving program expects an absent field or a different explicit value.
-
-### Does key order survive?
-
-Do not rely on key order alone to decide whether a conversion is correct. Check the resulting tables and values against the source and against what the receiving program expects.
 
 ## Related guide
 

@@ -8,6 +8,17 @@ tool_guide_slug: token-generator
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: Generate random tokens and passwords of a chosen length from a chosen character set,
+  drawn from the browser's cryptographic random source. Useful for API keys, session secrets
+  and share links.
+faq:
+- q: How long should a token be?
+  a: For a machine-generated secret, 32 characters from a mixed alphabet is about 190 bits
+    of entropy, which is far past brute force. Length buys you more than character variety
+    does.
+- q: Is Math.random good enough for this?
+  a: No. Math.random is a fast seeded generator whose output can be predicted from previous
+    values. This tool uses crypto.getRandomValues instead.
 ---
 
 A **token** is a string a program may use as a secret or as an identifier. [Token Generator](/tools/token-generator/) makes random strings using your browser's cryptographic random source. The **output itself** is sensitive if you use it as a real secret.
@@ -25,16 +36,6 @@ Choose the length and allowed characters your receiving application expects. Sto
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How long should a token be?
-
-For a machine-generated secret, 32 characters from a mixed alphabet is about 190 bits of entropy, which is far past brute force. Length buys you more than character variety does.
-
-### Is Math.random good enough for this?
-
-No. Math.random is a fast seeded generator whose output can be predicted from previous values. This tool uses crypto.getRandomValues instead.
 
 ## Related guide
 

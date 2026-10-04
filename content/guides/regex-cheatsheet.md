@@ -8,6 +8,12 @@ tool_guide_slug: regex-cheatsheet
 broader_guide:
   title: Testing Regex Before Shipping It
   url: /guides/regex-testing/
+about: 'A searchable reference for regular-expression syntax: character classes, anchors,
+  quantifiers, groups, lookarounds and the flags that change how matching behaves.'
+faq:
+- q: Which dialect does this describe?
+  a: The syntax is common to most engines. Where JavaScript, PCRE and POSIX diverge, the entry
+    says so explicitly.
 ---
 
 A regular expression, or **regex**, is a pattern for finding text. Small symbols can have special meanings. [Regex Cheatsheet](/tools/regex-cheatsheet/) lists common symbols so you can look one up while building a pattern.
@@ -25,12 +31,6 @@ Search filters the list; it does not test your data. The **Everyday patterns** s
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Which dialect does this describe?
-
-The syntax is common to most engines. Where JavaScript, PCRE and POSIX diverge, the entry says so explicitly.
 
 ## Related guide
 

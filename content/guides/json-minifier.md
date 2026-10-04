@@ -8,6 +8,14 @@ tool_guide_slug: json-minifier
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Strip the whitespace out of a JSON document while keeping it valid, so it takes fewer
+  bytes over the wire. It parses first and re-serialises, so a malformed document is rejected
+  rather than mangled.
+faq:
+- q: How much smaller does it get?
+  a: It depends on how much spacing the original contains. A one-line document may barely
+    change. If your server already compresses responses, removing spaces may save much less
+    on the actual download than the text boxes suggest.
 ---
 
 JSON stores data as text. Extra spaces and new lines can make it easier for a person to read, but a computer does not need most of them. [JSON Minifier](/tools/json-minifier/) reads valid JSON and writes a more compact version.
@@ -34,12 +42,6 @@ It checks whether the input is valid JSON before writing output. Try `{name:"Ana
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How much smaller does it get?
-
-It depends on how much spacing the original contains. A one-line document may barely change. If your server already compresses responses, removing spaces may save much less on the actual download than the text boxes suggest.
 
 ## Related guide
 

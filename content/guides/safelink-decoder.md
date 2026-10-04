@@ -8,6 +8,13 @@ tool_guide_slug: safelink-decoder
 broader_guide:
   title: Working With URLs
   url: /guides/working-with-urls/
+about: Extract the real destination from an Outlook SafeLink, which wraps the original URL
+  in a redirect through Microsoft's safelinks service. It decodes the url parameter and shows
+  where the link genuinely goes.
+faq:
+- q: Why do SafeLinks exist?
+  a: Microsoft rewrites links in email so it can scan the destination at click time and block
+    it later if it turns malicious. That is why the address you see is not the real one.
 ---
 
 A **wrapped link** puts one web address inside another, often as a `url=` query parameter. [SafeLink Decoder](/tools/safelink-decoder/) extracts a likely destination from Microsoft SafeLinks and other redirect links. It does **not** visit the destination or check whether it is safe.
@@ -21,12 +28,6 @@ If you paste an ordinary URL with no recognized destination parameter, this tool
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why do SafeLinks exist?
-
-Microsoft rewrites links in email so it can scan the destination at click time and block it later if it turns malicious. That is why the address you see is not the real one.
 
 ## Related guide
 

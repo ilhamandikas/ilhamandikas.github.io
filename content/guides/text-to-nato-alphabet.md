@@ -8,6 +8,12 @@ tool_guide_slug: text-to-nato-alphabet
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Spell out text using the NATO phonetic alphabet — Alfa, Bravo, Charlie — which is what
+  you use when a word has to survive a noisy phone line.
+faq:
+- q: Why Alfa and Juliett, with a double t?
+  a: Both spellings were chosen so that speakers of languages which do not distinguish those
+    sounds still pronounce them correctly. The spelling is deliberate, not a typo.
 ---
 
 Some letters sound alike over the phone. The NATO spelling alphabet gives each letter a distinct word: `A` becomes **Alfa**, `B` becomes **Bravo**, and so on. [NATO Alphabet](/tools/text-to-nato-alphabet/) spells a short string this way.
@@ -25,12 +31,6 @@ This is a spelling aid, not a translator or an encryption tool. In decode mode, 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why Alfa and Juliett, with a double t?
-
-Both spellings were chosen so that speakers of languages which do not distinguish those sounds still pronounce them correctly. The spelling is deliberate, not a typo.
 
 ## Related guide
 

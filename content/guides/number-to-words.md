@@ -8,6 +8,20 @@ tool_guide_slug: number-to-words
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Write an amount in Indonesian words, the way it is done on an invoice or a cheque.
+  Enter a number and the page spells it out, grouping by ribu, juta, miliar and triliun, with
+  an optional capital first letter. Decimals are read one digit at a time after the word koma.
+faq:
+- q: How is 1,250,000 read?
+  a: 'Enter `1250000` without separators. The output is `satu juta dua ratus lima puluh ribu`.
+    Typing `1,250,000` is not the same input here: commas mark decimal digits, not thousands.'
+- q: What about the number one?
+  a: 'In front of a scale word it shortens: 1000 is seribu and 100 is seratus, not satu ribu
+    and satu ratus. Everywhere else it stays satu, as in satu juta.'
+- q: How large a number can it handle?
+  a: 'The tool rejects an integer part longer than 16 digits. That length check is **not**
+    a promise that every shorter integer is exact: JavaScript numbers can lose precision above
+    `9007199254740991`. Double-check large financial amounts before using the words.'
 ---
 
 [Number to Words](/tools/number-to-words/) writes a number in **Indonesian words**. This can help when filling a draft invoice or checking how an amount sounds before you use it.
@@ -27,20 +41,6 @@ The tool writes number words; it does not add `rupiah` or decide a legal invoice
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How is 1,250,000 read?
-
-Enter `1250000` without separators. The output is `satu juta dua ratus lima puluh ribu`. Typing `1,250,000` is not the same input here: commas mark decimal digits, not thousands.
-
-### What about the number one?
-
-In front of a scale word it shortens: 1000 is seribu and 100 is seratus, not satu ribu and satu ratus. Everywhere else it stays satu, as in satu juta.
-
-### How large a number can it handle?
-
-The tool rejects an integer part longer than 16 digits. That length check is **not** a promise that every shorter integer is exact: JavaScript numbers can lose precision above `9007199254740991`. Double-check large financial amounts before using the words.
 
 ## Related guide
 

@@ -8,6 +8,30 @@ tool_guide_slug: fuel-economy-converter
 broader_guide:
   title: Calculators and Unit Conversion
   url: /guides/calculators-and-unit-conversion/
+about: A one-in, four-out fuel economy converter. Type a figure, choose the unit it is in,
+  and km/L, L/100 km and both MPG figures update as you type. All four units are defined by
+  an exact conversion to km/L and back, so a value and its round trip agree. The maths runs
+  in the page and nothing is uploaded.
+faq:
+- q: Why are there two MPG values?
+  a: Because the US and UK gallons are not the same size. A UK gallon is about 20% larger,
+    so the same car always shows a higher UK MPG figure. The converter keeps both so a review
+    or a spec sheet written in either country can be read without guessing.
+- q: Which direction is better?
+  a: Higher km/L and higher MPG are better; lower L/100 km is better. That inversion is the
+    usual reason a plain percentage change is confusing — a 10% drop in L/100 km is an improvement,
+    not a loss.
+- q: How is L/100 km converted?
+  a: 'It is the reciprocal relationship: L/100 km equals 100 divided by km/L, and km/L equals
+    100 divided by L/100 km. That is why the two curves are not linear and small L/100 km
+    figures turn into very large km/L figures.'
+- q: What are the exact MPG factors?
+  a: This implementation multiplies km/L by `2.352145833` for US MPG and `2.824809` for UK
+    MPG. Those factors are rounded constants in the code, not a claim of exact precision beyond
+    the displayed digits.
+- q: Is the result rounded?
+  a: Each value is rounded to at most three decimal places for display, with trailing zeros
+    omitted. The calculation happens before this display rounding.
 ---
 
 **Fuel economy** says how far a vehicle travels per amount of fuel. [Fuel Economy Converter](/tools/fuel-economy-converter/) shows four ways of writing the *same* consumption: km/L, L/100 km, US MPG, and UK MPG. **MPG** means miles per gallon; US and UK gallons differ.
@@ -21,28 +45,6 @@ There is no copy button; read the table or note the values you need. These are u
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why are there two MPG values?
-
-Because the US and UK gallons are not the same size. A UK gallon is about 20% larger, so the same car always shows a higher UK MPG figure. The converter keeps both so a review or a spec sheet written in either country can be read without guessing.
-
-### Which direction is better?
-
-Higher km/L and higher MPG are better; lower L/100 km is better. That inversion is the usual reason a plain percentage change is confusing — a 10% drop in L/100 km is an improvement, not a loss.
-
-### How is L/100 km converted?
-
-It is the reciprocal relationship: L/100 km equals 100 divided by km/L, and km/L equals 100 divided by L/100 km. That is why the two curves are not linear and small L/100 km figures turn into very large km/L figures.
-
-### What are the exact MPG factors?
-
-This implementation multiplies km/L by `2.352145833` for US MPG and `2.824809` for UK MPG. Those factors are rounded constants in the code, not a claim of exact precision beyond the displayed digits.
-
-### Is the result rounded?
-
-Each value is rounded to at most three decimal places for display, with trailing zeros omitted. The calculation happens before this display rounding.
 
 ## Related guide
 

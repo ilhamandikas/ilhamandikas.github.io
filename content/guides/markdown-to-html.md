@@ -8,6 +8,16 @@ tool_guide_slug: markdown-to-html
 broader_guide:
   title: Writing and Publishing Text for the Web
   url: /guides/writing-for-the-web/
+about: Render Markdown to HTML in the browser, with the generated markup shown as text so
+  you can copy it straight into a template. It handles headings, lists, tables, code fences,
+  links and inline formatting.
+faq:
+- q: Is the output sanitised?
+  a: No. Raw HTML can pass through the renderer, and the preview inserts generated HTML into
+    the page. Do not paste untrusted content here; sanitize it before rendering or publishing
+    it.
+- q: Which flavour of Markdown is this?
+  a: CommonMark with the usual table and strikethrough extensions — GitHub-flavoured in practice.
 ---
 
 **Markdown** uses characters such as `#` for headings and `**` for bold text. [Markdown to HTML](/tools/markdown-to-html/) turns that text into HTML and displays both a live **Preview** and the generated **HTML** source.
@@ -23,16 +33,6 @@ If the preview differs from your website, check how that site styles HTML and wh
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is the output sanitised?
-
-No. Raw HTML can pass through the renderer, and the preview inserts generated HTML into the page. Do not paste untrusted content here; sanitize it before rendering or publishing it.
-
-### Which flavour of Markdown is this?
-
-CommonMark with the usual table and strikethrough extensions — GitHub-flavoured in practice.
 
 ## Related guide
 

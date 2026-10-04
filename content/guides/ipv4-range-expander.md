@@ -8,6 +8,12 @@ tool_guide_slug: ipv4-range-expander
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Given a start and end address, list the CIDR blocks that cover the range exactly, so
+  you can turn an arbitrary range into something a firewall or a route table will accept.
+faq:
+- q: Why does it return several blocks instead of one?
+  a: CIDR blocks are always powers of two, so an arbitrary range almost never lands on one.
+    The tool finds the smallest set of blocks that covers it without going over.
 ---
 
 A firewall rule may ask for a **CIDR block** instead of a start and end address. CIDR describes a group of addresses with a suffix such as `/30`. [IPv4 Range Expander](/tools/ipv4-range-expander/) finds blocks that cover the exact range you type.
@@ -25,12 +31,6 @@ Check that the start and end are in the right order and that you intend to allow
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why does it return several blocks instead of one?
-
-CIDR blocks are always powers of two, so an arbitrary range almost never lands on one. The tool finds the smallest set of blocks that covers it without going over.
 
 ## Related guide
 

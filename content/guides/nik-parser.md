@@ -8,6 +8,20 @@ tool_guide_slug: nik-parser
 broader_guide:
   title: Indonesian Data Formats
   url: /guides/indonesian-data-formats/
+about: Parse an Indonesian NIK/KTP number locally in the browser. The tool splits the 16 digits
+  into province, regency or city, district, encoded birth date, gender marker and serial number,
+  then looks up the region names from an offline copy of Indonesian administrative codes.
+  It does not verify whether a NIK belongs to a real person; it only explains the structure
+  of the number you typed.
+faq:
+- q: Can this validate that a NIK is real?
+  a: No. It can validate the format and decode the embedded fields, but only Dukcapil or an
+    authorised system can confirm whether the identity exists and is active. Treat this as
+    a parser, not an identity check.
+- q: Why does a female birth date look larger than 31?
+  a: In a NIK, the day of birth is stored directly for male holders and with 40 added for
+    female holders. So 01 means male born on the 1st, while 41 means female born on the 1st.
+    The page shows that explanation beside the decoded gender.
 ---
 
 A **NIK** is an Indonesian national identity number containing coded fields. [NIK Parser](/tools/nik-parser/) reads those fields and looks up region codes in a bundled list. It does not contact Dukcapil or prove that an identity exists.
@@ -21,16 +35,6 @@ If fewer than 16 digits remain, the page asks for exactly 16. Non-digit characte
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Can this validate that a NIK is real?
-
-No. It can validate the format and decode the embedded fields, but only Dukcapil or an authorised system can confirm whether the identity exists and is active. Treat this as a parser, not an identity check.
-
-### Why does a female birth date look larger than 31?
-
-In a NIK, the day of birth is stored directly for male holders and with 40 added for female holders. So 01 means male born on the 1st, while 41 means female born on the 1st. The page shows that explanation beside the decoded gender.
 
 ## Related guide
 

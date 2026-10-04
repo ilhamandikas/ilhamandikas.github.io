@@ -8,6 +8,12 @@ tool_guide_slug: emoji-picker
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Search and copy emoji by name, with the whole set available rather than the subset
+  your keyboard happens to offer.
+faq:
+- q: Why do some emoji render as boxes?
+  a: The font on your system does not include them. The character is still correct and will
+    render wherever the font supports it.
 ---
 
 [Emoji Picker](/tools/emoji-picker/) has a **curated list** of emoji you can search by English name or keyword. It is not a complete Unicode emoji catalog, so a missing result does not mean an emoji does not exist.
@@ -21,12 +27,6 @@ The browser copies the Unicode character, not a picture file. Appearance varies 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why do some emoji render as boxes?
-
-The font on your system does not include them. The character is still correct and will render wherever the font supports it.
 
 ## Related guide
 

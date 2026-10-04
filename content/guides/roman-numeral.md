@@ -8,6 +8,13 @@ tool_guide_slug: roman-numeral
 broader_guide:
   title: Calculators and Unit Conversion
   url: /guides/calculators-and-unit-conversion/
+about: Convert between Roman numerals and decimal numbers, using the subtractive notation
+  for 4, 9, 40, 90, 400 and 900. It covers 1 to 3999, which is the range the plain notation
+  reaches without an overline.
+faq:
+- q: Why does it stop at 3999?
+  a: Standard Roman notation has no zero and no way to write larger numbers without an overline
+    or a different convention. 3999 is MMMCMXCIX, the largest value the plain form expresses.
 ---
 
 Roman numerals write numbers with letters. `I` means 1, `V` means 5, and `X` means 10. [Roman Numerals](/tools/roman-numeral/) changes ordinary numbers into these letters and back.
@@ -25,12 +32,6 @@ In number mode, enter a **whole number from 1 through 3999**. Zero and negative 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why does it stop at 3999?
-
-Standard Roman notation has no zero and no way to write larger numbers without an overline or a different convention. 3999 is MMMCMXCIX, the largest value the plain form expresses.
 
 ## Related guide
 

@@ -8,6 +8,13 @@ tool_guide_slug: line-comma-formatter
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Format one-item-per-line lists without opening an editor. Add trailing commas, turn
+  lines into CSV, quote each item, build a JavaScript array, or make a SQL IN list. Empty-line
+  skipping and trimming are optional.
+faq:
+- q: Can it keep blank lines?
+  a: Yes. Turn off Skip empty if the blank lines are meaningful. Turn off Trim lines if leading
+    or trailing spaces should be preserved.
 ---
 
 A list often arrives with one item per line, but the place you want to paste it expects commas or quotes. [Line Comma Formatter](/tools/line-comma-formatter/) changes the **shape** of that list. It does not look up or validate the items.
@@ -27,12 +34,6 @@ A generated SQL list is for inspecting or drafting a query, **not** a replacemen
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Can it keep blank lines?
-
-Yes. Turn off Skip empty if the blank lines are meaningful. Turn off Trim lines if leading or trailing spaces should be preserved.
 
 ## Related guide
 

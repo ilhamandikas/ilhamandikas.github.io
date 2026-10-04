@@ -8,6 +8,17 @@ tool_guide_slug: pdf-signature-checker
 broader_guide:
   title: Working With PDFs
   url: /guides/working-with-pdfs/
+about: 'Read a PDF and report the signatures it contains: who signed, when, and whether the
+  byte range each signature covers still matches the file. It walks the PDF structure directly,
+  with no upload and no external library.'
+faq:
+- q: Does this prove the signer's identity?
+  a: No. Even an **Intact** digest here does not verify the public-key signature or trust
+    the certificate. Use a full verifier and independent identity checks when it matters.
+- q: Why is a signature reported as invalid?
+  a: A mismatch can mean the signed byte range changed, or that the format or range was not
+    interpreted as expected. **Could not verify** can also mean an unsupported digest. Do
+    not infer the cause or the signer's identity from this lightweight result alone.
 ---
 
 A PDF **digital signature** can contain a cryptographic digest (a fingerprint of the signed bytes) and certificate data. [PDF Signature Checker](/tools/pdf-signature-checker/) is a **best-effort browser inspector**: it looks for signature byte ranges and compares a supported embedded digest with the file's signed bytes. It does **not** verify the actual public-key signature, certificate chain, revocation, or signer's identity.
@@ -21,16 +32,6 @@ Choose a disposable PDF you made yourself that has no digital signature under **
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does this prove the signer's identity?
-
-No. Even an **Intact** digest here does not verify the public-key signature or trust the certificate. Use a full verifier and independent identity checks when it matters.
-
-### Why is a signature reported as invalid?
-
-A mismatch can mean the signed byte range changed, or that the format or range was not interpreted as expected. **Could not verify** can also mean an unsupported digest. Do not infer the cause or the signer's identity from this lightweight result alone.
 
 ## Related guide
 

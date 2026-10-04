@@ -8,6 +8,18 @@ tool_guide_slug: ipv4-subnet-calculator
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Given an address and a prefix length, work out the network address, broadcast address,
+  netmask, wildcard mask and usable host range, along with the total and usable host counts.
+faq:
+- q: Why is the usable host count two less than the total?
+  a: 'For ordinary IPv4 subnets, the first address is reserved as the network address and
+    the last as broadcast, so the tool subtracts two. **Watch out:** this tool reports `0`
+    usable hosts for `/31` and `/32`. That count is not a full explanation of those special
+    cases: `/31` can be used for a point-to-point link, and `/32` names a single address.
+    Check your network''s rules before treating the count as a deployment decision.'
+- q: Can it plan a VLSM layout?
+  a: Not directly. Use it to check one block at a time, or the range expander to see which
+    CIDR blocks cover an arbitrary range exactly.
 ---
 
 An IPv4 address looks like `192.168.1.10`. A *subnet* is a group of addresses, and a suffix such as `/24` tells you how large the group is. [IPv4 Subnet Calculator](/tools/ipv4-subnet-calculator/) shows the group containing the address you enter.
@@ -31,16 +43,6 @@ An IPv4 address must have four numbers from `0` to `255`, separated by dots. A p
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is the usable host count two less than the total?
-
-For ordinary IPv4 subnets, the first address is reserved as the network address and the last as broadcast, so the tool subtracts two. **Watch out:** this tool reports `0` usable hosts for `/31` and `/32`. That count is not a full explanation of those special cases: `/31` can be used for a point-to-point link, and `/32` names a single address. Check your network's rules before treating the count as a deployment decision.
-
-### Can it plan a VLSM layout?
-
-Not directly. Use it to check one block at a time, or the range expander to see which CIDR blocks cover an arbitrary range exactly.
 
 ## Related guide
 

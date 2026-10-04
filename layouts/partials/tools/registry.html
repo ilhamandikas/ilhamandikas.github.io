@@ -3,10 +3,9 @@
 
        Sources, in order of precedence:
          data/tools.yaml        id, name, description, keywords, category, status
-         data/tool-guides.yaml  about + FAQ (the FAQ questions become examples)
+         content/guides/*.md    about + FAQ (the FAQ questions become examples)
          data/tool-ai.yaml      optional use_cases / examples / keywords / features
    */ -}}
-{{- $guides := index site.Data "tool-guides" | default dict -}}
 {{- $overlay := index site.Data "tool-ai" | default dict -}}
 {{- $base := site.BaseURL -}}
 {{- $defaultFeatures := slice "Runs in the browser" "No login required" -}}
@@ -16,7 +15,7 @@
   {{- $category := . -}}
   {{- range .tools -}}
     {{- $slug := .slug -}}
-    {{- $guide := index $guides $slug | default dict -}}
+    {{- $guide := partial "tools/guide.html" $slug -}}
     {{- $ai := index $overlay $slug | default dict -}}
     {{- $examples := slice -}}
     {{- range ($guide.faq | default slice) -}}

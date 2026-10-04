@@ -9,6 +9,15 @@ tool_guide_slug: cors-checker
 broader_guide:
   title: Debugging CORS Without Guessing
   url: /guides/debugging-cors/
+about: Check whether a URL can be read by JavaScript from this site origin. The tool sends
+  a browser fetch request and, where possible, an OPTIONS-style probe, then reports what the
+  browser allowed the page to see. It cannot spoof arbitrary Origin headers because browsers
+  deliberately do not allow that.
+faq:
+- q: Why does it say blocked without showing the server headers?
+  a: When CORS blocks a response, the browser hides the response from JavaScript. That is
+    the rule this tool is testing, so sometimes the only honest answer is that the page could
+    not read the details.
 ---
 
 A web page sometimes asks another website for data. That other website may answer, but the browser can still refuse to show the answer to the page. This browser rule is called **CORS**. [CORS Checker](/tools/cors-checker/) helps you see what this browser can read from a URL. It does not change that website's settings.
@@ -31,12 +40,6 @@ Run a request from the app's real page and compare its origin, method, and heade
 ## Where your input goes
 
 When you choose **Check**, your browser sends requests to the URL you entered. That server can see the request. Do not test a sensitive endpoint unless you are allowed to contact it. The tool does not need a token for the example above.
-
-## Questions you might have
-
-### Why does it say blocked without showing the server headers?
-
-When CORS blocks a response, the browser hides the response from JavaScript. That is the rule this tool is testing, so sometimes the only honest answer is that the page could not read the details.
 
 ## Related guide
 

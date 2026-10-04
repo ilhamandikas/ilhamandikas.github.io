@@ -8,6 +8,22 @@ tool_guide_slug: screenshot-privacy-cleaner
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
+about: Screenshots are easy to share and easy to over-share. Drag a box over an email address,
+  a phone number, an IP address or a line of text, and either pixelate it or cover it with
+  a solid black rectangle, then download the cleaned-up copy.
+faq:
+- q: Does it find the sensitive parts for me?
+  a: No. Locating a phone number inside a picture would need optical character recognition,
+    which would mean shipping a large model and reading every pixel of your screenshot. Marking
+    the areas by hand is the honest version.
+- q: Is pixelating as safe as a black box?
+  a: A black box destroys the pixels underneath. Pixelation keeps an average of them, and
+    a coarse enough block makes them unreadable, but for anything truly secret the black box
+    is the safer choice.
+- q: Can I take a redaction back?
+  a: Undo removes the last box and Reset clears them all, because the untouched pixels are
+    kept aside while you work. Once you download, the redactions are baked into the saved
+    file.
 ---
 
 [Screenshot Privacy Cleaner](/tools/screenshot-privacy-cleaner/) lets you draw boxes over parts of a screenshot and burn them out before sharing. It does not hunt for sensitive text for you; you mark each area by hand with the mouse or a touch.
@@ -21,20 +37,6 @@ Review the preview before you download; nothing is saved until then. Pixelation 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it find the sensitive parts for me?
-
-No. Locating a phone number inside a picture would need optical character recognition, which would mean shipping a large model and reading every pixel of your screenshot. Marking the areas by hand is the honest version.
-
-### Is pixelating as safe as a black box?
-
-A black box destroys the pixels underneath. Pixelation keeps an average of them, and a coarse enough block makes them unreadable, but for anything truly secret the black box is the safer choice.
-
-### Can I take a redaction back?
-
-Undo removes the last box and Reset clears them all, because the untouched pixels are kept aside while you work. Once you download, the redactions are baked into the saved file.
 
 ## Related guide
 

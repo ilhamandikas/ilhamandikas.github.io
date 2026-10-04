@@ -75,7 +75,7 @@
         <h1>{{ $.Title }}</h1>
         {{- with $.Description }}<p class="updated">{{ . }}</p>{{ end }}
       </div>
-      <div class="prose">{{ $.Content }}</div>
+      <div class="prose">{{ $.Content }}{{ partial "guides/faq.html" $ }}</div>
     </div>
   </article>
 {{- else -}}

@@ -8,6 +8,12 @@ tool_guide_slug: benchmark-builder
 broader_guide:
   title: Calculators and Unit Conversion
   url: /guides/calculators-and-unit-conversion/
+about: Compare a set of measured values and see each one as a ratio against the fastest, so
+  the differences are readable without doing the arithmetic.
+faq:
+- q: Can I use this to compare two snippets?
+  a: Run one snippet at a time, under the same browser and conditions, then compare the recorded
+    results yourself. This tool has no multi-snippet comparison or ratio view.
 ---
 
 [Benchmark Builder](/tools/benchmark-builder/) **runs JavaScript code** in your browser repeatedly and measures how long it took. It does **not** compare several measured values or compute ratios. Only use code you wrote and understand: unlike a text-only converter, this page executes the snippet with access to the page's JavaScript environment.
@@ -21,12 +27,6 @@ The tool first runs the snippet **once as a warm-up**, then runs it 100 more tim
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Can I use this to compare two snippets?
-
-Run one snippet at a time, under the same browser and conditions, then compare the recorded results yourself. This tool has no multi-snippet comparison or ratio view.
 
 ## Related guide
 

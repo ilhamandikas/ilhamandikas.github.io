@@ -9,6 +9,14 @@ tool_guide_slug: sticker-maker
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
+about: Make a 1024×1024 PNG sticker from an uploaded image, with circle, square or rounded
+  frames, decorative text, a sticker outline and simple local background removal. The image
+  is processed in the browser canvas and is not uploaded.
+faq:
+- q: How good is the background removal?
+  a: It is colour-based, using the image corners as the background sample. It works well for
+    flat studio-like backgrounds; complex backgrounds still need a dedicated segmentation
+    model or manual editing.
 ---
 
 [Sticker Maker](/tools/sticker-maker/) draws a 1024×1024 PNG from an image plus optional top and bottom text, in your browser. Use it for chat-style stickers and simple badges.
@@ -22,12 +30,6 @@ The canvas is always 1024×1024 and the text is uppercased and shrunk to fit. **
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How good is the background removal?
-
-It is colour-based, using the image corners as the background sample. It works well for flat studio-like backgrounds; complex backgrounds still need a dedicated segmentation model or manual editing.
 
 ## Related guide
 

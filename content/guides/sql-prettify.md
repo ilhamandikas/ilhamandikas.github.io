@@ -8,6 +8,14 @@ tool_guide_slug: sql-prettify
 broader_guide:
   title: SQL Formatting and Test Data
   url: /guides/sql-formatting-and-test-data/
+about: Reformat a SQL query with consistent indentation and uppercased keywords, so a one-line
+  statement pasted out of a log becomes something you can read. It reformats; it does not
+  validate.
+faq:
+- q: Does it understand my dialect?
+  a: It replaces text that resembles common keywords, without understanding quoting or dialect
+    rules. It might even change a quoted string or comment. Always check the output; it cannot
+    validate a query or predict its effect.
 ---
 
 **SQL** is a language for asking a database for data. [SQL Prettify](/tools/sql-prettify/) makes some common clauses easier to see in a long line. It is a small text rewriter, **not** a SQL parser or a validator.
@@ -21,12 +29,6 @@ If a keyword appears inside a quoted value or a comment, this simple formatter c
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it understand my dialect?
-
-It replaces text that resembles common keywords, without understanding quoting or dialect rules. It might even change a quoted string or comment. Always check the output; it cannot validate a query or predict its effect.
 
 ## Related guide
 

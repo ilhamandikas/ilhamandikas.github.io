@@ -8,6 +8,17 @@ tool_guide_slug: bip39
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: Generate a BIP-39 mnemonic phrase from a chosen word count and derive the seed from
+  it, which is how a cryptocurrency wallet backs up a key as words. It also checks a phrase
+  you were given for a valid checksum.
+faq:
+- q: Is it safe to generate a wallet seed in a browser?
+  a: The entropy comes from crypto.getRandomValues, so the randomness is real. The risk is
+    the page and the machine, not the maths. For anything holding real value, generate offline
+    on a machine you control.
+- q: Why does it reject my phrase?
+  a: The last word carries a checksum. If one word was mistyped the checksum fails and the
+    phrase is rejected, which is the feature working as intended.
 ---
 
 A **BIP-39 mnemonic** is a list of words used as input to a wallet's key-derivation process. [BIP39 Mnemonic](/tools/bip39/) generates an English phrase and shows its entropy and derived seed *using an empty optional passphrase*. It can check the word list and checksum of a phrase, but cannot verify ownership of any wallet.
@@ -21,16 +32,6 @@ Leave **Entropy** on **128 bits · 12 words** and click **Generate**. **Mnemonic
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is it safe to generate a wallet seed in a browser?
-
-The entropy comes from crypto.getRandomValues, so the randomness is real. The risk is the page and the machine, not the maths. For anything holding real value, generate offline on a machine you control.
-
-### Why does it reject my phrase?
-
-The last word carries a checksum. If one word was mistyped the checksum fails and the phrase is rejected, which is the feature working as intended.
 
 ## Related guide
 

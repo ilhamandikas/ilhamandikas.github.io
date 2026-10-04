@@ -1,2 +1,15 @@
-{{- $guides := index site.Data "tool-guides" | default dict -}}
-{{- return (index $guides . | default dict) -}}
+{{- /* Canonical About + FAQ for a tool, read from its tool guide page.
+       The guide markdown is the single source of this prose; the tool page
+       and the machine-readable registry both read it from here.
+
+       Usage: {{ partial "tools/guide.html" $slug }}
+       Returns: dict with "about" and "faq" keys (may be empty). */ -}}
+{{- $slug := . -}}
+{{- $about := "" -}}
+{{- $faq := slice -}}
+{{- $p := site.GetPage (printf "/guides/%s" $slug) -}}
+{{- if $p -}}
+  {{- with $p.Params.about }}{{ $about = . }}{{ end -}}
+  {{- with $p.Params.faq }}{{ $faq = . }}{{ end -}}
+{{- end -}}
+{{- return (dict "about" $about "faq" $faq) -}}

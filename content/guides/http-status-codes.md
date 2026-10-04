@@ -8,6 +8,17 @@ tool_guide_slug: http-status-codes
 broader_guide:
   title: HTTP and API Debugging
   url: /guides/http-api-debugging/
+about: A searchable reference of HTTP response status codes, what each one means and when
+  a server should return it.
+faq:
+- q: When should I return 401 instead of 403?
+  a: '`401` means the request lacks valid authentication credentials for the resource; a client
+    may need to authenticate or renew them. `403` means the server understood the request
+    but refuses it. Do not assume a `403` always means the client was successfully authenticated;
+    check your application''s access rules.'
+- q: Does 200 always mean success?
+  a: For a GET, usually. For an API, a 200 carrying an error object is a common and unhelpful
+    habit. Prefer a status code that matches the outcome.
 ---
 
 When a browser asks a server for something, the server sends back a **status code**. The first digit gives you a clue: `2xx` is usually a successful response, `4xx` often means the request needs attention, and `5xx` points to a server-side failure. [HTTP Status Codes](/tools/http-status-codes/) is a short list to help you read the code.
@@ -25,16 +36,6 @@ Search works by **number or status name**, not a full explanation of every cause
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### When should I return 401 instead of 403?
-
-`401` means the request lacks valid authentication credentials for the resource; a client may need to authenticate or renew them. `403` means the server understood the request but refuses it. Do not assume a `403` always means the client was successfully authenticated; check your application's access rules.
-
-### Does 200 always mean success?
-
-For a GET, usually. For an API, a 200 carrying an error object is a common and unhelpful habit. Prefer a status code that matches the outcome.
 
 ## Related guide
 

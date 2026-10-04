@@ -9,6 +9,13 @@ tool_guide_slug: regex-replace-tester
 broader_guide:
   title: Testing Regex Before Shipping It
   url: /guides/regex-testing/
+about: Test a find-and-replace before running it. Enter a pattern, flags, a replacement string
+  (with $1 group references) and sample text; the preview highlights matches and the result
+  box shows the output.
+faq:
+- q: Why do I get no replacements with a non-global flag?
+  a: Without `g`, only the **first** match is replaced. If you see none, check that the pattern
+    matches the example text and does not have an invalid flag.
 ---
 
 A search-and-replace can change more text than you expected. [Regex Replace Tester](/tools/regex-replace-tester/) lets you look at the result **before** applying the same idea in a file or editor. It does not edit any file.
@@ -26,12 +33,6 @@ Check the pattern, the flags, and your example text. The pattern uses JavaScript
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why do I get no replacements with a non-global flag?
-
-Without `g`, only the **first** match is replaced. If you see none, check that the pattern matches the example text and does not have an invalid flag.
 
 ## Related guide
 

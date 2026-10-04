@@ -1,7 +1,7 @@
 # Optional AI metadata that cannot be derived from the catalog or the guide.
 # Keyed by tool slug. Anything here overrides the generated defaults, so keep it
 # small: most tools already get their keywords from data/tools.yaml and their
-# example questions from the FAQ in data/tool-guides.yaml.
+# example questions from the FAQ in each tool guide (content/guides/*.md).
 
 linux-ops:
   use_cases:

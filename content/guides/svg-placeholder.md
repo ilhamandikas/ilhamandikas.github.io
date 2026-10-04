@@ -8,6 +8,12 @@ tool_guide_slug: svg-placeholder
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
+about: 'Create a placeholder image as an SVG: pick the size, background and text colour and
+  get a small vector file to drop into a layout while the real image is being produced.'
+faq:
+- q: Why SVG rather than a PNG?
+  a: It is a few hundred bytes, stays sharp at any size and can be edited in a text editor.
+    There is no reason to ship a bitmap for a solid rectangle.
 ---
 
 **SVG** is a text-based image format that stays sharp at different display sizes. [SVG Placeholder](/tools/svg-placeholder/) generates a solid rectangle with a centered label, useful while a real image is being prepared.
@@ -21,12 +27,6 @@ If you erase **Text**, the tool falls back to a dimension label such as `320 × 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why SVG rather than a PNG?
-
-It is a few hundred bytes, stays sharp at any size and can be edited in a text editor. There is no reason to ship a bitmap for a solid rectangle.
 
 ## Related guide
 

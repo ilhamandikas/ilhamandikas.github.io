@@ -8,6 +8,13 @@ tool_guide_slug: toml-to-json
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Convert TOML to JSON, turning tables into nested objects and arrays of tables into
+  arrays. Dates and datetimes are kept as strings in their TOML form.
+faq:
+- q: How are TOML dates represented?
+  a: JSON has no built-in date type. If your TOML contains a date or time, inspect the JSON
+    output and confirm the receiving program expects its string form; conversion alone does
+    not tell that program how to interpret it.
 ---
 
 A TOML file groups settings under headings such as `[server]`. JSON groups the same data with braces `{ }`. [TOML to JSON](/tools/toml-to-json/) lets you see the values as JSON without guessing where a heading ends.
@@ -31,12 +38,6 @@ This tool converts values, not the program's rules for what settings are allowed
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How are TOML dates represented?
-
-JSON has no built-in date type. If your TOML contains a date or time, inspect the JSON output and confirm the receiving program expects its string form; conversion alone does not tell that program how to interpret it.
 
 ## Related guide
 

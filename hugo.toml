@@ -37,9 +37,10 @@ timeZone = "Asia/Jakarta"
 
 # --- AI discovery --------------------------------------------------------------
 # Everything under /tools/*.json and /llms.txt is generated from data/tools.yaml
-# (plus data/tool-guides.yaml and the optional data/tool-ai.yaml overlay), so the
-# registry, the LLM index and the search index can never drift from the catalog
-# the site itself renders. Nothing extra has to be committed or built with npm.
+# (plus the about/FAQ in content/guides/*.md and the optional data/tool-ai.yaml
+# overlay), so the registry, the LLM index and the search index can never drift
+# from the catalog the site itself renders. Nothing extra has to be committed or
+# built with npm.
 [mediaTypes."text/markdown"]
   suffixes = ["md"]
   delimiter = ""

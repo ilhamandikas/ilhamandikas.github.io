@@ -9,6 +9,20 @@ tool_guide_slug: random-generator
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: 'Pick one or more random items from a list, with a choice of simple animations: spin
+  wheel, slot machine, random card, dice roll or ticker. The draw uses the browser''s crypto
+  random source and runs entirely on the page, so your list is not uploaded. Turn off "No
+  duplicates" if the same item is allowed to win more than once.'
+faq:
+- q: Is the animation deciding the result?
+  a: No. The choice is made before the animation finishes. The tool draws from the browser's
+    cryptographic random source, but this page does not provide a public audit trail or a
+    guarantee of a perfectly unbiased contest. For high-stakes draws, use an independently
+    verifiable process.
+- q: Can I pick multiple winners?
+  a: Yes. Increase **Pick**. With **No duplicates**, each *entry* is picked at most once and
+    the result count cannot exceed the entry count. Identical text entered on separate lines
+    still counts as separate entries.
 ---
 
 [Random Generator](/tools/random-generator/) picks items from a list for you. You can choose how the result is *revealed*—as a wheel, card, or other animation—but the animation is not the list of choices.
@@ -26,16 +40,6 @@ The tool removes a *picked entry* when **No duplicates** is on. If you typed `Te
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is the animation deciding the result?
-
-No. The choice is made before the animation finishes. The tool draws from the browser's cryptographic random source, but this page does not provide a public audit trail or a guarantee of a perfectly unbiased contest. For high-stakes draws, use an independently verifiable process.
-
-### Can I pick multiple winners?
-
-Yes. Increase **Pick**. With **No duplicates**, each *entry* is picked at most once and the result count cannot exceed the entry count. Identical text entered on separate lines still counts as separate entries.
 
 ## Related guide
 

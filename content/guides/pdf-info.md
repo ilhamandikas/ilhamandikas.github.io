@@ -8,6 +8,21 @@ tool_guide_slug: pdf-info
 broader_guide:
   title: Working With PDFs
   url: /guides/working-with-pdfs/
+about: 'Open a PDF to see what it is made of: how many pages there are, the exact size of
+  each one, the format version and the document information the producer wrote, such as the
+  title and the author.'
+faq:
+- q: What are the point and millimetre figures?
+  a: A PDF measures its pages in points, where seventy-two points make an inch. Both units
+    are shown because print shops usually ask in millimetres while the file stores points.
+- q: Why is some document information missing?
+  a: The title, author and subject are optional fields. Plenty of producers leave them empty
+    or fill in only a producer name, and this page shows what is actually there rather than
+    guessing.
+- q: Can it read an encrypted PDF?
+  a: A password-protected PDF cannot be parsed without the password, so the page says so instead
+    of showing an empty report. Removing the password with the owner's permission has to happen
+    in a reader that can open it.
 ---
 
 A **PDF page size** is usually stored in points (72 points per inch). [PDF Page Counter and Info](/tools/pdf-info/) opens a file in your browser to list its page count, dimensions in points and approximate millimeters, PDF version, and any embedded document information. It does not upload the file.
@@ -21,20 +36,6 @@ A PDF can contain personal metadata even if the visible page looks harmless; rev
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### What are the point and millimetre figures?
-
-A PDF measures its pages in points, where seventy-two points make an inch. Both units are shown because print shops usually ask in millimetres while the file stores points.
-
-### Why is some document information missing?
-
-The title, author and subject are optional fields. Plenty of producers leave them empty or fill in only a producer name, and this page shows what is actually there rather than guessing.
-
-### Can it read an encrypted PDF?
-
-A password-protected PDF cannot be parsed without the password, so the page says so instead of showing an empty report. Removing the password with the owner's permission has to happen in a reader that can open it.
 
 ## Related guide
 

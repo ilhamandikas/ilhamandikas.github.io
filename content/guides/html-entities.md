@@ -8,6 +8,14 @@ tool_guide_slug: html-entities
 broader_guide:
   title: Writing and Publishing Text for the Web
   url: /guides/writing-for-the-web/
+about: Escape and unescape HTML special characters, choosing between named entities and numeric
+  ones, so text can be embedded safely in a page or a snippet read back to see what it really
+  contains. It escapes what needs escaping rather than every non-ASCII character, which keeps
+  the output readable.
+faq:
+- q: Which characters actually need escaping?
+  a: In HTML text content, & and <. Inside an attribute value, also the quote character you
+    are using to delimit it. Escaping more than that is harmless but makes the source noisy.
 ---
 
 HTML uses `<` and `>` to mark tags, and `&` to start special character codes called *entities*. If you want to **show** `<b>` as text instead of treating it as a tag, you must write those characters differently. [HTML Entities](/tools/html-entities/) makes that text easy to copy.
@@ -31,12 +39,6 @@ It converts text; it does not check whether an entire HTML document is safe to s
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Which characters actually need escaping?
-
-In HTML text content, & and <. Inside an attribute value, also the quote character you are using to delimit it. Escaping more than that is harmless but makes the source noisy.
 
 ## Related guide
 

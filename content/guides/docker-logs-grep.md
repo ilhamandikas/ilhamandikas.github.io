@@ -8,6 +8,23 @@ tool_guide_slug: docker-logs-grep
 broader_guide:
   title: Filtering Docker Logs Effectively
   url: /guides/docker-logs/
+about: Paste the output of docker compose logs and filter it like grep. Match with context
+  (the equivalent of grep -C, with separate before and after counts), show matching lines
+  only, invert the match, count matches, or list unique matching lines. Context groups are
+  separated by "--" and line numbers use ":" for a match and "-" for context, so the output
+  looks like grep -n -C. Everything runs in the page, so log contents never leave the browser.
+faq:
+- q: How do I get 10 lines before and 5 lines after a match?
+  a: Leave the grep type on Match with context, set Lines before to 10 and Lines after to
+    5. That is the same as grep -B 10 -A 5, and grep -C would use the larger of the two.
+- q: What is the difference between Regex and plain search?
+  a: With Regex checked, the pattern is a JavaScript regular expression, so error|timeout
+    matches either word and ^api matches the start of a line. With Regex unchecked every character
+    is literal, so a dot matches only a dot.
+- q: Can I dedupe a noisy log?
+  a: Yes. Use the Unique matching lines type, which behaves like grep ... | sort | uniq -c
+    and prefixes each distinct line with how many times it appeared. A pattern of . matches
+    every line, so it can dedupe the whole file.
 ---
 
 A log is a list of messages from a program. A busy container may print too many messages to read one by one. [Docker Logs Grep](/tools/docker-logs-grep/) lets you find the lines you care about **and the lines next to them**. You paste logs into the page; the tool does not fetch logs from Docker for you.
@@ -36,20 +53,6 @@ Real logs can contain tokens, cookies, and personal data. Check and redact them 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How do I get 10 lines before and 5 lines after a match?
-
-Leave the grep type on Match with context, set Lines before to 10 and Lines after to 5. That is the same as grep -B 10 -A 5, and grep -C would use the larger of the two.
-
-### What is the difference between Regex and plain search?
-
-With Regex checked, the pattern is a JavaScript regular expression, so error|timeout matches either word and ^api matches the start of a line. With Regex unchecked every character is literal, so a dot matches only a dot.
-
-### Can I dedupe a noisy log?
-
-Yes. Use the Unique matching lines type, which behaves like grep ... | sort | uniq -c and prefixes each distinct line with how many times it appeared. A pattern of . matches every line, so it can dedupe the whole file.
 
 ## Related guide
 

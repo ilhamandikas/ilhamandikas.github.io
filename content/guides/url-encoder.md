@@ -8,6 +8,14 @@ tool_guide_slug: url-encoder
 broader_guide:
   title: Writing and Publishing Text for the Web
   url: /guides/writing-for-the-web/
+about: 'Percent-encode and decode URL components, either the whole string or one component
+  at a time. The distinction matters more than it looks: encoding a full URL turns its own
+  ? and & into data, which is usually not what you want.'
+faq:
+- q: Should I encode the whole URL or just a parameter?
+  a: Usually only the parameter value. This tool encodes its entire input as one component;
+    it has no separate whole-URL mode. To build a URL, encode a value first, then add it after
+    the parameter name.
 ---
 
 A web address can contain small pieces called *parameters*. For example, the value after `?q=` in `https://example.com/search?q=tea` is a search term. Some characters in a parameter need a special spelling so they are not mistaken for parts of the address. [URL Encoder](/tools/url-encoder/) spells those characters with `%` and two digits.
@@ -27,12 +35,6 @@ A percent sign must be followed by two valid hexadecimal digits. `red%2` is inco
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Should I encode the whole URL or just a parameter?
-
-Usually only the parameter value. This tool encodes its entire input as one component; it has no separate whole-URL mode. To build a URL, encode a value first, then add it after the parameter name.
 
 ## Related guide
 

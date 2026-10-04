@@ -8,6 +8,16 @@ tool_guide_slug: ulid-generator
 broader_guide:
   title: IDs and Test Data
   url: /guides/ids-and-test-data/
+about: ULIDs are 128-bit identifiers like UUIDs, except the first 48 bits are a millisecond
+  timestamp. That makes them sortable by creation time while staying unique, which is handy
+  as a primary key when you want insertion order without keeping a separate timestamp column.
+faq:
+- q: Should I use a ULID or a UUID?
+  a: A ULID carries its creation time in its first characters and can sort roughly by time.
+    A random UUID v4 does not expose that timestamp. Choose the format your application accepts;
+    neither one replaces access control.
+- q: Are ULIDs case-sensitive?
+  a: The canonical form is uppercase Crockford Base32, and that is what this tool produces.
 ---
 
 An **ID** is a label for one item. A ULID is a 26-character ID whose first part records when it was made. [ULID Generator](/tools/ulid-generator/) makes IDs in your browser without asking a server for the next number.
@@ -25,16 +35,6 @@ It helps label a record without asking one server for a counter. It does not mak
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Should I use a ULID or a UUID?
-
-A ULID carries its creation time in its first characters and can sort roughly by time. A random UUID v4 does not expose that timestamp. Choose the format your application accepts; neither one replaces access control.
-
-### Are ULIDs case-sensitive?
-
-The canonical form is uppercase Crockford Base32, and that is what this tool produces.
 
 ## Related guide
 

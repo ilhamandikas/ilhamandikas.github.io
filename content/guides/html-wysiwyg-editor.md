@@ -8,6 +8,12 @@ tool_guide_slug: html-wysiwyg-editor
 broader_guide:
   title: Writing and Publishing Text for the Web
   url: /guides/writing-for-the-web/
+about: A small rich-text editor that writes HTML, with bold, italic, headings, lists and links,
+  and shows the markup it produced so you can copy it out.
+faq:
+- q: Is the generated HTML clean?
+  a: It is browser-generated, which is tidier than a word processor's output but still carries
+    some inline styling. Expect to tidy it before using it in production.
 ---
 
 A **rich-text editor** lets you style text with buttons instead of typing HTML tags. [HTML Editor](/tools/html-wysiwyg-editor/) uses your browser's editable page area and shows its current HTML as text below. The exact tags can differ between browsers.
@@ -21,12 +27,6 @@ Click inside **Editor**, replace the starter paragraph with `Demo note`, then se
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is the generated HTML clean?
-
-It is browser-generated, which is tidier than a word processor's output but still carries some inline styling. Expect to tidy it before using it in production.
 
 ## Related guide
 

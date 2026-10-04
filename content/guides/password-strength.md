@@ -8,6 +8,18 @@ tool_guide_slug: password-strength
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: Estimate how much work a password represents by measuring its entropy, assuming a specific
+  number of guesses per second, and reporting how long a cracking rig would need. It is an
+  estimate with stated assumptions rather than a verdict, which is the honest way to present
+  this.
+faq:
+- q: Why does my password score badly?
+  a: It may be short or include one of the common words this tool checks. The estimate mostly
+    uses length and character types; it cannot spot every predictable pattern. A high score
+    is not a reason to reuse a password.
+- q: Is my password sent anywhere?
+  a: The tool computes its estimate in your browser. Still, the field displays your text openly.
+    Use made-up examples, not a password from a real account.
 ---
 
 A password is harder to guess when it is not obvious or reused. [Password Strength](/tools/password-strength/) shows a **rough estimate**, not a promise that a password is safe. The tool cannot know whether a password was already leaked or whether someone knows your personal details.
@@ -28,16 +40,6 @@ For a real account, use a password manager to make a long, unique password, and 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why does my password score badly?
-
-It may be short or include one of the common words this tool checks. The estimate mostly uses length and character types; it cannot spot every predictable pattern. A high score is not a reason to reuse a password.
-
-### Is my password sent anywhere?
-
-The tool computes its estimate in your browser. Still, the field displays your text openly. Use made-up examples, not a password from a real account.
 
 ## Related guide
 

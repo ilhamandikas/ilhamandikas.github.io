@@ -8,6 +8,16 @@ tool_guide_slug: url-parser
 broader_guide:
   title: Writing and Publishing Text for the Web
   url: /guides/writing-for-the-web/
+about: Break a URL into its parts — scheme, host, port, path, query parameters and fragment
+  — and show each one both raw and decoded. It is the quickest way to see what a tracking-heavy
+  link is really carrying.
+faq:
+- q: Why is each parameter shown twice?
+  a: The **Query** row shows the encoded query as part of the URL. Individual **Param** rows
+    show decoded values. Not every URL part gets a raw-and-decoded pair.
+- q: Why does a repeated parameter appear twice in the list?
+  a: Because it is genuinely there twice. Repeated parameters are legal and often significant,
+    so every occurrence is kept rather than the last one winning.
 ---
 
 A URL is a web address made of pieces. The **protocol** tells the browser how to connect; the **host** names where to go; the **path** points to a page. A **query** can carry extra values. [URL Parser](/tools/url-parser/) lists those pieces so you can read them separately.
@@ -32,16 +42,6 @@ Type the full address, including `https://`. `example.com/docs` alone is not an 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is each parameter shown twice?
-
-The **Query** row shows the encoded query as part of the URL. Individual **Param** rows show decoded values. Not every URL part gets a raw-and-decoded pair.
-
-### Why does a repeated parameter appear twice in the list?
-
-Because it is genuinely there twice. Repeated parameters are legal and often significant, so every occurrence is kept rather than the last one winning.
 
 ## Related guide
 

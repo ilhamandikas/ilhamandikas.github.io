@@ -8,6 +8,13 @@ tool_guide_slug: string-obfuscator
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Hide part of a string while leaving enough of it visible to recognise — the usual way
+  to show a card number, an API key or an email address in a log, a ticket or a screenshot
+  without exposing the whole value.
+faq:
+- q: Is this a security measure?
+  a: No. It is a presentation aid. The original value is still wherever you copied it from,
+    and masking is not the same thing as redaction.
 ---
 
 [String Obfuscator](/tools/string-obfuscator/) replaces characters in the middle of a string with a mask. It is useful for **displaying** part of a test identifier, not for securely erasing a secret from a file.
@@ -21,12 +28,6 @@ Spaces and line breaks remain visible even in the masked part. If **Keep first**
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is this a security measure?
-
-No. It is a presentation aid. The original value is still wherever you copied it from, and masking is not the same thing as redaction.
 
 ## Related guide
 

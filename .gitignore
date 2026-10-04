@@ -6,13 +6,6 @@ resources/
 node_modules/
 assets/jsconfig.json
 
-# Local agent/context notes.
-/AGENTS.md
-/AI_COMPATIBILITY_CONTEXT.md
+# Local implementation/status notes (not repository constraints).
 /AI-COMPATIBILITY-CONTEXT.md
-/CONTENT-GUIDELINES.md
-/SITE-KNOWLEDGE.md
-/TOOL-CATALOG.md
-/TOOLS-GUIDELINES.md
-/DESIGN-SYSTEM.md
-/SEO-CHECKLIST.md
+/AI_COMPATIBILITY_CONTEXT.md

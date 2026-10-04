@@ -8,6 +8,12 @@ tool_guide_slug: numeronym
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Turn a long word into a numeronym — the first letter, the number of letters omitted
+  and the last letter, so internationalization becomes i18n.
+faq:
+- q: Why is it called a numeronym?
+  a: Because the omitted letters are replaced by their count. The pattern long predates the
+    web — a11y for accessibility, k8s for Kubernetes, l10n for localization.
 ---
 
 A **numeronym** shortens a long word by counting the characters between its first and last letters. For example, `internationalization` has 18 letters between `i` and `n`, so it becomes `i18n`. [Numeronym](/tools/numeronym/) makes these abbreviations as you type.
@@ -21,12 +27,6 @@ This tool recognizes groups of letters separated by whitespace. A hyphenated phr
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is it called a numeronym?
-
-Because the omitted letters are replaced by their count. The pattern long predates the web — a11y for accessibility, k8s for Kubernetes, l10n for localization.
 
 ## Related guide
 

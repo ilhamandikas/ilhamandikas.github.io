@@ -8,6 +8,13 @@ tool_guide_slug: iban-validator
 broader_guide:
   title: Indonesian Data Formats
   url: /guides/indonesian-data-formats/
+about: Validate an IBAN with the MOD-97 checksum, and read back the country, the check digits
+  and the domestic account part.
+faq:
+- q: Does a valid IBAN mean the account exists?
+  a: No. A checksum match only indicates the string has a plausible structure and check digits.
+    Some incorrect numbers can still pass, and the tool does not query a bank or check account
+    ownership.
 ---
 
 An **IBAN** is a standardized international bank-account identifier. [IBAN Validator](/tools/iban-validator/) checks its format, expected country length, and mathematical **checksum**—digits used to catch many typing mistakes. It does not contact a bank.
@@ -21,12 +28,6 @@ The **IBAN** field starts with `GB82 WEST 1234 5698 7654 32`, a published demons
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does a valid IBAN mean the account exists?
-
-No. A checksum match only indicates the string has a plausible structure and check digits. Some incorrect numbers can still pass, and the tool does not query a bank or check account ownership.
 
 ## Related guide
 

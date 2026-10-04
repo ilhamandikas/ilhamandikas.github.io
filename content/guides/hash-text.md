@@ -8,6 +8,16 @@ tool_guide_slug: hash-text
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: Compute MD5, SHA-1, SHA-256 and SHA-512 digests of any text. SHA-256 and SHA-512 use
+  the browser's WebCrypto implementation; MD5 and SHA-1 are here because they still turn up
+  in checksums and older protocols, not because they are safe for anything that matters.
+faq:
+- q: Can I use MD5 for passwords?
+  a: No. MD5 and SHA-1 are broken for anything security-related — both have practical collision
+    attacks, and neither is designed to be slow. Use bcrypt or Argon2 for passwords.
+- q: Why is there no SHA-3?
+  a: WebCrypto does not expose it. Adding it would mean shipping a JavaScript implementation,
+    which would be slower than native code and easy to get subtly wrong.
 ---
 
 A hash turns text into a fixed-length string called a *digest*. You cannot use the digest as a simple way to read the original text back. [Hash Text](/tools/hash-text/) shows several digest algorithms side by side; they make different-looking results from the same input.
@@ -25,16 +35,6 @@ Fast hashes such as SHA-256 are useful for checksums but not a password-storage 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Can I use MD5 for passwords?
-
-No. MD5 and SHA-1 are broken for anything security-related — both have practical collision attacks, and neither is designed to be slow. Use bcrypt or Argon2 for passwords.
-
-### Why is there no SHA-3?
-
-WebCrypto does not expose it. Adding it would mean shipping a JavaScript implementation, which would be slower than native code and easy to get subtly wrong.
 
 ## Related guide
 

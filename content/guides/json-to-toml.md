@@ -8,6 +8,14 @@ tool_guide_slug: json-to-toml
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Convert JSON to TOML, mapping objects to tables and arrays of tables to the TOML equivalent.
+  Useful for turning an API response into a config file.
+faq:
+- q: Why is a nested structure sometimes rejected?
+  a: JSON and TOML do not have exactly the same types. A top-level list is rejected, but a
+    `null` field can disappear from the TOML without an error. Check the output field by field.
+    Decide for yourself whether the receiving program expects that field to be absent or to
+    have some other value.
 ---
 
 TOML is often used for configuration files. It uses `key = value` lines and `[table]` headings to group settings. [JSON to TOML](/tools/json-to-toml/) reads JSON data and writes that shape.
@@ -29,12 +37,6 @@ TOML needs a **JSON object** at the top level for this tool. A list like `[1,2]`
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is a nested structure sometimes rejected?
-
-JSON and TOML do not have exactly the same types. A top-level list is rejected, but a `null` field can disappear from the TOML without an error. Check the output field by field. Decide for yourself whether the receiving program expects that field to be absent or to have some other value.
 
 ## Related guide
 

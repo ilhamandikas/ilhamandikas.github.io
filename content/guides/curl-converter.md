@@ -8,6 +8,13 @@ tool_guide_slug: curl-converter
 broader_guide:
   title: HTTP and API Debugging
   url: /guides/http-api-debugging/
+about: Convert a curl command into JavaScript fetch, Axios or Python requests code. It handles
+  the common method, URL, header and body flags locally in the browser so you can move from
+  a copied API example to app code without asking an AI to rewrite the same boilerplate.
+faq:
+- q: Does it execute the request?
+  a: No. It only converts command syntax into code. Use the HTTP Request Tester if you want
+    the browser to send the request.
 ---
 
 A `curl` command describes an HTTP request at the command line. [curl Converter](/tools/curl-converter/) rewrites common options as a **draft** using JavaScript `fetch`, Axios, or Python `requests`. It does not execute the command or send a request.
@@ -21,12 +28,6 @@ Only a limited subset of flags is parsed. Unknown options may be dropped, so com
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it execute the request?
-
-No. It only converts command syntax into code. Use the HTTP Request Tester if you want the browser to send the request.
 
 ## Related guide
 

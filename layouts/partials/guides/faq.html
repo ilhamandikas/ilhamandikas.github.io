@@ -1,0 +1,16 @@
+{{- /* Render a guide's structured FAQ. The FAQ lives in the guide front matter
+       (moved out of the body so there is one source for tool page, guide page,
+       registry and structured data).
+
+       Usage: {{ partial "guides/faq.html" . }} */ -}}
+{{- with .Params.faq }}
+<section class="guide-faq">
+  <h2>Questions you might have</h2>
+  <dl class="tool-faq">
+    {{- range . }}
+    <dt>{{ .q }}</dt>
+    <dd>{{ .a | markdownify }}</dd>
+    {{- end }}
+  </dl>
+</section>
+{{- end }}

@@ -8,6 +8,17 @@ tool_guide_slug: chmod-calculator
 broader_guide:
   title: Linux Command Line Tasks Without Surprises
   url: /guides/linux-command-line/
+about: Convert between octal permissions and symbolic ones, toggling read, write and execute
+  for owner, group and others. It shows the resulting chmod command and the rwxr-xr-x string
+  side by side, so you can check one against the other before running anything.
+faq:
+- q: What is the difference between 644 and 755?
+  a: 644 gives the owner read and write and everyone else read, which is the normal choice
+    for files. 755 adds execute for everyone, which is what directories and scripts need.
+- q: What does a leading digit mean?
+  a: In a full Unix permission number, the leading digit can hold setuid, setgid, and sticky
+    bits. **This calculator does not preserve or report that digit correctly.** Check special
+    bits using system tools before changing permissions.
 ---
 
 On Unix-like systems, *permissions* say who can read, change, or run a file. [chmod Calculator](/tools/chmod-calculator/) shows the three-digit number and the `rwx` letters side by side. It does **not** change any file by itself.
@@ -25,16 +36,6 @@ This tool displays the last three permission digits only. A fourth, leading digi
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### What is the difference between 644 and 755?
-
-644 gives the owner read and write and everyone else read, which is the normal choice for files. 755 adds execute for everyone, which is what directories and scripts need.
-
-### What does a leading digit mean?
-
-In a full Unix permission number, the leading digit can hold setuid, setgid, and sticky bits. **This calculator does not preserve or report that digit correctly.** Check special bits using system tools before changing permissions.
 
 ## Related guide
 

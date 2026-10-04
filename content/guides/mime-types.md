@@ -8,6 +8,12 @@ tool_guide_slug: mime-types
 broader_guide:
   title: HTTP and API Debugging
   url: /guides/http-api-debugging/
+about: Look up the MIME type for a file extension, or work backwards from a type to the extensions
+  it covers.
+faq:
+- q: Why does one extension have two types?
+  a: Because of history. .js is text/javascript today, but application/javascript still appears
+    in older configurations, and servers generally accept both.
 ---
 
 A **MIME type** is a label telling a browser or another program what kind of content it received. For example, a server might send `Content-Type: application/json` for JSON data. [MIME Types](/tools/mime-types/) is a small table of common extensions and labels.
@@ -23,12 +29,6 @@ Renaming `photo.txt` to `photo.png` does not turn text into a picture. This tabl
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why does one extension have two types?
-
-Because of history. .js is text/javascript today, but application/javascript still appears in older configurations, and servers generally accept both.
 
 ## Related guide
 

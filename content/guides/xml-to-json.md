@@ -8,6 +8,14 @@ tool_guide_slug: xml-to-json
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Convert XML to JSON. XML is a document format and JSON is a data format, so the mapping
+  has to make decisions — attributes, text content and repeated elements all need a shape
+  — and the tool states which convention it uses.
+faq:
+- q: Is the conversion reversible?
+  a: Not always. XML can mix text with child elements; this converter does not preserve all
+    mixed content. It also turns repeated sibling tags into arrays. Check the result against
+    the original if you plan to convert it back.
 ---
 
 XML uses tags and attributes; JSON uses named fields and lists. [XML to JSON](/tools/xml-to-json/) chooses a way to represent each XML part in JSON. That choice matters when a tag appears more than once.
@@ -29,12 +37,6 @@ The tool cannot make every XML document round-trip exactly. For example, when an
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is the conversion reversible?
-
-Not always. XML can mix text with child elements; this converter does not preserve all mixed content. It also turns repeated sibling tags into arrays. Check the result against the original if you plan to convert it back.
 
 ## Related guide
 

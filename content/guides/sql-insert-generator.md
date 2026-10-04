@@ -9,6 +9,14 @@ tool_guide_slug: sql-insert-generator
 broader_guide:
   title: SQL Formatting and Test Data
   url: /guides/sql-formatting-and-test-data/
+about: Paste a JSON array of objects or simple CSV and get SQL INSERT statements. Column names
+  are collected from the rows, values are quoted per dialect, and you can emit one statement
+  per row or a single multi-row INSERT.
+faq:
+- q: How are objects and arrays stored?
+  a: They are serialized to JSON text and enclosed in an SQL string literal. Check your target
+    database's escaping and column types before executing; this tool does not make application
+    input safe to concatenate into SQL. Use parameterized queries for that.
 ---
 
 An SQL **INSERT** adds rows to a table. [SQL Insert Generator](/tools/sql-insert-generator/) writes example statements from a JSON object, a JSON array of objects, or **simple** comma-separated rows. It does not connect to your database or execute the SQL.
@@ -22,12 +30,6 @@ For CSV, the first row is treated as column names, but the parser simply splits 
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How are objects and arrays stored?
-
-They are serialized to JSON text and enclosed in an SQL string literal. Check your target database's escaping and column types before executing; this tool does not make application input safe to concatenate into SQL. Use parameterized queries for that.
 
 ## Related guide
 

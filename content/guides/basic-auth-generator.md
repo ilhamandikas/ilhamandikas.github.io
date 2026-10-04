@@ -8,6 +8,13 @@ tool_guide_slug: basic-auth-generator
 broader_guide:
   title: HTTP and API Debugging
   url: /guides/http-api-debugging/
+about: 'Build the Authorization: Basic header value from a username and password, and optionally
+  produce a ready-to-use curl command. The encoding is plain Base64, which is exactly why
+  it is only safe over HTTPS.'
+faq:
+- q: Is Basic authentication encrypted?
+  a: No. The credentials are Base64-encoded, which anyone can reverse. They are protected
+    only by the TLS connection carrying them, so never use it over plain HTTP.
 ---
 
 **HTTP Basic authentication** turns `username:password` into Base64 text for an HTTP `Authorization` header. [Basic Auth Header](/tools/basic-auth-generator/) produces the *value* of that header, not a curl command. Base64 is reversible; it does not encrypt the credentials.
@@ -21,12 +28,6 @@ When entering a value in an HTTP client, use header name `Authorization` and the
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is Basic authentication encrypted?
-
-No. The credentials are Base64-encoded, which anyone can reverse. They are protected only by the TLS connection carrying them, so never use it over plain HTTP.
 
 ## Related guide
 

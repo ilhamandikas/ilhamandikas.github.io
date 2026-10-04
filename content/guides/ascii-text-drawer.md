@@ -8,6 +8,12 @@ tool_guide_slug: ascii-text-drawer
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Render text as large ASCII-art banners using a bundled FIGlet-compatible font, and
+  copy the result as plain text. It is for README headers, code comments and terminal output.
+faq:
+- q: Will the banner line up everywhere?
+  a: Only in a monospaced font. In a proportional font the columns collapse, which is why
+    the preview here is monospaced.
 ---
 
 **ASCII art** arranges plain-text characters to look like large letters. [ASCII Text](/tools/ascii-text-drawer/) uses bundled FIGlet fonts; it does not turn your text into an image.
@@ -21,12 +27,6 @@ Paste the result into a **monospaced** font or a fenced code block. In a proport
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Will the banner line up everywhere?
-
-Only in a monospaced font. In a proportional font the columns collapse, which is why the preview here is monospaced.
 
 ## Related guide
 

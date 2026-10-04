@@ -3,13 +3,13 @@
 {{- with $guide.about }}
 <section class="tool-about">
   <h2>About this tool</h2>
-  <p>{{ . }}</p>
+  {{ . | markdownify }}
   {{- with $guide.faq }}
   <h2>Questions</h2>
   <dl class="tool-faq">
     {{- range . }}
     <dt>{{ .q }}</dt>
-    <dd>{{ .a }}</dd>
+    <dd>{{ .a | markdownify }}</dd>
     {{- end }}
   </dl>
   {{- end }}

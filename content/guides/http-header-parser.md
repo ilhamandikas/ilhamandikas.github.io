@@ -9,6 +9,26 @@ tool_guide_slug: http-header-parser
 broader_guide:
   title: HTTP and API Debugging
   url: /guides/http-api-debugging/
+about: Paste a raw header block from curl, a proxy log or the browser network panel and the
+  page turns it into a clean table. A status line is optional, folded continuation lines are
+  rejoined, and repeated fields such as Set-Cookie are kept and marked so nothing is silently
+  dropped.
+faq:
+- q: Why are some headers marked as repeated?
+  a: Because the same field name appears more than once. Some headers, like Set-Cookie, are
+    supposed to repeat and must not be merged; others are combined by the recipient. The label
+    shows you which is which before you act on the values.
+- q: How are folded lines handled?
+  a: Older systems wrapped long header values onto the next line with leading whitespace.
+    The parser treats a line that starts with a space or tab as a continuation of the previous
+    header and joins it back with a single space, which is what the HTTP rules say to do.
+- q: What is the status line?
+  a: The HTTP/1.1 200 OK line that opens a response. It is optional here, so you can paste
+    just the headers, but when it is present it is reported separately and not mistaken for
+    a header.
+- q: Is anything sent over the network?
+  a: 'No. The text you paste is parsed in the page. That is deliberate: header blocks often
+    carry cookies, tokens and internal hostnames that should not leave your machine.'
 ---
 
 HTTP **headers** are lines of information that travel with a request or response. A line has a name, a colon, and a value. [HTTP Header Parser](/tools/http-header-parser/) separates a pasted block into rows so you can read it without overlooking repeated names.
@@ -35,24 +55,6 @@ A block from a browser or `curl` may include `Authorization`, cookies, or intern
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why are some headers marked as repeated?
-
-Because the same field name appears more than once. Some headers, like Set-Cookie, are supposed to repeat and must not be merged; others are combined by the recipient. The label shows you which is which before you act on the values.
-
-### How are folded lines handled?
-
-Older systems wrapped long header values onto the next line with leading whitespace. The parser treats a line that starts with a space or tab as a continuation of the previous header and joins it back with a single space, which is what the HTTP rules say to do.
-
-### What is the status line?
-
-The HTTP/1.1 200 OK line that opens a response. It is optional here, so you can paste just the headers, but when it is present it is reported separately and not mistaken for a header.
-
-### Is anything sent over the network?
-
-No. The text you paste is parsed in the page. That is deliberate: header blocks often carry cookies, tokens and internal hostnames that should not leave your machine.
 
 ## Related guide
 

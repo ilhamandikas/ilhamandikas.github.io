@@ -8,6 +8,22 @@ tool_guide_slug: dns-lookup
 broader_guide:
   title: Network Debugging Notes
   url: /guides/network-debugging/
+about: Resolve A, AAAA, CNAME, MX, TXT, NS, SOA, CAA and SRV records over DNS-over-HTTPS,
+  so the query travels over an encrypted connection instead of plain UDP on port 53. It asks
+  Cloudflare first, falls back to Google, and reports which resolver answered.
+faq:
+- q: Why is there no ANY query?
+  a: Both Cloudflare and Google refuse ANY over DoH and return NOTIMP. Querying each record
+    type individually is what the resolvers actually support.
+- q: Is this the same as dig?
+  a: They can ask for the same records, but this page uses HTTPS to a public resolver, while
+    `dig` normally uses the DNS resolver configured for your device. The route, cache, and
+    answer may differ. HTTPS protects the connection to the selected resolver; it does not
+    prove the DNS record itself is correct.
+- q: Why do I get a different answer than my own resolver?
+  a: You are asking a public resolver with its own cache. A different answer usually means
+    a different cache state, or a CDN handing back the node nearest to the resolver rather
+    than to you.
 ---
 
 DNS is the system that helps turn a domain name into information a browser or mail server can use. An **A record** gives an IPv4 address. An **MX record** points to a mail server. [DNS Lookup](/tools/dns-lookup/) asks a public DNS resolver for those records; it does not read your computer's own DNS cache.
@@ -28,20 +44,6 @@ The domain you type is sent to the public resolver. Do not use a sensitive inter
 ## Where your input goes
 
 Some actions send a request to Cloudflare DNS or Google DNS over HTTPS. Check what you are sending before using real data.
-
-## Questions you might have
-
-### Why is there no ANY query?
-
-Both Cloudflare and Google refuse ANY over DoH and return NOTIMP. Querying each record type individually is what the resolvers actually support.
-
-### Is this the same as dig?
-
-They can ask for the same records, but this page uses HTTPS to a public resolver, while `dig` normally uses the DNS resolver configured for your device. The route, cache, and answer may differ. HTTPS protects the connection to the selected resolver; it does not prove the DNS record itself is correct.
-
-### Why do I get a different answer than my own resolver?
-
-You are asking a public resolver with its own cache. A different answer usually means a different cache state, or a CDN handing back the node nearest to the resolver rather than to you.
 
 ## Related guide
 

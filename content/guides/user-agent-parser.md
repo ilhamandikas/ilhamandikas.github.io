@@ -8,6 +8,13 @@ tool_guide_slug: user-agent-parser
 broader_guide:
   title: Browser Debugging Notes
   url: /guides/browser-debugging/
+about: Break a user-agent string into browser, version, engine and operating system, and explain
+  what each part is for.
+faq:
+- q: Why is the browser detected wrongly?
+  a: Because user-agent strings lie, deliberately. Every browser claims to be Mozilla, and
+    some reduce or freeze the rest of the string. Treat any detection as a hint, and feature-detect
+    instead whenever you can.
 ---
 
 A **User-Agent string** is text a browser can send with a web request to describe itself. [User Agent Parser](/tools/user-agent-parser/) searches that text for familiar browser, engine, and operating-system names. It makes a **guess**, not a verified report about the device.
@@ -25,12 +32,6 @@ User-Agent strings can be changed, shortened, or made to look like another brows
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is the browser detected wrongly?
-
-Because user-agent strings lie, deliberately. Every browser claims to be Mozilla, and some reduce or freeze the rest of the string. Treat any detection as a hint, and feature-detect instead whenever you can.
 
 ## Related guide
 

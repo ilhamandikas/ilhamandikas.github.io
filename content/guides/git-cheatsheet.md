@@ -8,6 +8,12 @@ tool_guide_slug: git-cheatsheet
 broader_guide:
   title: Linux Command Line Tasks Without Surprises
   url: /guides/linux-command-line/
+about: 'A searchable reference for the Git commands that come up less often: undoing a commit,
+  recovering a deleted branch, rewriting history, and finding which commit introduced a line.'
+faq:
+- q: Is it safe to run these commands?
+  a: Read what each one does first. The entries that rewrite history are marked, because on
+    a shared branch they affect everyone who has pulled it.
 ---
 
 Git records changes to files in a repository. [Git Cheatsheet](/tools/git-cheatsheet/) is a short list of commands you can search when you forget a name. It **does not run Git** or inspect your repository.
@@ -25,12 +31,6 @@ The right command depends on whether changes are only in your working files, sta
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is it safe to run these commands?
-
-Read what each one does first. The entries that rewrite history are marked, because on a shared branch they affect everyone who has pulled it.
 
 ## Related guide
 

@@ -9,6 +9,20 @@ tool_guide_slug: find-command-builder
 broader_guide:
   title: Linux Command Line Tasks Without Surprises
   url: /guides/linux-command-line/
+about: 'Build a find command from plain choices instead of remembering the test order. Filter
+  by name, type, size, age, permissions and depth, exclude noisy directories, and then decide
+  what happens to each match: print it, print it with a null separator, delete it, or run
+  a command on it.'
+faq:
+- q: Why does -delete deserve caution?
+  a: It removes matches immediately and asks nothing. Run the same command with the print
+    action first so you can see the exact list, then switch to delete.
+- q: What is the null-separated option for?
+  a: -print0 ends each path with a null byte instead of a newline, so a name that contains
+    a space or a newline is still one item. Pair it with xargs -0.
+- q: Does the order of the options matter?
+  a: Yes. -maxdepth is a global option and has to come before the tests, and -delete has to
+    come last. The builder already places them in a working order.
 ---
 
 Linux `find` walks through a directory and looks for paths that match your rules. [find Command Builder](/tools/find-command-builder/) writes a command from the fields you choose. It **does not run the command**. That is important: a generated command still needs your review.
@@ -27,20 +41,6 @@ Linux `find` walks through a directory and looks for paths that match your rules
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why does -delete deserve caution?
-
-It removes matches immediately and asks nothing. Run the same command with the print action first so you can see the exact list, then switch to delete.
-
-### What is the null-separated option for?
-
--print0 ends each path with a null byte instead of a newline, so a name that contains a space or a newline is still one item. Pair it with xargs -0.
-
-### Does the order of the options matter?
-
-Yes. -maxdepth is a global option and has to come before the tests, and -delete has to come last. The builder already places them in a working order.
 
 ## Related guide
 

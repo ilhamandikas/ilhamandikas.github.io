@@ -8,6 +8,16 @@ tool_guide_slug: uuid-generator
 broader_guide:
   title: IDs and Test Data
   url: /guides/ids-and-test-data/
+about: Generate version 4 UUIDs, one at a time or in bulk, using the browser's cryptographic
+  random number generator. They are suitable for database keys, request IDs and anything else
+  that has to be unique without coordinating with a central authority.
+faq:
+- q: Can two generated UUIDs collide?
+  a: A v4 UUID carries 122 random bits. You would need to generate around 2.7×10^18 of them
+    before a collision became likely, which is far beyond any realistic workload.
+- q: Are these UUIDs predictable?
+  a: No. They come from crypto.getRandomValues rather than Math.random, so earlier values
+    tell you nothing about later ones.
 ---
 
 An ID is a label used to tell one thing from another. A UUID is a long label that different programs can create without asking one central server for the next number. [UUID Generator](/tools/uuid-generator/) makes random version 4 UUIDs in your browser.
@@ -25,16 +35,6 @@ A UUID helps avoid accidental duplicates; it does not prove who created a record
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Can two generated UUIDs collide?
-
-A v4 UUID carries 122 random bits. You would need to generate around 2.7×10^18 of them before a collision became likely, which is far beyond any realistic workload.
-
-### Are these UUIDs predictable?
-
-No. They come from crypto.getRandomValues rather than Math.random, so earlier values tell you nothing about later ones.
 
 ## Related guide
 

@@ -9,6 +9,25 @@ tool_guide_slug: env-key-sorter
 broader_guide:
   title: Working With Configuration Files
   url: /guides/configuration-files/
+about: Put a .env file in alphabetical order without shuffling the comments that belong to
+  each setting. The top comment block stays first, a comment above a key travels with that
+  key, and blank lines are closed up. Duplicate keys can be collapsed to the last value, and
+  the equals signs can be lined up for a tidier read.
+faq:
+- q: Does it change the values?
+  a: Without **Align values** and **Drop duplicate keys**, recognized key lines are moved
+    as text. The tool removes blank lines. **Align values** adds spaces before `=`, and **Drop
+    duplicate keys** removes earlier entries—either change may matter to a particular config
+    loader.
+- q: Which duplicate value wins?
+  a: When **Drop duplicate keys** is checked, this tool keeps the last matching entry (respecting
+    **Ignore case**). Do not assume your application's loader handles duplicates in the same
+    way.
+- q: Is my file uploaded?
+  a: No. The file is read, sorted and written in the browser; nothing leaves the page.
+- q: Does it understand export?
+  a: Yes. A line like export PORT=3000 is still recognised as the PORT key and keeps its export
+    prefix.
 ---
 
 A **`.env` file** is a list of settings written as `KEY=value`. [`.env Key Sorter`](/tools/env-key-sorter/) sorts the recognizable keys in your browser without loading the configuration into an application.
@@ -31,24 +50,6 @@ This tool does not parse the application's `.env` dialect or check whether the v
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Does it change the values?
-
-Without **Align values** and **Drop duplicate keys**, recognized key lines are moved as text. The tool removes blank lines. **Align values** adds spaces before `=`, and **Drop duplicate keys** removes earlier entries—either change may matter to a particular config loader.
-
-### Which duplicate value wins?
-
-When **Drop duplicate keys** is checked, this tool keeps the last matching entry (respecting **Ignore case**). Do not assume your application's loader handles duplicates in the same way.
-
-### Is my file uploaded?
-
-No. The file is read, sorted and written in the browser; nothing leaves the page.
-
-### Does it understand export?
-
-Yes. A line like export PORT=3000 is still recognised as the PORT key and keeps its export prefix.
 
 ## Related guide
 

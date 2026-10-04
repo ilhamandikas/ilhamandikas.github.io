@@ -8,6 +8,16 @@ tool_guide_slug: json-to-csv
 broader_guide:
   title: Working With Structured Data
   url: /guides/working-with-structured-data/
+about: Flatten an array of JSON objects into CSV, using the union of the keys as the header
+  row. It is the usual way to get an API response into a spreadsheet.
+faq:
+- q: What happens to nested objects?
+  a: This tool does **not** create dotted columns. It writes a nested object or array as JSON
+    text in one CSV cell, with quotes escaped when needed. Decide how to handle that cell
+    in the receiving program.
+- q: Why are some cells empty?
+  a: Because not every object has every key. The header is the union of all keys, so an object
+    missing one simply leaves that cell blank.
 ---
 
 CSV is a table of rows and columns. JSON can hold a list of records with named fields. [JSON to CSV](/tools/json-to-csv/) turns each record into a row so it can be opened in a spreadsheet.
@@ -31,16 +41,6 @@ CSV cells cannot hold a real nested object or list. If a field contains one, thi
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### What happens to nested objects?
-
-This tool does **not** create dotted columns. It writes a nested object or array as JSON text in one CSV cell, with quotes escaped when needed. Decide how to handle that cell in the receiving program.
-
-### Why are some cells empty?
-
-Because not every object has every key. The header is the union of all keys, so an object missing one simply leaves that cell blank.
 
 ## Related guide
 

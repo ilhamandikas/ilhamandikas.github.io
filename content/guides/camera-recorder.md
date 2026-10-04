@@ -8,6 +8,17 @@ tool_guide_slug: camera-recorder
 broader_guide:
   title: Browser Debugging Utilities
   url: /guides/browser-debugging/
+about: Record a short video from your webcam and download it. Nothing is uploaded — the recording
+  is captured with MediaRecorder and held in memory until you save it.
+faq:
+- q: Why can it not reach my camera?
+  a: The page requires the browser's `getUserMedia` and `MediaRecorder` APIs and permission
+    for both camera and microphone. A disabled **Start camera** means required APIs are unavailable;
+    an access error after clicking can also mean permission was denied or no suitable device
+    was found.
+- q: Where does the recording go?
+  a: Into memory in this tab, and then into your downloads folder when you save it. No part
+    of it is sent anywhere.
 ---
 
 [Camera Recorder](/tools/camera-recorder/) records a video **with audio** from your device using browser media APIs. The clip is held in the tab until you download it; the tool does not upload the recording.
@@ -23,16 +34,6 @@ If camera access fails, check HTTPS, browser permissions, and whether another pr
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why can it not reach my camera?
-
-The page requires the browser's `getUserMedia` and `MediaRecorder` APIs and permission for both camera and microphone. A disabled **Start camera** means required APIs are unavailable; an access error after clicking can also mean permission was denied or no suitable device was found.
-
-### Where does the recording go?
-
-Into memory in this tab, and then into your downloads folder when you save it. No part of it is sent anywhere.
 
 ## Related guide
 

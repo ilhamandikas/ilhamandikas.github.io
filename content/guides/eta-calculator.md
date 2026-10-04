@@ -8,6 +8,12 @@ tool_guide_slug: eta-calculator
 broader_guide:
   title: Dates, Timestamps, and Time Zones
   url: /guides/dates-times-and-time-zones/
+about: Estimate a finish time from how much is done, how long it took and how much is left,
+  assuming the current rate holds.
+faq:
+- q: How accurate is it?
+  a: Only as accurate as the assumption that the remaining work resembles the work already
+    done. It is most useful for spotting an overrun early, not for planning.
 ---
 
 **ETA** means estimated time of arrival or finish. [ETA Calculator](/tools/eta-calculator/) divides elapsed time by the number of completed items, then uses that rate to estimate the remaining time. It assumes all items take about the same time.
@@ -21,12 +27,6 @@ Change **Completed** to `0`. The results disappear: there is no measured speed y
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How accurate is it?
-
-Only as accurate as the assumption that the remaining work resembles the work already done. It is most useful for spotting an overrun early, not for planning.
 
 ## Related guide
 

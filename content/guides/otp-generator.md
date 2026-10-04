@@ -8,6 +8,17 @@ tool_guide_slug: otp-generator
 broader_guide:
   title: Security and Cryptography Basics for Developers
   url: /guides/security-cryptography-basics/
+about: Generate time-based one-time passwords (TOTP, RFC 6238) from a shared secret, and verify
+  a code you have been given. It shows the current code, the seconds until it rolls over and
+  the next code, so you can compare against a device that may have drifted.
+faq:
+- q: Is my secret sent anywhere?
+  a: No. The HMAC is computed locally with WebCrypto. That said, do not paste a production
+    secret into any page you do not control — including this one.
+- q: Why does the code not match my authenticator app?
+  a: 'First check the secret, digit count, period, and hash algorithm expected by the service.
+    Then check both clocks: a time-based code changes when its configured period ends. The
+    page shows the time remaining on **your browser''s** clock, not the remote server''s time.'
 ---
 
 A **TOTP** (time-based one-time password) is a short code derived from a shared secret and the current time. [OTP Generator](/tools/otp-generator/) shows the **current** code from a Base32 secret using your browser's clock. It does **not** verify a code someone sent you or display the next code.
@@ -21,16 +32,6 @@ This public demo secret is not for protecting an account. For a real account, bo
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Is my secret sent anywhere?
-
-No. The HMAC is computed locally with WebCrypto. That said, do not paste a production secret into any page you do not control — including this one.
-
-### Why does the code not match my authenticator app?
-
-First check the secret, digit count, period, and hash algorithm expected by the service. Then check both clocks: a time-based code changes when its configured period ends. The page shows the time remaining on **your browser's** clock, not the remote server's time.
 
 ## Related guide
 

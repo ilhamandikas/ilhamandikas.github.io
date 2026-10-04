@@ -8,6 +8,12 @@ tool_guide_slug: text-statistics
 broader_guide:
   title: Text Formatting and Cleanup
   url: /guides/text-formatting-and-cleanup/
+about: Count characters, words, sentences, paragraphs and lines, with and without spaces,
+  plus an estimated reading time. Useful for checking a draft against a length limit.
+faq:
+- q: How is the reading time worked out?
+  a: Words divided by a fixed reading speed. It is a rough figure — technical material with
+    code reads considerably slower than prose.
 ---
 
 [Text Statistics](/tools/text-statistics/) counts pieces of the text you type. A *character* is one visible letter, number, space, or punctuation mark in this example. A *word* is a group the tool recognises between separators.
@@ -25,12 +31,6 @@ The tool divides the word count by an assumed rate of 200 words per minute, so a
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How is the reading time worked out?
-
-Words divided by a fixed reading speed. It is a rough figure — technical material with code reads considerably slower than prose.
 
 ## Related guide
 

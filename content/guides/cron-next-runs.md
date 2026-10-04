@@ -8,6 +8,15 @@ tool_guide_slug: cron-next-runs
 broader_guide:
   title: Linux Command Line Tasks Without Surprises
   url: /guides/linux-command-line/
+about: Read a five-field cron expression and see the next scheduled runs as real dates, in
+  local time or UTC, with a relative label. Useful for checking that a schedule means what
+  you think before saving it to a crontab.
+faq:
+- q: How are day-of-month and weekday combined?
+  a: This preview uses an OR between the day-of-month and weekday fields. That is useful to
+    know, but its current logic can also list extra dates when one of those fields is `*`
+    and the other is restricted. For schedules like “weekdays only”, verify the dates using
+    the cron implementation on your server rather than relying on this preview alone.
 ---
 
 Cron is a way to say **when** a task should run. A schedule has five parts: minute, hour, day of the month, month, and day of the week. [Cron Next Runs](/tools/cron-next-runs/) shows upcoming times so you can check a schedule before using it.
@@ -27,12 +36,6 @@ Make sure there are exactly five parts separated by spaces. `0 9 * *` is missing
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### How are day-of-month and weekday combined?
-
-This preview uses an OR between the day-of-month and weekday fields. That is useful to know, but its current logic can also list extra dates when one of those fields is `*` and the other is restricted. For schedules like “weekdays only”, verify the dates using the cron implementation on your server rather than relying on this preview alone.
 
 ## Related guide
 

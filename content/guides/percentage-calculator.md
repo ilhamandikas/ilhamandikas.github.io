@@ -8,6 +8,12 @@ tool_guide_slug: percentage-calculator
 broader_guide:
   title: Calculators and Unit Conversion
   url: /guides/calculators-and-unit-conversion/
+about: 'Work out percentages in the forms that actually come up: what X% of Y is, what percentage
+  X is of Y, and the increase or decrease between two values.'
+faq:
+- q: Why do a percentage rise and fall not cancel out?
+  a: Because they are relative to different bases. A 50% rise followed by a 50% fall leaves
+    you at 75% of where you started, not back at the beginning.
 ---
 
 A percentage means “out of 100”. **20%** means 20 out of every 100. [Percentage Calculator](/tools/percentage-calculator/) uses two values to answer several different percentage questions at once.
@@ -29,12 +35,6 @@ Check which number you put in A and B, then read the whole label beside each out
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why do a percentage rise and fall not cancel out?
-
-Because they are relative to different bases. A 50% rise followed by a 50% fall leaves you at 75% of where you started, not back at the beginning.
 
 ## Related guide
 

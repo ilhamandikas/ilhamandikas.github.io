@@ -8,6 +8,14 @@ tool_guide_slug: keycode-info
 broader_guide:
   title: Browser Debugging Utilities
   url: /guides/browser-debugging/
+about: 'Press a key and see everything the browser reports about it: the key name, the legacy
+  keyCode and whichCode, the physical position on the keyboard, and which modifier keys were
+  held. It is for wiring up a shortcut without guessing.'
+faq:
+- q: Why is keyCode deprecated?
+  a: It is inconsistent across layouts and languages — the same physical key reports different
+    values. Use event.key for the character and event.code for the physical position, and
+    press a key here to see the difference.
 ---
 
 Browsers describe keyboard presses using **`key`** (the character or action) and **`code`** (the key's physical position). [Keycode Info](/tools/keycode-info/) shows those values plus older numeric fields and modifiers so you can design a keyboard shortcut.
@@ -21,12 +29,6 @@ If you get different values, check your keyboard layout and browser. Use `key` w
 ## Where your input goes
 
 Processing runs in your browser. The tool does not upload your input to ilham.dev.
-
-## Questions you might have
-
-### Why is keyCode deprecated?
-
-It is inconsistent across layouts and languages — the same physical key reports different values. Use event.key for the character and event.code for the physical position, and press a key here to see the difference.
 
 ## Related guide
 
