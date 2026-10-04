@@ -1,0 +1,135 @@
+.search-mascot {
+  position: fixed;
+  z-index: 30;
+  width: 96px;
+  height: 124px;
+  color: var(--text);
+}
+.search-mascot-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 96px;
+  height: 124px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.search-mascot-art {
+  flex: none;
+  width: 72px;
+  height: 90px;
+  overflow: visible;
+  transform-origin: 50% 85%;
+  animation: companion-idle 14s ease-in-out infinite;
+}
+.search-mascot-wire {
+  stroke: var(--text);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.search-mascot-wire-core { stroke: var(--bg); stroke-width: 5; }
+.search-mascot-eyes {
+  fill: var(--surface);
+  stroke: var(--text);
+  stroke-width: 1.5;
+  transform-origin: 44px 36px;
+  animation: companion-blink 9s infinite;
+}
+.search-mascot-pupil { fill: var(--text); stroke: none; }
+.search-mascot-smile { stroke: var(--text); stroke-width: 2; stroke-linecap: round; }
+.search-mascot-label {
+  padding: 0 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+  line-height: 18px;
+}
+.search-mascot-hide {
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+.search-mascot-tip {
+  position: absolute;
+  right: 100%;
+  bottom: 24px;
+  width: min(210px, calc(100vw - 116px));
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+  visibility: hidden;
+}
+.search-mascot[data-side="left"] .search-mascot-tip { right: auto; left: 100%; }
+.search-mascot:hover .search-mascot-tip,
+.search-mascot:focus-within .search-mascot-tip { visibility: visible; }
+.search-mascot-main:hover .search-mascot-pupil { transform: translateY(-1px); }
+.search-mascot.is-dragging .search-mascot-art { animation: none; transform: rotate(-12deg); }
+.search-mascot.is-dragging .search-mascot-main { cursor: grabbing; }
+.search-mascot.is-dragging .search-mascot-tip { visibility: hidden; }
+.search-mascot.is-tucked { width: 44px; height: 64px; }
+.search-mascot.is-tucked .search-mascot-main {
+  width: 44px;
+  height: 64px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.search-mascot.is-tucked .search-mascot-art {
+  position: absolute;
+  top: 0;
+  right: -28px;
+  width: 72px;
+  height: 90px;
+  animation: none;
+  pointer-events: none;
+}
+.search-mascot.is-tucked[data-side="left"] .search-mascot-art { right: auto; left: -28px; }
+.search-mascot.is-tucked .search-mascot-label { position: absolute; bottom: 0; }
+.search-mascot.is-paused .search-mascot-art,
+.search-mascot.is-paused .search-mascot-eyes { animation-play-state: paused; }
+@keyframes companion-blink {
+  0%, 42%, 45%, 100% { transform: scaleY(1); }
+  43.5% { transform: scaleY(0.08); }
+}
+@keyframes companion-idle {
+  0%, 82%, 94%, 100% { transform: rotate(0); }
+  86% { transform: rotate(-4deg); }
+  90% { transform: rotate(3deg); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .search-mascot-hide { opacity: 0; }
+  .search-mascot:hover .search-mascot-hide,
+  .search-mascot:focus-within .search-mascot-hide { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-mascot-art, .search-mascot-eyes { animation: none !important; }
+  .search-mascot.is-dragging .search-mascot-art { transform: none; }
+}

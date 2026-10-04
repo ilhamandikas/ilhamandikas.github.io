@@ -13,6 +13,7 @@
 // The keys stay quiet while a field or an editor has focus, while a menu
 // modifier is held, and on auto-repeat.
 import { buildIndex, search as runSearch, shortcutLabel } from './tools-search.js';
+import { initSearchMascot } from './search-mascot.js';
 
 const SEQUENCE_TIMEOUT = 1600;
 const NAV_KEYS = { Home: 'h', Posts: 'p', Guides: 'u', Tools: 't', 'Dev Ops': 'd', Games: 'g', Playground: 'j', About: 'a', Contact: 'c' };
@@ -327,6 +328,13 @@ if (searchButton) {
     openSearch();
   });
 }
+
+// The companion always opens site-wide search, including on tool pages.
+initSearchMascot(() => {
+  const navToggle = document.querySelector('#nav-toggle');
+  if (navToggle) navToggle.checked = false;
+  openGlobalSearch();
+});
 
 /* ---------------------------------------------------------------- the keys */
 

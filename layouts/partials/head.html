@@ -80,7 +80,7 @@
 
   {{ partial "schema.html" . }}
 
-  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") | resources.Concat "css/site.css" | minify | fingerprint }}
+  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") (resources.Get "css/search-mascot.css") | resources.Concat "css/site.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 
   {{- /* Warm up likely next pages without rendering or executing them in the
