@@ -1,11 +1,15 @@
-<aside id="search-mascot" class="search-mascot" aria-label="Search companion" hidden>
+<aside id="search-mascot" class="search-mascot" aria-label="Search companion" data-page-kind="{{ if .IsHome }}home{{ else if eq .Section "guides" }}guides{{ else if eq .Section "posts" }}posts{{ else if eq .Section "tools" }}tools{{ else }}page{{ end }}" hidden>
   <button type="button" class="search-mascot-main" aria-label="Search tools, guides, and posts" aria-haspopup="dialog" aria-describedby="search-mascot-hint">
     <svg class="search-mascot-art" viewBox="0 0 80 100" fill="none" aria-hidden="true">
       <g class="search-mascot-body">
         <path class="search-mascot-wire" d="M31 65V30C31 19 47 19 47 30V73C47 90 20 90 20 73V26C20 3 61 3 61 26V71" />
         <path class="search-mascot-wire-core" d="M31 65V30C31 19 47 19 47 30V73C47 90 20 90 20 73V26C20 3 61 3 61 26V71" />
         <path class="search-mascot-wire-shine" d="M21 58V26C21 7 58 7 59 25M32 61V31C32 22 45 22 45 31V72" />
-        <path class="search-mascot-brows" d="M22 21Q28 17 34 20M45 19Q52 16 58 21" />
+        <g class="search-mascot-face">
+        <g class="search-mascot-brows">
+          <path class="search-mascot-brow-left" d="M22 21Q28 17 34 20" />
+          <path class="search-mascot-brow-right" d="M45 19Q52 16 58 21" />
+        </g>
         <g class="search-mascot-eyes">
           <ellipse cx="29" cy="33" rx="10.5" ry="12.5" transform="rotate(-8 29 33)" />
           <ellipse cx="51" cy="32" rx="10" ry="12" transform="rotate(8 51 32)" />
@@ -25,6 +29,10 @@
           <path d="m10 6 2 4 4 1-4 2-1 4-2-4-4-1 4-2ZM67 1l2 4 4 1-4 2-1 4-2-4-4-1 4-2Z" />
         </g>
         <path class="search-mascot-smile" d="M33 51Q40 58 48 50" />
+        <path class="search-mascot-happy-mouth" d="M32 50Q40 54 48 49C47 62 34 63 32 50Z" />
+        <path class="search-mascot-sleep-mouth" d="M36 53Q40 55 44 53" />
+        </g>
+        <text class="search-mascot-zzz" x="62" y="15">z</text>
         <g class="search-mascot-feet">
           <path class="search-mascot-foot-left" d="m29 85-4 9h-6" />
           <path class="search-mascot-foot-right" d="m45 85 5 9h6" />

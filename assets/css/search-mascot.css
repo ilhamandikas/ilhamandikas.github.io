@@ -41,6 +41,26 @@
 .search-mascot-wire-core { stroke: var(--border-strong); stroke-width: 3.5; }
 .search-mascot-wire-shine { stroke: var(--surface); stroke-width: 1; opacity: .85; }
 .search-mascot-brows { stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; }
+.search-mascot-face, .search-mascot-brows, .search-mascot-brow-left, .search-mascot-brow-right { transition: transform 260ms ease-out; }
+.search-mascot-brow-left { transform-origin: 28px 21px; }
+.search-mascot-brow-right { transform-origin: 52px 21px; }
+.search-mascot-happy-mouth, .search-mascot-sleep-mouth, .search-mascot-zzz { display: none; }
+.search-mascot-happy-mouth { fill: var(--text); }
+.search-mascot-sleep-mouth { stroke: var(--text); stroke-width: 1.8; stroke-linecap: round; }
+.search-mascot-zzz { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+.search-mascot[data-expression="curious"] .search-mascot-face { transform: translateY(-1.5px); }
+.search-mascot[data-expression="curious"] .search-mascot-brow-left { transform: translateY(-2px) rotate(-9deg); }
+.search-mascot[data-expression="curious"] .search-mascot-brow-right { transform: rotate(7deg); }
+.search-mascot[data-expression="excited"] .search-mascot-face { transform: translateY(-2px); }
+.search-mascot[data-expression="excited"] .search-mascot-brows { transform: translateY(-3px); }
+.search-mascot[data-expression="excited"] .search-mascot-smile,
+.search-mascot[data-expression="sleepy"] .search-mascot-smile,
+.search-mascot[data-expression="sleepy"] .search-mascot-pupil { display: none; }
+.search-mascot[data-expression="excited"] .search-mascot-happy-mouth,
+.search-mascot[data-expression="sleepy"] .search-mascot-sleep-mouth,
+.search-mascot[data-expression="sleepy"] .search-mascot-zzz { display: inline; }
+.search-mascot[data-expression="sleepy"] .search-mascot-face { transform: translateY(2px); }
+.search-mascot[data-expression="sleepy"] .search-mascot-eyes { animation: none; transform: scaleY(.55); }
 .search-mascot-eyes {
   fill: var(--surface);
   stroke: var(--text);
@@ -140,10 +160,8 @@
 .search-mascot.is-tucked.is-near .search-mascot-bubble,
 .search-mascot.is-tucked:has(.search-mascot-main:focus-visible) .search-mascot-bubble { opacity: 1; visibility: visible; }
 .search-mascot.is-tucked .search-mascot-body { transition: transform 320ms cubic-bezier(.22, .75, .25, 1); }
-.search-mascot.is-tucked.is-near .search-mascot-body,
-.search-mascot.is-tucked:has(.search-mascot-main:focus-visible) .search-mascot-body { transform: translate(-7px, -3px) rotate(-4deg); transform-origin: 40px 33px; }
-.search-mascot.is-tucked[data-side="left"].is-near .search-mascot-body,
-.search-mascot.is-tucked[data-side="left"]:has(.search-mascot-main:focus-visible) .search-mascot-body { transform: translate(7px, -3px) rotate(4deg); }
+.search-mascot.is-tucked.is-peeking .search-mascot-body { transform: translate(-7px, -3px) rotate(-4deg); transform-origin: 40px 33px; }
+.search-mascot.is-tucked[data-side="left"].is-peeking .search-mascot-body { transform: translate(7px, -3px) rotate(4deg); }
 .search-mascot.is-paused .search-mascot-art,
 .search-mascot.is-paused .search-mascot-eyes { animation-play-state: paused; }
 @keyframes companion-run {
@@ -165,7 +183,8 @@
 @media (prefers-reduced-motion: reduce) {
   .search-mascot-art, .search-mascot-eyes, .search-mascot-main,
   .search-mascot-stars, .search-mascot-foot-left, .search-mascot-foot-right { animation: none !important; }
-  .search-mascot.is-docking, .search-mascot-bubble, .search-mascot-body { transition: none !important; }
+  .search-mascot.is-docking, .search-mascot-bubble, .search-mascot-body,
+  .search-mascot-face, .search-mascot-brows, .search-mascot-brow-left, .search-mascot-brow-right { transition: none !important; }
   .search-mascot.is-tucked .search-mascot-body { transform: none !important; }
   .search-mascot.is-dragging .search-mascot-art { transform: none; }
 }

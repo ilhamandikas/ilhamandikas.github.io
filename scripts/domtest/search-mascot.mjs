@@ -5,13 +5,21 @@ import { initSearchMascot } from '../../assets/js/search-mascot.js';
 
 const markup = fs.readFileSync('layouts/partials/search-mascot.html', 'utf8');
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-function setup(saved, blocked = false, reduced = false, fetcher) {
+function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   const dom = new JSDOM(markup, { url: 'https://example.com/', pretendToBeVisual: true });
   globalThis.window = dom.window;
   globalThis.document = dom.window.document;
   globalThis.localStorage = dom.window.localStorage;
   dom.window.matchMedia = () => ({ matches: reduced, addEventListener() {} });
   if (fetcher) dom.window.fetch = fetcher;
+  dom.window.document.querySelector('#search-mascot').dataset.pageKind = options.pageKind || 'home';
+  if (options.clock) dom.window.performance.now = options.clock;
+  if (options.modal) {
+    const dialog = dom.window.document.createElement('div');
+    dialog.id = 'global-search';
+    dialog.hidden = true;
+    dom.window.document.body.append(dialog);
+  }
   if (saved) localStorage.setItem('ilham-search-companion-v1', saved);
   if (blocked) globalThis.localStorage = { getItem() { throw Error('blocked'); }, setItem() { throw Error('blocked'); } };
   let opens = 0;
@@ -38,10 +46,12 @@ assert.equal(page.root.querySelector('.search-mascot-label'), null);
 assert.equal(bubble.textContent, 'Want to search something?');
 page.pointer('pointerenter', 900, 600);
 assert.equal(bubble.textContent, 'Click me!');
+assert.equal(page.root.dataset.expression, 'curious');
 page.pointer('pointerleave', 800, 500);
 assert.equal(bubble.textContent, 'Want to search something?');
 page.main.click();
 assert.equal(page.opens(), 1);
+assert.equal(page.root.dataset.expression, 'excited', 'search click has an immediate happy expression');
 page.key('h');
 assert.equal(page.root.classList.contains('is-tucked'), true);
 const hiddenState = localStorage.getItem('ilham-search-companion-v1');
@@ -49,19 +59,26 @@ page.root.getBoundingClientRect = () => ({ left: 900, right: 944, top: 600, bott
 page.pointer('pointermove', 860, 620, document);
 await pause(40);
 assert.equal(page.root.classList.contains('is-near'), true, 'hidden companion responds before cursor reaches it');
+assert.equal(page.root.classList.contains('is-peeking'), false, 'eyes look first, body waits');
+await pause(200);
+assert.equal(page.root.classList.contains('is-peeking'), true, 'body follows the eyes after a short pause');
 assert.equal(bubble.textContent, 'Psst… click to bring me back!');
 page.pointer('pointermove', 100, 100, document);
 await pause(40);
 assert.equal(page.root.classList.contains('is-near'), false, 'peek retracts when cursor leaves');
+assert.equal(page.root.classList.contains('is-peeking'), false, 'body also retracts');
 page.main.click();
 assert.equal(page.opens(), 1, 'revealing is not searching');
 assert.equal(page.root.classList.contains('is-tucked'), false);
 page.key('ArrowLeft');
 assert.equal(page.root.dataset.side, 'left');
+const originalWire = page.root.querySelector('.search-mascot-wire').getAttribute('d');
 page.pointer('pointerdown', 40, 200);
 page.pointer('pointermove', 400, 250);
-await pause(40);
+await pause(120);
 assert.ok(page.art.style.transform.includes('rotate('), 'drag excites the spring');
+assert.notEqual(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'lower wire bends independently of the head');
+assert.equal(page.root.querySelector('.search-mascot-wire').getAttribute('d'), page.root.querySelector('.search-mascot-wire-core').getAttribute('d'), 'metal outline and core stay aligned');
 assert.ok(page.root.style.transform.startsWith('translate3d('), 'drag uses a composited transform');
 page.pointer('pointerup', 400, 250);
 assert.equal(page.root.dataset.side, 'left', 'dock to nearest side');
@@ -69,9 +86,10 @@ assert.equal(page.root.classList.contains('is-docking'), true);
 assert.ok(page.root.style.transform.includes('translate3d('), 'dock retains the release position before easing');
 page.main.dispatchEvent(new window.MouseEvent('click', { detail: 1 }));
 assert.equal(page.opens(), 1, 'drag must not open search');
-await pause(1000);
+await pause(1600);
 assert.equal(page.root.classList.contains('is-docking'), false);
 assert.equal(page.art.style.transform, '', 'spring settles and stops');
+assert.equal(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'flexible wire returns to its original shape');
 page.main.click();
 assert.equal(page.opens(), 2, 'keyboard activation still works after drag');
 page.pointer('pointerdown', 40, 200);
@@ -108,6 +126,12 @@ for (const width of [320, 375, 768, 1280]) {
   const x = parseFloat(page.root.style.left);
   assert.ok(x >= 0 && x + 96 <= width, `fits ${width}px viewport`);
 }
+page.pointer('pointerdown', 400, 300);
+page.pointer('pointermove', 400, 400);
+await pause(120);
+assert.notEqual(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'vertical drag also flexes the lower wire');
+page.pointer('pointercancel', 400, 400);
+assert.equal(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'cancelling restores the wire');
 page.close();
 page = setup(hiddenState);
 assert.equal(page.root.classList.contains('is-tucked'), true, 'hidden preference survives navigation');
@@ -141,7 +165,7 @@ try {
       { quote: '<b>Learn one thing at a time.</b>', author: 'Example Author' },
       { quote: '<b>Keep trying.</b>', author: 'Another Author' },
     ] }) };
-  });
+  }, { pageKind: 'guides' });
   await pause(160);
   assert.equal(page.root.classList.contains('is-quote'), true, 'idle search prompt switches to a quote');
   assert.ok(page.root.querySelector('.search-mascot-author'));
@@ -151,10 +175,38 @@ try {
   assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Click me!', 'hover pauses rotation and takes priority');
   page.pointer('pointerleave', 800, 500);
   await pause(320);
-  assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Want to search something?', 'quote switches back to search');
+  assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Need a guide for your next step?', 'quote switches to a page-specific prompt');
+  await pause(95);
+  assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Want to search something?', 'context prompt switches back to search');
   assert.equal(requests, 1, 'rotation does not repeatedly fetch');
   page.close();
 } finally {
   globalThis.setTimeout = nativeTimeout;
 }
-console.log('Search companion: bubble/quote rotation, gaze, spring/settle, docking, dizzy, outward hide, proximity, persistence, keyboard, resize, reduced motion and blocked storage passed.');
+globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback, delay >= 44000 && delay <= 45000 ? 100 : delay, ...args);
+try {
+  let clock = 0;
+  page = setup(null, false, false, undefined, { clock: () => clock });
+  await pause(25);
+  clock = 45001;
+  await pause(110);
+  assert.equal(page.root.dataset.expression, 'sleepy', 'quiet companion becomes sleepy');
+  page.pointer('pointermove', 400, 200, document);
+  assert.notEqual(page.root.dataset.expression, 'sleepy', 'pointer activity wakes it up');
+  page.close();
+  clock = 0;
+  page = setup(null, false, false, undefined, { clock: () => clock, modal: true });
+  const dialog = document.querySelector('#global-search');
+  dialog.hidden = false;
+  await pause(20);
+  assert.equal(page.root.dataset.expression, 'excited', 'keyboard-opened search also makes it happy');
+  assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, "Let's find it!");
+  clock = 50000;
+  await pause(120);
+  assert.equal(page.root.dataset.expression, 'excited', 'open search prevents sleeping');
+  dialog.hidden = true;
+  await pause(20);
+  assert.equal(page.root.dataset.expression, 'neutral', 'closing search restores the idle expression');
+  page.close();
+} finally { globalThis.setTimeout = nativeTimeout; }
+console.log('Search companion: flexible wire, expressions/sleep, staged peek, contextual quotes, gaze, docking, hide, keyboard, resize and reduced motion passed.');

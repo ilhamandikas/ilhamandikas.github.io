@@ -1,4 +1,5 @@
 import { createQuoteDeck } from './mascot-quotes.js';
+import { createFlexibleWire } from './mascot-wire.js';
 
 // Only presentation preferences and public quotes are saved; never search terms.
 export function initSearchMascot(openSearch) {
@@ -9,6 +10,17 @@ export function initSearchMascot(openSearch) {
   const hint = root.querySelector('.search-mascot-hint');
   const art = root.querySelector('.search-mascot-art');
   const pupils = [...root.querySelectorAll('.search-mascot-pupil')];
+  const wire = createFlexibleWire(root);
+  const searchDialog = document.querySelector('#global-search');
+  const helpDialog = document.querySelector('#kbd-help');
+  const contextMessages = {
+    home: ['Tools, guides, and a few engineering stories.', 'Something to explore?'],
+    guides: ['Looking for an explanation?', 'Need a guide for your next step?'],
+    posts: ['Looking for another engineering story?', 'There may be another post worth a look.'],
+    tools: ['Need another tool?', 'Looking for something to help with the next step?'],
+    page: ['Looking for something else?', 'Tools, guides, and posts are a search away.'],
+  };
+  const messages = contextMessages[root.dataset.pageKind] || contextMessages.page;
   const motion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const key = 'ilham-search-companion-v1';
   let side = 'right';
@@ -24,6 +36,11 @@ export function initSearchMascot(openSearch) {
   let angle = 0;
   let angularVelocity = 0;
   let targetAngle = 0;
+  let tailAngle = 0;
+  let tailVelocity = 0;
+  let tailLift = 0;
+  let liftVelocity = 0;
+  let targetLift = 0;
   let dragSpeed = 0;
   let lastMotion = 0;
   let dizzyTimer = 0;
@@ -31,12 +48,18 @@ export function initSearchMascot(openSearch) {
   let dockFrame = 0;
   let dragFrame = 0;
   let gazeTime = 0;
+  let peekTimer = 0;
+  let excitementTimer = 0;
+  let sleepTimer = 0;
+  let sleepy = false;
+  let lastActivity = window.performance.now();
   const eyeOffsets = pupils.map(() => ({ x: 0, y: 0 }));
   let quoteStorage;
   try { quoteStorage = window.localStorage; } catch { /* Optional quote cache. */ }
   const quoteDeck = createQuoteDeck({ storage: quoteStorage, fetcher: window.fetch?.bind(window) });
   let idleQuote = null;
-  let quotePhase = false;
+  let idlePhase = 'search';
+  let contextIndex = 0;
   let idleTimer = 0;
   let quoteLoading = false;
   let active = true;
@@ -58,37 +81,89 @@ export function initSearchMascot(openSearch) {
     try { localStorage.setItem(key, JSON.stringify({ side, level, tucked })); } catch { /* Optional preference. */ }
   };
   const keyboardFocused = () => document.activeElement === main && main.matches(':focus-visible');
+  const searchOpen = () => Boolean(searchDialog && !searchDialog.hidden);
+  const overlayOpen = () => searchOpen() || Boolean(helpDialog && !helpDialog.hidden);
   const isIdle = () => active && !document.hidden && !tucked && !hovered && !drag
-    && !keyboardFocused() && !root.classList.contains('is-dizzy')
+    && !keyboardFocused() && !overlayOpen() && !root.classList.contains('is-dizzy')
     && !root.classList.contains('is-docking');
+  function syncSleep() {
+    if (!isIdle()) {
+      clearTimeout(sleepTimer);
+      sleepTimer = 0;
+      return;
+    }
+    if (sleepTimer || sleepy) return;
+    const remaining = Math.max(1000, 45000 - (window.performance.now() - lastActivity));
+    sleepTimer = setTimeout(() => {
+      sleepTimer = 0;
+      if (isIdle() && window.performance.now() - lastActivity >= 45000) {
+        sleepy = true;
+        say();
+      } else syncSleep();
+    }, remaining);
+  }
+  function noteActivity() {
+    lastActivity = window.performance.now();
+    if (sleepy) { sleepy = false; say(); }
+    else syncSleep();
+  }
+  function setNear(near) {
+    near = tucked && (near || keyboardFocused());
+    if (root.classList.contains('is-near') === near) return;
+    clearTimeout(peekTimer);
+    peekTimer = 0;
+    root.classList.toggle('is-near', near);
+    root.classList.remove('is-peeking');
+    if (near) {
+      peekTimer = setTimeout(() => {
+        peekTimer = 0;
+        if (!tucked || !root.classList.contains('is-near') || !active || document.hidden) return;
+        root.classList.add('is-peeking');
+        scheduleGaze();
+      }, motion?.matches ? 0 : 180);
+    }
+    say();
+  }
+  function updateExpression() {
+    root.dataset.expression = root.classList.contains('is-dizzy') ? 'dizzy'
+      : !tucked && (searchOpen() || root.classList.contains('is-excited')) ? 'excited'
+        : hovered || keyboardFocused() || root.classList.contains('is-near') ? 'curious'
+          : sleepy && isIdle() ? 'sleepy' : 'neutral';
+  }
   function syncIdle() {
+    syncSleep();
     if (!isIdle()) {
       clearTimeout(idleTimer);
       idleTimer = 0;
       return;
     }
     if (idleTimer || quoteLoading) return;
-    const delay = quotePhase && idleQuote ? Math.max(12000, idleQuote.quote.length * 70) : 8000;
+    const delay = idlePhase === 'quote' && idleQuote ? Math.max(12000, idleQuote.quote.length * 70) : 8000;
     idleTimer = setTimeout(async () => {
       idleTimer = 0;
       if (!isIdle()) return;
-      if (quotePhase) quotePhase = false;
+      if (idlePhase === 'quote') {
+        idlePhase = 'context';
+        contextIndex = (contextIndex + 1) % messages.length;
+      } else if (idlePhase === 'context') idlePhase = 'search';
       else {
         quoteLoading = true;
         await quoteDeck.load();
         quoteLoading = false;
         if (!isIdle()) { syncIdle(); return; }
         idleQuote = quoteDeck.next();
-        quotePhase = Boolean(idleQuote);
+        idlePhase = idleQuote ? 'quote' : 'context';
       }
       say();
     }, delay);
   }
   function say() {
-    const showingQuote = isIdle() && quotePhase && idleQuote;
+    updateExpression();
+    const showingQuote = isIdle() && idlePhase === 'quote' && idleQuote;
+    const idlePrompt = idlePhase === 'context' ? messages[contextIndex] : 'Want to search something?';
     const text = tucked ? 'Psst… click to bring me back!' : drag?.hideSide ? 'Release to hide!' : root.classList.contains('is-dizzy')
-      ? "Whoa... I'm dizzy!" : hovered || keyboardFocused()
-        ? 'Click me!' : showingQuote ? `“${idleQuote.quote}”` : 'Want to search something?';
+      ? "Whoa... I'm dizzy!" : searchOpen() ? "Let's find it!" : hovered || keyboardFocused()
+        ? 'Click me!' : showingQuote ? `“${idleQuote.quote}”` : isIdle() ? idlePrompt : 'Want to search something?';
     const author = showingQuote ? `— ${idleQuote.author}` : '';
     const signature = text + author;
     root.classList.toggle('is-quote', Boolean(showingQuote));
@@ -117,6 +192,7 @@ export function initSearchMascot(openSearch) {
   function place() {
     root.dataset.side = side;
     root.classList.toggle('is-tucked', tucked);
+    if (!tucked) setNear(false);
     root.style.left = `${clampX(side === 'left' ? 8 : window.innerWidth - width() - 8)}px`;
     root.style.top = `${8 + level * (maxY() - 8)}px`;
     root.classList.toggle('bubble-below', parseFloat(root.style.top) < 80);
@@ -149,17 +225,30 @@ export function initSearchMascot(openSearch) {
     for (let i = 0; i < steps; i++) {
       angularVelocity += ((target - angle) * frequency * frequency - angularVelocity * frequency * 1.2) * step;
       angle += angularVelocity * step;
+      // A softer second spring lets the tail lag behind the head.
+      const tailFrequency = 8.5 + Math.min(2, dragSpeed);
+      tailVelocity += ((-angle * 0.8 - tailAngle) * tailFrequency * tailFrequency
+        - tailVelocity * tailFrequency * 1.3) * step;
+      tailAngle += tailVelocity * step;
+      liftVelocity += (((moving ? targetLift : 0) - tailLift) * tailFrequency * tailFrequency
+        - liftVelocity * tailFrequency * 1.3) * step;
+      tailLift += liftVelocity * step;
     }
+    wire.bend(14 * Math.tanh(tailAngle / 14), tailLift);
     art.style.transform = `rotate(${angle}deg)`;
     scheduleGaze();
-    if (Math.abs(angle - target) > 0.08 || Math.abs(angularVelocity) > 0.3 || moving) {
+    if (Math.abs(angle - target) > 0.08 || Math.abs(angularVelocity) > 0.3
+      || Math.abs(tailAngle) > 0.06 || Math.abs(tailVelocity) > 0.25
+      || Math.abs(tailLift) > 0.04 || Math.abs(liftVelocity) > 0.2 || moving) {
       wobbleFrame = window.requestAnimationFrame(wobble);
     } else resetWobble();
   }
   function resetWobble() {
     window.cancelAnimationFrame(wobbleFrame);
     wobbleFrame = 0;
-    angle = angularVelocity = targetAngle = dragSpeed = 0;
+    angle = angularVelocity = targetAngle = dragSpeed = tailAngle = tailVelocity = 0;
+    tailLift = liftVelocity = targetLift = 0;
+    wire.reset();
     art.style.removeProperty('transform');
     art.style.removeProperty('animation');
   }
@@ -184,14 +273,14 @@ export function initSearchMascot(openSearch) {
     const bounds = root.getBoundingClientRect();
     const dx = Math.max(bounds.left - gaze.x, 0, gaze.x - bounds.right);
     const dy = Math.max(bounds.top - gaze.y, 0, gaze.y - bounds.bottom);
-    root.classList.toggle('is-near', tucked && Math.hypot(dx, dy) < 110);
+    setNear(Math.hypot(dx, dy) < (root.classList.contains('is-near') ? 125 : 105));
     if (motion?.matches || !box.width || !box.height) return;
     const dt = gazeTime ? Math.min(0.05, (now - gazeTime) / 1000) : 1 / 60;
     gazeTime = now;
     const blend = 1 - Math.exp(-dt * 20);
     let localX = (gaze.x - box.left) * 80 / box.width;
     let localY = (gaze.y - box.top) * 100 / box.height;
-    const matrix = root.querySelector('.search-mascot-body').getScreenCTM?.();
+    const matrix = root.querySelector('.search-mascot-face').getScreenCTM?.();
     if (matrix && art.createSVGPoint) {
       const point = art.createSVGPoint();
       point.x = gaze.x;
@@ -220,6 +309,7 @@ export function initSearchMascot(openSearch) {
   }
   document.addEventListener('pointermove', (event) => {
     if (event.pointerType === 'touch') return;
+    noteActivity();
     gaze = { x: event.clientX, y: event.clientY };
     scheduleGaze();
   }, { passive: true });
@@ -233,17 +323,29 @@ export function initSearchMascot(openSearch) {
       });
       gazeTime = 0;
       resetWobble();
+      stopDocking();
+      clearTimeout(peekTimer);
+      peekTimer = 0;
+      root.classList.toggle('is-peeking', tucked && root.classList.contains('is-near'));
     } else scheduleGaze();
   });
   main.addEventListener('pointerenter', (event) => {
     if (event.pointerType === 'touch') return;
+    noteActivity();
     hovered = true;
-    if (tucked) root.classList.add('is-near');
+    if (tucked) setNear(true);
     say();
   });
   main.addEventListener('pointerleave', () => { hovered = false; say(); });
-  main.addEventListener('focus', say);
-  main.addEventListener('blur', say);
+  main.addEventListener('focus', () => { noteActivity(); if (tucked) setNear(true); say(); });
+  main.addEventListener('blur', () => { if (tucked) setNear(false); say(); });
+  for (const event of ['pointerdown', 'keydown', 'scroll']) {
+    document.addEventListener(event, noteActivity, { passive: true });
+  }
+  const dialogObserver = new window.MutationObserver(() => { noteActivity(); say(); });
+  for (const dialog of [searchDialog, helpDialog]) {
+    if (dialog) dialogObserver.observe(dialog, { attributes: true, attributeFilter: ['hidden'] });
+  }
   place();
   root.hidden = false;
 
@@ -256,7 +358,14 @@ export function initSearchMascot(openSearch) {
       tucked = false;
       place();
       save();
-    } else openSearch();
+    } else {
+      noteActivity();
+      root.classList.add('is-excited');
+      clearTimeout(excitementTimer);
+      excitementTimer = setTimeout(() => { root.classList.remove('is-excited'); say(); }, 1100);
+      openSearch();
+      say();
+    }
   });
   function stopDocking(freeze = false) {
     const box = freeze ? root.getBoundingClientRect() : null;
@@ -275,6 +384,7 @@ export function initSearchMascot(openSearch) {
     if (event.target === root && event.propertyName === 'transform') { stopDocking(); say(); }
   });
   main.addEventListener('pointerdown', (event) => {
+    noteActivity();
     if (event.button !== 0 || !event.isPrimary || tucked) return;
     if (root.classList.contains('is-docking')) stopDocking(true);
     suppressClick = false;
@@ -283,6 +393,7 @@ export function initSearchMascot(openSearch) {
       currentX: parseFloat(root.style.left), currentY: parseFloat(root.style.top),
       lastX: event.clientX, lastY: event.clientY, lastTime: window.performance.now(), heading: null, turns: 0 };
     main.setPointerCapture(event.pointerId);
+    say();
   });
   main.addEventListener('pointermove', (event) => {
     if (!drag || drag.id !== event.pointerId) return;
@@ -298,6 +409,7 @@ export function initSearchMascot(openSearch) {
     const blend = 1 - Math.exp(-elapsed / 65);
     dragSpeed += (Math.min(3, distance / elapsed) - dragSpeed) * blend;
     targetAngle += (-18 * Math.tanh(stepX / elapsed * 0.7) - targetAngle) * blend;
+    targetLift += (-4 * Math.tanh(stepY / elapsed * 0.6) - targetLift) * blend;
     lastMotion = now;
     kickWobble();
     if (distance >= 4) {
@@ -353,7 +465,7 @@ export function initSearchMascot(openSearch) {
     drag = null;
     root.classList.remove('is-dragging', 'will-hide');
     root.style.removeProperty('transform');
-    targetAngle = 0;
+    targetAngle = targetLift = 0;
     if (tucked || event.type !== 'pointerup') resetWobble();
     else kickWobble();
     place();
@@ -409,6 +521,9 @@ export function initSearchMascot(openSearch) {
   document.addEventListener('visibilitychange', () => {
     root.classList.toggle('is-paused', document.hidden);
     if (document.hidden) {
+      clearTimeout(peekTimer);
+      peekTimer = 0;
+      setNear(false);
       window.cancelAnimationFrame(gazeFrame);
       gazeFrame = 0;
       resetWobble();
@@ -418,16 +533,20 @@ export function initSearchMascot(openSearch) {
   });
   window.addEventListener('pageshow', () => {
     active = true;
+    noteActivity();
     say();
   });
   window.addEventListener('pagehide', () => {
     active = false;
     clearTimeout(idleTimer);
-    idleTimer = 0;
+    clearTimeout(sleepTimer);
+    clearTimeout(peekTimer);
+    clearTimeout(excitementTimer);
+    idleTimer = sleepTimer = peekTimer = excitementTimer = 0;
     quoteDeck.stop();
     clearTimeout(dizzyTimer);
     stopDocking();
-    root.classList.remove('is-dizzy', 'is-dragging', 'will-hide');
+    root.classList.remove('is-dizzy', 'is-dragging', 'will-hide', 'is-near', 'is-peeking', 'is-excited');
     window.cancelAnimationFrame(dragFrame);
     dragFrame = 0;
     drag = null;
