@@ -2,16 +2,16 @@
   position: fixed;
   z-index: 30;
   width: 96px;
-  height: 124px;
+  height: 100px;
   color: var(--text);
 }
 .search-mascot-main {
   position: relative;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
   width: 96px;
-  height: 124px;
+  height: 100px;
   padding: 4px 8px;
   border: 0;
   border-radius: var(--radius);
@@ -47,58 +47,68 @@
 }
 .search-mascot-pupil { fill: var(--text); stroke: none; }
 .search-mascot-smile { stroke: var(--text); stroke-width: 2; stroke-linecap: round; }
-.search-mascot-label {
-  padding: 0 6px;
-  border: 1px solid var(--border-strong);
-  border-radius: 5px;
+.search-mascot-bubble {
+  position: absolute;
+  right: 8px;
+  bottom: calc(100% + 12px);
+  width: 180px;
+  max-width: calc(100vw - 32px);
+  padding: 10px 14px;
+  border: 1.5px solid var(--text);
+  border-radius: 14px;
   background: var(--surface);
   color: var(--text);
-  font-size: 11px;
-  line-height: 18px;
-}
-.search-mascot-hide {
-  position: absolute;
-  top: -8px;
-  right: -4px;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--border-strong);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--muted);
-  font: inherit;
-  cursor: pointer;
-}
-.search-mascot-tip {
-  position: absolute;
-  right: 100%;
-  bottom: 24px;
-  width: min(210px, calc(100vw - 116px));
-  padding: 8px 10px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
   pointer-events: none;
-  visibility: hidden;
 }
-.search-mascot[data-side="left"] .search-mascot-tip { right: auto; left: 100%; }
-.search-mascot:hover .search-mascot-tip,
-.search-mascot:focus-within .search-mascot-tip { visibility: visible; }
-.search-mascot-main:hover .search-mascot-pupil { transform: translateY(-1px); }
-.search-mascot.is-dragging .search-mascot-art { animation: none; transform: rotate(-12deg); }
+.search-mascot-bubble::after {
+  content: "";
+  position: absolute;
+  right: 24px;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  border-right: 1.5px solid var(--text);
+  border-bottom: 1.5px solid var(--text);
+  background: var(--surface);
+  transform: rotate(45deg);
+}
+.search-mascot[data-side="left"] .search-mascot-bubble { right: auto; left: 8px; }
+.search-mascot[data-side="left"] .search-mascot-bubble::after { right: auto; left: 24px; }
+.search-mascot.bubble-below .search-mascot-bubble { bottom: auto; top: calc(100% + 12px); }
+.search-mascot.bubble-below .search-mascot-bubble::after { bottom: auto; top: -7px; transform: rotate(225deg); }
+.search-mascot-hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.search-mascot.is-dragging .search-mascot-art { animation: none; }
+.search-mascot.is-docking { transition: left 420ms cubic-bezier(.22, .75, .25, 1), top 420ms ease-out; }
+.search-mascot.is-docking .search-mascot-main { animation: companion-run 160ms ease-in-out infinite; }
+.search-mascot-dizzy-eyes, .search-mascot-stars, .search-mascot-feet { display: none; }
+.search-mascot.is-dizzy .search-mascot-dizzy-eyes,
+.search-mascot.is-dizzy .search-mascot-stars,
+.search-mascot.is-docking .search-mascot-feet { display: inline; }
+.search-mascot.is-dizzy .search-mascot-pupil { visibility: hidden; }
+.search-mascot.is-dizzy .search-mascot-stars { transform-origin: 40px 12px; animation: companion-stars 600ms ease-in-out infinite alternate; }
+.search-mascot.is-docking .search-mascot-foot-left { transform-origin: 29px 86px; animation: companion-step 160ms ease-in-out infinite alternate; }
+.search-mascot.is-docking .search-mascot-foot-right { transform-origin: 48px 86px; animation: companion-step 160ms ease-in-out infinite alternate-reverse; }
 .search-mascot.is-dragging .search-mascot-main { cursor: grabbing; }
-.search-mascot.is-dragging .search-mascot-tip { visibility: hidden; }
+.search-mascot.is-dragging:not(.will-hide) .search-mascot-bubble { visibility: hidden; }
 .search-mascot.is-tucked { width: 44px; height: 64px; }
 .search-mascot.is-tucked .search-mascot-main {
   width: 44px;
   height: 64px;
   padding: 0;
   overflow: hidden;
-  background: var(--bg-soft);
-  border: 1px solid var(--border-strong);
   cursor: pointer;
   touch-action: manipulation;
 }
@@ -112,9 +122,21 @@
   pointer-events: none;
 }
 .search-mascot.is-tucked[data-side="left"] .search-mascot-art { right: auto; left: -28px; }
-.search-mascot.is-tucked .search-mascot-label { position: absolute; bottom: 0; }
+.search-mascot.is-tucked .search-mascot-bubble { display: none; }
 .search-mascot.is-paused .search-mascot-art,
 .search-mascot.is-paused .search-mascot-eyes { animation-play-state: paused; }
+@keyframes companion-run {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes companion-step {
+  from { transform: rotate(-22deg); }
+  to { transform: rotate(22deg); }
+}
+@keyframes companion-stars {
+  from { transform: rotate(-10deg); }
+  to { transform: rotate(10deg); }
+}
 @keyframes companion-blink {
   0%, 42%, 45%, 100% { transform: scaleY(1); }
   43.5% { transform: scaleY(0.08); }
@@ -124,12 +146,9 @@
   86% { transform: rotate(-4deg); }
   90% { transform: rotate(3deg); }
 }
-@media (hover: hover) and (pointer: fine) {
-  .search-mascot-hide { opacity: 0; }
-  .search-mascot:hover .search-mascot-hide,
-  .search-mascot:focus-within .search-mascot-hide { opacity: 1; }
-}
 @media (prefers-reduced-motion: reduce) {
-  .search-mascot-art, .search-mascot-eyes { animation: none !important; }
+  .search-mascot-art, .search-mascot-eyes, .search-mascot-main,
+  .search-mascot-stars, .search-mascot-foot-left, .search-mascot-foot-right { animation: none !important; }
+  .search-mascot.is-docking { transition: none; }
   .search-mascot.is-dragging .search-mascot-art { transform: none; }
 }

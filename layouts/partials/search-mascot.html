@@ -6,13 +6,24 @@
       <g class="search-mascot-eyes">
         <ellipse cx="34" cy="36" rx="10" ry="12" />
         <ellipse cx="54" cy="36" rx="10" ry="12" />
-        <circle class="search-mascot-pupil" cx="36" cy="37" r="3.5" />
-        <circle class="search-mascot-pupil" cx="56" cy="37" r="3.5" />
+        <circle class="search-mascot-pupil" cx="34" cy="36" r="3.5" />
+        <circle class="search-mascot-pupil" cx="54" cy="36" r="3.5" />
+      </g>
+      <g class="search-mascot-dizzy-eyes" stroke="currentColor" stroke-width="1.5" fill="none">
+        <path d="M34 36c-2-3-5 1-2 3s7-2 5-5-9-2-8 3" />
+        <path d="M54 36c-2-3-5 1-2 3s7-2 5-5-8-2-8 3" />
+      </g>
+      <g class="search-mascot-stars" stroke="currentColor" stroke-width="1.5" fill="none">
+        <path d="m12 5 2 4 4 1-4 2-1 4-2-4-4-1 4-2Z" />
+        <path d="m67 0 2 4 4 1-4 2-1 4-2-4-4-1 4-2Z" />
       </g>
       <path class="search-mascot-smile" d="M37 56Q44 62 51 56" />
+      <g class="search-mascot-feet" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path class="search-mascot-foot-left" d="m29 86-4 8h-6" />
+        <path class="search-mascot-foot-right" d="m48 86 4 8h6" />
+      </g>
     </svg>
-    <span class="search-mascot-label">Search</span>
   </button>
-  <button type="button" class="search-mascot-hide" aria-label="Hide search companion" title="Hide companion">−</button>
-  <span class="search-mascot-tip" id="search-mascot-hint">Click to search. Drag to move, or use arrow keys when focused.</span>
+  <span class="search-mascot-bubble" aria-hidden="true">Want to search something?</span>
+  <span class="search-mascot-hint" id="search-mascot-hint">Click to search. Drag outward past either screen edge to hide. Use arrow keys to move, or H to hide when focused.</span>
 </aside>

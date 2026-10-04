@@ -666,13 +666,14 @@ const check = (label, actual, expected) => {
     check('shortcuts: Ctrl+K too', globalSearch.hidden, false);
 
     key({ key: 'Escape' });
-    const searchButton = document.querySelector('#nav-search');
-    check('shortcuts: the header search button is visible', Boolean(searchButton) && searchButton.hidden === false, true);
+    check('shortcuts: the header search button is removed', document.querySelector('#nav-search'), null);
+    const searchButton = document.querySelector('.search-mascot-main');
+    check('shortcuts: the search companion is visible', document.querySelector('#search-mascot').hidden, false);
     searchButton.click();
-    check('shortcuts: the header search button opens the global search', globalSearch.hidden, false);
-    check('shortcuts: the header search button focuses the field', document.activeElement === globalInput, true);
+    check('shortcuts: the companion opens the global search', globalSearch.hidden, false);
+    check('shortcuts: the companion focuses the field', document.activeElement === globalInput, true);
     key({ key: 'Escape' });
-    check('shortcuts: the header search button leaves the list shut', help.hidden, true);
+    check('shortcuts: the companion leaves the list shut', help.hidden, true);
 
     check('shortcuts: no uncaught errors', page.finish().thrown.length + page.finish().errors.length, 0);
     page.dom.window.close();
@@ -698,12 +699,13 @@ const check = (label, actual, expected) => {
     check('shortcuts: / focuses the field instead of leaving', document.activeElement === input, true);
     check('shortcuts: / does not open the list', help.hidden, true);
 
-    // The header button is the discovery path for people who do not use keys.
-    const searchButton = document.querySelector('#nav-search');
+    // The companion opens site-wide search; local shortcuts keep their field.
+    const searchButton = document.querySelector('.search-mascot-main');
     input.blur();
     searchButton.click();
-    check('shortcuts: the header search button focuses the catalog field', document.activeElement === input, true);
-    check('shortcuts: the header search button leaves the global search shut', document.querySelector('#global-search').hidden, true);
+    check('shortcuts: the companion opens global search on the catalog', document.querySelector('#global-search').hidden, false);
+    key({ key: 'Escape' });
+    input.focus();
 
     // A field keeps its letters: no sequence, no list, and nothing swallowed.
     check('shortcuts: a letter typed in a field is not taken', key({ key: 'g' }), true);
@@ -717,31 +719,28 @@ const check = (label, actual, expected) => {
     page.dom.window.close();
   }
 
-  console.log('\n=== the header search button on a tool page ===');
+  console.log('\n=== the search companion on a tool page ===');
   {
     const page = loadFile(path.join(ROOT, 'tools', 'pdf-info', 'index.html'), 'https://ilham.dev/tools/pdf-info/');
     const { document } = page.w;
-    const button = document.querySelector('#nav-search');
+    const button = document.querySelector('.search-mascot-main');
     const toggle = document.querySelector('#tool-nav-toggle');
-    const field = document.querySelector('#tool-nav-search');
-    check('search button: the tool sidebar starts collapsed', toggle.checked, false);
+    check('search companion: the tool sidebar starts collapsed', toggle.checked, false);
     button.click();
-    check('search button: it opens the tool sidebar', toggle.checked, true);
-    check('search button: it focuses the tool field', document.activeElement === field, true);
-    check('search button: it leaves the global search shut', document.querySelector('#global-search').hidden, true);
+    check('search companion: it keeps the tool sidebar collapsed', toggle.checked, false);
+    check('search companion: it focuses global search', document.activeElement === document.querySelector('#global-search-input'), true);
+    check('search companion: it opens global search', document.querySelector('#global-search').hidden, false);
     const result = page.finish();
     check('search button: no uncaught errors', result.thrown.length + result.errors.length, 0);
     page.dom.window.close();
   }
 
-  console.log('\n=== the header search button on Dev Ops ===');
+  console.log('\n=== the search companion on Dev Ops ===');
   {
     const page = loadFile(path.join(ROOT, 'tools', 'linux-ops', 'index.html'), 'https://ilham.dev/tools/linux-ops/');
     const { document } = page.w;
-    const button = document.querySelector('#nav-search');
-    // The header has to look the same here as everywhere else, or the named
-    // view transition makes the nav jump and ghost between pages.
-    check('search button: it stays visible on Dev Ops', button.hidden, false);
+    const button = document.querySelector('.search-mascot-main');
+    check('search companion: it stays visible on Dev Ops', document.querySelector('#search-mascot').hidden, false);
     button.click();
     check('search button: Dev Ops still opens a search', document.querySelector('#global-search').hidden, false);
     check('search button: it focuses the global field on Dev Ops', document.activeElement === document.querySelector('#global-search-input'), true);

@@ -151,7 +151,7 @@ globalSearch.innerHTML = `
     <div class="global-search-results" id="global-search-results"></div>
   </div>`;
 globalSearch.querySelector('.global-search-kbd').textContent = shortcutLabel();
-// Always in the DOM so the header button works everywhere, even where the
+// Always in the DOM so the companion works everywhere, even where the
 // page owns the keyboard shortcut. The hint is dropped there so it does not
 // advertise a key that belongs to the app.
 if (!globalSearchAvailable()) globalSearch.querySelector('.global-search-kbd').hidden = true;
@@ -314,21 +314,6 @@ if (helpButton) {
   helpButton.addEventListener('click', () => (help.hidden ? openHelp() : closeHelp()));
 }
 
-// Always visible: hiding it on one page shifted the nav and made the header
-// jump during page transitions. It is only revealed once the script runs.
-const searchButton = document.querySelector('#nav-search');
-if (searchButton) {
-  const navToggle = document.querySelector('#nav-toggle');
-  const toolNavToggle = document.querySelector('#tool-nav-toggle');
-  searchButton.addEventListener('click', () => {
-    // Tapping search on mobile should put the main menu away, and reveal the
-    // tool list when its search field lives inside a collapsed panel.
-    if (navToggle) navToggle.checked = false;
-    if (toolNavToggle) toolNavToggle.checked = true;
-    openSearch();
-  });
-}
-
 // The companion always opens site-wide search, including on tool pages.
 initSearchMascot(() => {
   const navToggle = document.querySelector('#nav-toggle');
@@ -361,7 +346,7 @@ function focusSearch() {
   return true;
 }
 
-// `/`, the header button and a click on the row all land here. The global
+// `/` and a click on the shortcut row land here. The global
 // search opens on its own pages; elsewhere the local field takes focus, and
 // without one the row is followed instead, carrying `#search` to the catalog.
 function openSearch() {
