@@ -5,12 +5,13 @@ import { initSearchMascot } from '../../assets/js/search-mascot.js';
 
 const markup = fs.readFileSync('layouts/partials/search-mascot.html', 'utf8');
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-function setup(saved, blocked = false, reduced = false) {
+function setup(saved, blocked = false, reduced = false, fetcher) {
   const dom = new JSDOM(markup, { url: 'https://example.com/', pretendToBeVisual: true });
   globalThis.window = dom.window;
   globalThis.document = dom.window.document;
   globalThis.localStorage = dom.window.localStorage;
   dom.window.matchMedia = () => ({ matches: reduced, addEventListener() {} });
+  if (fetcher) dom.window.fetch = fetcher;
   if (saved) localStorage.setItem('ilham-search-companion-v1', saved);
   if (blocked) globalThis.localStorage = { getItem() { throw Error('blocked'); }, setItem() { throw Error('blocked'); } };
   let opens = 0;
@@ -44,6 +45,14 @@ assert.equal(page.opens(), 1);
 page.key('h');
 assert.equal(page.root.classList.contains('is-tucked'), true);
 const hiddenState = localStorage.getItem('ilham-search-companion-v1');
+page.root.getBoundingClientRect = () => ({ left: 900, right: 944, top: 600, bottom: 664 });
+page.pointer('pointermove', 860, 620, document);
+await pause(40);
+assert.equal(page.root.classList.contains('is-near'), true, 'hidden companion responds before cursor reaches it');
+assert.equal(bubble.textContent, 'Psst… click to bring me back!');
+page.pointer('pointermove', 100, 100, document);
+await pause(40);
+assert.equal(page.root.classList.contains('is-near'), false, 'peek retracts when cursor leaves');
 page.main.click();
 assert.equal(page.opens(), 1, 'revealing is not searching');
 assert.equal(page.root.classList.contains('is-tucked'), false);
@@ -53,9 +62,11 @@ page.pointer('pointerdown', 40, 200);
 page.pointer('pointermove', 400, 250);
 await pause(40);
 assert.ok(page.art.style.transform.includes('rotate('), 'drag excites the spring');
+assert.ok(page.root.style.transform.startsWith('translate3d('), 'drag uses a composited transform');
 page.pointer('pointerup', 400, 250);
 assert.equal(page.root.dataset.side, 'left', 'dock to nearest side');
 assert.equal(page.root.classList.contains('is-docking'), true);
+assert.ok(page.root.style.transform.includes('translate3d('), 'dock retains the release position before easing');
 page.main.dispatchEvent(new window.MouseEvent('click', { detail: 1 }));
 assert.equal(page.opens(), 1, 'drag must not open search');
 await pause(1000);
@@ -77,6 +88,12 @@ page.pointer('pointermove', 400, 150, document);
 await pause(40);
 const pupil = page.root.querySelector('.search-mascot-pupil');
 assert.ok(pupil.getAttribute('transform').startsWith('translate('), 'eyes track cursor');
+page.pointer('pointermove', -500, 150, document);
+await pause(350);
+assert.ok(parseFloat(pupil.getAttribute('transform').slice(10)) < -4, 'eyes visibly look left');
+page.pointer('pointermove', 1500, 150, document);
+await pause(350);
+assert.ok(parseFloat(pupil.getAttribute('transform').slice(10)) > 4, 'eyes visibly look right');
 page.pointer('pointerdown', 400, 300);
 for (let i = 1; i <= 18; i++) {
   const t = i * Math.PI / 8;
@@ -113,4 +130,31 @@ page.pointer('pointerup', 700, 220);
 page.key('h');
 assert.equal(page.root.classList.contains('is-tucked'), true, 'blocked storage still permits hide');
 page.close();
-console.log('Search companion: bubble, gaze, spring/settle, docking, dizzy, outward hide, cancel, persistence, keyboard, resize, reduced motion and blocked storage passed.');
+const nativeTimeout = globalThis.setTimeout;
+globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback,
+  delay === 8000 ? 100 : delay >= 12000 && delay <= 20000 ? 300 : delay, ...args);
+try {
+  let requests = 0;
+  page = setup(null, false, false, async () => {
+    requests++;
+    return { ok: true, json: async () => ({ quotes: [
+      { quote: '<b>Learn one thing at a time.</b>', author: 'Example Author' },
+      { quote: '<b>Keep trying.</b>', author: 'Another Author' },
+    ] }) };
+  });
+  await pause(160);
+  assert.equal(page.root.classList.contains('is-quote'), true, 'idle search prompt switches to a quote');
+  assert.ok(page.root.querySelector('.search-mascot-author'));
+  assert.equal(page.root.querySelector('.search-mascot-bubble b'), null, 'API text is never HTML');
+  page.pointer('pointerenter', 900, 600);
+  await pause(350);
+  assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Click me!', 'hover pauses rotation and takes priority');
+  page.pointer('pointerleave', 800, 500);
+  await pause(320);
+  assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Want to search something?', 'quote switches back to search');
+  assert.equal(requests, 1, 'rotation does not repeatedly fetch');
+  page.close();
+} finally {
+  globalThis.setTimeout = nativeTimeout;
+}
+console.log('Search companion: bubble/quote rotation, gaze, spring/settle, docking, dizzy, outward hide, proximity, persistence, keyboard, resize, reduced motion and blocked storage passed.');

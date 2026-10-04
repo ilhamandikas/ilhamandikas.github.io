@@ -1,4 +1,6 @@
-// Only presentation preferences are saved; search terms never enter storage.
+import { createQuoteDeck } from './mascot-quotes.js';
+
+// Only presentation preferences and public quotes are saved; never search terms.
 export function initSearchMascot(openSearch) {
   const root = document.querySelector('#search-mascot');
   if (!root) return;
@@ -26,6 +28,19 @@ export function initSearchMascot(openSearch) {
   let lastMotion = 0;
   let dizzyTimer = 0;
   let dockTimer = 0;
+  let dockFrame = 0;
+  let dragFrame = 0;
+  let gazeTime = 0;
+  const eyeOffsets = pupils.map(() => ({ x: 0, y: 0 }));
+  let quoteStorage;
+  try { quoteStorage = window.localStorage; } catch { /* Optional quote cache. */ }
+  const quoteDeck = createQuoteDeck({ storage: quoteStorage, fetcher: window.fetch?.bind(window) });
+  let idleQuote = null;
+  let quotePhase = false;
+  let idleTimer = 0;
+  let quoteLoading = false;
+  let active = true;
+  let renderedMessage = '';
   try {
     const saved = JSON.parse(localStorage.getItem(key));
     if (saved) {
@@ -42,10 +57,62 @@ export function initSearchMascot(openSearch) {
   const save = () => {
     try { localStorage.setItem(key, JSON.stringify({ side, level, tucked })); } catch { /* Optional preference. */ }
   };
+  const keyboardFocused = () => document.activeElement === main && main.matches(':focus-visible');
+  const isIdle = () => active && !document.hidden && !tucked && !hovered && !drag
+    && !keyboardFocused() && !root.classList.contains('is-dizzy')
+    && !root.classList.contains('is-docking');
+  function syncIdle() {
+    if (!isIdle()) {
+      clearTimeout(idleTimer);
+      idleTimer = 0;
+      return;
+    }
+    if (idleTimer || quoteLoading) return;
+    const delay = quotePhase && idleQuote ? Math.max(12000, idleQuote.quote.length * 70) : 8000;
+    idleTimer = setTimeout(async () => {
+      idleTimer = 0;
+      if (!isIdle()) return;
+      if (quotePhase) quotePhase = false;
+      else {
+        quoteLoading = true;
+        await quoteDeck.load();
+        quoteLoading = false;
+        if (!isIdle()) { syncIdle(); return; }
+        idleQuote = quoteDeck.next();
+        quotePhase = Boolean(idleQuote);
+      }
+      say();
+    }, delay);
+  }
   function say() {
-    bubble.textContent = drag?.hideSide ? 'Release to hide!' : root.classList.contains('is-dizzy')
-      ? "Whoa... I'm dizzy!" : hovered || document.activeElement === main
-        ? 'Click me!' : 'Want to search something?';
+    const showingQuote = isIdle() && quotePhase && idleQuote;
+    const text = tucked ? 'Psst… click to bring me back!' : drag?.hideSide ? 'Release to hide!' : root.classList.contains('is-dizzy')
+      ? "Whoa... I'm dizzy!" : hovered || keyboardFocused()
+        ? 'Click me!' : showingQuote ? `“${idleQuote.quote}”` : 'Want to search something?';
+    const author = showingQuote ? `— ${idleQuote.author}` : '';
+    const signature = text + author;
+    root.classList.toggle('is-quote', Boolean(showingQuote));
+    if (renderedMessage !== signature) {
+      renderedMessage = signature;
+      const message = document.createElement('span');
+      message.className = 'search-mascot-message';
+      message.textContent = text;
+      bubble.replaceChildren(message);
+      if (author) {
+        const credit = document.createElement('span');
+        credit.className = 'search-mascot-author';
+        credit.textContent = author;
+        bubble.append(credit);
+      }
+      bubble.title = author ? 'Quotes provided by DummyJSON' : '';
+      const height = bubble.offsetHeight || (showingQuote ? 180 : 60);
+      const top = drag?.currentY ?? parseFloat(root.style.top);
+      const below = window.innerHeight - top - (tucked ? 64 : 100) - 12;
+      root.classList.toggle('bubble-below', top < height + 12 && below > top - 12);
+      if (!motion?.matches) message.animate?.([{ opacity: 0, transform: 'translateY(3px)' },
+        { opacity: 1, transform: 'translateY(0)' }], { duration: 220, easing: 'ease-out' });
+    }
+    syncIdle();
   }
   function place() {
     root.dataset.side = side;
@@ -71,14 +138,20 @@ export function initSearchMascot(openSearch) {
   }
   function wobble(now) {
     wobbleFrame = 0;
-    const dt = wobbleTime ? Math.min(0.032, (now - wobbleTime) / 1000) : 1 / 60;
+    const dt = wobbleTime ? Math.min(0.048, (now - wobbleTime) / 1000) : 1 / 60;
     wobbleTime = now;
-    const moving = drag && now - lastMotion < 100;
-    const frequency = 9 + (moving ? Math.min(2, dragSpeed) * 7 : Math.min(2, dragSpeed) * 4);
+    const moving = drag && now - lastMotion < 140;
+    const frequency = 10 + Math.min(2, dragSpeed) * 3;
     const target = moving ? targetAngle : 0;
-    angularVelocity += ((target - angle) * frequency * frequency - angularVelocity * frequency * 0.65) * dt;
-    angle = Math.max(-32, Math.min(32, angle + angularVelocity * dt));
+    // Small integration steps keep the spring stable on slower displays.
+    const steps = Math.ceil(dt / (1 / 120));
+    const step = dt / steps;
+    for (let i = 0; i < steps; i++) {
+      angularVelocity += ((target - angle) * frequency * frequency - angularVelocity * frequency * 1.2) * step;
+      angle += angularVelocity * step;
+    }
     art.style.transform = `rotate(${angle}deg)`;
+    scheduleGaze();
     if (Math.abs(angle - target) > 0.08 || Math.abs(angularVelocity) > 0.3 || moving) {
       wobbleFrame = window.requestAnimationFrame(wobble);
     } else resetWobble();
@@ -100,24 +173,50 @@ export function initSearchMascot(openSearch) {
     say();
   }
 
-  // Coalesce pointer events; no gaze loop runs while the cursor is still.
+  // Follow in SVG coordinates (including rotation), with a short easing tail.
   function scheduleGaze() {
-    if (!gaze || gazeFrame || document.hidden || motion?.matches) return;
-    gazeFrame = window.requestAnimationFrame(() => {
-      gazeFrame = 0;
-      const box = art.getBoundingClientRect();
-      if (!box.width || !box.height) return;
-      for (const pupil of pupils) {
-        const cx = Number(pupil.getAttribute('cx'));
-        const cy = Number(pupil.getAttribute('cy'));
-        const dx = gaze.x - (box.left + cx * box.width / 80);
-        const dy = gaze.y - (box.top + cy * box.height / 100);
-        const distance = Math.hypot(dx, dy);
-        const strength = Math.min(1, distance / 60);
-        const angle = Math.atan2(dy, dx);
-        pupil.setAttribute('transform', `translate(${Math.cos(angle) * 4 * strength} ${Math.sin(angle) * 5 * strength})`);
-      }
+    if (!gaze || gazeFrame || document.hidden) return;
+    gazeFrame = window.requestAnimationFrame(updateGaze);
+  }
+  function updateGaze(now) {
+    gazeFrame = 0;
+    const box = art.getBoundingClientRect();
+    const bounds = root.getBoundingClientRect();
+    const dx = Math.max(bounds.left - gaze.x, 0, gaze.x - bounds.right);
+    const dy = Math.max(bounds.top - gaze.y, 0, gaze.y - bounds.bottom);
+    root.classList.toggle('is-near', tucked && Math.hypot(dx, dy) < 110);
+    if (motion?.matches || !box.width || !box.height) return;
+    const dt = gazeTime ? Math.min(0.05, (now - gazeTime) / 1000) : 1 / 60;
+    gazeTime = now;
+    const blend = 1 - Math.exp(-dt * 20);
+    let localX = (gaze.x - box.left) * 80 / box.width;
+    let localY = (gaze.y - box.top) * 100 / box.height;
+    const matrix = root.querySelector('.search-mascot-body').getScreenCTM?.();
+    if (matrix && art.createSVGPoint) {
+      const point = art.createSVGPoint();
+      point.x = gaze.x;
+      point.y = gaze.y;
+      const local = point.matrixTransform(matrix.inverse());
+      localX = local.x;
+      localY = local.y;
+    }
+    let settling = false;
+    pupils.forEach((pupil, index) => {
+      const dx = localX - Number(pupil.dataset.cx);
+      const dy = localY - Number(pupil.dataset.cy);
+      const distance = Math.hypot(dx, dy);
+      const direction = Math.atan2(dy, dx);
+      const strength = Math.min(1, distance / 45);
+      const x = Math.cos(direction) * 5.5 * strength;
+      const y = Math.sin(direction) * 6 * strength;
+      const offset = eyeOffsets[index];
+      offset.x += (x - offset.x) * blend;
+      offset.y += (y - offset.y) * blend;
+      settling ||= Math.abs(x - offset.x) + Math.abs(y - offset.y) > 0.015;
+      pupil.setAttribute('transform', `translate(${offset.x} ${offset.y})`);
     });
+    if (settling || root.classList.contains('is-docking')) scheduleGaze();
+    else gazeTime = 0;
   }
   document.addEventListener('pointermove', (event) => {
     if (event.pointerType === 'touch') return;
@@ -128,13 +227,18 @@ export function initSearchMascot(openSearch) {
     if (motion.matches) {
       window.cancelAnimationFrame(gazeFrame);
       gazeFrame = 0;
-      pupils.forEach((pupil) => pupil.removeAttribute('transform'));
+      pupils.forEach((pupil, index) => {
+        pupil.removeAttribute('transform');
+        eyeOffsets[index].x = eyeOffsets[index].y = 0;
+      });
+      gazeTime = 0;
       resetWobble();
     } else scheduleGaze();
   });
   main.addEventListener('pointerenter', (event) => {
     if (event.pointerType === 'touch') return;
     hovered = true;
+    if (tucked) root.classList.add('is-near');
     say();
   });
   main.addEventListener('pointerleave', () => { hovered = false; say(); });
@@ -157,14 +261,18 @@ export function initSearchMascot(openSearch) {
   function stopDocking(freeze = false) {
     const box = freeze ? root.getBoundingClientRect() : null;
     clearTimeout(dockTimer);
+    window.cancelAnimationFrame(dockFrame);
+    dockFrame = 0;
     root.classList.remove('is-docking');
+    root.style.removeProperty('transform');
     if (box) {
       root.style.left = `${box.left}px`;
       root.style.top = `${box.top}px`;
     }
+    syncIdle();
   }
   root.addEventListener('transitionend', (event) => {
-    if (event.target === root && event.propertyName === 'left') stopDocking();
+    if (event.target === root && event.propertyName === 'transform') { stopDocking(); say(); }
   });
   main.addEventListener('pointerdown', (event) => {
     if (event.button !== 0 || !event.isPrimary || tucked) return;
@@ -172,6 +280,7 @@ export function initSearchMascot(openSearch) {
     suppressClick = false;
     drag = { id: event.pointerId, x: event.clientX, y: event.clientY,
       left: parseFloat(root.style.left), top: parseFloat(root.style.top), moved: false, hideSide: null,
+      currentX: parseFloat(root.style.left), currentY: parseFloat(root.style.top),
       lastX: event.clientX, lastY: event.clientY, lastTime: window.performance.now(), heading: null, turns: 0 };
     main.setPointerCapture(event.pointerId);
   });
@@ -186,9 +295,9 @@ export function initSearchMascot(openSearch) {
     const stepX = event.clientX - drag.lastX;
     const stepY = event.clientY - drag.lastY;
     const distance = Math.hypot(stepX, stepY);
-    dragSpeed = Math.min(3, distance / elapsed);
-    targetAngle = Math.max(-24, Math.min(24, -stepX / elapsed * 12));
-    angularVelocity += Math.max(-70, Math.min(70, -stepX / elapsed * 20));
+    const blend = 1 - Math.exp(-elapsed / 65);
+    dragSpeed += (Math.min(3, distance / elapsed) - dragSpeed) * blend;
+    targetAngle += (-18 * Math.tanh(stepX / elapsed * 0.7) - targetAngle) * blend;
     lastMotion = now;
     kickWobble();
     if (distance >= 4) {
@@ -213,19 +322,28 @@ export function initSearchMascot(openSearch) {
       : left + width() > window.innerWidth + 24 || (dx > 6 && event.clientX >= window.innerWidth - 4) ? 'right' : null;
     root.classList.add('is-dragging');
     root.classList.toggle('will-hide', Boolean(drag.hideSide));
-    root.style.left = `${clampX(left)}px`;
-    root.dataset.side = clampX(left) + width() / 2 < window.innerWidth / 2 ? 'left' : 'right';
-    root.style.top = `${clampY(drag.top + dy)}px`;
-    root.classList.toggle('bubble-below', parseFloat(root.style.top) < 80);
+    drag.currentX = clampX(left);
+    drag.currentY = clampY(drag.top + dy);
+    if (!dragFrame) dragFrame = window.requestAnimationFrame(() => {
+      dragFrame = 0;
+      if (!drag) return;
+      root.style.transform = `translate3d(${drag.currentX - drag.left}px, ${drag.currentY - drag.top}px, 0)`;
+      root.dataset.side = drag.currentX + width() / 2 < window.innerWidth / 2 ? 'left' : 'right';
+      root.classList.toggle('bubble-below', drag.currentY < 80);
+      scheduleGaze();
+    });
     say();
-    scheduleGaze();
   });
   function finish(event) {
     if (!drag || drag.id !== event.pointerId) return;
     suppressClick = drag.moved;
+    window.cancelAnimationFrame(dragFrame);
+    dragFrame = 0;
+    const fromX = drag.currentX;
+    const fromY = drag.currentY;
     if (drag.moved) {
-      side = parseFloat(root.style.left) + width() / 2 < window.innerWidth / 2 ? 'left' : 'right';
-      level = (parseFloat(root.style.top) - 8) / Math.max(1, maxY() - 8);
+      side = fromX + width() / 2 < window.innerWidth / 2 ? 'left' : 'right';
+      level = (fromY - 8) / Math.max(1, maxY() - 8);
       if (event.type === 'pointerup' && drag.hideSide) {
         side = drag.hideSide;
         tucked = true;
@@ -234,17 +352,29 @@ export function initSearchMascot(openSearch) {
     const shouldDock = drag.moved && !tucked && event.type === 'pointerup';
     drag = null;
     root.classList.remove('is-dragging', 'will-hide');
-    if (shouldDock) {
-      root.classList.add('is-docking');
-      // Commit the drag position before transitioning to its nearest edge.
-      root.getBoundingClientRect();
-      clearTimeout(dockTimer);
-      dockTimer = setTimeout(() => stopDocking(), 480);
-    }
+    root.style.removeProperty('transform');
     targetAngle = 0;
     if (tucked || event.type !== 'pointerup') resetWobble();
     else kickWobble();
     place();
+    if (shouldDock && !motion?.matches) {
+      const offsetX = fromX - parseFloat(root.style.left);
+      const offsetY = fromY - parseFloat(root.style.top);
+      const duration = Math.min(850, 420 + Math.hypot(offsetX, offsetY) * 0.65);
+      root.style.setProperty('--dock-duration', `${duration}ms`);
+      root.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+      // FLIP: anchor at the destination, animate only the composited offset.
+      root.getBoundingClientRect();
+      root.classList.add('is-docking');
+      dockFrame = window.requestAnimationFrame(() => {
+        dockFrame = 0;
+        root.style.transform = 'translate3d(0, 0, 0)';
+        scheduleGaze();
+      });
+      clearTimeout(dockTimer);
+      dockTimer = setTimeout(() => { stopDocking(); say(); }, duration + 80);
+    }
+    syncIdle();
     save();
   }
   main.addEventListener('pointerup', finish);
@@ -262,11 +392,15 @@ export function initSearchMascot(openSearch) {
       if (event.key === 'ArrowUp') level = Math.max(0, level - 0.1);
       if (event.key === 'ArrowDown') level = Math.min(1, level + 0.1);
     } else return;
+    stopDocking();
+    if (tucked) resetWobble();
     place();
     save();
   });
   window.addEventListener('resize', () => {
     stopDocking();
+    window.cancelAnimationFrame(dragFrame);
+    dragFrame = 0;
     drag = null;
     root.classList.remove('is-dragging', 'will-hide');
     resetWobble();
@@ -280,11 +414,23 @@ export function initSearchMascot(openSearch) {
       resetWobble();
       stopDocking();
     } else scheduleGaze();
+    say();
+  });
+  window.addEventListener('pageshow', () => {
+    active = true;
+    say();
   });
   window.addEventListener('pagehide', () => {
+    active = false;
+    clearTimeout(idleTimer);
+    idleTimer = 0;
+    quoteDeck.stop();
     clearTimeout(dizzyTimer);
     stopDocking();
-    root.classList.remove('is-dizzy');
+    root.classList.remove('is-dizzy', 'is-dragging', 'will-hide');
+    window.cancelAnimationFrame(dragFrame);
+    dragFrame = 0;
+    drag = null;
     window.cancelAnimationFrame(gazeFrame);
     gazeFrame = 0;
     resetWobble();

@@ -1,7 +1,7 @@
 ---
 title: "Privacy Statement"
 description: "Privacy Statement for ilham.dev."
-lastmod: 2026-09-26
+lastmod: 2026-10-04
 ---
 
 This Privacy Statement explains how **ilham.dev** ("the Site"), operated by Ilham
@@ -38,6 +38,11 @@ comments on posts are stored as GitHub Discussions and shown through giscus, an
 embedded frame served from giscus.app that may set cookies when GitHub handles your
 sign-in or session. You can control cookies through your browser settings.
 
+The search companion stores its position and hidden state in your browser's local
+storage. Its public quote list is cached for up to 24 hours before refreshing,
+along with the last displayed quote to avoid immediate repeats. Search terms are
+not stored in these companion preferences or sent to the quote provider.
+
 ## 4. Third-Party Services
 
 - **GitHub Pages** hosts the Site. When the Site is served, GitHub may process
@@ -53,6 +58,12 @@ sign-in or session. You can control cookies through your browser settings.
   technical data such as your IP address and browser information. Posting a comment
   requires signing in with a GitHub account. See GitHub's privacy statement and the
   giscus documentation for details.
+- **Search companion quotes** come from [DummyJSON](https://dummyjson.com/quotes).
+  When the companion is visible and idle, your browser may request a list of English
+  quotes from this service. The provider receives normal connection information,
+  including your IP address. Requests omit cookies, credentials, the page referrer,
+  and search input. A fresh local cache avoids a request on every page load; if the
+  service is unavailable, the companion keeps working without new quotes.
 - **Tools that contact third parties.** A few tools reach out to public services to do
   their job, and each one sends only the value you type in. **IP Lookup** sends the
   address to ipwho.is (falling back to freeipapi.com). **DNS Lookup** sends the name to
@@ -61,7 +72,8 @@ sign-in or session. You can control cookies through your browser settings.
   The request testers (**CORS Checker**, **HTTP Request Tester**, **Webhook Tester**,
   **gRPC Tester** and **WebSocket Tester**) send your request to whatever URL you enter.
   The **JavaScript Playground** loads the Monaco editor from cdn.jsdelivr.net the first
-  time you enable it. Every other tool runs entirely in your browser and sends nothing.
+  time you enable it. Every other tool processes its inputs entirely in your browser;
+  the site-wide companion quote request described above is separate from tool inputs.
 - **External links**, for example to GitHub, are governed by those sites' own privacy
   policies.
 
