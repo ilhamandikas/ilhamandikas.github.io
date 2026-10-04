@@ -11,6 +11,19 @@
       {{- with .Params.tags }}
       <p class="tags">{{ range . }}<a class="tag" href="{{ "/tags/" | relURL }}{{ . | urlize }}/">#{{ . }}</a> {{ end }}</p>
       {{- end }}
+      <div class="post-listen" data-read-aloud hidden>
+        <button type="button" class="post-listen-toggle" data-read-toggle aria-pressed="false">
+          <svg class="post-listen-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+            <path class="post-listen-play" d="M5 3.4v9.2L13 8z"></path>
+            <path class="post-listen-pause" d="M5 3.5h2.3v9H5zM8.7 3.5H11v9H8.7z"></path>
+          </svg>
+          <span data-read-label>Listen</span>
+        </button>
+        <button type="button" class="post-listen-stop" data-read-stop hidden aria-label="Stop reading">
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="4" y="4" width="8" height="8" rx="1.2"></rect></svg>
+        </button>
+        <span class="post-listen-status" data-read-status role="status" aria-live="polite"></span>
+      </div>
     </div>
     <div class="prose">{{ .Content }}</div>
     {{ partial "comments.html" . }}
@@ -30,5 +43,19 @@
     <div class="prose">{{ .Content }}</div>
   </div>
 </article>
+{{- end }}
+{{ end }}
+
+{{ define "styles" }}
+{{- if and .IsPage (eq .Section "posts") }}
+{{- $listenCSS := resources.Get "css/read-aloud.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $listenCSS.RelPermalink }}" integrity="{{ $listenCSS.Data.Integrity }}">
+{{- end }}
+{{ end }}
+
+{{ define "scripts" }}
+{{- if and .IsPage (eq .Section "posts") }}
+{{- $listen := resources.Get "js/read-aloud.js" | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $listen.RelPermalink }}" integrity="{{ $listen.Data.Integrity }}"></script>
 {{- end }}
 {{ end }}

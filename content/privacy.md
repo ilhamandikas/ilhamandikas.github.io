@@ -64,6 +64,12 @@ not stored in these companion preferences or sent to the quote provider.
   including your IP address. Requests omit cookies, credentials, the page referrer,
   and search input. A fresh local cache avoids a request on every page load; if the
   service is unavailable, the companion keeps working without new quotes.
+- **Read aloud.** Post pages offer an optional read-aloud button that uses the
+  speech synthesis built into your browser or operating system. The Site does not
+  store the article text or send it anywhere itself, and the choice is never
+  recorded. Speech is produced on-device when your browser offers a local voice; if
+  it falls back to a networked voice supplied by your browser vendor, that vendor's
+  privacy policy applies to the spoken text.
 - **Tools that contact third parties.** A few tools reach out to public services to do
   their job, and each one sends only the value you type in. **IP Lookup** sends the
   address to ipwho.is (falling back to freeipapi.com). **DNS Lookup** sends the name to
