@@ -11,6 +11,9 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   globalThis.document = dom.window.document;
   globalThis.localStorage = dom.window.localStorage;
   dom.window.matchMedia = () => ({ matches: reduced, addEventListener() {} });
+  if (options.width) Object.defineProperty(dom.window, 'innerWidth', { value: options.width, configurable: true });
+  if (options.height) Object.defineProperty(dom.window, 'innerHeight', { value: options.height, configurable: true });
+  if (options.viewport) dom.window.visualViewport = options.viewport;
   if (fetcher) dom.window.fetch = fetcher;
   dom.window.document.querySelector('#search-mascot').dataset.pageKind = options.pageKind || 'home';
   if (options.clock) dom.window.performance.now = options.clock;
@@ -29,9 +32,9 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   const art = root.querySelector('.search-mascot-art');
   art.getBoundingClientRect = () => ({ left: 100, top: 100, width: 72, height: 90 });
   main.setPointerCapture = () => {};
-  const pointer = (type, x, y, target = main) => {
+  const pointer = (type, x, y, target = main, pointerType = 'mouse') => {
     const event = new window.MouseEvent(type, { bubbles: true, clientX: x, clientY: y, button: 0 });
-    Object.defineProperties(event, { pointerId: { value: 1 }, isPrimary: { value: true }, pointerType: { value: 'mouse' } });
+    Object.defineProperties(event, { pointerId: { value: 1 }, isPrimary: { value: true }, pointerType: { value: pointerType } });
     target.dispatchEvent(event);
   };
   const key = (value) => main.dispatchEvent(new window.KeyboardEvent('keydown', { key: value, bubbles: true }));
@@ -153,6 +156,25 @@ assert.equal(page.root.querySelector('.search-mascot-pupil').getAttribute('trans
 page.pointer('pointerup', 700, 220);
 page.key('h');
 assert.equal(page.root.classList.contains('is-tucked'), true, 'blocked storage still permits hide');
+page.close();
+const view = new EventTarget();
+Object.assign(view, { width: 320, height: 700, offsetLeft: 0, offsetTop: 0 });
+page = setup(null, false, false, undefined, { width: 320, height: 700, viewport: view });
+assert.ok(parseFloat(page.root.style.top) < 450, 'new mobile position stays above the bottom action area');
+const startY = parseFloat(page.root.style.top) + 44;
+page.pointer('pointerdown', 270, startY, page.main, 'touch');
+page.pointer('pointermove', 301, startY, page.main, 'touch');
+assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Release to hide!', 'touch gets a wider edge zone');
+page.pointer('pointerup', 301, startY, page.main, 'touch');
+assert.equal(page.root.classList.contains('is-tucked'), true);
+page.pointer('pointerdown', 290, startY, page.main, 'touch');
+page.main.dispatchEvent(new window.MouseEvent('click', { detail: 1, bubbles: true }));
+assert.equal(page.root.classList.contains('is-tucked'), false, 'first genuine tap after a touch drag reveals the companion');
+view.height = 330;
+view.offsetTop = 180;
+view.dispatchEvent(new Event('resize'));
+const mobileY = parseFloat(page.root.style.top);
+assert.ok(mobileY >= 188 && mobileY + 88 <= 510, 'companion stays in the visible viewport when a keyboard opens');
 page.close();
 const nativeTimeout = globalThis.setTimeout;
 globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback,

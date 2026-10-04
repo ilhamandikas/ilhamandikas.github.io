@@ -1,4 +1,5 @@
 .search-mascot {
+  --companion-safe-bottom: env(safe-area-inset-bottom, 0px);
   position: fixed;
   z-index: 30;
   width: 96px;
@@ -22,7 +23,10 @@
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
+.search-mascot-main:focus-visible { outline: none; }
+.search-mascot-main:focus-visible .search-mascot-wire { stroke: var(--accent); stroke-width: 7; }
 .search-mascot-art {
   flex: none;
   width: 72px;
@@ -124,7 +128,9 @@
   white-space: nowrap;
 }
 .search-mascot.is-dragging .search-mascot-art { animation: none; }
-.search-mascot.is-dragging, .search-mascot.is-docking { will-change: transform; }
+.search-mascot.is-dragging, .search-mascot.is-docking, .search-mascot.is-transitioning { will-change: transform; }
+.search-mascot.is-transitioning .search-mascot-body { animation: companion-fold 440ms ease-out; transform-origin: 40px 32px; }
+.search-mascot.will-hide .search-mascot-wire { stroke: var(--accent); }
 .search-mascot.is-docking { transition: transform var(--dock-duration, 600ms) cubic-bezier(.25, .8, .25, 1); }
 .search-mascot.is-docking .search-mascot-main { animation: companion-run 240ms ease-in-out infinite; }
 .search-mascot-dizzy-eyes, .search-mascot-stars, .search-mascot-feet { display: none; }
@@ -164,6 +170,16 @@
 .search-mascot.is-tucked[data-side="left"].is-peeking .search-mascot-body { transform: translate(7px, -3px) rotate(4deg); }
 .search-mascot.is-paused .search-mascot-art,
 .search-mascot.is-paused .search-mascot-eyes { animation-play-state: paused; }
+@media (max-width: 480px) {
+  .search-mascot { width: 80px; height: 88px; }
+  .search-mascot-main { width: 80px; height: 88px; }
+  .search-mascot-art { width: 64px; height: 80px; }
+}
+@keyframes companion-fold {
+  0%, 100% { transform: skewX(0); }
+  35% { transform: skewX(-5deg); }
+  70% { transform: skewX(2deg); }
+}
 @keyframes companion-run {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2px); }
@@ -182,7 +198,8 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .search-mascot-art, .search-mascot-eyes, .search-mascot-main,
-  .search-mascot-stars, .search-mascot-foot-left, .search-mascot-foot-right { animation: none !important; }
+  .search-mascot-stars, .search-mascot-foot-left, .search-mascot-foot-right,
+  .search-mascot-body { animation: none !important; }
   .search-mascot.is-docking, .search-mascot-bubble, .search-mascot-body,
   .search-mascot-face, .search-mascot-brows, .search-mascot-brow-left, .search-mascot-brow-right { transition: none !important; }
   .search-mascot.is-tucked .search-mascot-body { transform: none !important; }

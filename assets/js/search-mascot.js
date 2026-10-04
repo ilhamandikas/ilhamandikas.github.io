@@ -1,5 +1,6 @@
 import { createQuoteDeck } from './mascot-quotes.js';
 import { createFlexibleWire } from './mascot-wire.js';
+import { createMascotVisibilityMotion } from './mascot-visibility.js';
 
 // Only presentation preferences and public quotes are saved; never search terms.
 export function initSearchMascot(openSearch) {
@@ -24,7 +25,7 @@ export function initSearchMascot(openSearch) {
   const motion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const key = 'ilham-search-companion-v1';
   let side = 'right';
-  let level = 1;
+  let level = window.innerWidth <= 480 ? 0.68 : 1;
   let tucked = false;
   let drag = null;
   let suppressClick = false;
@@ -73,10 +74,21 @@ export function initSearchMascot(openSearch) {
     }
   } catch { /* Storage may be unavailable. The companion still works. */ }
 
-  const width = () => tucked ? 44 : 96;
-  const maxY = () => Math.max(8, window.innerHeight - 130);
-  const clampX = (x) => Math.max(8, Math.min(Math.max(8, window.innerWidth - width() - 8), x));
-  const clampY = (y) => Math.max(8, Math.min(maxY(), y));
+  const viewport = () => {
+    const view = window.visualViewport;
+    return { left: view?.offsetLeft || 0, top: view?.offsetTop || 0,
+      width: view?.width || window.innerWidth, height: view?.height || window.innerHeight };
+  };
+  const compact = () => window.innerWidth <= 480;
+  const width = () => tucked ? 44 : compact() ? 80 : 96;
+  const height = () => tucked ? 64 : compact() ? 88 : 100;
+  let safeBottom = parseFloat(window.getComputedStyle(root).getPropertyValue('--companion-safe-bottom')) || 0;
+  const minY = () => viewport().top + 8;
+  const maxY = () => Math.max(minY(), viewport().top + viewport().height - height() - safeBottom - 24);
+  const clampX = (x) => Math.max(viewport().left + 8,
+    Math.min(Math.max(viewport().left + 8, viewport().left + viewport().width - width() - 8), x));
+  const clampY = (y) => Math.max(minY(), Math.min(maxY(), y));
+  const visibilityMotion = createMascotVisibilityMotion(root, () => { say(); scheduleGaze(); });
   const save = () => {
     try { localStorage.setItem(key, JSON.stringify({ side, level, tucked })); } catch { /* Optional preference. */ }
   };
@@ -85,7 +97,7 @@ export function initSearchMascot(openSearch) {
   const overlayOpen = () => searchOpen() || Boolean(helpDialog && !helpDialog.hidden);
   const isIdle = () => active && !document.hidden && !tucked && !hovered && !drag
     && !keyboardFocused() && !overlayOpen() && !root.classList.contains('is-dizzy')
-    && !root.classList.contains('is-docking');
+    && !root.classList.contains('is-docking') && !root.classList.contains('is-transitioning');
   function syncSleep() {
     if (!isIdle()) {
       clearTimeout(sleepTimer);
@@ -182,8 +194,10 @@ export function initSearchMascot(openSearch) {
       bubble.title = author ? 'Quotes provided by DummyJSON' : '';
       const height = bubble.offsetHeight || (showingQuote ? 180 : 60);
       const top = drag?.currentY ?? parseFloat(root.style.top);
-      const below = window.innerHeight - top - (tucked ? 64 : 100) - 12;
-      root.classList.toggle('bubble-below', top < height + 12 && below > top - 12);
+      const view = viewport();
+      const below = view.top + view.height - top - (tucked ? 64 : compact() ? 88 : 100) - 12;
+      const above = top - view.top - 12;
+      root.classList.toggle('bubble-below', above < height && below > above);
       if (!motion?.matches) message.animate?.([{ opacity: 0, transform: 'translateY(3px)' },
         { opacity: 1, transform: 'translateY(0)' }], { duration: 220, easing: 'ease-out' });
     }
@@ -193,8 +207,9 @@ export function initSearchMascot(openSearch) {
     root.dataset.side = side;
     root.classList.toggle('is-tucked', tucked);
     if (!tucked) setNear(false);
-    root.style.left = `${clampX(side === 'left' ? 8 : window.innerWidth - width() - 8)}px`;
-    root.style.top = `${8 + level * (maxY() - 8)}px`;
+    const view = viewport();
+    root.style.left = `${clampX(side === 'left' ? view.left + 8 : view.left + view.width - width() - 8)}px`;
+    root.style.top = `${minY() + level * (maxY() - minY())}px`;
     root.classList.toggle('bubble-below', parseFloat(root.style.top) < 80);
     main.setAttribute('aria-label', tucked ? 'Show search companion' : 'Search tools, guides, and posts');
     if (tucked) main.removeAttribute('aria-haspopup');
@@ -324,6 +339,7 @@ export function initSearchMascot(openSearch) {
       gazeTime = 0;
       resetWobble();
       stopDocking();
+      visibilityMotion.stop();
       clearTimeout(peekTimer);
       peekTimer = 0;
       root.classList.toggle('is-peeking', tucked && root.classList.contains('is-near'));
@@ -355,11 +371,15 @@ export function initSearchMascot(openSearch) {
       return;
     }
     if (tucked) {
-      tucked = false;
-      place();
+      stopDocking();
+      resetWobble();
+      visibilityMotion.run(() => { tucked = false; place(); }, motion?.matches);
+      say();
       save();
     } else {
+      visibilityMotion.stop();
       noteActivity();
+      if (!motion?.matches) { angularVelocity += 28; kickWobble(); }
       root.classList.add('is-excited');
       clearTimeout(excitementTimer);
       excitementTimer = setTimeout(() => { root.classList.remove('is-excited'); say(); }, 1100);
@@ -385,9 +405,11 @@ export function initSearchMascot(openSearch) {
   });
   main.addEventListener('pointerdown', (event) => {
     noteActivity();
+    // A genuine new tap is not the compatibility click emitted after a drag.
+    if (event.button === 0 && event.isPrimary) suppressClick = false;
     if (event.button !== 0 || !event.isPrimary || tucked) return;
+    visibilityMotion.stop();
     if (root.classList.contains('is-docking')) stopDocking(true);
-    suppressClick = false;
     drag = { id: event.pointerId, x: event.clientX, y: event.clientY,
       left: parseFloat(root.style.left), top: parseFloat(root.style.top), moved: false, hideSide: null,
       currentX: parseFloat(root.style.left), currentY: parseFloat(root.style.top),
@@ -430,8 +452,10 @@ export function initSearchMascot(openSearch) {
     drag.lastTime = now;
     const left = drag.left + dx;
     // Keep the hit area inside the viewport while measuring the unclamped drag.
-    drag.hideSide = left < -24 || (dx < -6 && event.clientX <= 4) ? 'left'
-      : left + width() > window.innerWidth + 24 || (dx > 6 && event.clientX >= window.innerWidth - 4) ? 'right' : null;
+    const view = viewport();
+    const edgeZone = event.pointerType === 'touch' ? 24 : 4;
+    drag.hideSide = left < view.left - 24 || (dx < -6 && event.clientX <= view.left + edgeZone) ? 'left'
+      : left + width() > view.left + view.width + 24 || (dx > 6 && event.clientX >= view.left + view.width - edgeZone) ? 'right' : null;
     root.classList.add('is-dragging');
     root.classList.toggle('will-hide', Boolean(drag.hideSide));
     drag.currentX = clampX(left);
@@ -440,7 +464,7 @@ export function initSearchMascot(openSearch) {
       dragFrame = 0;
       if (!drag) return;
       root.style.transform = `translate3d(${drag.currentX - drag.left}px, ${drag.currentY - drag.top}px, 0)`;
-      root.dataset.side = drag.currentX + width() / 2 < window.innerWidth / 2 ? 'left' : 'right';
+      root.dataset.side = drag.currentX + width() / 2 < viewport().left + viewport().width / 2 ? 'left' : 'right';
       root.classList.toggle('bubble-below', drag.currentY < 80);
       scheduleGaze();
     });
@@ -453,22 +477,30 @@ export function initSearchMascot(openSearch) {
     dragFrame = 0;
     const fromX = drag.currentX;
     const fromY = drag.currentY;
+    const willHide = event.type === 'pointerup' && drag.moved && drag.hideSide;
     if (drag.moved) {
-      side = fromX + width() / 2 < window.innerWidth / 2 ? 'left' : 'right';
-      level = (fromY - 8) / Math.max(1, maxY() - 8);
+      side = fromX + width() / 2 < viewport().left + viewport().width / 2 ? 'left' : 'right';
+      level = (fromY - minY()) / Math.max(1, maxY() - minY());
       if (event.type === 'pointerup' && drag.hideSide) {
         side = drag.hideSide;
-        tucked = true;
       }
     }
-    const shouldDock = drag.moved && !tucked && event.type === 'pointerup';
+    const shouldDock = drag.moved && !willHide && !tucked && event.type === 'pointerup';
     drag = null;
     root.classList.remove('is-dragging', 'will-hide');
     root.style.removeProperty('transform');
     targetAngle = targetLift = 0;
-    if (tucked || event.type !== 'pointerup') resetWobble();
-    else kickWobble();
-    place();
+    if (willHide) {
+      resetWobble();
+      // Start at the release position, then fold into the true peek layout.
+      root.style.left = `${fromX}px`;
+      root.style.top = `${fromY}px`;
+      visibilityMotion.run(() => { tucked = true; place(); }, motion?.matches);
+    } else {
+      if (tucked || event.type !== 'pointerup') resetWobble();
+      else kickWobble();
+      place();
+    }
     if (shouldDock && !motion?.matches) {
       const offsetX = fromX - parseFloat(root.style.left);
       const offsetY = fromY - parseFloat(root.style.top);
@@ -496,7 +528,12 @@ export function initSearchMascot(openSearch) {
     if (event.key.toLowerCase() === 'h' && !event.ctrlKey && !event.metaKey && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
-      tucked = !tucked;
+      stopDocking();
+      resetWobble();
+      visibilityMotion.run(() => { tucked = !tucked; place(); }, motion?.matches);
+      say();
+      save();
+      return;
     } else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
       event.preventDefault();
       if (event.key === 'ArrowLeft') side = 'left';
@@ -505,11 +542,14 @@ export function initSearchMascot(openSearch) {
       if (event.key === 'ArrowDown') level = Math.min(1, level + 0.1);
     } else return;
     stopDocking();
+    visibilityMotion.stop();
     if (tucked) resetWobble();
     place();
     save();
   });
-  window.addEventListener('resize', () => {
+  function resizeCompanion() {
+    visibilityMotion.stop();
+    safeBottom = parseFloat(window.getComputedStyle(root).getPropertyValue('--companion-safe-bottom')) || 0;
     stopDocking();
     window.cancelAnimationFrame(dragFrame);
     dragFrame = 0;
@@ -517,7 +557,10 @@ export function initSearchMascot(openSearch) {
     root.classList.remove('is-dragging', 'will-hide');
     resetWobble();
     place();
-  });
+  }
+  window.addEventListener('resize', resizeCompanion);
+  window.visualViewport?.addEventListener('resize', resizeCompanion);
+  window.visualViewport?.addEventListener('scroll', resizeCompanion);
   document.addEventListener('visibilitychange', () => {
     root.classList.toggle('is-paused', document.hidden);
     if (document.hidden) {
@@ -528,6 +571,7 @@ export function initSearchMascot(openSearch) {
       gazeFrame = 0;
       resetWobble();
       stopDocking();
+      visibilityMotion.stop();
     } else scheduleGaze();
     say();
   });
@@ -544,6 +588,7 @@ export function initSearchMascot(openSearch) {
     clearTimeout(excitementTimer);
     idleTimer = sleepTimer = peekTimer = excitementTimer = 0;
     quoteDeck.stop();
+    visibilityMotion.stop();
     clearTimeout(dizzyTimer);
     stopDocking();
     root.classList.remove('is-dizzy', 'is-dragging', 'will-hide', 'is-near', 'is-peeking', 'is-excited');

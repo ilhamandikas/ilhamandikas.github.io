@@ -14,6 +14,7 @@
 // modifier is held, and on auto-repeat.
 import { buildIndex, search as runSearch, shortcutLabel } from './tools-search.js';
 import { initSearchMascot } from './search-mascot.js';
+import { initSearchDialogNavigation } from './search-dialog-navigation.js';
 
 const SEQUENCE_TIMEOUT = 1600;
 const NAV_KEYS = { Home: 'h', Posts: 'p', Guides: 'u', Tools: 't', 'Dev Ops': 'd', Games: 'g', Playground: 'j', About: 'a', Contact: 'c' };
@@ -141,13 +142,14 @@ globalSearch.hidden = true;
 globalSearch.innerHTML = `
   <div class="global-search-backdrop" data-global-search-close></div>
   <div class="global-search-panel" role="dialog" aria-modal="true" aria-labelledby="global-search-title">
-    <label class="global-search-field">
+    <div class="global-search-field">
       <span class="global-search-icon" aria-hidden="true">⌕</span>
       <input type="search" autocomplete="off" id="global-search-input" aria-labelledby="global-search-title" placeholder="Search tools, guides, and posts…">
       <kbd class="global-search-kbd" aria-hidden="true"></kbd>
-    </label>
+      <button type="button" class="global-search-close" data-global-search-close aria-label="Close search" title="Close search">×</button>
+    </div>
     <h2 class="global-search-title" id="global-search-title">Search ilham.dev</h2>
-    <div class="global-search-status" id="global-search-status">Type to search tools, guides, and posts.</div>
+    <div class="global-search-status" id="global-search-status" role="status" aria-live="polite">Type to search tools, guides, and posts.</div>
     <div class="global-search-results" id="global-search-results"></div>
   </div>`;
 globalSearch.querySelector('.global-search-kbd').textContent = shortcutLabel();
@@ -163,6 +165,7 @@ const globalStatus = globalSearch.querySelector('#global-search-status');
 let globalLastFocus = null;
 let globalIndex = null;
 let globalLoad = null;
+initSearchDialogNavigation(globalSearch, { close: closeGlobalSearch });
 
 const endpoint = (path) => new URL(path, siteRoot).href;
 const flatten = (value) => (Array.isArray(value) ? value.flat(Infinity).join(' ') : value || '');
@@ -241,18 +244,20 @@ async function updateGlobalSearch() {
     return;
   }
   globalStatus.textContent = 'Searching…';
+  globalResults.replaceChildren();
   try {
     const index = await loadGlobalIndex();
-    paintGlobalSearch(runSearch(query, index), query);
+    if (query === globalInput.value && !globalSearch.hidden) paintGlobalSearch(runSearch(query, index), query);
   } catch {
-    globalStatus.textContent = 'Search index could not be loaded.';
+    if (query === globalInput.value && !globalSearch.hidden) globalStatus.textContent = 'Search index could not be loaded.';
   }
 }
 
-function openGlobalSearch() {
+function openGlobalSearch(trigger = null) {
+  if (!globalSearch.hidden) return true;
   disarm();
   closeHelp();
-  globalLastFocus = document.activeElement;
+  globalLastFocus = trigger || document.activeElement;
   globalSearch.hidden = false;
   globalInput.focus();
   globalInput.select();
@@ -263,24 +268,10 @@ function openGlobalSearch() {
 function closeGlobalSearch() {
   if (globalSearch.hidden) return;
   globalSearch.hidden = true;
-  if (globalLastFocus && globalLastFocus.isConnected) globalLastFocus.focus();
+  if (globalLastFocus && globalLastFocus.isConnected) globalLastFocus.focus({ preventScroll: true });
 }
 
 globalInput.addEventListener('input', updateGlobalSearch);
-globalInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    event.preventDefault();
-    closeGlobalSearch();
-    return;
-  }
-  if (event.key === 'Enter') {
-    const first = globalResults.querySelector('a');
-    if (first) {
-      event.preventDefault();
-      first.click();
-    }
-  }
-});
 globalSearch.addEventListener('click', (event) => {
   if (event.target.closest && event.target.closest('[data-global-search-close]')) closeGlobalSearch();
 });
@@ -318,7 +309,7 @@ if (helpButton) {
 initSearchMascot(() => {
   const navToggle = document.querySelector('#nav-toggle');
   if (navToggle) navToggle.checked = false;
-  openGlobalSearch();
+  openGlobalSearch(document.querySelector('.search-mascot-main'));
 });
 
 /* ---------------------------------------------------------------- the keys */
