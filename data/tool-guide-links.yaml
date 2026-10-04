@@ -202,6 +202,21 @@ ipv6-ula-generator:
 javascript-playground:
   title: JavaScript Playground Guide
   url: /guides/javascript-playground/
+typescript-playground:
+  title: TypeScript Playground Guide
+  url: /guides/typescript-playground/
+python-playground:
+  title: Python Playground Guide
+  url: /guides/python-playground/
+ruby-playground:
+  title: Ruby Playground Guide
+  url: /guides/ruby-playground/
+c-playground:
+  title: C Playground Guide
+  url: /guides/c-playground/
+cpp-playground:
+  title: C++ Playground Guide
+  url: /guides/cpp-playground/
 json-diff:
   title: JSON Diff Guide
   url: /guides/json-diff/

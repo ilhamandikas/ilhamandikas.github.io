@@ -1,0 +1,121 @@
+{{- $meta := partial "tools/meta.html" .File.ContentBaseName -}}
+{{- $language := $meta.playground | default "javascript" -}}
+{{- $name := "JavaScript" -}}
+{{- if eq $language "typescript" }}{{ $name = "TypeScript" }}{{ end -}}
+{{- if eq $language "python" }}{{ $name = "Python" }}{{ end -}}
+{{- if eq $language "ruby" }}{{ $name = "Ruby" }}{{ end -}}
+{{- if eq $language "c" }}{{ $name = "C" }}{{ end -}}
+{{- if eq $language "cpp" }}{{ $name = "C++" }}{{ end -}}
+{{- $preparedInput := in (slice "python" "ruby" "c" "cpp") $language -}}
+{{- $runtimeModule := "" -}}
+{{- if in (slice "ruby" "c" "cpp") $language -}}
+  {{- $adapter := resources.Get "js/vendor/playground-runtimes.js" | fingerprint -}}
+  {{- $runtimeModule = $adapter.RelPermalink -}}
+{{- end -}}
+{{- $examples := index site.Data "playground-examples" -}}
+{{- $items := index $examples $language -}}
+{{- if eq $language "typescript" }}{{ $items = (index $examples "javascript") | append $items }}{{ end -}}
+{{ partial "tools/playground-links.html" .File.ContentBaseName }}
+<div class="jsp-workspace" id="jsp-workspace" data-language="{{ $language }}"{{ with $runtimeModule }} data-runtime-module="{{ . }}"{{ end }}>
+  <div class="tool-panel">
+    <h2>{{ $name }} code</h2>
+    <p class="tool-hint">Press Ctrl/Cmd + Enter to run. Auto-run reruns 700 ms after editing. Enable Monaco for highlighting{{ if not $preparedInput }} and formatting{{ end }}; it loads from a CDN only when requested.</p>
+    {{ if eq $language "typescript" }}
+    <p class="tool-note">The TypeScript 5.9.3 compiler downloads from jsDelivr on your first Run. This runner transpiles code and reports syntax errors; it does not perform semantic type-checking. No Node.js or package imports.</p>
+    {{ else if eq $language "python" }}
+    <p class="tool-note">Pyodide 0.28.2 downloads its Python runtime and core standard library from jsDelivr on your first Run. Loading may take a moment. Fill standard input before Run; this is not a live terminal. No additional packages are installed automatically.</p>
+    {{ else if eq $language "ruby" }}
+    <p class="tool-note">The Ruby 3.4 WASI runtime (ruby.wasm 2.10.1) downloads from jsDelivr on Run. The binary is approximately 16 MiB before compression. Prepare standard input before Run; no live terminal, gem installation or native OS processes. <a href="{{ "/licenses/playground-runtimes/NOTICE.txt" | relURL }}">Runtime notices</a>.</p>
+    {{ else if or (eq $language "c") (eq $language "cpp") }}
+    <p class="tool-note">The browsercc 0.1.1 Clang/LLD toolchain downloads from jsDelivr on the first Run — roughly 26 MiB compressed for clang.wasm, lld.wasm and the sysroot. Code is compiled to WebAssembly, then run in a fresh Worker. Prepare standard input before Run; there is no live terminal. C++ exceptions and threads are unavailable in this WASI toolchain. <a href="{{ "/licenses/playground-runtimes/NOTICE.txt" | relURL }}">Runtime notices</a>.</p>
+    {{ else }}
+    <p class="tool-note">JavaScript runs without downloading a language runtime.</p>
+    {{ end }}
+    <details class="jsp-examples">
+      <summary>Code examples ({{ len $items }})</summary>
+      <p class="tool-hint">{{ if or (eq $language "c") (eq $language "cpp") }}Click an example to replace the editor with a complete program. Auto-run is paused; press Run to compile and execute it.{{ else }}Click an example to add it above your code. Existing code stays; Auto-run is paused. Clear the editor first if you want to run only the example.{{ end }}</p>
+      {{- $category := "" -}}
+      {{- range $index, $example := $items -}}
+        {{- if ne $example.category $category -}}
+          {{- if $category }}</div>{{ end }}
+          <h3>{{ $example.category }}</h3>
+          <div class="mon-toolbar">
+          {{- $category = $example.category -}}
+        {{- end }}
+        <button class="btn" type="button" data-jsp-example="{{ $index }}" title="{{ $example.hint }}">{{ $example.name }}</button>
+      {{- end }}
+      {{ if $category }}</div>{{ end }}
+    </details>
+    <script type="application/json" id="jsp-examples">{{ $items | jsonify | safeJS }}</script>
+    <div class="mon-toolbar">
+      <button class="btn primary" type="button" id="jsp-run">Run</button>
+      <button class="btn" type="button" id="jsp-stop" disabled>Stop</button>
+      <label class="jsp-auto"><input type="checkbox" id="jsp-auto" data-no-memory> Auto-run</label>
+      <button class="btn" type="button" id="jsp-load">Enable Monaco</button>
+      <button class="btn" type="button" id="jsp-format"{{ if $preparedInput }} disabled title="A {{ $name }} formatter is not bundled"{{ end }}>Format</button>
+      <button class="btn" type="button" id="jsp-clear">Clear</button>
+      <button class="btn" type="button" data-copy="#jsp-code" data-status="#jsp-status">Copy</button>
+      <button class="btn" type="button" data-download="#jsp-code" data-filename="snippet.{{ if eq $language "python" }}py{{ else if eq $language "ruby" }}rb{{ else if eq $language "c" }}c{{ else if eq $language "cpp" }}cpp{{ else if eq $language "typescript" }}ts{{ else }}js{{ end }}" data-mime="text/plain">Download</button>
+      <span class="mon-badge" id="jsp-badge">Plain editor</span>
+    </div>
+    <div class="mon-editor-wrap">
+      <div id="jsp-container" class="mon-container" hidden></div>
+      <label for="jsp-code" class="tool-hint">{{ $name }} code</label>
+      <textarea id="jsp-code" class="mon-textarea" rows="16" spellcheck="false" data-no-memory>{{ if eq $language "python" }}nums = [1, 2, 3, 4]
+doubled = [n * 2 for n in nums]
+print('doubled:', doubled)
+print('sum:', sum(doubled)){{ else if eq $language "ruby" }}nums = [1, 2, 3, 4]
+doubled = nums.map { |n| n * 2 }
+puts "doubled: #{doubled.inspect}"
+puts "sum: #{doubled.sum}"{{ else if eq $language "c" }}#include <stdio.h>
+
+int main(void) {
+    int values[] = {2, 4, 6, 8};
+    int sum = 0;
+    for (int i = 0; i < 4; i++) sum += values[i];
+    printf("sum: %d\n", sum);
+    return 0;
+}{{ else if eq $language "cpp" }}#include <iostream>
+
+int main() {
+    int values[] = {2, 4, 6, 8};
+    int sum = 0;
+    for (int value : values) sum += value;
+    std::cout << "sum: " << sum << std::endl;
+    return 0;
+}{{ else if eq $language "typescript" }}const nums: number[] = [1, 2, 3, 4];
+const doubled = nums.map((n: number) => n * 2);
+console.log('doubled:', doubled);
+return doubled.reduce((sum, n) => sum + n, 0);{{ else }}const nums = [1, 2, 3, 4];
+const doubled = nums.map((n) => n * 2);
+console.log('doubled:', doubled);
+return doubled.reduce((sum, n) => sum + n, 0);{{ end }}</textarea>
+    </div>
+    {{ if $preparedInput }}
+    <div class="tool-field">
+      <label for="jsp-stdin">Standard input — one answer per line, prepared before Run</label>
+      <textarea id="jsp-stdin" rows="3" spellcheck="false" data-no-memory placeholder="Ilham"></textarea>
+    </div>
+    {{ end }}
+    <div class="tool-row">
+      <span class="mon-meta" id="jsp-meta">0 lines · 0 chars</span>
+      <span class="tool-status" id="jsp-status" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+  <div class="tool-panel">
+    <h2>Output</h2>
+    <div class="mon-toolbar">
+      <button class="btn" type="button" id="jsp-clear-output">Clear output</button>
+      <button class="btn" type="button" id="jsp-copy-output">Copy output</button>
+    </div>
+    <div id="jsp-output" class="jsp-output" role="log" aria-label="Console output" aria-live="polite"></div>
+    <form id="jsp-input-form" class="jsp-input-form" hidden>
+      <label for="jsp-input" id="jsp-input-label">Input</label>
+      <div class="tool-row">
+        <input id="jsp-input" type="text" autocomplete="off" data-no-memory>
+        <button class="btn primary" type="submit">Send input</button>
+      </div>
+    </form>
+    <p class="tool-note">{{ if eq $language "python" }}Use <code>input()</code> to read the prepared standard input.{{ else if eq $language "ruby" }}Use <code>STDIN.readline</code> to read the prepared standard input.{{ else if eq $language "c" }}Read the prepared input with <code>scanf</code> or <code>fgets</code>.{{ else if eq $language "cpp" }}Read the prepared input with <code>std::cin</code> or <code>std::getline</code>.{{ else }}Output streams live, including timers. Use <code>await prompt('Your name?')</code> for interactive input.{{ end }} Runs in a Web Worker, without direct DOM access. Stop terminates execution; each run has a 30-second execution limit and output is capped at 500 rows. Code can still make network requests, so only run code you trust. The tool does not save or upload your code or input.</p>
+  </div>
+</div>

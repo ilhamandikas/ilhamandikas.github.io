@@ -1,0 +1,1342 @@
+javascript:
+  - name: Arithmetic
+    category: Basics
+    hint: "Subtotal 100000, tax 11000, total 111000."
+    code: |
+      const prices = [25000, 35000, 40000];
+      const subtotal = prices.reduce((sum, price) => sum + price, 0);
+      const tax = subtotal * 0.11;
+      console.log({ subtotal, tax, total: subtotal + tax });
+  - name: Conditions and grades
+    category: Basics
+    hint: "Score 82 receives grade B."
+    code: |
+      const score = 82;
+      let grade;
+      if (score >= 90) grade = 'A';
+      else if (score >= 80) grade = 'B';
+      else if (score >= 70) grade = 'C';
+      else grade = 'D';
+      console.log(`Score ${score}: grade ${grade}`);
+  - name: Odd and even numbers
+    category: Number exercises
+    hint: "Separate numbers 1–15 into odd and even lists."
+    code: |
+      const numbers = Array.from({ length: 15 }, (_, i) => i + 1);
+      console.log('Odd:', numbers.filter((n) => n % 2 !== 0));
+      console.log('Even:', numbers.filter((n) => n % 2 === 0));
+  - name: Find prime numbers
+    category: Number exercises
+    hint: "Primes up to 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29."
+    code: |
+      function isPrime(n) {
+        if (!Number.isInteger(n) || n < 2) return false;
+        for (let divisor = 2; divisor <= Math.sqrt(n); divisor++) {
+          if (n % divisor === 0) return false;
+        }
+        return true;
+      }
+      const primes = [];
+      for (let n = 2; n <= 30; n++) {
+        if (isPrime(n)) primes.push(n);
+      }
+      console.log('Primes:', primes);
+  - name: Factorial
+    category: Number exercises
+    hint: "5! = 120. This example accepts integers from 0 to 20."
+    code: |
+      function factorial(n) {
+        if (!Number.isInteger(n) || n < 0 || n > 20) {
+          throw new Error('Use an integer from 0 to 20.');
+        }
+        let result = 1n;
+        for (let i = 2n; i <= BigInt(n); i++) result *= i;
+        return result;
+      }
+      console.log('5! =', factorial(5).toString());
+  - name: Fibonacci
+    category: Number exercises
+    hint: "First 10 terms: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34."
+    code: |
+      const sequence = [];
+      let a = 0;
+      let b = 1;
+      for (let i = 0; i < 10; i++) {
+        sequence.push(a);
+        [a, b] = [b, a + b];
+      }
+      console.log('Fibonacci:', sequence);
+  - name: FizzBuzz
+    category: Logic exercises
+    hint: "Print 1–30; multiples of 3 become Fizz, 5 become Buzz, and both become FizzBuzz."
+    code: |
+      for (let n = 1; n <= 30; n++) {
+        const word = (n % 3 === 0 ? 'Fizz' : '') + (n % 5 === 0 ? 'Buzz' : '');
+        console.log(word || n);
+      }
+  - name: Palindrome
+    category: Logic exercises
+    hint: "Ignoring spaces and case, 'Never odd or even' is a palindrome."
+    code: |
+      const text = 'Never odd or even';
+      const normalized = text.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const reversed = [...normalized].reverse().join('');
+      console.log('Palindrome:', normalized === reversed);
+  - name: Bubble sort
+    category: Arrays and search
+    hint: "Sort [8, 3, 5, 1, 9] into [1, 3, 5, 8, 9]."
+    code: |
+      const values = [8, 3, 5, 1, 9];
+      for (let end = values.length - 1; end > 0; end--) {
+        for (let i = 0; i < end; i++) {
+          if (values[i] > values[i + 1]) {
+            [values[i], values[i + 1]] = [values[i + 1], values[i]];
+          }
+        }
+      }
+      console.log('Sorted:', values);
+  - name: Binary search
+    category: Arrays and search
+    hint: "Search the sorted array for 7; its zero-based index is 3."
+    code: |
+      function binarySearch(sorted, target) {
+        let left = 0;
+        let right = sorted.length - 1;
+        while (left <= right) {
+          const middle = Math.floor((left + right) / 2);
+          if (sorted[middle] === target) return middle;
+          if (sorted[middle] < target) left = middle + 1;
+          else right = middle - 1;
+        }
+        return -1;
+      }
+      console.log('Index:', binarySearch([1, 3, 5, 7, 9], 7));
+  - name: Map, filter and reduce
+    category: Arrays and search
+    hint: "Double the even numbers in [1, 2, 3, 4, 5, 6]; their sum is 24."
+    code: |
+      const values = [1, 2, 3, 4, 5, 6];
+      const doubledEvens = values.filter((n) => n % 2 === 0).map((n) => n * 2);
+      console.log('Doubled evens:', doubledEvens);
+      console.log('Sum:', doubledEvens.reduce((sum, n) => sum + n, 0));
+  - name: Count word frequency
+    category: Arrays and search
+    hint: "'code' appears 3 times, 'learn' 2 times, and 'test' once."
+    code: |
+      const words = 'code learn code test learn code'.split(' ');
+      const counts = new Map();
+      for (const word of words) counts.set(word, (counts.get(word) || 0) + 1);
+      console.log('Word counts:', Object.fromEntries(counts));
+  - name: "OOP: bank account"
+    category: Functions and OOP
+    hint: "Deposit 100 and withdraw 30; the account balance becomes 70."
+    code: |
+      class BankAccount {
+        balance = 0;
+        deposit(amount) {
+          if (amount <= 0) throw new Error('Deposit must be positive.');
+          this.balance += amount;
+        }
+        withdraw(amount) {
+          if (amount <= 0 || amount > this.balance) throw new Error('Invalid withdrawal.');
+          this.balance -= amount;
+        }
+      }
+      const account = new BankAccount();
+      account.deposit(100);
+      account.withdraw(30);
+      console.log('Balance:', account.balance);
+  - name: Interactive input
+    category: Functions and OOP
+    hint: "Run, type a name in the output panel, then press Send input."
+    code: |
+      const name = await prompt('What is your name?', 'Ilham');
+      console.log(`Hello, ${name}!`);
+  - name: Right triangle
+    category: Star patterns
+    hint: "Five rows: *, **, ***, ****, *****."
+    code: |
+      const height = 5;
+      for (let row = 1; row <= height; row++) console.log('*'.repeat(row));
+  - name: Centered pyramid
+    category: Star patterns
+    hint: "Five centered rows containing 1, 3, 5, 7 and 9 stars."
+    code: |
+      const height = 5;
+      for (let row = 1; row <= height; row++) {
+        console.log(' '.repeat(height - row) + '*'.repeat(2 * row - 1));
+      }
+  - name: Inverted pyramid
+    category: Star patterns
+    hint: "Five centered rows containing 9, 7, 5, 3 and 1 stars."
+    code: |
+      const height = 5;
+      for (let row = height; row >= 1; row--) {
+        console.log(' '.repeat(height - row) + '*'.repeat(2 * row - 1));
+      }
+  - name: Diamond
+    category: Star patterns
+    hint: "A nine-row diamond, with 9 stars across its widest row."
+    code: |
+      const height = 5;
+      for (let row = 1; row <= height; row++) {
+        console.log(' '.repeat(height - row) + '*'.repeat(2 * row - 1));
+      }
+      for (let row = height - 1; row >= 1; row--) {
+        console.log(' '.repeat(height - row) + '*'.repeat(2 * row - 1));
+      }
+  - name: Hollow pyramid
+    category: Star patterns
+    hint: "Five rows with stars only along the sides and base."
+    code: |
+      const height = 5;
+      for (let row = 1; row <= height; row++) {
+        const width = 2 * row - 1;
+        const edge = row === height ? '*'.repeat(width)
+          : width === 1 ? '*' : '*' + ' '.repeat(width - 2) + '*';
+        console.log(' '.repeat(height - row) + edge);
+      }
+  - name: Number pyramid
+    category: Star patterns
+    hint: "Rows grow from 1 to 123454321, centered with leading spaces."
+    code: |
+      const height = 5;
+      for (let row = 1; row <= height; row++) {
+        let line = ' '.repeat(height - row);
+        for (let n = 1; n <= row; n++) line += n;
+        for (let n = row - 1; n >= 1; n--) line += n;
+        console.log(line);
+      }
+
+typescript:
+  - name: Typed function
+    category: TypeScript types
+    hint: "A typed Rectangle has area 24. Transpilation does not check semantic type errors."
+    code: |
+      interface Rectangle {
+        width: number;
+        height: number;
+      }
+      function area(rectangle: Rectangle): number {
+        return rectangle.width * rectangle.height;
+      }
+      console.log('Area:', area({ width: 6, height: 4 }));
+  - name: Generic function
+    category: TypeScript types
+    hint: "The same generic function returns the first number or string in an array."
+    code: |
+      function first<T>(values: T[]): T | undefined {
+        return values[0];
+      }
+      console.log('First number:', first<number>([10, 20, 30]));
+      console.log('First word:', first<string>(['hello', 'world']));
+
+python:
+  - name: Arithmetic
+    category: Basics
+    hint: "Subtotal 100000, tax 11000, total 111000."
+    code: |
+      prices = [25000, 35000, 40000]
+      subtotal = sum(prices)
+      tax = subtotal * 0.11
+      print({'subtotal': subtotal, 'tax': tax, 'total': subtotal + tax})
+  - name: Conditions and grades
+    category: Basics
+    hint: "Score 82 receives grade B."
+    code: |
+      score = 82
+      if score >= 90:
+          grade = 'A'
+      elif score >= 80:
+          grade = 'B'
+      elif score >= 70:
+          grade = 'C'
+      else:
+          grade = 'D'
+      print(f'Score {score}: grade {grade}')
+  - name: Odd and even numbers
+    category: Number exercises
+    hint: "Separate numbers 1–15 into odd and even lists."
+    code: |
+      numbers = range(1, 16)
+      print('Odd:', [n for n in numbers if n % 2 != 0])
+      print('Even:', [n for n in numbers if n % 2 == 0])
+  - name: Find prime numbers
+    category: Number exercises
+    hint: "Primes up to 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29."
+    code: |
+      from math import isqrt
+
+      def is_prime(n):
+          if not isinstance(n, int) or n < 2:
+              return False
+          for divisor in range(2, isqrt(n) + 1):
+              if n % divisor == 0:
+                  return False
+          return True
+
+      print('Primes:', [n for n in range(2, 31) if is_prime(n)])
+  - name: Factorial
+    category: Number exercises
+    hint: "5! = 120. This example accepts integers from 0 to 20."
+    code: |
+      def factorial(n):
+          if not isinstance(n, int) or n < 0 or n > 20:
+              raise ValueError('Use an integer from 0 to 20.')
+          result = 1
+          for i in range(2, n + 1):
+              result *= i
+          return result
+
+      print('5! =', factorial(5))
+  - name: Fibonacci
+    category: Number exercises
+    hint: "First 10 terms: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34."
+    code: |
+      sequence = []
+      a, b = 0, 1
+      for _ in range(10):
+          sequence.append(a)
+          a, b = b, a + b
+      print('Fibonacci:', sequence)
+  - name: FizzBuzz
+    category: Logic exercises
+    hint: "Print 1–30; multiples of 3 become Fizz, 5 become Buzz, and both become FizzBuzz."
+    code: |
+      for n in range(1, 31):
+          word = ('Fizz' if n % 3 == 0 else '') + ('Buzz' if n % 5 == 0 else '')
+          print(word or n)
+  - name: Palindrome
+    category: Logic exercises
+    hint: "Ignoring spaces and case, 'Never odd or even' is a palindrome."
+    code: |
+      text = 'Never odd or even'
+      normalized = ''.join(char for char in text.lower() if char.isalnum())
+      print('Palindrome:', normalized == normalized[::-1])
+  - name: Bubble sort
+    category: Arrays and search
+    hint: "Sort [8, 3, 5, 1, 9] into [1, 3, 5, 8, 9]."
+    code: |
+      values = [8, 3, 5, 1, 9]
+      for end in range(len(values) - 1, 0, -1):
+          for i in range(end):
+              if values[i] > values[i + 1]:
+                  values[i], values[i + 1] = values[i + 1], values[i]
+      print('Sorted:', values)
+  - name: Binary search
+    category: Arrays and search
+    hint: "Search the sorted list for 7; its zero-based index is 3."
+    code: |
+      def binary_search(sorted_values, target):
+          left, right = 0, len(sorted_values) - 1
+          while left <= right:
+              middle = (left + right) // 2
+              if sorted_values[middle] == target:
+                  return middle
+              if sorted_values[middle] < target:
+                  left = middle + 1
+              else:
+                  right = middle - 1
+          return -1
+
+      print('Index:', binary_search([1, 3, 5, 7, 9], 7))
+  - name: Map, filter and sum
+    category: Arrays and search
+    hint: "Double the even numbers in [1, 2, 3, 4, 5, 6]; their sum is 24."
+    code: |
+      values = [1, 2, 3, 4, 5, 6]
+      doubled_evens = [n * 2 for n in values if n % 2 == 0]
+      print('Doubled evens:', doubled_evens)
+      print('Sum:', sum(doubled_evens))
+  - name: Count word frequency
+    category: Arrays and search
+    hint: "'code' appears 3 times, 'learn' 2 times, and 'test' once."
+    code: |
+      from collections import Counter
+
+      words = 'code learn code test learn code'.split()
+      print('Word counts:', dict(Counter(words)))
+  - name: "OOP: bank account"
+    category: Functions and OOP
+    hint: "Deposit 100 and withdraw 30; the account balance becomes 70."
+    code: |
+      class BankAccount:
+          def __init__(self):
+              self.balance = 0
+
+          def deposit(self, amount):
+              if amount <= 0:
+                  raise ValueError('Deposit must be positive.')
+              self.balance += amount
+
+          def withdraw(self, amount):
+              if amount <= 0 or amount > self.balance:
+                  raise ValueError('Invalid withdrawal.')
+              self.balance -= amount
+
+      account = BankAccount()
+      account.deposit(100)
+      account.withdraw(30)
+      print('Balance:', account.balance)
+  - name: Read standard input
+    category: Functions and OOP
+    hint: "Prepared stdin contains Ilham; Run prints Hello, Ilham!"
+    stdin: "Ilham\n"
+    code: |
+      name = input('What is your name? ')
+      print(f'Hello, {name}!')
+  - name: Right triangle
+    category: Star patterns
+    hint: "Five rows: *, **, ***, ****, *****."
+    code: |
+      height = 5
+      for row in range(1, height + 1):
+          print('*' * row)
+  - name: Centered pyramid
+    category: Star patterns
+    hint: "Five centered rows containing 1, 3, 5, 7 and 9 stars."
+    code: |
+      height = 5
+      for row in range(1, height + 1):
+          print(' ' * (height - row) + '*' * (2 * row - 1))
+  - name: Inverted pyramid
+    category: Star patterns
+    hint: "Five centered rows containing 9, 7, 5, 3 and 1 stars."
+    code: |
+      height = 5
+      for row in range(height, 0, -1):
+          print(' ' * (height - row) + '*' * (2 * row - 1))
+  - name: Diamond
+    category: Star patterns
+    hint: "A nine-row diamond, with 9 stars across its widest row."
+    code: |
+      height = 5
+      for row in range(1, height + 1):
+          print(' ' * (height - row) + '*' * (2 * row - 1))
+      for row in range(height - 1, 0, -1):
+          print(' ' * (height - row) + '*' * (2 * row - 1))
+  - name: Hollow pyramid
+    category: Star patterns
+    hint: "Five rows with stars only along the sides and base."
+    code: |
+      height = 5
+      for row in range(1, height + 1):
+          width = 2 * row - 1
+          if row == height:
+              edge = '*' * width
+          elif width == 1:
+              edge = '*'
+          else:
+              edge = '*' + ' ' * (width - 2) + '*'
+          print(' ' * (height - row) + edge)
+  - name: Number pyramid
+    category: Star patterns
+    hint: "Rows grow from 1 to 123454321, centered with leading spaces."
+    code: |
+      height = 5
+      for row in range(1, height + 1):
+          ascending = ''.join(str(n) for n in range(1, row + 1))
+          descending = ''.join(str(n) for n in range(row - 1, 0, -1))
+          print(' ' * (height - row) + ascending + descending)
+
+ruby:
+  - name: Basic arithmetic
+    category: Basics
+    hint: "With a = 12 and b = 5: sum 17, difference 7, product 60, quotient 2.4."
+    code: |
+      a, b = 12, 5
+      puts "Sum: #{a + b}"
+      puts "Difference: #{a - b}"
+      puts "Product: #{a * b}"
+      puts "Quotient: #{a.fdiv(b)}"
+  - name: Grade with conditions
+    category: Basics
+    hint: "A score of 82 receives grade B."
+    code: |
+      score = 82
+      grade = if score >= 90
+        'A'
+      elsif score >= 80
+        'B'
+      elsif score >= 70
+        'C'
+      else
+        'D'
+      end
+      puts "Grade: #{grade}"
+  - name: Odd and even numbers
+    category: Number exercises
+    hint: "Separate 1–10 into odd and even lists."
+    code: |
+      values = (1..10).to_a
+      puts "Odd: #{values.select(&:odd?).inspect}"
+      puts "Even: #{values.select(&:even?).inspect}"
+  - name: Find prime numbers
+    category: Number exercises
+    hint: "Primes up to 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29."
+    code: |
+      def prime_number?(n)
+        return false unless n.is_a?(Integer) && n >= 2
+        (2..Integer.sqrt(n)).none? { |divisor| n % divisor == 0 }
+      end
+      puts "Primes: #{(2..30).select { |n| prime_number?(n) }.inspect}"
+  - name: Factorial
+    category: Number exercises
+    hint: "5! = 120. This example accepts integers from 0 to 20."
+    code: |
+      def factorial(n)
+        raise ArgumentError, 'Use an integer from 0 to 20.' unless n.is_a?(Integer) && (0..20).cover?(n)
+        (1..n).reduce(1, :*)
+      end
+      puts "5! = #{factorial(5)}"
+  - name: Fibonacci
+    category: Number exercises
+    hint: "First 10 terms: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34."
+    code: |
+      sequence = []
+      a, b = 0, 1
+      10.times do
+        sequence << a
+        a, b = b, a + b
+      end
+      puts "Fibonacci: #{sequence.inspect}"
+  - name: FizzBuzz
+    category: Logic exercises
+    hint: "Print 1–30; multiples of 3 become Fizz, 5 become Buzz, and both become FizzBuzz."
+    code: |
+      (1..30).each do |n|
+        word = (n % 3 == 0 ? 'Fizz' : '') + (n % 5 == 0 ? 'Buzz' : '')
+        puts(word.empty? ? n : word)
+      end
+  - name: Palindrome
+    category: Logic exercises
+    hint: "Ignoring spaces and case, 'Never odd or even' is a palindrome."
+    code: |
+      text = 'Never odd or even'
+      normalized = text.downcase.gsub(/[^a-z0-9]/, '')
+      puts "Palindrome: #{normalized == normalized.reverse}"
+  - name: Bubble sort
+    category: Arrays and search
+    hint: "Sort [8, 3, 5, 1, 9] into [1, 3, 5, 8, 9]."
+    code: |
+      values = [8, 3, 5, 1, 9]
+      (values.length - 1).downto(1) do |last|
+        last.times do |i|
+          values[i], values[i + 1] = values[i + 1], values[i] if values[i] > values[i + 1]
+        end
+      end
+      puts "Sorted: #{values.inspect}"
+  - name: Binary search
+    category: Arrays and search
+    hint: "Search the sorted list for 7; its zero-based index is 3."
+    code: |
+      def binary_search(sorted_values, target)
+        left, right = 0, sorted_values.length - 1
+        while left <= right
+          middle = (left + right) / 2
+          return middle if sorted_values[middle] == target
+          if sorted_values[middle] < target
+            left = middle + 1
+          else
+            right = middle - 1
+          end
+        end
+        -1
+      end
+      puts "Index: #{binary_search([1, 3, 5, 7, 9], 7)}"
+  - name: Map, filter and sum
+    category: Arrays and search
+    hint: "Double the even numbers in [1, 2, 3, 4, 5, 6]; their sum is 24."
+    code: |
+      values = [1, 2, 3, 4, 5, 6]
+      doubled_evens = values.select(&:even?).map { |n| n * 2 }
+      puts "Doubled evens: #{doubled_evens.inspect}"
+      puts "Sum: #{doubled_evens.sum}"
+  - name: Count word frequency
+    category: Arrays and search
+    hint: "'code' appears 3 times, 'learn' 2 times, and 'test' once."
+    code: |
+      words = 'code learn code test learn code'.split
+      puts "Word counts: #{words.tally.inspect}"
+  - name: "OOP: bank account"
+    category: Functions and OOP
+    hint: "Deposit 100 and withdraw 30; the account balance becomes 70."
+    code: |
+      class BankAccount
+        attr_reader :balance
+        def initialize
+          @balance = 0
+        end
+        def deposit(amount)
+          raise ArgumentError, 'Deposit must be positive.' unless amount > 0
+          @balance += amount
+        end
+        def withdraw(amount)
+          raise ArgumentError, 'Invalid withdrawal.' unless amount > 0 && amount <= @balance
+          @balance -= amount
+        end
+      end
+      account = BankAccount.new
+      account.deposit(100)
+      account.withdraw(30)
+      puts "Balance: #{account.balance}"
+  - name: Read standard input
+    category: Functions and OOP
+    hint: "Prepared stdin contains Ilham; Run prints Hello, Ilham!"
+    stdin: "Ilham\n"
+    code: |
+      name = STDIN.readline.chomp
+      puts "Hello, #{name}!"
+  - name: Right triangle
+    category: Star patterns
+    hint: "Five rows: *, **, ***, ****, *****."
+    code: |
+      height = 5
+      (1..height).each { |row| puts '*' * row }
+  - name: Centered pyramid
+    category: Star patterns
+    hint: "Five centered rows containing 1, 3, 5, 7 and 9 stars."
+    code: |
+      height = 5
+      (1..height).each do |row|
+        puts ' ' * (height - row) + '*' * (2 * row - 1)
+      end
+  - name: Inverted pyramid
+    category: Star patterns
+    hint: "Five centered rows containing 9, 7, 5, 3 and 1 stars."
+    code: |
+      height = 5
+      height.downto(1) do |row|
+        puts ' ' * (height - row) + '*' * (2 * row - 1)
+      end
+  - name: Diamond
+    category: Star patterns
+    hint: "A nine-row diamond, with 9 stars across its widest row."
+    code: |
+      height = 5
+      rows = (1..height).to_a + (1...height).to_a.reverse
+      rows.each do |row|
+        puts ' ' * (height - row) + '*' * (2 * row - 1)
+      end
+  - name: Hollow pyramid
+    category: Star patterns
+    hint: "Five rows with stars only along the sides and base."
+    code: |
+      height = 5
+      (1..height).each do |row|
+        width = 2 * row - 1
+        edge = if row == height
+          '*' * width
+        elsif width == 1
+          '*'
+        else
+          '*' + ' ' * (width - 2) + '*'
+        end
+        puts ' ' * (height - row) + edge
+      end
+  - name: Number pyramid
+    category: Star patterns
+    hint: "Rows grow from 1 to 123454321, centered with leading spaces."
+    code: |
+      height = 5
+      (1..height).each do |row|
+        ascending = (1..row).to_a.join
+        descending = (1...row).to_a.reverse.join
+        puts ' ' * (height - row) + ascending + descending
+      end
+
+c:
+  - name: Basic arithmetic
+    category: Basics
+    hint: "With a = 12 and b = 5: sum 17, difference 7, product 60, quotient 2.40."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int a = 12, b = 5;
+          printf("Sum: %d\n", a + b);
+          printf("Difference: %d\n", a - b);
+          printf("Product: %d\n", a * b);
+          printf("Quotient: %.2f\n", (double)a / b);
+          return 0;
+      }
+  - name: Grade with conditions
+    category: Basics
+    hint: "A score of 82 receives grade B."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int score = 82;
+          char grade = score >= 90 ? 'A' : score >= 80 ? 'B' : score >= 70 ? 'C' : 'D';
+          printf("Score %d: grade %c\n", score, grade);
+          return 0;
+      }
+  - name: Odd and even numbers
+    category: Number exercises
+    hint: "Separate 1–10 into odd and even lists."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          printf("Odd:");
+          for (int n = 1; n <= 10; n++) if (n % 2 != 0) printf(" %d", n);
+          printf("\nEven:");
+          for (int n = 1; n <= 10; n++) if (n % 2 == 0) printf(" %d", n);
+          printf("\n");
+          return 0;
+      }
+  - name: Find prime numbers
+    category: Number exercises
+    hint: "Primes up to 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29."
+    code: |
+      #include <stdio.h>
+
+      int is_prime(int n) {
+          if (n < 2) return 0;
+          for (int d = 2; d * d <= n; d++) if (n % d == 0) return 0;
+          return 1;
+      }
+
+      int main(void) {
+          printf("Primes:");
+          for (int n = 2; n <= 30; n++) if (is_prime(n)) printf(" %d", n);
+          printf("\n");
+          return 0;
+      }
+  - name: Factorial
+    category: Number exercises
+    hint: "5! = 120, computed iteratively into a long."
+    code: |
+      #include <stdio.h>
+
+      long factorial(int n) {
+          long result = 1;
+          for (int i = 2; i <= n; i++) result *= i;
+          return result;
+      }
+
+      int main(void) {
+          printf("5! = %ld\n", factorial(5));
+          return 0;
+      }
+  - name: Fibonacci
+    category: Number exercises
+    hint: "First 10 terms: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          long a = 0, b = 1;
+          printf("Fibonacci:");
+          for (int i = 0; i < 10; i++) {
+              printf(" %ld", a);
+              long next = a + b;
+              a = b;
+              b = next;
+          }
+          printf("\n");
+          return 0;
+      }
+  - name: FizzBuzz
+    category: Logic exercises
+    hint: "Print 1–30; multiples of 3 become Fizz, 5 become Buzz, and both become FizzBuzz."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          for (int n = 1; n <= 30; n++) {
+              if (n % 15 == 0) puts("FizzBuzz");
+              else if (n % 3 == 0) puts("Fizz");
+              else if (n % 5 == 0) puts("Buzz");
+              else printf("%d\n", n);
+          }
+          return 0;
+      }
+  - name: Palindrome
+    category: Logic exercises
+    hint: "Ignoring spaces and case, 'Never odd or even' is a palindrome."
+    code: |
+      #include <ctype.h>
+      #include <stdio.h>
+
+      int main(void) {
+          const char *text = "Never odd or even";
+          char normalized[64];
+          int length = 0;
+          for (int i = 0; text[i] != '\0'; i++) {
+              if (isalnum((unsigned char)text[i])) {
+                  normalized[length++] = (char)tolower((unsigned char)text[i]);
+              }
+          }
+          int palindrome = 1;
+          for (int i = 0; i < length / 2; i++) {
+              if (normalized[i] != normalized[length - 1 - i]) palindrome = 0;
+          }
+          printf("Palindrome: %s\n", palindrome ? "true" : "false");
+          return 0;
+      }
+  - name: Bubble sort
+    category: Arrays and search
+    hint: "Sort [8, 3, 5, 1, 9] into [1, 3, 5, 8, 9]."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int values[] = {8, 3, 5, 1, 9};
+          int count = (int)(sizeof(values) / sizeof(values[0]));
+          for (int i = 0; i < count - 1; i++) {
+              for (int j = 0; j < count - 1 - i; j++) {
+                  if (values[j] > values[j + 1]) {
+                      int temp = values[j];
+                      values[j] = values[j + 1];
+                      values[j + 1] = temp;
+                  }
+              }
+          }
+          printf("Sorted:");
+          for (int i = 0; i < count; i++) printf(" %d", values[i]);
+          printf("\n");
+          return 0;
+      }
+  - name: Binary search
+    category: Arrays and search
+    hint: "Searching a sorted array for 23 returns index 5."
+    code: |
+      #include <stdio.h>
+
+      int binary_search(const int *values, int count, int target) {
+          int low = 0, high = count - 1;
+          while (low <= high) {
+              int mid = low + (high - low) / 2;
+              if (values[mid] == target) return mid;
+              if (values[mid] < target) low = mid + 1;
+              else high = mid - 1;
+          }
+          return -1;
+      }
+
+      int main(void) {
+          int values[] = {2, 5, 8, 12, 16, 23, 38};
+          int count = (int)(sizeof(values) / sizeof(values[0]));
+          printf("Index of 23: %d\n", binary_search(values, count, 23));
+          return 0;
+      }
+  - name: Array statistics
+    category: Arrays and search
+    hint: "Sum 60, average 12.00, minimum 7, maximum 19."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int values[] = {12, 7, 19, 10, 12};
+          int count = (int)(sizeof(values) / sizeof(values[0]));
+          int sum = values[0], min = values[0], max = values[0];
+          for (int i = 1; i < count; i++) {
+              sum += values[i];
+              if (values[i] < min) min = values[i];
+              if (values[i] > max) max = values[i];
+          }
+          printf("Sum: %d\n", sum);
+          printf("Average: %.2f\n", (double)sum / count);
+          printf("Min: %d\n", min);
+          printf("Max: %d\n", max);
+          return 0;
+      }
+  - name: Reverse a string
+    category: Arrays and search
+    hint: "Reverse 'browser' to 'resworb'."
+    code: |
+      #include <stdio.h>
+      #include <string.h>
+
+      int main(void) {
+          char text[] = "browser";
+          int length = (int)strlen(text);
+          for (int i = 0; i < length / 2; i++) {
+              char temp = text[i];
+              text[i] = text[length - 1 - i];
+              text[length - 1 - i] = temp;
+          }
+          printf("Reversed: %s\n", text);
+          return 0;
+      }
+  - name: Letter frequency
+    category: Arrays and search
+    hint: "Count each lowercase letter in 'browser'."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          const char *text = "browser";
+          int counts[26] = {0};
+          for (int i = 0; text[i] != '\0'; i++) counts[text[i] - 'a']++;
+          for (int i = 0; i < 26; i++) {
+              if (counts[i]) printf("%c: %d\n", 'a' + i, counts[i]);
+          }
+          return 0;
+      }
+  - name: "OOP: bank account"
+    category: Functions and OOP
+    hint: "Deposit 100, withdraw 30, balance 70."
+    code: |
+      #include <stdio.h>
+
+      typedef struct {
+          double balance;
+      } Account;
+
+      void deposit(Account *account, double amount) { account->balance += amount; }
+      void withdraw(Account *account, double amount) { account->balance -= amount; }
+
+      int main(void) {
+          Account account = {0.0};
+          deposit(&account, 100);
+          withdraw(&account, 30);
+          printf("Balance: %.0f\n", account.balance);
+          return 0;
+      }
+  - name: Read standard input
+    category: Functions and OOP
+    hint: "Prepared stdin contains Ilham; Run prints Hello, Ilham!"
+    stdin: "Ilham\n"
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          char name[64];
+          if (fgets(name, sizeof(name), stdin) == NULL) {
+              puts("No input provided.");
+              return 1;
+          }
+          for (int i = 0; name[i] != '\0'; i++) {
+              if (name[i] == '\n') name[i] = '\0';
+          }
+          printf("Hello, %s!\n", name);
+          return 0;
+      }
+  - name: Right triangle
+    category: Star patterns
+    hint: "Five rows: *, **, ***, ****, *****."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              for (int star = 0; star < row; star++) putchar('*');
+              putchar('\n');
+          }
+          return 0;
+      }
+  - name: Centered pyramid
+    category: Star patterns
+    hint: "Five rows centered with spaces: the top row is indented four spaces."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              for (int space = 0; space < height - row; space++) putchar(' ');
+              for (int star = 0; star < 2 * row - 1; star++) putchar('*');
+              putchar('\n');
+          }
+          return 0;
+      }
+  - name: Inverted pyramid
+    category: Star patterns
+    hint: "The centered pyramid flipped, starting with nine stars."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int height = 5;
+          for (int row = height; row >= 1; row--) {
+              for (int space = 0; space < height - row; space++) putchar(' ');
+              for (int star = 0; star < 2 * row - 1; star++) putchar('*');
+              putchar('\n');
+          }
+          return 0;
+      }
+  - name: Hollow pyramid
+    category: Star patterns
+    hint: "A pyramid outline with a solid base row."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              for (int space = 0; space < height - row; space++) putchar(' ');
+              for (int column = 0; column < 2 * row - 1; column++) {
+                  if (row == height || column == 0 || column == 2 * row - 2) putchar('*');
+                  else putchar(' ');
+              }
+              putchar('\n');
+          }
+          return 0;
+      }
+  - name: Diamond
+    category: Star patterns
+    hint: "A centered pyramid on top and an inverted one below."
+    code: |
+      #include <stdio.h>
+
+      int main(void) {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              for (int space = 0; space < height - row; space++) putchar(' ');
+              for (int star = 0; star < 2 * row - 1; star++) putchar('*');
+              putchar('\n');
+          }
+          for (int row = height - 1; row >= 1; row--) {
+              for (int space = 0; space < height - row; space++) putchar(' ');
+              for (int star = 0; star < 2 * row - 1; star++) putchar('*');
+              putchar('\n');
+          }
+          return 0;
+      }
+
+cpp:
+  - name: Basic arithmetic
+    category: Basics
+    hint: "With a = 12 and b = 5: sum 17, difference 7, product 60, quotient 2.40."
+    code: |
+      #include <iomanip>
+      #include <iostream>
+
+      int main() {
+          int a = 12, b = 5;
+          std::cout << "Sum: " << a + b << "\n";
+          std::cout << "Difference: " << a - b << "\n";
+          std::cout << "Product: " << a * b << "\n";
+          std::cout << std::fixed << std::setprecision(2);
+          std::cout << "Quotient: " << static_cast<double>(a) / b << "\n";
+          return 0;
+      }
+  - name: Grade with conditions
+    category: Basics
+    hint: "A score of 82 receives grade B."
+    code: |
+      #include <iostream>
+
+      int main() {
+          int score = 82;
+          char grade = score >= 90 ? 'A' : score >= 80 ? 'B' : score >= 70 ? 'C' : 'D';
+          std::cout << "Score " << score << ": grade " << grade << "\n";
+          return 0;
+      }
+  - name: Odd and even numbers
+    category: Number exercises
+    hint: "Separate 1–10 into odd and even lists."
+    code: |
+      #include <iostream>
+
+      int main() {
+          std::cout << "Odd:";
+          for (int n = 1; n <= 10; n++) if (n % 2 != 0) std::cout << " " << n;
+          std::cout << "\nEven:";
+          for (int n = 1; n <= 10; n++) if (n % 2 == 0) std::cout << " " << n;
+          std::cout << "\n";
+          return 0;
+      }
+  - name: Find prime numbers
+    category: Number exercises
+    hint: "Primes up to 30: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29."
+    code: |
+      #include <iostream>
+
+      bool is_prime(int n) {
+          if (n < 2) return false;
+          for (int d = 2; d * d <= n; d++) if (n % d == 0) return false;
+          return true;
+      }
+
+      int main() {
+          std::cout << "Primes:";
+          for (int n = 2; n <= 30; n++) if (is_prime(n)) std::cout << " " << n;
+          std::cout << "\n";
+          return 0;
+      }
+  - name: Factorial
+    category: Number exercises
+    hint: "5! = 120, computed iteratively into a long long."
+    code: |
+      #include <iostream>
+
+      long long factorial(int n) {
+          long long result = 1;
+          for (int i = 2; i <= n; i++) result *= i;
+          return result;
+      }
+
+      int main() {
+          std::cout << "5! = " << factorial(5) << "\n";
+          return 0;
+      }
+  - name: Fibonacci
+    category: Number exercises
+    hint: "First 10 terms: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34."
+    code: |
+      #include <iostream>
+
+      int main() {
+          long long a = 0, b = 1;
+          std::cout << "Fibonacci:";
+          for (int i = 0; i < 10; i++) {
+              std::cout << " " << a;
+              long long next = a + b;
+              a = b;
+              b = next;
+          }
+          std::cout << "\n";
+          return 0;
+      }
+  - name: FizzBuzz
+    category: Logic exercises
+    hint: "Print 1–30; multiples of 3 become Fizz, 5 become Buzz, and both become FizzBuzz."
+    code: |
+      #include <iostream>
+
+      int main() {
+          for (int n = 1; n <= 30; n++) {
+              if (n % 15 == 0) std::cout << "FizzBuzz\n";
+              else if (n % 3 == 0) std::cout << "Fizz\n";
+              else if (n % 5 == 0) std::cout << "Buzz\n";
+              else std::cout << n << "\n";
+          }
+          return 0;
+      }
+  - name: Palindrome
+    category: Logic exercises
+    hint: "Ignoring spaces and case, 'Never odd or even' is a palindrome."
+    code: |
+      #include <cctype>
+      #include <iostream>
+      #include <string>
+
+      int main() {
+          std::string text = "Never odd or even";
+          std::string normalized;
+          for (char c : text) {
+              if (std::isalnum(static_cast<unsigned char>(c))) {
+                  normalized += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+              }
+          }
+          std::string reversed(normalized.rbegin(), normalized.rend());
+          std::cout << "Palindrome: " << (normalized == reversed ? "true" : "false") << "\n";
+          return 0;
+      }
+  - name: Bubble sort
+    category: Arrays and search
+    hint: "Sort [8, 3, 5, 1, 9] into [1, 3, 5, 8, 9]."
+    code: |
+      #include <iostream>
+      #include <vector>
+
+      int main() {
+          std::vector<int> values{8, 3, 5, 1, 9};
+          for (std::size_t i = 0; i + 1 < values.size(); i++) {
+              for (std::size_t j = 0; j + 1 < values.size() - i; j++) {
+                  if (values[j] > values[j + 1]) std::swap(values[j], values[j + 1]);
+              }
+          }
+          std::cout << "Sorted:";
+          for (int value : values) std::cout << " " << value;
+          std::cout << "\n";
+          return 0;
+      }
+  - name: Binary search
+    category: Arrays and search
+    hint: "Searching a sorted array for 23 returns index 5."
+    code: |
+      #include <iostream>
+      #include <vector>
+
+      int binary_search(const std::vector<int> &values, int target) {
+          int low = 0, high = static_cast<int>(values.size()) - 1;
+          while (low <= high) {
+              int mid = low + (high - low) / 2;
+              if (values[mid] == target) return mid;
+              if (values[mid] < target) low = mid + 1;
+              else high = mid - 1;
+          }
+          return -1;
+      }
+
+      int main() {
+          std::vector<int> values{2, 5, 8, 12, 16, 23, 38};
+          std::cout << "Index of 23: " << binary_search(values, 23) << "\n";
+          return 0;
+      }
+  - name: Array statistics
+    category: Arrays and search
+    hint: "Sum 60, average 12.00, minimum 7, maximum 19."
+    code: |
+      #include <iostream>
+      #include <numeric>
+      #include <vector>
+
+      int main() {
+          std::vector<int> values{12, 7, 19, 10, 12};
+          int sum = std::accumulate(values.begin(), values.end(), 0);
+          int min = values[0], max = values[0];
+          for (int value : values) {
+              if (value < min) min = value;
+              if (value > max) max = value;
+          }
+          std::cout << "Sum: " << sum << "\n";
+          std::cout.precision(2);
+          std::cout << std::fixed << "Average: " << static_cast<double>(sum) / values.size() << "\n";
+          std::cout << "Min: " << min << "\n";
+          std::cout << "Max: " << max << "\n";
+          return 0;
+      }
+  - name: Reverse a string
+    category: Arrays and search
+    hint: "Reverse 'browser' to 'resworb'."
+    code: |
+      #include <algorithm>
+      #include <iostream>
+      #include <string>
+
+      int main() {
+          std::string text = "browser";
+          std::reverse(text.begin(), text.end());
+          std::cout << "Reversed: " << text << "\n";
+          return 0;
+      }
+  - name: Letter frequency
+    category: Arrays and search
+    hint: "Count each lowercase letter in 'browser'."
+    code: |
+      #include <iostream>
+      #include <map>
+      #include <string>
+
+      int main() {
+          std::string text = "browser";
+          std::map<char, int> counts;
+          for (char c : text) counts[c]++;
+          for (const auto &entry : counts) {
+              std::cout << entry.first << ": " << entry.second << "\n";
+          }
+          return 0;
+      }
+  - name: "OOP: bank account"
+    category: Functions and OOP
+    hint: "Deposit 100, withdraw 30, balance 70."
+    code: |
+      #include <iostream>
+
+      class Account {
+      public:
+          void deposit(double amount) { balance_ += amount; }
+          void withdraw(double amount) { balance_ -= amount; }
+          double balance() const { return balance_; }
+
+      private:
+          double balance_ = 0.0;
+      };
+
+      int main() {
+          Account account;
+          account.deposit(100);
+          account.withdraw(30);
+          std::cout << "Balance: " << account.balance() << "\n";
+          return 0;
+      }
+  - name: Read standard input
+    category: Functions and OOP
+    hint: "Prepared stdin contains Ilham; Run prints Hello, Ilham!"
+    stdin: "Ilham\n"
+    code: |
+      #include <iostream>
+      #include <string>
+
+      int main() {
+          std::string name;
+          if (!std::getline(std::cin, name)) {
+              std::cout << "No input provided.\n";
+              return 1;
+          }
+          std::cout << "Hello, " << name << "!\n";
+          return 0;
+      }
+  - name: Right triangle
+    category: Star patterns
+    hint: "Five rows: *, **, ***, ****, *****."
+    code: |
+      #include <iostream>
+
+      int main() {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              std::cout << std::string(row, '*') << "\n";
+          }
+          return 0;
+      }
+  - name: Centered pyramid
+    category: Star patterns
+    hint: "Five rows centered with spaces: the top row is indented four spaces."
+    code: |
+      #include <iostream>
+      #include <string>
+
+      int main() {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              std::cout << std::string(height - row, ' ') << std::string(2 * row - 1, '*') << "\n";
+          }
+          return 0;
+      }
+  - name: Inverted pyramid
+    category: Star patterns
+    hint: "The centered pyramid flipped, starting with nine stars."
+    code: |
+      #include <iostream>
+      #include <string>
+
+      int main() {
+          int height = 5;
+          for (int row = height; row >= 1; row--) {
+              std::cout << std::string(height - row, ' ') << std::string(2 * row - 1, '*') << "\n";
+          }
+          return 0;
+      }
+  - name: Hollow pyramid
+    category: Star patterns
+    hint: "A pyramid outline with a solid base row."
+    code: |
+      #include <iostream>
+      #include <string>
+
+      int main() {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              std::string line(2 * row - 1, ' ');
+              line.front() = '*';
+              if (row == height) line.assign(2 * row - 1, '*');
+              else line.back() = '*';
+              std::cout << std::string(height - row, ' ') << line << "\n";
+          }
+          return 0;
+      }
+  - name: Diamond
+    category: Star patterns
+    hint: "A centered pyramid on top and an inverted one below."
+    code: |
+      #include <iostream>
+      #include <string>
+
+      int main() {
+          int height = 5;
+          for (int row = 1; row <= height; row++) {
+              std::cout << std::string(height - row, ' ') << std::string(2 * row - 1, '*') << "\n";
+          }
+          for (int row = height - 1; row >= 1; row--) {
+              std::cout << std::string(height - row, ' ') << std::string(2 * row - 1, '*') << "\n";
+          }
+          return 0;
+      }

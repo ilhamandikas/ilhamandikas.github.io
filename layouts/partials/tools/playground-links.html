@@ -1,0 +1,11 @@
+{{- $current := . -}}
+<nav class="jsp-language-nav" aria-label="Playgrounds">
+  <a href="{{ "/tools/playgrounds/" | relURL }}">All playgrounds</a>
+  {{- range site.Data.tools -}}
+    {{- range .tools -}}
+      {{- if .playground }}
+  <a href="{{ printf "/tools/%s/" .slug | relURL }}"{{ if eq .slug $current }} aria-current="page"{{ end }}>{{ .name }}</a>
+      {{- end -}}
+    {{- end -}}
+  {{- end }}
+</nav>

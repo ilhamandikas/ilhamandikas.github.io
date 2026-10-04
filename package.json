@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "vendor": "node scripts/build-vendor.mjs",
-    "test:dom": "node --experimental-vm-modules scripts/domtest/smoke.cjs && node --experimental-vm-modules scripts/domtest/e2e.cjs",
+    "test:dom": "node --experimental-vm-modules scripts/domtest/smoke.cjs && node --experimental-vm-modules scripts/domtest/e2e.cjs && node scripts/domtest/javascript-playground.cjs",
     "check:ai": "node scripts/check-ai-compatibility.js"
   },
   "dependencies": {

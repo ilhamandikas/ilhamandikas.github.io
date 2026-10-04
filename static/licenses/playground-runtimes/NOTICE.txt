@@ -1,0 +1,19 @@
+Playground JavaScript/WASI adapters
+
+@ruby/wasm-wasi 2.10.1
+Copyright (c) 2022 Yuta Saito. MIT license: ruby-wasm-MIT.txt
+Source: https://github.com/ruby/ruby.wasm
+Used by the Ruby Playground.
+
+@bjorn3/browser_wasi_shim 0.4.2
+MIT license: browser-wasi-shim-MIT.txt
+Source: https://github.com/bjorn3/browser_wasi_shim
+Used by the Ruby and C/C++ playgrounds.
+
+The adapters are bundled and minified; their upstream code is not otherwise
+modified. WASM binaries and the C/C++ compiler are downloaded separately from
+jsDelivr, not redistributed in this repository.
+Ruby's own license: https://www.ruby-lang.org/en/about/license/
+The C/C++ compiler is browsercc 0.1.1 (MIT):
+https://github.com/BertalanD/browsercc
+Build instructions: scripts/playground-runtimes/README.md in the site repository.

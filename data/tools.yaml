@@ -556,9 +556,40 @@
       keywords: [html, editor, wysiwyg, rich text]
       status: done
     - slug: javascript-playground
+      playground: javascript
       name: JavaScript Playground
-      desc: Write JavaScript with syntax highlighting and run it in the page, reading its console output, return value and timing.
-      keywords: [javascript, js, playground, run, console, snippet, test, es6, monaco, editor, syntax highlighting]
+      desc: Run JavaScript in your browser with live console output, interactive input, optional auto-run and a stoppable Web Worker.
+      keywords: [javascript, js, playground, run, console, snippet, test, es6, monaco, editor, syntax highlighting, auto-run, prompt, web worker, prime numbers, pyramid, coding exercises]
+      status: done
+    - slug: typescript-playground
+      playground: typescript
+      name: TypeScript Playground
+      desc: Transpile TypeScript and run it in your browser with live console output, interactive input and coding examples.
+      keywords: [typescript, ts, playground, transpile, compiler, console, interface, generics, coding exercises, prime numbers, pyramid]
+      status: done
+    - slug: python-playground
+      playground: python
+      name: Python Playground
+      desc: Run Python in your browser with Pyodide, prepared standard input, console output and coding examples.
+      keywords: [python, py, playground, pyodide, wasm, interpreter, stdin, coding exercises, prime numbers, pyramid]
+      status: done
+    - slug: ruby-playground
+      playground: ruby
+      name: Ruby Playground
+      desc: Run Ruby in your browser with a WASI runtime, prepared standard input, console output and coding examples.
+      keywords: [ruby, rb, playground, wasm, wasi, interpreter, stdin, coding exercises, prime numbers, pyramid, classes]
+      status: done
+    - slug: c-playground
+      playground: c
+      name: C Playground
+      desc: Compile and run C in your browser with a WASI Clang toolchain, prepared standard input, console output and coding examples.
+      keywords: [c, clang, playground, compiler, wasm, wasi, stdin, coding exercises, prime numbers, pyramid, structs]
+      status: done
+    - slug: cpp-playground
+      playground: cpp
+      name: C++ Playground
+      desc: Compile and run C++ in your browser with a WASI Clang toolchain, prepared standard input, console output and coding examples.
+      keywords: [c++, cpp, clang, playground, compiler, wasm, wasi, stdin, coding exercises, prime numbers, pyramid, classes, templates]
       status: done
     - slug: whatsapp-link-generator
       name: WhatsApp Link Generator

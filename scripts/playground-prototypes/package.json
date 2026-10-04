@@ -1,0 +1,21 @@
+{
+  "name": "ilham-playground-prototypes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "node server.mjs",
+    "test": "node test.mjs",
+    "test:site": "node site-test.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.21.5",
+    "typescript": "5.9.3",
+    "pyodide": "0.28.2",
+    "@php-wasm/web-8-4": "3.1.56",
+    "@php-wasm/universal": "3.1.56",
+    "@ruby/3.4-wasm-wasi": "2.10.1",
+    "browsercc": "0.1.1",
+    "@bjorn3/browser_wasi_shim": "0.4.2",
+    "puppeteer-core": "25.12.0"
+  }
+}

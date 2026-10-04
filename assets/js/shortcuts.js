@@ -17,9 +17,22 @@ import { initSearchMascot } from './search-mascot.js';
 import { initSearchDialogNavigation } from './search-dialog-navigation.js';
 
 const SEQUENCE_TIMEOUT = 1600;
-const NAV_KEYS = { Home: 'h', Posts: 'p', Guides: 'u', Tools: 't', 'Dev Ops': 'd', Games: 'g', Playground: 'j', About: 'a', Contact: 'c' };
+const NAV_KEYS = { Home: 'h', Posts: 'p', Guides: 'u', Tools: 't', 'Dev Ops': 'd', Games: 'g', Playgrounds: 'j', About: 'a', Contact: 'c' };
 
 const nav = document.querySelector('#site-nav');
+const playgroundMenu = nav?.querySelector('.nav-playgrounds');
+if (playgroundMenu) {
+  document.addEventListener('click', (event) => {
+    if (!playgroundMenu.contains(event.target)) playgroundMenu.open = false;
+  });
+  playgroundMenu.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      playgroundMenu.open = false;
+      playgroundMenu.querySelector('summary').focus();
+      event.stopPropagation();
+    }
+  });
+}
 const toolsLink = nav && [...nav.querySelectorAll('a')].find((link) => link.textContent.trim() === 'Tools');
 const feed = document.querySelector('link[rel="alternate"][type="application/rss+xml"]');
 const localSearch = document.querySelector('#tools-search') || document.querySelector('#tool-nav-search');

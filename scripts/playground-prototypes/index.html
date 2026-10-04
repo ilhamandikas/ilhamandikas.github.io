@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local playground feasibility probe</title>
+  <style>
+    body { max-width: 900px; margin: 24px auto; padding: 0 16px; font: 16px/1.5 system-ui; }
+    label { display: block; margin-top: 12px; }
+    textarea { box-sizing: border-box; width: 100%; font: 14px/1.5 monospace; }
+    button, select { min-height: 44px; margin: 8px 0; }
+    pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Local playground feasibility probe</h1>
+  <p>Development only, not published by Hugo. Compiler/runtime assets load only after Run.
+    No execution API, CDN or cross-origin isolation headers. Only run trusted code.</p>
+  <label for="language">Language</label>
+  <select id="language">
+    <option value="javascript">JavaScript</option>
+    <option value="typescript">TypeScript 5.9.3 (transpile only)</option>
+    <option value="python">Python (Pyodide 0.28.2)</option>
+    <option value="php">PHP 8.4 (WordPress PHP-WASM 3.1.56)</option>
+    <option value="ruby">Ruby 3.4 (ruby.wasm 2.10.1)</option>
+    <option value="c">C17 (browsercc 0.1.1)</option>
+    <option value="cpp">C++20 (browsercc 0.1.1)</option>
+  </select>
+  <label for="code">Code</label>
+  <textarea id="code" rows="12" spellcheck="false"></textarea>
+  <label for="input">Standard input / prompt answers (prepared before Run)</label>
+  <textarea id="input" rows="3" spellcheck="false">Ilham</textarea>
+  <div>
+    <button id="run" type="button">Run</button>
+    <button id="stop" type="button" disabled>Stop</button>
+  </div>
+  <p id="status" role="status">Ready. No language runtime loaded.</p>
+  <pre id="output" aria-label="Output"></pre>
+  <script type="module" src="./ui.mjs"></script>
+</body>
+</html>

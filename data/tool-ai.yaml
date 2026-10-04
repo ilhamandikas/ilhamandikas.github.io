@@ -197,3 +197,92 @@ grpc-tester:
 
 javascript-playground:
   offline_capable: false
+  related_tools: [typescript-playground, python-playground, ruby-playground, c-playground, cpp-playground]
+  limitations:
+    - Worker execution is not a security sandbox; snippets can make network requests.
+    - No DOM or Node.js APIs. Execution is limited to 30 seconds and 500 output rows.
+  features: [Live console output, Interactive async prompt, Run and Stop, Optional auto-run, Coding exercises and pyramid patterns]
+
+typescript-playground:
+  offline_capable: false
+  related_tools: [javascript-playground, python-playground, ruby-playground, c-playground, cpp-playground]
+  input:
+    type: typescript
+    format: Single TypeScript snippet
+  output:
+    type: console
+    format: Logs, returned values and errors
+  features: [Browser-side transpilation, Syntax diagnostics, Interactive async prompt, Run and Stop, Coding exercises and pyramid patterns]
+  limitations:
+    - Transpilation does not perform semantic type-checking.
+    - The compiler loads from jsDelivr on Run. No Node.js or package imports.
+    - Worker execution is not a security sandbox; snippets can make network requests.
+    - Execution is limited to 30 seconds and 500 output rows.
+
+python-playground:
+  offline_capable: false
+  related_tools: [javascript-playground, typescript-playground, ruby-playground, c-playground, cpp-playground]
+  input:
+    type: python
+    format: Python snippet with optional prepared standard input
+  output:
+    type: console
+    format: Print output, expression results and errors
+  features: [Pyodide browser runtime, Prepared standard input, Run and Stop, Coding exercises and pyramid patterns]
+  limitations:
+    - Pyodide loads from jsDelivr on Run; extra packages are not installed automatically.
+    - Prepared input is not a live interactive terminal.
+    - A fresh Worker is created for each run; state is not preserved.
+    - Worker execution is not a security sandbox; code can use browser APIs through the JavaScript bridge.
+    - Execution is limited to 30 seconds and 500 output rows.
+
+ruby-playground:
+  offline_capable: false
+  related_tools: [python-playground, javascript-playground, typescript-playground, c-playground, cpp-playground]
+  input:
+    type: ruby
+    format: Ruby snippet with optional prepared standard input
+  output:
+    type: console
+    format: Standard output, standard error and exceptions
+  features: [Ruby WASI browser runtime, Prepared standard input, Run and Stop, Coding exercises and pyramid patterns]
+  limitations:
+    - Ruby WASM loads from jsDelivr on Run; the binary is approximately 16 MiB before compression.
+    - Prepared input is not a live interactive terminal; no gems are installed automatically.
+    - No native OS processes; a fresh Worker is created for each run.
+    - Worker execution is not a security sandbox; code can use browser APIs through the JavaScript bridge.
+    - Execution is limited to 30 seconds and 500 output rows.
+
+c-playground:
+  offline_capable: false
+  related_tools: [cpp-playground, javascript-playground, typescript-playground, python-playground, ruby-playground]
+  input:
+    type: c
+    format: C source with optional prepared standard input
+  output:
+    type: console
+    format: Program standard output and standard error plus compiler diagnostics
+  features: [Browser-side Clang compile to WebAssembly, Prepared standard input, Run and Stop, Coding exercises and pyramid patterns]
+  limitations:
+    - The Clang/lld toolchain and sysroot download from jsDelivr on Run; roughly 26 MiB compressed.
+    - No exceptions, threads or native OS processes; a fresh Worker is created for each run.
+    - Prepared input is not a live interactive terminal.
+    - Worker execution is not a security sandbox; code can make network requests.
+    - Execution is limited to 30 seconds after compilation and 500 output rows.
+
+cpp-playground:
+  offline_capable: false
+  related_tools: [c-playground, javascript-playground, typescript-playground, python-playground, ruby-playground]
+  input:
+    type: c++
+    format: C++ source with optional prepared standard input
+  output:
+    type: console
+    format: Program standard output and standard error plus compiler diagnostics
+  features: [Browser-side Clang compile to WebAssembly, Prepared standard input, Run and Stop, Coding exercises and pyramid patterns]
+  limitations:
+    - The Clang/lld toolchain and sysroot download from jsDelivr on Run; roughly 26 MiB compressed.
+    - The WASI standard library is built without exceptions or threads; a fresh Worker is created for each run.
+    - Prepared input is not a live interactive terminal.
+    - Worker execution is not a security sandbox; code can make network requests.
+    - Execution is limited to 30 seconds after compilation and 500 output rows.

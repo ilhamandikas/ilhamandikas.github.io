@@ -25,8 +25,10 @@
         {{- end -}}
       </div>
       {{ partial "tools/learn.html" $slug }}
+      {{ if not $meta.playground }}
       {{ partial "tools/history.html" . }}
       {{ partial "tools/memory.html" . }}
+      {{ end }}
       {{ partial "tools/about.html" $slug }}
     </div>
   </div>

@@ -1493,6 +1493,22 @@ textarea.tool-text { resize: vertical; }
 }
 .snap-grid .tool-field { margin-bottom: 0; }
 
+.jsp-language-nav { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 16px; }
+.jsp-language-nav [aria-current="page"] { font-weight: 700; text-decoration: underline; }
+.jsp-examples { margin: 12px 0; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.jsp-examples summary { cursor: pointer; font-weight: 600; }
+.jsp-examples h3 { margin: 12px 0 8px; font-size: 0.9rem; }
+.jsp-examples .mon-toolbar { margin-bottom: 0; }
+.jsp-workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.jsp-workspace > .tool-panel { min-width: 0; margin: 0; }
+.jsp-auto { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
+.jsp-input-form { margin-top: 12px; }
+.jsp-input-form[hidden] { display: none; }
+.jsp-input-form input { min-width: 0; flex: 1; }
+@media (min-width: 1024px) {
+  .jsp-workspace { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+.jsp-workspace .jsp-output { min-height: 280px; max-height: 480px; overflow: auto; }
 .jsp-output {
   min-height: 80px;
   padding: 12px 14px;
@@ -1504,7 +1520,7 @@ textarea.tool-text { resize: vertical; }
   line-height: 1.6;
 }
 .jsp-line { display: flex; gap: 8px; }
-.jsp-line > span:last-child { white-space: pre-wrap; word-break: break-word; }
+.jsp-line > span:last-child { min-width: 0; white-space: pre-wrap; word-break: break-word; }
 .jsp-tag {
   flex: 0 0 auto;
   min-width: 48px;

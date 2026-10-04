@@ -594,18 +594,20 @@ const check = (label, actual, expected) => {
     check('shortcuts: no dt is added outside the FAQ', document.querySelectorAll('dt').length, 0);
 
     // The destinations come from the header, so the two can never disagree.
-    const navLinks = [...document.querySelectorAll('#site-nav a')];
+    const navLinks = [...document.querySelectorAll('#site-nav > a, .nav-playgrounds-links > a:first-child')];
     check('shortcuts: home does not link to itself', navLinks.some((link) => link.getAttribute('href') === '/'), false);
     const sequenceHrefs = rows
       .filter((row) => (row.getAttribute('aria-keyshortcuts') || '').startsWith('g '))
       .map((row) => row.getAttribute('href'));
-    check('shortcuts: every header link has a sequence', navLinks.every((link) => sequenceHrefs.includes(link.getAttribute('href'))), true);
+    check('shortcuts: every primary header destination has a sequence', navLinks.every((link) => sequenceHrefs.includes(link.getAttribute('href'))), true);
+    check('shortcuts: the playground submenu lists the index and six languages', document.querySelectorAll('.nav-playgrounds-links > a').length, 7);
     check('shortcuts: no Home row on the home page', labelFor('g h'), null);
     check('shortcuts: g p is Posts', labelFor('g p'), 'Posts');
     check('shortcuts: g t is Tools', labelFor('g t'), 'Tools');
     check('shortcuts: g d is Dev Ops', labelFor('g d'), 'Dev Ops');
     check('shortcuts: g g is Games', labelFor('g g'), 'Games');
-    check('shortcuts: g j is Playground', labelFor('g j'), 'Playground');
+    check('shortcuts: g j is Playgrounds', labelFor('g j'), 'Playgrounds');
+    check('shortcuts: g j points to the playground index', rowFor('g j').getAttribute('href'), '/tools/playgrounds/');
     check('shortcuts: g a is About', labelFor('g a'), 'About');
     check('shortcuts: g c is Contact', labelFor('g c'), 'Contact');
     check('shortcuts: g r is the feed', labelFor('g r'), 'RSS feed');
@@ -3377,14 +3379,14 @@ const check = (label, actual, expected) => {
     jsp.w.document.querySelector('#jsp-run').click();
     await sleep(300);
     const out = read(jsp.w, '#jsp-output');
-    check('js playground: console.log is captured', out.includes('hello'), true);
-    check('js playground: the return value is shown', out.includes('42'), true);
-    check('js playground: the run reports success', read(jsp.w, '#jsp-status').includes('Ran in'), true);
+    // jsdom has no Worker; the actual runner is tested in javascript-playground.cjs.
+    check('js playground: unsupported worker has recovery guidance', read(jsp.w, '#jsp-status').includes('Web Worker'), true);
+    check('js playground: failed worker leaves output empty', out, '(no output)');
     set(jsp.w, '#jsp-code', 'throw new Error("boom");');
     jsp.w.document.querySelector('#jsp-run').click();
     await sleep(300);
-    check('js playground: an error is reported', read(jsp.w, '#jsp-status').includes('Threw'), true);
-    check('js playground: the error message is shown', read(jsp.w, '#jsp-output').includes('boom'), true);
+    check('js playground: failed worker preserves code', read(jsp.w, '#jsp-code').includes('boom'), true);
+    check('js playground: failed worker disables Stop', jsp.w.document.querySelector('#jsp-stop').disabled, true);
     // Monaco cannot load in jsdom, so Format must say so rather than crash.
     jsp.w.document.querySelector('#jsp-format').click();
     await sleep(20);
