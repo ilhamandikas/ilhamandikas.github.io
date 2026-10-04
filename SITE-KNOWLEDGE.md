@@ -732,6 +732,35 @@ categories
 
 Search should help users who know what problem they have but not necessarily the exact tool name.
 
+## Search Companion
+
+The floating paperclip on every page is a presentation layer for search, not a chatbot.
+
+It must stay:
+
+```text
+decorative
+quiet
+fast
+optional
+```
+
+Rules:
+
+```text
+no sound
+no self-initiated messages after being hidden
+no search terms or page text stored or sent
+only presentation preferences in localStorage (ilham-search-companion-v1)
+only public quotes, fetched from a fixed endpoint, in mascot-quotes.js
+respect prefers-reduced-motion
+schedule animation frames only while moving or settling
+```
+
+Behavior lives in `assets/js/search-mascot.js`; an idle page must schedule no animation frames.
+
+Do not turn it into an assistant that reads content, remembers searches, or starts conversations.
+
 ---
 
 # Real Experience Is Valuable

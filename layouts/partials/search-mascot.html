@@ -1,5 +1,5 @@
 <aside id="search-mascot" class="search-mascot" aria-label="Search companion" data-page-kind="{{ if .IsHome }}home{{ else if eq .Section "guides" }}guides{{ else if eq .Section "posts" }}posts{{ else if eq .Section "tools" }}tools{{ else }}page{{ end }}" hidden>
-  <button type="button" class="search-mascot-main" aria-label="Search tools, guides, and posts" aria-haspopup="dialog" aria-describedby="search-mascot-hint">
+  <button type="button" class="search-mascot-main" aria-label="Search tools, guides, and posts" aria-haspopup="dialog" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown H" aria-describedby="search-mascot-hint">
     <svg class="search-mascot-art" viewBox="0 0 80 100" fill="none" aria-hidden="true">
       <g class="search-mascot-body">
         <path class="search-mascot-wire" d="M31 65V30C31 19 47 19 47 30V73C47 90 20 90 20 73V26C20 3 61 3 61 26V71" />
@@ -41,5 +41,5 @@
     </svg>
   </button>
   <span class="search-mascot-bubble" aria-hidden="true">Want to search something?</span>
-  <span class="search-mascot-hint" id="search-mascot-hint">Click to search. Drag outward past either screen edge to hide. Use arrow keys to move, or H to hide when focused.</span>
+  <span class="search-mascot-hint" id="search-mascot-hint">Activate to search. Drag outward past either screen edge to hide. Use arrow keys to move, or H to hide when focused.</span>
 </aside>

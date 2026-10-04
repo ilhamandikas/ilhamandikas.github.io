@@ -44,6 +44,9 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
 let page = setup();
 const bubble = page.root.querySelector('.search-mascot-bubble');
 assert.equal(page.root.hidden, false);
+assert.equal(page.root.classList.contains('is-arriving'), true, 'companion animates in on first paint');
+assert.equal(page.root.querySelector('.search-mascot-main').getAttribute('aria-keyshortcuts'),
+  'ArrowLeft ArrowRight ArrowUp ArrowDown H', 'keyboard shortcuts are exposed to assistive technology');
 assert.equal(page.root.querySelector('.search-mascot-hide'), null);
 assert.equal(page.root.querySelector('.search-mascot-label'), null);
 assert.equal(bubble.textContent, 'Want to search something?');
@@ -80,6 +83,7 @@ page.pointer('pointerdown', 40, 200);
 page.pointer('pointermove', 400, 250);
 await pause(120);
 assert.ok(page.art.style.transform.includes('rotate('), 'drag excites the spring');
+assert.equal(page.root.classList.contains('is-wobbling'), true, 'the spring marks itself as animating');
 assert.notEqual(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'lower wire bends independently of the head');
 assert.equal(page.root.querySelector('.search-mascot-wire').getAttribute('d'), page.root.querySelector('.search-mascot-wire-core').getAttribute('d'), 'metal outline and core stay aligned');
 assert.ok(page.root.style.transform.startsWith('translate3d('), 'drag uses a composited transform');
@@ -91,6 +95,7 @@ page.main.dispatchEvent(new window.MouseEvent('click', { detail: 1 }));
 assert.equal(page.opens(), 1, 'drag must not open search');
 await pause(1600);
 assert.equal(page.root.classList.contains('is-docking'), false);
+assert.equal(page.root.classList.contains('is-wobbling'), false, 'idle companion stops advertising animation');
 assert.equal(page.art.style.transform, '', 'spring settles and stops');
 assert.equal(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'flexible wire returns to its original shape');
 page.main.click();
@@ -147,6 +152,7 @@ for (const saved of ['broken json', '{"side":"other","level":100,"tucked":"true"
   page.close();
 }
 page = setup(null, true, true);
+assert.equal(page.root.classList.contains('is-arriving'), false, 'reduced motion skips the entrance animation');
 page.pointer('pointermove', 400, 200, document);
 page.pointer('pointerdown', 900, 200);
 page.pointer('pointermove', 700, 220);
@@ -231,4 +237,10 @@ try {
   assert.equal(page.root.dataset.expression, 'neutral', 'closing search restores the idle expression');
   page.close();
 } finally { globalThis.setTimeout = nativeTimeout; }
-console.log('Search companion: flexible wire, expressions/sleep, staged peek, contextual quotes, gaze, docking, hide, keyboard, resize and reduced motion passed.');
+page = setup();
+assert.equal(page.root.classList.contains('is-arriving'), true, 'arrival animation starts on first paint');
+page.pointer('pointerdown', 40, 200);
+assert.equal(page.root.classList.contains('is-arriving'), false, 'interaction cancels the entrance animation before it fights a drag');
+page.pointer('pointerup', 40, 200);
+page.close();
+console.log('Search companion: flexible wire, expressions/sleep, staged peek, contextual quotes, gaze, docking, hide, keyboard, resize, entrance animation and reduced motion passed.');

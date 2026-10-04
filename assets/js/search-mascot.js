@@ -2,6 +2,16 @@ import { createQuoteDeck } from './mascot-quotes.js';
 import { createFlexibleWire } from './mascot-wire.js';
 import { createMascotVisibilityMotion } from './mascot-visibility.js';
 
+// Floating search companion. It stays deliberately self-contained:
+//   - presentation only: no search terms, results, or page text are read or stored;
+//   - persistence: localStorage `ilham-search-companion-v1` stores { side, level, tucked };
+//   - quotes: public-only, cached in mascot-quotes.js, never tied to a search;
+//   - state classes: is-tucked/is-near/is-peeking, is-dragging/is-docking/is-transitioning,
+//     is-dizzy/is-excited, is-wobbling, is-arriving, is-paused, plus data-expression;
+//   - animation budget: rAF springs run only while moving or settling and stop on
+//     pagehide or a hidden tab, so an idle page schedules no animation frames.
+// Priority for the bubble: drag/dizzy/hide, then hover/focus, then idle prompts/quotes.
+//
 // Only presentation preferences and public quotes are saved; never search terms.
 export function initSearchMascot(openSearch) {
   const root = document.querySelector('#search-mascot');
@@ -51,6 +61,7 @@ export function initSearchMascot(openSearch) {
   let gazeTime = 0;
   let peekTimer = 0;
   let excitementTimer = 0;
+  let arrivalTimer = 0;
   let sleepTimer = 0;
   let sleepy = false;
   let lastActivity = window.performance.now();
@@ -214,10 +225,28 @@ export function initSearchMascot(openSearch) {
     main.setAttribute('aria-label', tucked ? 'Show search companion' : 'Search tools, guides, and posts');
     if (tucked) main.removeAttribute('aria-haspopup');
     else main.setAttribute('aria-haspopup', 'dialog');
-    hint.textContent = tucked ? 'Click to show the search companion.'
-      : 'Click to search. Drag outward past either screen edge to hide. Use arrow keys to move, or H to hide when focused.';
+    hint.textContent = tucked ? 'Activate to show the search companion.'
+      : 'Activate to search. Drag outward past either screen edge to hide. Use arrow keys to move, or H to hide when focused.';
     say();
     scheduleGaze();
+  }
+
+  // One-off entrance: slide/fade in from the docked edge, then let the spring
+  // settle. The CSS animation owns the root transform, so any interaction or
+  // layout change cancels it before it can fight a drag or dock.
+  function cancelArrival() {
+    clearTimeout(arrivalTimer);
+    arrivalTimer = 0;
+    root.classList.remove('is-arriving');
+  }
+  function requestArrival(fromCache = false) {
+    cancelArrival();
+    if (motion?.matches) return;
+    void root.offsetWidth; // Restart the animation when returning via bfcache.
+    root.classList.add('is-arriving');
+    angularVelocity += side === 'left' ? (fromCache ? -15 : -24) : (fromCache ? 15 : 24);
+    kickWobble();
+    arrivalTimer = setTimeout(cancelArrival, 700);
   }
 
   // A damped spring runs only during movement and its short settling tail.
@@ -225,6 +254,7 @@ export function initSearchMascot(openSearch) {
     if (motion?.matches || document.hidden || wobbleFrame) return;
     art.style.animation = 'none';
     wobbleTime = 0;
+    root.classList.add('is-wobbling');
     wobbleFrame = window.requestAnimationFrame(wobble);
   }
   function wobble(now) {
@@ -261,6 +291,7 @@ export function initSearchMascot(openSearch) {
   function resetWobble() {
     window.cancelAnimationFrame(wobbleFrame);
     wobbleFrame = 0;
+    root.classList.remove('is-wobbling');
     angle = angularVelocity = targetAngle = dragSpeed = tailAngle = tailVelocity = 0;
     tailLift = liftVelocity = targetLift = 0;
     wire.reset();
@@ -290,6 +321,9 @@ export function initSearchMascot(openSearch) {
     const dy = Math.max(bounds.top - gaze.y, 0, gaze.y - bounds.bottom);
     setNear(Math.hypot(dx, dy) < (root.classList.contains('is-near') ? 125 : 105));
     if (motion?.matches || !box.width || !box.height) return;
+    // Hidden body: proximity is still tracked above, but there are no visible
+    // pupils to move, so skip the SVG matrix work until it peeks out.
+    if (tucked && !root.classList.contains('is-peeking')) { gazeTime = 0; return; }
     const dt = gazeTime ? Math.min(0.05, (now - gazeTime) / 1000) : 1 / 60;
     gazeTime = now;
     const blend = 1 - Math.exp(-dt * 20);
@@ -364,6 +398,7 @@ export function initSearchMascot(openSearch) {
   }
   place();
   root.hidden = false;
+  requestArrival();
 
   main.addEventListener('click', (event) => {
     if (suppressClick && event.detail !== 0) {
@@ -403,7 +438,11 @@ export function initSearchMascot(openSearch) {
   root.addEventListener('transitionend', (event) => {
     if (event.target === root && event.propertyName === 'transform') { stopDocking(); say(); }
   });
+  root.addEventListener('animationend', (event) => {
+    if (event.target === root && event.animationName === 'companion-arrive') cancelArrival();
+  });
   main.addEventListener('pointerdown', (event) => {
+    cancelArrival();
     noteActivity();
     // A genuine new tap is not the compatibility click emitted after a drag.
     if (event.button === 0 && event.isPrimary) suppressClick = false;
@@ -525,6 +564,7 @@ export function initSearchMascot(openSearch) {
   main.addEventListener('pointercancel', finish);
   main.addEventListener('lostpointercapture', finish);
   main.addEventListener('keydown', (event) => {
+    cancelArrival();
     if (event.key.toLowerCase() === 'h' && !event.ctrlKey && !event.metaKey && !event.altKey) {
       event.preventDefault();
       event.stopPropagation();
@@ -548,6 +588,7 @@ export function initSearchMascot(openSearch) {
     save();
   });
   function resizeCompanion() {
+    cancelArrival();
     visibilityMotion.stop();
     safeBottom = parseFloat(window.getComputedStyle(root).getPropertyValue('--companion-safe-bottom')) || 0;
     stopDocking();
@@ -575,13 +616,15 @@ export function initSearchMascot(openSearch) {
     } else scheduleGaze();
     say();
   });
-  window.addEventListener('pageshow', () => {
+  window.addEventListener('pageshow', (event) => {
     active = true;
     noteActivity();
+    if (event.persisted) requestArrival(true);
     say();
   });
   window.addEventListener('pagehide', () => {
     active = false;
+    cancelArrival();
     clearTimeout(idleTimer);
     clearTimeout(sleepTimer);
     clearTimeout(peekTimer);

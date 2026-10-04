@@ -33,7 +33,6 @@
   height: 90px;
   overflow: visible;
   transform-origin: 50% 32%;
-  will-change: transform;
 }
 .search-mascot-wire {
   stroke: var(--muted);
@@ -129,6 +128,26 @@
 }
 .search-mascot.is-dragging .search-mascot-art { animation: none; }
 .search-mascot.is-dragging, .search-mascot.is-docking, .search-mascot.is-transitioning { will-change: transform; }
+.search-mascot.is-dragging .search-mascot-art, .search-mascot.is-docking .search-mascot-art,
+.search-mascot.is-wobbling .search-mascot-art { will-change: transform; }
+
+/* Entrance: slide/fade in from the docked edge, then settle into place. */
+.search-mascot[data-side="left"] { --arrive-from: -32px; }
+.search-mascot[data-side="right"] { --arrive-from: 32px; }
+.search-mascot.is-arriving { animation: companion-arrive 460ms cubic-bezier(.22, .75, .25, 1); }
+.search-mascot.is-arriving .search-mascot-bubble { opacity: 0; }
+.search-mascot-bubble { transition: opacity 200ms ease; }
+@keyframes companion-arrive {
+  0% { opacity: 0; transform: translate3d(var(--arrive-from, 32px), 12px, 0) scale(.9); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@media (forced-colors: active) {
+  .search-mascot-main:focus-visible { outline: 2px solid ButtonText; outline-offset: 2px; }
+  .search-mascot-wire, .search-mascot-wire-core, .search-mascot-smile, .search-mascot-dizzy-eyes,
+  .search-mascot-stars, .search-mascot-feet { stroke: CanvasText; }
+  .search-mascot-bubble, .search-mascot-bubble::after { border-color: CanvasText; background: Canvas; color: CanvasText; }
+}
 .search-mascot.is-transitioning .search-mascot-body { animation: companion-fold 440ms ease-out; transform-origin: 40px 32px; }
 .search-mascot.will-hide .search-mascot-wire { stroke: var(--accent); }
 .search-mascot.is-docking { transition: transform var(--dock-duration, 600ms) cubic-bezier(.25, .8, .25, 1); }
@@ -202,6 +221,7 @@
   .search-mascot-body { animation: none !important; }
   .search-mascot.is-docking, .search-mascot-bubble, .search-mascot-body,
   .search-mascot-face, .search-mascot-brows, .search-mascot-brow-left, .search-mascot-brow-right { transition: none !important; }
+  .search-mascot.is-arriving { animation: none !important; }
   .search-mascot.is-tucked .search-mascot-body { transform: none !important; }
   .search-mascot.is-dragging .search-mascot-art { transform: none; }
 }
