@@ -771,7 +771,7 @@ Do not turn it into an assistant that reads content, remembers searches, or star
 On tool pages that have a guide, the companion names the current tool in a short
 invitation and offers a `Show me the steps` link *inside its bubble*, pointing at
 `/guides/<slug>/`. The tool name comes from the public page title, not user input;
-it is not stored or sent anywhere. Five invitation variants are chosen on page
+it is not stored or sent anywhere. Twenty-four invitation variants are chosen on page
 load, excluding the previous variant within the same tab. Only the variant index
 is kept in sessionStorage (`ilham-companion-invitation-v1`), never the tool title
 or user input. Wording stays stable while the page is open. It reads as a natural invitation

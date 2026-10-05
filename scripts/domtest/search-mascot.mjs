@@ -54,17 +54,18 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   const close = () => { dom.window.dispatchEvent(new dom.window.Event('pagehide')); dom.window.close(); };
   return { dom, root, main, art, pointer, key, close, opens: () => opens };
 }
+const invitationCount = 24;
 const invitationTexts = new Set();
-for (let index = 0; index < 5; index++) {
-  const invitation = chooseGuideInvitation('AES Encryption', -1, () => (index + 0.5) / 5);
+for (let index = 0; index < invitationCount; index++) {
+  const invitation = chooseGuideInvitation('AES Encryption', -1, () => (index + 0.5) / invitationCount);
   invitationTexts.add(invitation.text);
   assert.ok(invitation.text.includes('AES Encryption'), 'every variation names the current tool');
-  for (let choice = 0; choice < 4; choice++) {
-    assert.notEqual(chooseGuideInvitation('AES Encryption', invitation.index, () => (choice + 0.5) / 4).index,
+  for (let choice = 0; choice < invitationCount - 1; choice++) {
+    assert.notEqual(chooseGuideInvitation('AES Encryption', invitation.index, () => (choice + 0.5) / (invitationCount - 1)).index,
       invitation.index, 'the next page excludes the previous wording');
   }
 }
-assert.equal(invitationTexts.size, 5, 'there are five distinct invitations');
+assert.equal(invitationTexts.size, invitationCount, 'all invitations are distinct');
 assert.ok(chooseGuideInvitation('', -1, () => 0).text.includes('this tool'), 'missing titles get a natural fallback');
 let page = setup();
 const bubble = page.root.querySelector('.search-mascot-bubble');
@@ -314,7 +315,7 @@ const guideLink = page.root.querySelector('.search-mascot-guide-link');
 const initialInvitation = guideMessage.textContent;
 assert.ok(invitationTexts.has(initialInvitation), 'the invitation names the tool being viewed');
 const savedInvitationIndex = Number(window.sessionStorage.getItem('ilham-companion-invitation-v1'));
-assert.equal(chooseGuideInvitation('AES Encryption', -1, () => (savedInvitationIndex + 0.5) / 5).text,
+assert.equal(chooseGuideInvitation('AES Encryption', -1, () => (savedInvitationIndex + 0.5) / invitationCount).text,
   initialInvitation, 'only the wording index is stored for the next page');
 assert.equal(guideLink.textContent, 'Show me the steps', 'the link continues the invitation naturally');
 assert.equal(guideLink.hidden, false, 'the guide link is offered inside the bubble');
