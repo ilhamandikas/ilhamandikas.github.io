@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { JSDOM } from 'jsdom';
-import { initSearchMascot } from '../../assets/js/search-mascot.js';
+import { chooseGuideInvitation, initSearchMascot } from '../../assets/js/search-mascot.js';
 
 // Strip Go template delimiters so the raw partial parses as plain HTML in jsdom.
 const markup = fs.readFileSync('layouts/partials/search-mascot.html', 'utf8').replace(/\{\{[^{}]*\}\}/g, '');
@@ -23,6 +23,7 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   if (options.guide) {
     guideRoot.dataset.guideUrl = options.guide.url;
     guideRoot.dataset.guideTitle = options.guide.title;
+    guideRoot.dataset.toolName = options.toolName || '';
   } else {
     delete guideRoot.dataset.guideUrl;
     delete guideRoot.dataset.guideTitle;
@@ -53,6 +54,18 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   const close = () => { dom.window.dispatchEvent(new dom.window.Event('pagehide')); dom.window.close(); };
   return { dom, root, main, art, pointer, key, close, opens: () => opens };
 }
+const invitationTexts = new Set();
+for (let index = 0; index < 5; index++) {
+  const invitation = chooseGuideInvitation('AES Encryption', -1, () => (index + 0.5) / 5);
+  invitationTexts.add(invitation.text);
+  assert.ok(invitation.text.includes('AES Encryption'), 'every variation names the current tool');
+  for (let choice = 0; choice < 4; choice++) {
+    assert.notEqual(chooseGuideInvitation('AES Encryption', invitation.index, () => (choice + 0.5) / 4).index,
+      invitation.index, 'the next page excludes the previous wording');
+  }
+}
+assert.equal(invitationTexts.size, 5, 'there are five distinct invitations');
+assert.ok(chooseGuideInvitation('', -1, () => 0).text.includes('this tool'), 'missing titles get a natural fallback');
 let page = setup();
 const bubble = page.root.querySelector('.search-mascot-bubble');
 assert.equal(page.root.hidden, false);
@@ -294,11 +307,16 @@ await pause(90);
 assert.ok(pupilY() < downY - 0.5, 'eyes look up when scrolling back up');
 page.close();
 // Tool pages with a matching guide invite the reader into it, in the bubble itself.
-page = setup(null, false, false, undefined, { pageKind: 'tools', guide: { url: '/guides/example/', title: 'Example Guide' } });
+page = setup(null, false, false, undefined, { pageKind: 'tools', toolName: 'AES Encryption', guide: { url: '/guides/example/', title: 'Example Guide' } });
 const guideBubble = page.root.querySelector('.search-mascot-bubble');
 const guideMessage = page.root.querySelector('.search-mascot-message');
 const guideLink = page.root.querySelector('.search-mascot-guide-link');
-assert.equal(guideMessage.textContent, 'There’s a guide for this tool.', 'a tool page with a guide invites the reader');
+const initialInvitation = guideMessage.textContent;
+assert.ok(invitationTexts.has(initialInvitation), 'the invitation names the tool being viewed');
+const savedInvitationIndex = Number(window.sessionStorage.getItem('ilham-companion-invitation-v1'));
+assert.equal(chooseGuideInvitation('AES Encryption', -1, () => (savedInvitationIndex + 0.5) / 5).text,
+  initialInvitation, 'only the wording index is stored for the next page');
+assert.equal(guideLink.textContent, 'Show me the steps', 'the link continues the invitation naturally');
 assert.equal(guideLink.hidden, false, 'the guide link is offered inside the bubble');
 assert.equal(page.root.classList.contains('has-guide-link'), true);
 assert.equal(guideBubble.getAttribute('aria-hidden'), 'false', 'the interactive bubble is exposed to assistive technology');
@@ -306,10 +324,18 @@ page.pointer('pointerenter', 900, 600);
 assert.equal(guideMessage.textContent, 'Click me!', 'hover still wins over the guide invitation');
 assert.equal(guideLink.hidden, true, 'the link is not clickable mid-hover');
 page.pointer('pointerleave', 800, 500);
-assert.equal(guideMessage.textContent, 'There’s a guide for this tool.', 'the invitation returns after hover');
+assert.equal(guideMessage.textContent, initialInvitation, 'the invitation stays stable within a page and returns after hover');
 assert.equal(guideLink.hidden, false);
 page.key('h');
 assert.equal(guideLink.hidden, true, 'a tucked companion does not offer the link');
+page.close();
+page = setup(null, false, false, undefined, { pageKind: 'tools', toolName: 'JSON Formatter', guide: { url: '/guides/json-formatter/', title: 'JSON Formatter Guide' } });
+assert.ok(page.root.querySelector('.search-mascot-message').textContent.includes('JSON Formatter'),
+  'each tool gets its own invitation');
+page.close();
+page = setup(null, false, false, undefined, { pageKind: 'tools', guide: { url: '/guides/example/', title: 'Example Guide' } });
+assert.ok(page.root.querySelector('.search-mascot-message').textContent.includes('this tool'),
+  'missing tool names have a natural fallback');
 page.close();
 page = setup(null, false, false, undefined, { pageKind: 'tools' });
 assert.equal(page.root.querySelector('.search-mascot-message').textContent, 'Want to search something?',

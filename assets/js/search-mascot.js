@@ -2,8 +2,22 @@ import { createQuoteDeck } from './mascot-quotes.js';
 import { createFlexibleWire } from './mascot-wire.js';
 import { createMascotVisibilityMotion } from './mascot-visibility.js';
 
+export function chooseGuideInvitation(toolName, previousIndex = -1, random = Math.random) {
+  const name = toolName?.trim() || 'this tool';
+  const prompts = [
+    `Using ${name}? Here’s a quick guide to get you started.`,
+    `First time with ${name}? Let’s walk through it.`,
+    `Want to get more out of ${name}? Take a look at its guide.`,
+    `Need a hand with ${name}? Let’s go through the steps.`,
+    `Trying ${name}? Want a quick walkthrough?`,
+  ];
+  const choices = prompts.map((_, index) => index).filter((index) => index !== previousIndex);
+  const index = choices[Math.floor(random() * choices.length)];
+  return { index, text: prompts[index] };
+}
+
 // Floating search companion. It stays deliberately self-contained:
-//   - presentation only: no search terms, results, or page text are read or stored;
+//   - presentation only: public tool titles can personalize invitations; no user input is read or stored;
 //   - persistence: localStorage `ilham-search-companion-v1` stores { side, level, tucked };
 //   - quotes: public-only, cached in mascot-quotes.js, never tied to a search;
 //   - state classes: is-tucked/is-near/is-peeking, is-dragging/is-docking/is-transitioning,
@@ -29,6 +43,16 @@ export function initSearchMascot(openSearch) {
   const helpDialog = document.querySelector('#kbd-help');
   const guide = root.dataset.guideUrl
     ? { url: root.dataset.guideUrl, title: root.dataset.guideTitle || '' } : null;
+  let guidePrompt = '';
+  if (guide) {
+    const invitationKey = 'ilham-companion-invitation-v1';
+    let previousIndex = -1;
+    try { previousIndex = Number(window.sessionStorage.getItem(invitationKey) ?? -1); } catch { /* Optional presentation state. */ }
+    const invitation = chooseGuideInvitation(root.dataset.toolName, previousIndex);
+    guidePrompt = invitation.text;
+    // Only the wording index survives navigation within this tab, never the tool name.
+    try { window.sessionStorage.setItem(invitationKey, String(invitation.index)); } catch { /* Random wording still works without storage. */ }
+  }
   const contextMessages = {
     home: ['Tools, guides, and a few engineering stories.', 'Something to explore?'],
     guides: ['Looking for an explanation?', 'Need a guide for your next step?'],
@@ -243,7 +267,7 @@ export function initSearchMascot(openSearch) {
         || keyboardFocused() || linkFocused);
     const text = tucked ? 'Psst… click to bring me back!' : drag?.hideSide ? 'Release to hide!' : root.classList.contains('is-dizzy')
       ? "Whoa... I'm dizzy!" : searchOpen() ? "Let's find it!" : guideActive
-        ? 'There’s a guide for this tool.' : hovered || keyboardFocused()
+        ? guidePrompt : hovered || keyboardFocused()
           ? 'Click me!' : showingQuote ? `“${idleQuote.quote}”` : isIdle() ? idlePrompt : 'Want to search something?';
     const author = showingQuote ? `— ${idleQuote.author}` : '';
     const signature = text + author + (guideActive ? '|guide' : '');

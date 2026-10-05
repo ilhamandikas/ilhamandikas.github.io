@@ -768,8 +768,13 @@ static sleepy expressions remain available.
 
 Do not turn it into an assistant that reads content, remembers searches, or starts conversations.
 
-On tool pages that have a guide, the companion offers a `Read the guide` link
-*inside its bubble*, pointing at `/guides/<slug>/`. It reads as a natural invitation
+On tool pages that have a guide, the companion names the current tool in a short
+invitation and offers a `Show me the steps` link *inside its bubble*, pointing at
+`/guides/<slug>/`. The tool name comes from the public page title, not user input;
+it is not stored or sent anywhere. Five invitation variants are chosen on page
+load, excluding the previous variant within the same tab. Only the variant index
+is kept in sessionStorage (`ilham-companion-invitation-v1`), never the tool title
+or user input. Wording stays stable while the page is open. It reads as a natural invitation
 rather than a separate chip, appears as part of the idle rotation, and stays put
 while hovered or focused so the anchor is never pulled out from under the pointer.
 It is a real anchor (keyboard reachable) and is hidden whenever the companion is

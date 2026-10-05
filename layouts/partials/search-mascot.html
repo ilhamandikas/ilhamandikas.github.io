@@ -6,7 +6,7 @@
   {{- $links := index site.Data "tool-guide-links" | default dict -}}
   {{- with index $links .File.ContentBaseName -}}{{- $guide = . -}}{{- end -}}
 {{- end -}}
-<aside id="search-mascot" class="search-mascot" aria-label="Search companion" data-page-kind="{{ if .IsHome }}home{{ else if eq .Section "guides" }}guides{{ else if eq .Section "posts" }}posts{{ else if eq .Section "tools" }}tools{{ else }}page{{ end }}"{{ with $guide }} data-guide-url="{{ .url | relURL }}" data-guide-title="{{ .title }}"{{ end }} hidden>
+<aside id="search-mascot" class="search-mascot" aria-label="Search companion" data-page-kind="{{ if .IsHome }}home{{ else if eq .Section "guides" }}guides{{ else if eq .Section "posts" }}posts{{ else if eq .Section "tools" }}tools{{ else }}page{{ end }}"{{ if $guide }} data-tool-name="{{ .Title }}"{{ end }}{{ with $guide }} data-guide-url="{{ .url | relURL }}" data-guide-title="{{ .title }}"{{ end }} hidden>
   <button type="button" class="search-mascot-main" aria-label="Search tools, guides, and posts" aria-haspopup="dialog" aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown H" aria-describedby="search-mascot-hint">
     <svg class="search-mascot-art" viewBox="0 0 80 100" fill="none" aria-hidden="true">
       <g class="search-mascot-body">
@@ -48,6 +48,6 @@
       </g>
     </svg>
   </button>
-  <span class="search-mascot-bubble" aria-hidden="true"><span class="search-mascot-message">Want to search something?</span><span class="search-mascot-author" hidden></span>{{ with $guide }}<a class="search-mascot-guide-link" href="{{ .url | relURL }}" aria-label="Read the guide: {{ .title }}" hidden>Read the guide</a>{{ end }}</span>
+  <span class="search-mascot-bubble" aria-hidden="true"><span class="search-mascot-message">Want to search something?</span><span class="search-mascot-author" hidden></span>{{ with $guide }}<a class="search-mascot-guide-link" href="{{ .url | relURL }}" aria-label="Read the guide: {{ .title }}" hidden>Show me the steps</a>{{ end }}</span>
   <span class="search-mascot-hint" id="search-mascot-hint">Activate to search. Drag outward past either screen edge to hide. Use arrow keys to move, or H to hide when focused.</span>
 </aside>

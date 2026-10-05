@@ -41,7 +41,10 @@ sign-in or session. You can control cookies through your browser settings.
 The search companion stores its position and hidden state in your browser's local
 storage. Its public quote list is cached for up to 24 hours before refreshing,
 along with the last displayed quote to avoid immediate repeats. Search terms are
-not stored in these companion preferences or sent to the quote provider.
+not stored in these companion preferences or sent to the quote provider. Guide
+invitations keep only the last wording variant's number in session storage within
+the current tab, so the next tool page can use different wording. Tool names and
+inputs are not stored in that value.
 
 ## 4. Third-Party Services
 
