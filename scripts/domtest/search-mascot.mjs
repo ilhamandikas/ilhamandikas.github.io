@@ -250,7 +250,11 @@ try {
   await pause(120);
   assert.equal(page.root.dataset.expression, 'sleepy', 'quiet companion becomes sleepy');
   page.pointer('pointermove', 400, 200, document);
-  assert.notEqual(page.root.dataset.expression, 'sleepy', 'pointer activity wakes it up');
+  window.dispatchEvent(new window.Event('scroll'));
+  page.pointer('pointerdown', 400, 200, document);
+  assert.equal(page.root.dataset.expression, 'sleepy', 'activity elsewhere leaves the stationary companion sleepy');
+  page.pointer('pointerenter', 140, 150);
+  assert.notEqual(page.root.dataset.expression, 'sleepy', 'approaching the companion wakes it up');
   assert.notEqual(page.root.dataset.expression, 'drowsy', 'waking clears the drowsy stage too');
   page.close();
   clock = 0;
@@ -343,4 +347,19 @@ assert.equal(page.root.querySelector('.search-mascot-message').textContent, 'Wan
   'a tool page without a guide uses the normal prompt');
 assert.equal(page.root.querySelector('.search-mascot-guide-link'), null, 'no guide means no link');
 page.close();
-console.log('Search companion: flexible wire, expressions/drowsy/sleep, staged peek, contextual quotes, scroll gaze, docking, hide, keyboard, resize, entrance animation, idle hop, guide invitation and reduced motion passed.');
+globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback, delay === 60000 ? 80 : delay, ...args);
+try {
+  page = setup(JSON.stringify({ side: 'right', level: 0.7, tucked: true }));
+  const cat = document.querySelector('#nyan-cat');
+  assert.equal(cat.hidden, true, 'the cat does not appear immediately');
+  await pause(120);
+  assert.equal(cat.hidden, false, 'the delayed cat still passes when Clippy is hidden');
+  assert.equal(cat.getAttribute('aria-hidden'), 'true', 'the cat is decorative');
+  page.close();
+  assert.equal(cat.hidden, true, 'leaving the page stops the cat');
+  page = setup(null, false, true);
+  await pause(120);
+  assert.equal(document.querySelector('#nyan-cat').hidden, true, 'reduced motion disables the cat');
+  page.close();
+} finally { globalThis.setTimeout = nativeTimeout; }
+console.log('Search companion: expressions/drowsy/sleep, quotes, scroll gaze, docking, keyboard, idle hop, guide invitations, delayed cat and reduced motion passed.');

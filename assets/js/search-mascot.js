@@ -1,6 +1,7 @@
 import { createQuoteDeck } from './mascot-quotes.js';
 import { createFlexibleWire } from './mascot-wire.js';
 import { createMascotVisibilityMotion } from './mascot-visibility.js';
+import { createMascotCatPass } from './mascot-cat.js';
 
 export function chooseGuideInvitation(toolName, previousIndex = -1, random = Math.random) {
   const name = toolName?.trim() || 'this tool';
@@ -122,6 +123,7 @@ export function initSearchMascot(openSearch) {
   let scrollLookTarget = 0;
   let scrollLookTimer = 0;
   let lastScrollY = window.scrollY || 0;
+  // Only interaction with the companion resets its drowsiness, not page scrolling.
   let lastActivity = window.performance.now();
   const eyeOffsets = pupils.map(() => ({ x: 0, y: 0 }));
   let quoteStorage;
@@ -167,6 +169,9 @@ export function initSearchMascot(openSearch) {
   const isIdle = () => active && !document.hidden && !tucked && !hovered && !bubbleHovered && !bubbleFocused && !drag
     && !keyboardFocused() && !overlayOpen() && !root.classList.contains('is-dizzy')
     && !root.classList.contains('is-docking') && !root.classList.contains('is-transitioning');
+  const catPass = createMascotCatPass(document.querySelector('#nyan-cat'),
+    () => active && !document.hidden && !motion?.matches,
+    () => Boolean(drag) || overlayOpen());
   function syncSleep() {
     if (!isIdle()) {
       clearTimeout(sleepTimer);
@@ -246,6 +251,7 @@ export function initSearchMascot(openSearch) {
           : sleepy && isIdle() ? 'sleepy' : drowsy && isIdle() ? 'drowsy' : 'neutral';
   }
   function syncIdle() {
+    catPass.sync();
     syncSleep();
     if (!isIdle()) {
       clearTimeout(idleTimer);
@@ -458,7 +464,6 @@ export function initSearchMascot(openSearch) {
   }
   document.addEventListener('pointermove', (event) => {
     if (event.pointerType === 'touch') return;
-    noteActivity();
     gaze = { x: event.clientX, y: event.clientY };
     scheduleGaze();
   }, { passive: true });
@@ -468,13 +473,13 @@ export function initSearchMascot(openSearch) {
     const delta = y - lastScrollY;
     lastScrollY = y;
     if (Math.abs(delta) < 2 || !active || document.hidden || motion?.matches) return;
-    noteActivity();
     scrollLookTarget = delta > 0 ? 1 : -1;
     clearTimeout(scrollLookTimer);
     scrollLookTimer = setTimeout(() => { scrollLookTarget = 0; scheduleGaze(); }, 320);
     scheduleGaze();
   }, { passive: true });
   motion?.addEventListener('change', () => {
+    catPass.sync();
     if (motion.matches) {
       window.cancelAnimationFrame(gazeFrame);
       gazeFrame = 0;
@@ -517,8 +522,10 @@ export function initSearchMascot(openSearch) {
   bubble.addEventListener('pointerleave', () => { if (!bubbleHovered) return; bubbleHovered = false; say(); });
   bubble.addEventListener('focusin', () => { bubbleFocused = true; noteActivity(); say(); });
   bubble.addEventListener('focusout', () => { bubbleFocused = false; say(); });
-  for (const event of ['pointerdown', 'keydown', 'scroll']) {
-    document.addEventListener(event, noteActivity, { passive: true });
+  for (const event of ['pointerdown', 'keydown']) {
+    document.addEventListener(event, (event) => {
+      if (root.contains(event.target)) noteActivity();
+    }, { passive: true });
   }
   const dialogObserver = new window.MutationObserver(() => { noteActivity(); say(); });
   for (const dialog of [searchDialog, helpDialog]) {
@@ -595,6 +602,7 @@ export function initSearchMascot(openSearch) {
     const dy = event.clientY - drag.y;
     if (!drag.moved && Math.hypot(dx, dy) < 6) return;
     drag.moved = true;
+    noteActivity();
     const now = window.performance.now();
     const elapsed = Math.max(8, now - drag.lastTime);
     const stepX = event.clientX - drag.lastX;
@@ -763,6 +771,7 @@ export function initSearchMascot(openSearch) {
   });
   window.addEventListener('pagehide', () => {
     active = false;
+    catPass.stop();
     cancelArrival();
     clearTimeout(idleTimer);
     clearTimeout(sleepTimer);

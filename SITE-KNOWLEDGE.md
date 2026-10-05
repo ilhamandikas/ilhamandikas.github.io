@@ -759,12 +759,21 @@ schedule animation frames only while moving or settling
 
 Behavior lives in `assets/js/search-mascot.js`; an idle page must schedule no animation frames.
 
-Idle expression stays subtle and optional: after a while the eyelids droop
-(`drowsy`), and after longer stillness it dozes. A small hop may play now and then
+Idle expression stays subtle and optional: after 22 seconds without companion
+interaction the eyelids droop (`drowsy`), and after 45 seconds it dozes. Moving the
+pointer elsewhere or scrolling does not reset this timer; approaching, moving,
+or activating the companion wakes it. A small hop may play now and then
 after the page has been still, and scrolling pulls the gaze down or up before it
 eases back to the pointer. These are decorative expressions and reactions, not
 conversation. Hops and gaze animation are disabled under `prefers-reduced-motion`;
 static sleepy expressions remain available.
+
+A separate inline SVG Nyan Cat crosses the bottom after 60 seconds in a visible
+tab, once per page, then disappears. It remains enabled when Clippy is tucked.
+It is decorative, pointer-transparent, silent, and disabled by reduced motion.
+`assets/js/mascot-cat.js` uses timers and a CSS animation, not an animation-frame
+loop, and postpones the pass while a search/help dialog or companion drag is active.
+There are no external assets, requests, or stored preferences for this effect.
 
 Do not turn it into an assistant that reads content, remembers searches, or starts conversations.
 

@@ -1,3 +1,31 @@
+.nyan-cat {
+  position: fixed;
+  z-index: 29;
+  inset: auto 0 max(4px, env(safe-area-inset-bottom, 0px));
+  height: 64px;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  contain: strict;
+}
+.nyan-cat[hidden] { display: none; }
+.nyan-cat-runner { position: absolute; left: -144px; bottom: 0; width: 144px; }
+.nyan-cat-art { display: block; width: 144px; height: 58px; }
+.nyan-cat.is-running .nyan-cat-runner { animation: nyan-cat-pass 8s linear forwards; }
+.nyan-cat.is-running .nyan-cat-art { animation: nyan-cat-bob 600ms steps(2, end) infinite; }
+@keyframes nyan-cat-pass {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100vw + 144px)); }
+}
+@keyframes nyan-cat-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nyan-cat { display: none !important; }
+  .nyan-cat-runner, .nyan-cat-art { animation: none !important; }
+}
+
 .search-mascot {
   --companion-safe-bottom: env(safe-area-inset-bottom, 0px);
   position: fixed;
