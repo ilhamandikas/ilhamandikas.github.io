@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import { JSDOM } from 'jsdom';
 import { initSearchMascot } from '../../assets/js/search-mascot.js';
 
-const markup = fs.readFileSync('layouts/partials/search-mascot.html', 'utf8');
+// Strip Go template delimiters so the raw partial parses as plain HTML in jsdom.
+const markup = fs.readFileSync('layouts/partials/search-mascot.html', 'utf8').replace(/\{\{[^{}]*\}\}/g, '');
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   const dom = new JSDOM(markup, { url: 'https://example.com/', pretendToBeVisual: true });
@@ -25,6 +26,7 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   } else {
     delete guideRoot.dataset.guideUrl;
     delete guideRoot.dataset.guideTitle;
+    guideRoot.querySelector('.search-mascot-guide-link')?.remove();
   }
   if (options.clock) dom.window.performance.now = options.clock;
   if (options.modal) {
@@ -221,16 +223,21 @@ try {
 } finally {
   globalThis.setTimeout = nativeTimeout;
 }
-globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback, delay >= 44000 && delay <= 45000 ? 100 : delay, ...args);
+globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback,
+  delay >= 21500 && delay <= 22500 ? 70 : delay >= 44000 && delay <= 45000 ? 140 : delay, ...args);
 try {
   let clock = 0;
   page = setup(null, false, false, undefined, { clock: () => clock });
-  await pause(25);
-  clock = 45001;
-  await pause(110);
+  await pause(10);
+  clock = 22100;
+  await pause(100);
+  assert.equal(page.root.dataset.expression, 'drowsy', 'quiet companion gets drowsy before falling asleep');
+  clock = 45500;
+  await pause(120);
   assert.equal(page.root.dataset.expression, 'sleepy', 'quiet companion becomes sleepy');
   page.pointer('pointermove', 400, 200, document);
   assert.notEqual(page.root.dataset.expression, 'sleepy', 'pointer activity wakes it up');
+  assert.notEqual(page.root.dataset.expression, 'drowsy', 'waking clears the drowsy stage too');
   page.close();
   clock = 0;
   page = setup(null, false, false, undefined, { clock: () => clock, modal: true });
@@ -253,17 +260,60 @@ page.pointer('pointerdown', 40, 200);
 assert.equal(page.root.classList.contains('is-arriving'), false, 'interaction cancels the entrance animation before it fights a drag');
 page.pointer('pointerup', 40, 200);
 page.close();
-// Tool pages with a matching guide introduce it; pages without one stay unchanged.
+// An occasional hop breaks up long stretches of stillness.
+globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback,
+  delay >= 14000 && delay <= 20000 ? 80 : delay, ...args);
+try {
+  page = setup();
+  await pause(120);
+  assert.equal(page.root.classList.contains('is-hopping'), true, 'idle companion hops now and then');
+  const end = new window.Event('animationend', { bubbles: true });
+  Object.defineProperty(end, 'animationName', { value: 'companion-hop' });
+  page.main.dispatchEvent(end);
+  assert.equal(page.root.classList.contains('is-hopping'), false, 'hop clears when its animation ends');
+  page.pointer('pointerdown', 40, 200);
+  assert.equal(page.root.classList.contains('is-hopping'), false, 'a drag stops any hop');
+  page.pointer('pointerup', 40, 200);
+  page.close();
+} finally { globalThis.setTimeout = nativeTimeout; }
+// Eyes glance down or up with the scroll direction, then ease back.
+page = setup(null, false, false, undefined, { width: 1280, height: 900 });
+page.pointer('pointermove', 136, 145, document);
+await pause(60);
+const gazePupil = page.root.querySelector('.search-mascot-pupil');
+const pupilY = () => parseFloat(gazePupil.getAttribute('transform').replace(/.*\s([-\d.]+)\)$/, '$1'));
+const neutralY = pupilY();
+Object.defineProperty(window, 'scrollY', { value: 400, configurable: true });
+window.dispatchEvent(new window.Event('scroll'));
+await pause(90);
+const downY = pupilY();
+assert.ok(downY > neutralY + 0.5, `eyes look down while scrolling down (${neutralY} -> ${downY})`);
+Object.defineProperty(window, 'scrollY', { value: 0, configurable: true });
+window.dispatchEvent(new window.Event('scroll'));
+await pause(90);
+assert.ok(pupilY() < downY - 0.5, 'eyes look up when scrolling back up');
+page.close();
+// Tool pages with a matching guide invite the reader into it, in the bubble itself.
 page = setup(null, false, false, undefined, { pageKind: 'tools', guide: { url: '/guides/example/', title: 'Example Guide' } });
-assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'There’s a guide for this tool.',
-  'a tool page with a guide introduces it in the bubble');
+const guideBubble = page.root.querySelector('.search-mascot-bubble');
+const guideMessage = page.root.querySelector('.search-mascot-message');
+const guideLink = page.root.querySelector('.search-mascot-guide-link');
+assert.equal(guideMessage.textContent, 'There’s a guide for this tool.', 'a tool page with a guide invites the reader');
+assert.equal(guideLink.hidden, false, 'the guide link is offered inside the bubble');
+assert.equal(page.root.classList.contains('has-guide-link'), true);
+assert.equal(guideBubble.getAttribute('aria-hidden'), 'false', 'the interactive bubble is exposed to assistive technology');
 page.pointer('pointerenter', 900, 600);
-assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Click me!', 'hover still wins over the guide prompt');
+assert.equal(guideMessage.textContent, 'Click me!', 'hover still wins over the guide invitation');
+assert.equal(guideLink.hidden, true, 'the link is not clickable mid-hover');
 page.pointer('pointerleave', 800, 500);
-assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'There’s a guide for this tool.', 'guide prompt returns after hover');
+assert.equal(guideMessage.textContent, 'There’s a guide for this tool.', 'the invitation returns after hover');
+assert.equal(guideLink.hidden, false);
+page.key('h');
+assert.equal(guideLink.hidden, true, 'a tucked companion does not offer the link');
 page.close();
 page = setup(null, false, false, undefined, { pageKind: 'tools' });
-assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Want to search something?',
+assert.equal(page.root.querySelector('.search-mascot-message').textContent, 'Want to search something?',
   'a tool page without a guide uses the normal prompt');
+assert.equal(page.root.querySelector('.search-mascot-guide-link'), null, 'no guide means no link');
 page.close();
-console.log('Search companion: flexible wire, expressions/sleep, staged peek, contextual quotes, gaze, docking, hide, keyboard, resize, entrance animation, guide prompt and reduced motion passed.');
+console.log('Search companion: flexible wire, expressions/drowsy/sleep, staged peek, contextual quotes, scroll gaze, docking, hide, keyboard, resize, entrance animation, idle hop, guide invitation and reduced motion passed.');

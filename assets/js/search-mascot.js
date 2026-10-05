@@ -18,6 +18,9 @@ export function initSearchMascot(openSearch) {
   if (!root) return;
   const main = root.querySelector('.search-mascot-main');
   const bubble = root.querySelector('.search-mascot-bubble');
+  const messageEl = bubble.querySelector('.search-mascot-message');
+  const authorEl = bubble.querySelector('.search-mascot-author');
+  const guideLink = bubble.querySelector('.search-mascot-guide-link');
   const hint = root.querySelector('.search-mascot-hint');
   const art = root.querySelector('.search-mascot-art');
   const pupils = [...root.querySelectorAll('.search-mascot-pupil')];
@@ -33,9 +36,7 @@ export function initSearchMascot(openSearch) {
     tools: ['Need another tool?', 'Looking for something to help with the next step?'],
     page: ['Looking for something else?', 'Tools, guides, and posts are a search away.'],
   };
-  const messages = guide
-    ? ['There’s a guide for this tool.', ...(contextMessages[root.dataset.pageKind] || contextMessages.page)]
-    : contextMessages[root.dataset.pageKind] || contextMessages.page;
+  const messages = contextMessages[root.dataset.pageKind] || contextMessages.page;
   const motion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const key = 'ilham-search-companion-v1';
   let side = 'right';
@@ -44,6 +45,8 @@ export function initSearchMascot(openSearch) {
   let drag = null;
   let suppressClick = false;
   let hovered = false;
+  let bubbleHovered = false;
+  let bubbleFocused = false;
   let gaze = null;
   let gazeFrame = 0;
   let wobbleFrame = 0;
@@ -67,14 +70,22 @@ export function initSearchMascot(openSearch) {
   let excitementTimer = 0;
   let arrivalTimer = 0;
   let sleepTimer = 0;
+  let drowsyTimer = 0;
+  let hopTimer = 0;
+  let hopFallback = 0;
   let sleepy = false;
+  let drowsy = false;
+  let scrollLook = 0;
+  let scrollLookTarget = 0;
+  let scrollLookTimer = 0;
+  let lastScrollY = window.scrollY || 0;
   let lastActivity = window.performance.now();
   const eyeOffsets = pupils.map(() => ({ x: 0, y: 0 }));
   let quoteStorage;
   try { quoteStorage = window.localStorage; } catch { /* Optional quote cache. */ }
   const quoteDeck = createQuoteDeck({ storage: quoteStorage, fetcher: window.fetch?.bind(window) });
   let idleQuote = null;
-  let idlePhase = guide ? 'context' : 'search';
+  let idlePhase = guide ? 'guide' : 'search';
   let contextIndex = 0;
   let idleTimer = 0;
   let quoteLoading = false;
@@ -110,29 +121,63 @@ export function initSearchMascot(openSearch) {
   const keyboardFocused = () => document.activeElement === main && main.matches(':focus-visible');
   const searchOpen = () => Boolean(searchDialog && !searchDialog.hidden);
   const overlayOpen = () => searchOpen() || Boolean(helpDialog && !helpDialog.hidden);
-  const isIdle = () => active && !document.hidden && !tucked && !hovered && !drag
+  const isIdle = () => active && !document.hidden && !tucked && !hovered && !bubbleHovered && !bubbleFocused && !drag
     && !keyboardFocused() && !overlayOpen() && !root.classList.contains('is-dizzy')
     && !root.classList.contains('is-docking') && !root.classList.contains('is-transitioning');
   function syncSleep() {
     if (!isIdle()) {
       clearTimeout(sleepTimer);
+      clearTimeout(drowsyTimer);
       sleepTimer = 0;
+      drowsyTimer = 0;
       return;
     }
+    const idleFor = window.performance.now() - lastActivity;
+    // A softer stage first: the eyelids droop, then the companion fully dozes.
+    if (!drowsyTimer && !drowsy && !sleepy) {
+      drowsyTimer = setTimeout(() => {
+        drowsyTimer = 0;
+        if (isIdle() && window.performance.now() - lastActivity >= 22000) {
+          drowsy = true;
+          say();
+        } else syncSleep();
+      }, Math.max(500, 22000 - idleFor));
+    }
     if (sleepTimer || sleepy) return;
-    const remaining = Math.max(1000, 45000 - (window.performance.now() - lastActivity));
+    const remaining = Math.max(1000, 45000 - idleFor);
     sleepTimer = setTimeout(() => {
       sleepTimer = 0;
       if (isIdle() && window.performance.now() - lastActivity >= 45000) {
+        drowsy = false;
         sleepy = true;
         say();
       } else syncSleep();
     }, remaining);
   }
+  // A small hop now and then, but only after the page has been still for a bit.
+  function scheduleHop() {
+    clearTimeout(hopTimer);
+    hopTimer = 0;
+    if (motion?.matches || !active || document.hidden || tucked || sleepy || drowsy) return;
+    hopTimer = setTimeout(() => {
+      hopTimer = 0;
+      if (!isIdle() || sleepy || drowsy || document.hidden) { scheduleHop(); return; }
+      root.classList.add('is-hopping');
+      clearTimeout(hopFallback);
+      hopFallback = setTimeout(stopHop, 900);
+    }, 14000 + Math.random() * 6000);
+  }
+  function stopHop() {
+    clearTimeout(hopFallback);
+    hopFallback = 0;
+    root.classList.remove('is-hopping');
+    scheduleHop();
+  }
   function noteActivity() {
     lastActivity = window.performance.now();
-    if (sleepy) { sleepy = false; say(); }
+    if (sleepy || drowsy) { sleepy = false; drowsy = false; say(); }
     else syncSleep();
+    scheduleHop();
   }
   function setNear(near) {
     near = tucked && (near || keyboardFocused());
@@ -155,7 +200,7 @@ export function initSearchMascot(openSearch) {
     root.dataset.expression = root.classList.contains('is-dizzy') ? 'dizzy'
       : !tucked && (searchOpen() || root.classList.contains('is-excited')) ? 'excited'
         : hovered || keyboardFocused() || root.classList.contains('is-near') ? 'curious'
-          : sleepy && isIdle() ? 'sleepy' : 'neutral';
+          : sleepy && isIdle() ? 'sleepy' : drowsy && isIdle() ? 'drowsy' : 'neutral';
   }
   function syncIdle() {
     syncSleep();
@@ -172,7 +217,8 @@ export function initSearchMascot(openSearch) {
       if (idlePhase === 'quote') {
         idlePhase = 'context';
         contextIndex = (contextIndex + 1) % messages.length;
-      } else if (idlePhase === 'context') idlePhase = 'search';
+      } else if (idlePhase === 'context') idlePhase = guide ? 'guide' : 'search';
+      else if (idlePhase === 'guide') idlePhase = 'search';
       else {
         quoteLoading = true;
         await quoteDeck.load();
@@ -188,24 +234,28 @@ export function initSearchMascot(openSearch) {
     updateExpression();
     const showingQuote = isIdle() && idlePhase === 'quote' && idleQuote;
     const idlePrompt = idlePhase === 'context' ? messages[contextIndex] : 'Want to search something?';
+    const linkFocused = Boolean(guideLink) && document.activeElement === guideLink;
+    // The invitation stays while the bubble is hovered or the link is focused so
+    // the anchor is never pulled out from under the pointer or the keyboard.
+    const guideActive = Boolean(guide) && !tucked && !drag && !overlayOpen()
+      && !root.classList.contains('is-dizzy')
+      && ((idlePhase === 'guide' && (isIdle() || bubbleHovered || bubbleFocused))
+        || keyboardFocused() || linkFocused);
     const text = tucked ? 'Psst… click to bring me back!' : drag?.hideSide ? 'Release to hide!' : root.classList.contains('is-dizzy')
-      ? "Whoa... I'm dizzy!" : searchOpen() ? "Let's find it!" : hovered || keyboardFocused()
-        ? 'Click me!' : showingQuote ? `“${idleQuote.quote}”` : isIdle() ? idlePrompt : 'Want to search something?';
+      ? "Whoa... I'm dizzy!" : searchOpen() ? "Let's find it!" : guideActive
+        ? 'There’s a guide for this tool.' : hovered || keyboardFocused()
+          ? 'Click me!' : showingQuote ? `“${idleQuote.quote}”` : isIdle() ? idlePrompt : 'Want to search something?';
     const author = showingQuote ? `— ${idleQuote.author}` : '';
-    const signature = text + author;
+    const signature = text + author + (guideActive ? '|guide' : '');
     root.classList.toggle('is-quote', Boolean(showingQuote));
+    root.classList.toggle('has-guide-link', guideActive);
+    bubble.setAttribute('aria-hidden', String(!guideActive));
     if (renderedMessage !== signature) {
       renderedMessage = signature;
-      const message = document.createElement('span');
-      message.className = 'search-mascot-message';
-      message.textContent = text;
-      bubble.replaceChildren(message);
-      if (author) {
-        const credit = document.createElement('span');
-        credit.className = 'search-mascot-author';
-        credit.textContent = author;
-        bubble.append(credit);
-      }
+      messageEl.textContent = text;
+      authorEl.hidden = !author;
+      authorEl.textContent = author;
+      if (guideLink) guideLink.hidden = !guideActive;
       bubble.title = author ? 'Quotes provided by DummyJSON' : '';
       const height = bubble.offsetHeight || (showingQuote ? 180 : 60);
       const top = drag?.currentY ?? parseFloat(root.style.top);
@@ -213,7 +263,7 @@ export function initSearchMascot(openSearch) {
       const below = view.top + view.height - top - (tucked ? 64 : compact() ? 88 : 100) - 12;
       const above = top - view.top - 12;
       root.classList.toggle('bubble-below', above < height && below > above);
-      if (!motion?.matches) message.animate?.([{ opacity: 0, transform: 'translateY(3px)' },
+      if (!motion?.matches) messageEl.animate?.([{ opacity: 0, transform: 'translateY(3px)' },
         { opacity: 1, transform: 'translateY(0)' }], { duration: 220, easing: 'ease-out' });
     }
     syncIdle();
@@ -314,15 +364,16 @@ export function initSearchMascot(openSearch) {
 
   // Follow in SVG coordinates (including rotation), with a short easing tail.
   function scheduleGaze() {
-    if (!gaze || gazeFrame || document.hidden) return;
+    if ((!gaze && !scrollLookTarget && Math.abs(scrollLook) < 0.01) || gazeFrame || document.hidden) return;
     gazeFrame = window.requestAnimationFrame(updateGaze);
   }
   function updateGaze(now) {
     gazeFrame = 0;
     const box = art.getBoundingClientRect();
     const bounds = root.getBoundingClientRect();
-    const dx = Math.max(bounds.left - gaze.x, 0, gaze.x - bounds.right);
-    const dy = Math.max(bounds.top - gaze.y, 0, gaze.y - bounds.bottom);
+    const target = gaze || { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+    const dx = Math.max(bounds.left - target.x, 0, target.x - bounds.right);
+    const dy = Math.max(bounds.top - target.y, 0, target.y - bounds.bottom);
     setNear(Math.hypot(dx, dy) < (root.classList.contains('is-near') ? 125 : 105));
     if (motion?.matches || !box.width || !box.height) return;
     // Hidden body: proximity is still tracked above, but there are no visible
@@ -331,18 +382,20 @@ export function initSearchMascot(openSearch) {
     const dt = gazeTime ? Math.min(0.05, (now - gazeTime) / 1000) : 1 / 60;
     gazeTime = now;
     const blend = 1 - Math.exp(-dt * 20);
-    let localX = (gaze.x - box.left) * 80 / box.width;
-    let localY = (gaze.y - box.top) * 100 / box.height;
+    scrollLook += (scrollLookTarget - scrollLook) * (1 - Math.exp(-dt * 12));
+    let localX = (target.x - box.left) * 80 / box.width;
+    let localY = (target.y - box.top) * 100 / box.height;
     const matrix = root.querySelector('.search-mascot-face').getScreenCTM?.();
     if (matrix && art.createSVGPoint) {
       const point = art.createSVGPoint();
-      point.x = gaze.x;
-      point.y = gaze.y;
+      point.x = target.x;
+      point.y = target.y;
       const local = point.matrixTransform(matrix.inverse());
       localX = local.x;
       localY = local.y;
     }
-    let settling = false;
+    // Scrolling pulls the gaze down or up, then it eases back to the pointer.
+    let settling = scrollLookTarget !== 0 || Math.abs(scrollLook - scrollLookTarget) > 0.01;
     pupils.forEach((pupil, index) => {
       const dx = localX - Number(pupil.dataset.cx);
       const dy = localY - Number(pupil.dataset.cy);
@@ -350,7 +403,7 @@ export function initSearchMascot(openSearch) {
       const direction = Math.atan2(dy, dx);
       const strength = Math.min(1, distance / 45);
       const x = Math.cos(direction) * 5.5 * strength;
-      const y = Math.sin(direction) * 6 * strength;
+      const y = Math.max(-6.5, Math.min(6.5, Math.sin(direction) * 6 * strength + scrollLook * 4));
       const offset = eyeOffsets[index];
       offset.x += (x - offset.x) * blend;
       offset.y += (y - offset.y) * blend;
@@ -366,6 +419,18 @@ export function initSearchMascot(openSearch) {
     gaze = { x: event.clientX, y: event.clientY };
     scheduleGaze();
   }, { passive: true });
+  // Scrolling makes the eyes glance down or up in the direction of travel.
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY || window.pageYOffset || 0;
+    const delta = y - lastScrollY;
+    lastScrollY = y;
+    if (Math.abs(delta) < 2 || !active || document.hidden || motion?.matches) return;
+    noteActivity();
+    scrollLookTarget = delta > 0 ? 1 : -1;
+    clearTimeout(scrollLookTimer);
+    scrollLookTimer = setTimeout(() => { scrollLookTarget = 0; scheduleGaze(); }, 320);
+    scheduleGaze();
+  }, { passive: true });
   motion?.addEventListener('change', () => {
     if (motion.matches) {
       window.cancelAnimationFrame(gazeFrame);
@@ -375,6 +440,11 @@ export function initSearchMascot(openSearch) {
         eyeOffsets[index].x = eyeOffsets[index].y = 0;
       });
       gazeTime = 0;
+      clearTimeout(scrollLookTimer);
+      scrollLookTimer = 0;
+      stopHop();
+      scrollLook = 0;
+      scrollLookTarget = 0;
       resetWobble();
       stopDocking();
       visibilityMotion.stop();
@@ -392,7 +462,18 @@ export function initSearchMascot(openSearch) {
   });
   main.addEventListener('pointerleave', () => { hovered = false; say(); });
   main.addEventListener('focus', () => { noteActivity(); if (tucked) setNear(true); say(); });
-  main.addEventListener('blur', () => { if (tucked) setNear(false); say(); });
+  main.addEventListener('blur', () => {
+    // During blur, activeElement can still be body. Wait for Tab's focus handoff.
+    setTimeout(() => {
+      if (!active) return;
+      if (tucked) setNear(false);
+      say();
+    }, 0);
+  });
+  bubble.addEventListener('pointerenter', () => { if (!guide) return; bubbleHovered = true; noteActivity(); say(); });
+  bubble.addEventListener('pointerleave', () => { if (!bubbleHovered) return; bubbleHovered = false; say(); });
+  bubble.addEventListener('focusin', () => { bubbleFocused = true; noteActivity(); say(); });
+  bubble.addEventListener('focusout', () => { bubbleFocused = false; say(); });
   for (const event of ['pointerdown', 'keydown', 'scroll']) {
     document.addEventListener(event, noteActivity, { passive: true });
   }
@@ -403,6 +484,7 @@ export function initSearchMascot(openSearch) {
   place();
   root.hidden = false;
   requestArrival();
+  scheduleHop();
 
   main.addEventListener('click', (event) => {
     if (suppressClick && event.detail !== 0) {
@@ -445,8 +527,12 @@ export function initSearchMascot(openSearch) {
   root.addEventListener('animationend', (event) => {
     if (event.target === root && event.animationName === 'companion-arrive') cancelArrival();
   });
+  main.addEventListener('animationend', (event) => {
+    if (event.animationName === 'companion-hop') stopHop();
+  });
   main.addEventListener('pointerdown', (event) => {
     cancelArrival();
+    stopHop();
     noteActivity();
     // A genuine new tap is not the compatibility click emitted after a drag.
     if (event.button === 0 && event.isPrimary) suppressClick = false;
@@ -609,6 +695,12 @@ export function initSearchMascot(openSearch) {
   document.addEventListener('visibilitychange', () => {
     root.classList.toggle('is-paused', document.hidden);
     if (document.hidden) {
+      clearTimeout(hopTimer);
+      hopTimer = 0;
+      stopHop();
+      clearTimeout(scrollLookTimer);
+      scrollLookTimer = 0;
+      scrollLook = scrollLookTarget = 0;
       clearTimeout(peekTimer);
       peekTimer = 0;
       setNear(false);
@@ -617,7 +709,7 @@ export function initSearchMascot(openSearch) {
       resetWobble();
       stopDocking();
       visibilityMotion.stop();
-    } else scheduleGaze();
+    } else { noteActivity(); scheduleGaze(); }
     say();
   });
   window.addEventListener('pageshow', (event) => {
@@ -631,9 +723,14 @@ export function initSearchMascot(openSearch) {
     cancelArrival();
     clearTimeout(idleTimer);
     clearTimeout(sleepTimer);
+    clearTimeout(drowsyTimer);
+    clearTimeout(hopTimer);
+    clearTimeout(scrollLookTimer);
+    stopHop();
+    scrollLook = scrollLookTarget = 0;
     clearTimeout(peekTimer);
     clearTimeout(excitementTimer);
-    idleTimer = sleepTimer = peekTimer = excitementTimer = 0;
+    idleTimer = sleepTimer = drowsyTimer = hopTimer = scrollLookTimer = peekTimer = excitementTimer = 0;
     quoteDeck.stop();
     visibilityMotion.stop();
     clearTimeout(dizzyTimer);

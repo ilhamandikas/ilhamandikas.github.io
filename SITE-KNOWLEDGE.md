@@ -759,14 +759,23 @@ schedule animation frames only while moving or settling
 
 Behavior lives in `assets/js/search-mascot.js`; an idle page must schedule no animation frames.
 
+Idle expression stays subtle and optional: after a while the eyelids droop
+(`drowsy`), and after longer stillness it dozes. A small hop may play now and then
+after the page has been still, and scrolling pulls the gaze down or up before it
+eases back to the pointer. These are decorative expressions and reactions, not
+conversation. Hops and gaze animation are disabled under `prefers-reduced-motion`;
+static sleepy expressions remain available.
+
 Do not turn it into an assistant that reads content, remembers searches, or starts conversations.
 
-On tool pages that have a guide, the companion shows one extra affordance: a small
-persistent `Guide` link inside the companion, pointing at `/guides/<slug>/`. It is a
-real anchor (keyboard reachable), it is hidden whenever the companion is tucked or
-dragging, and it only appears when Hugo found a matching entry in
-`data/tool-guide-links.yaml`. The page should still render its own `Learn` section;
-the chip is a second signpost, not a replacement.
+On tool pages that have a guide, the companion offers a `Read the guide` link
+*inside its bubble*, pointing at `/guides/<slug>/`. It reads as a natural invitation
+rather than a separate chip, appears as part of the idle rotation, and stays put
+while hovered or focused so the anchor is never pulled out from under the pointer.
+It is a real anchor (keyboard reachable) and is hidden whenever the companion is
+tucked or dragging. It only appears when Hugo found a matching entry in
+`data/tool-guide-links.yaml`; the page should still render its own `Learn` section,
+so the bubble is a second signpost, not a replacement.
 
 Reading a post aloud is a separate, opt-in control owned by the post layout
 (`assets/js/read-aloud.js`), built on the browser's speech synthesis. It is not part

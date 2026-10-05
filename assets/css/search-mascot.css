@@ -58,12 +58,17 @@
 .search-mascot[data-expression="excited"] .search-mascot-brows { transform: translateY(-3px); }
 .search-mascot[data-expression="excited"] .search-mascot-smile,
 .search-mascot[data-expression="sleepy"] .search-mascot-smile,
+.search-mascot[data-expression="drowsy"] .search-mascot-smile,
 .search-mascot[data-expression="sleepy"] .search-mascot-pupil { display: none; }
 .search-mascot[data-expression="excited"] .search-mascot-happy-mouth,
 .search-mascot[data-expression="sleepy"] .search-mascot-sleep-mouth,
+.search-mascot[data-expression="drowsy"] .search-mascot-sleep-mouth,
 .search-mascot[data-expression="sleepy"] .search-mascot-zzz { display: inline; }
 .search-mascot[data-expression="sleepy"] .search-mascot-face { transform: translateY(2px); }
 .search-mascot[data-expression="sleepy"] .search-mascot-eyes { animation: none; transform: scaleY(.55); }
+.search-mascot[data-expression="drowsy"] .search-mascot-face { transform: translateY(1px); }
+.search-mascot[data-expression="drowsy"] .search-mascot-brows { transform: translateY(1.5px); }
+.search-mascot[data-expression="drowsy"] .search-mascot-eyes { animation: none; transform: scaleY(.68); }
 .search-mascot-eyes {
   fill: var(--surface);
   stroke: var(--text);
@@ -99,32 +104,19 @@
 }
 .search-mascot-message { display: block; }
 .search-mascot-author { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
-.search-mascot-guide {
-  position: absolute;
-  top: 50%;
-  display: none;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 10px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 12px;
+.search-mascot-author[hidden] { display: none; }
+.search-mascot-guide-link {
+  display: block;
+  margin-top: 9px;
+  color: var(--accent);
+  font-size: 12.5px;
   font-weight: 600;
-  line-height: 1;
-  white-space: nowrap;
-  text-decoration: none;
-  transform: translateY(-50%);
-  transition: opacity 200ms ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
-.search-mascot-guide svg { flex: none; width: 14px; height: 14px; }
-.search-mascot[data-side="right"] .search-mascot-guide { right: calc(100% - 4px); }
-.search-mascot[data-side="left"] .search-mascot-guide { left: calc(100% - 4px); }
-.search-mascot.has-guide:not(.is-tucked):not(.is-dragging):not(.is-transitioning):not(.is-docking) .search-mascot-guide { display: inline-flex; }
-.search-mascot-guide:hover { border-color: var(--accent); color: var(--accent); }
-.search-mascot-guide:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.search-mascot.is-arriving .search-mascot-guide { opacity: 0; }
+.search-mascot-guide-link[hidden] { display: none; }
+.search-mascot-guide-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.search-mascot.has-guide-link .search-mascot-bubble { pointer-events: auto; }
 .search-mascot.is-quote .search-mascot-bubble { width: 220px; font-weight: 400; }
 .search-mascot-bubble::after {
   content: "";
@@ -173,12 +165,13 @@
   .search-mascot-wire, .search-mascot-wire-core, .search-mascot-smile, .search-mascot-dizzy-eyes,
   .search-mascot-stars, .search-mascot-feet { stroke: CanvasText; }
   .search-mascot-bubble, .search-mascot-bubble::after { border-color: CanvasText; background: Canvas; color: CanvasText; }
-  .search-mascot-guide { border-color: ButtonText; background: Canvas; color: CanvasText; }
+  .search-mascot-guide-link { color: LinkText; }
 }
 .search-mascot.is-transitioning .search-mascot-body { animation: companion-fold 440ms ease-out; transform-origin: 40px 32px; }
 .search-mascot.will-hide .search-mascot-wire { stroke: var(--accent); }
 .search-mascot.is-docking { transition: transform var(--dock-duration, 600ms) cubic-bezier(.25, .8, .25, 1); }
 .search-mascot.is-docking .search-mascot-main { animation: companion-run 240ms ease-in-out infinite; }
+.search-mascot.is-hopping .search-mascot-main { animation: companion-hop 620ms cubic-bezier(.3, .7, .4, 1); }
 .search-mascot-dizzy-eyes, .search-mascot-stars, .search-mascot-feet { display: none; }
 .search-mascot.is-dizzy .search-mascot-dizzy-eyes,
 .search-mascot.is-dizzy .search-mascot-stars,
@@ -220,7 +213,6 @@
   .search-mascot { width: 80px; height: 88px; }
   .search-mascot-main { width: 80px; height: 88px; }
   .search-mascot-art { width: 64px; height: 80px; }
-  .search-mascot-guide { padding: 4px 8px; font-size: 11px; }
 }
 @keyframes companion-fold {
   0%, 100% { transform: skewX(0); }
@@ -230,6 +222,13 @@
 @keyframes companion-run {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2px); }
+}
+@keyframes companion-hop {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  28% { transform: translateY(-6px) scale(.97, 1.05); }
+  46% { transform: translateY(0) scale(1.03, .96); }
+  64% { transform: translateY(-3px) scale(.99, 1.02); }
+  80% { transform: translateY(0) scale(1, 1); }
 }
 @keyframes companion-step {
   from { transform: rotate(-22deg); }
@@ -248,7 +247,6 @@
   .search-mascot-stars, .search-mascot-foot-left, .search-mascot-foot-right,
   .search-mascot-body { animation: none !important; }
   .search-mascot.is-docking, .search-mascot-bubble, .search-mascot-body,
-  .search-mascot-guide,
   .search-mascot-face, .search-mascot-brows, .search-mascot-brow-left, .search-mascot-brow-right { transition: none !important; }
   .search-mascot.is-arriving { animation: none !important; }
   .search-mascot.is-tucked .search-mascot-body { transform: none !important; }
