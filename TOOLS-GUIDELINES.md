@@ -1638,7 +1638,8 @@ When an AI agent creates or modifies a tool:
 17. Split growing files by responsibility, usually before roughly 400 lines; this is a review trigger, not a reason to create meaningless wrappers.
 18. Keep tool-specific runtime logic separate from reusable UI. Do not promote a helper to global scope unless it represents a real shared concern.
 19. Put CSS in the central stylesheet bundles; do not author inline CSS or duplicate global control styling.
-20. Record architectural changes and update relevant tests. See `PLAYGROUND-ARCHITECTURE.md` for the playground module boundaries.
+20. Record architectural changes in the existing relevant guidelines and update tests. See `PLAYGROUND-ARCHITECTURE.md` for the playground module boundaries.
+21. Keep `scripts/` for project infrastructure; do not add per-tool script directories or one-off importers. Keep regression tests in the established test-suite structure. Put a tool's explanations, domain rules and references in its existing tool guide, not a new audit/rules/README Markdown file. Additional documentation files require explicit user approval; do not work around this by relocating them. See the repository layout and documentation rules in `AGENTS.md`.
 
 ---
 

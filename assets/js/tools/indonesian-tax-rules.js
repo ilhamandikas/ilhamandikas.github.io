@@ -1,5 +1,5 @@
 // Deliberately bounded audit windows, not claims about when a law was repealed.
-// See scripts/tax/README.md before extending any window or object mapping.
+// See content/guides/indonesian-tax-calculator.md before extending coverage.
 import { vatRuleFor } from './indonesian-tax-vat-rules.js';
 import { corporateRuleFor } from './indonesian-tax-corporate-rules.js';
 
