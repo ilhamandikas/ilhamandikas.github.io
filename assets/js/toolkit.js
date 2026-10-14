@@ -1,7 +1,13 @@
 // Shared helpers for the /tools/ pages. Loaded once per tool page as a module.
 // Exposed on window.tk so small per-tool scripts stay tiny and dependency-free.
 
+import { confirmDialog, fullscreen } from './tool-ui.js';
+import { installImageHelpers } from './tool-images.js';
+import { installChartHelpers } from './tool-charts.js';
+
 const tk = {
+  confirmDialog,
+  fullscreen,
   $: (sel, root = document) => root.querySelector(sel),
   $$: (sel, root = document) => Array.from(root.querySelectorAll(sel)),
 
@@ -224,8 +230,7 @@ const tk = {
     } catch {
       const ta = document.createElement('textarea');
       ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
+      ta.className = 'clipboard-fallback';
       document.body.appendChild(ta);
       ta.select();
       document.execCommand('copy');
@@ -333,170 +338,8 @@ tk.quoteCell = (value, delimiter = ',') => {
   return /["\n\r]/.test(text) || text.includes(delimiter) ? `"${text.replace(/"/g, '""')}"` : text;
 };
 
-// Image helpers shared by the canvas tools. The format is read from the magic
-// bytes rather than the file name, so a renamed text file is still refused.
-tk.BROWSER_IMAGE_KINDS = 'This does not look like a JPEG, PNG, GIF or WebP. Those are the four this page can read.';
-tk.NO_CANVAS = 'This browser cannot process images.';
-
-tk.imageKind = (bytes) => {
-  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'jpeg';
-  if (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) return 'png';
-  if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) return 'gif';
-  if (
-    bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 &&
-    bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50
-  ) return 'webp';
-  return null;
-};
-
-// The first twelve bytes are enough to name the format.
-tk.imageKindOfFile = async (file) => tk.imageKind(new Uint8Array(await file.arrayBuffer()).subarray(0, 12));
-
-tk.loadImage = (blob) =>
-  new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve(img);
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Could not read that image.'));
-    };
-    img.src = url;
-  });
-
-// Decode a file and gather what the canvas tools need in one object.
-tk.imageSource = async (file, kind) => {
-  const img = await tk.loadImage(file);
-  return {
-    img,
-    kind,
-    name: file.name || 'image',
-    size: file.size,
-    width: img.naturalWidth || img.width,
-    height: img.naturalHeight || img.height,
-  };
-};
-
-tk.formatBytes = (bytes) => {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-};
-
-// Name, size and modification time are enough to tell two picks apart.
-tk.fileKey = (file) => `${file.name}\u0000${file.size}\u0000${file.lastModified}`;
-
-// A file picker replaces its selection every time it is opened, so a tool that
-// lets people add files in several rounds keeps its own list and asks the input
-// for whatever is new. The caller owns `seen` so repeated picks are ignored.
-tk.claimFiles = (input, seen) => {
-  const fresh = [...(input.files || [])].filter((file) => {
-    const key = tk.fileKey(file);
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-  input.value = '';
-  return fresh;
-};
-
-// Charts are inline SVG: sharp at any size, no library to vendor, and they cost
-// nothing to draw when the numbers change.
-const SVG_NS = 'http://www.w3.org/2000/svg';
-
-tk.svgEl = (tag, attrs = {}) => {
-  const node = document.createElementNS(SVG_NS, tag);
-  Object.entries(attrs).forEach(([key, value]) => node.setAttribute(key, String(value)));
-  return node;
-};
-
-// A stacked bar with a legend underneath. Every part carries its own value and
-// share, so the picture is never the only place a number lives.
-tk.stackBar = (container, parts, { height = 12, label = 'Breakdown' } = {}) => {
-  const total = parts.reduce((sum, part) => sum + Math.max(0, part.value), 0);
-  const bar = tk.svgEl('svg', {
-    viewBox: '0 0 100 10',
-    preserveAspectRatio: 'none',
-    class: 'tool-chart-bar',
-    height,
-    role: 'img',
-    'aria-label': label,
-  });
-  let x = 0;
-  parts.forEach((part, index) => {
-    const width = total > 0 ? (Math.max(0, part.value) / total) * 100 : 0;
-    if (width <= 0) return;
-    bar.append(tk.svgEl('rect', { x, y: 0, width, height: 10, class: `tool-chart-tone-${(index % 5) + 1}` }));
-    x += width;
-  });
-
-  const legend = document.createElement('ul');
-  legend.className = 'tool-chart-legend';
-  parts.forEach((part, index) => {
-    const item = document.createElement('li');
-    const swatch = document.createElement('span');
-    swatch.className = `tool-chart-swatch tool-chart-tone-${(index % 5) + 1}`;
-    const name = document.createElement('span');
-    name.className = 'tool-chart-label';
-    name.textContent = part.label;
-    const value = document.createElement('span');
-    value.className = 'tool-chart-value';
-    value.textContent = part.display === undefined ? String(part.value) : part.display;
-    const share = document.createElement('span');
-    share.className = 'tool-chart-share';
-    share.textContent = total > 0 ? `${((Math.max(0, part.value) / total) * 100).toFixed(1)}%` : '0.0%';
-    item.append(swatch, name, value, share);
-    legend.append(item);
-  });
-
-  container.replaceChildren(bar, legend);
-};
-
-// One series over time, with the axis values written into the picture so the
-// numbers travel with it. `values` is a list of amounts, `xLabels` names them.
-tk.lineChart = (container, values, { format = (value) => String(value), xLabels = [], label = 'Over time' } = {}) => {
-  const width = 640;
-  const height = 220;
-  const left = 62;
-  const right = 10;
-  const top = 12;
-  const bottom = 26;
-  const plotWidth = width - left - right;
-  const plotHeight = height - top - bottom;
-  const max = Math.max(1, ...values);
-  const step = values.length > 1 ? plotWidth / (values.length - 1) : 0;
-  const px = (index) => left + index * step;
-  const py = (value) => top + plotHeight - (Math.max(0, value) / max) * plotHeight;
-
-  const svg = tk.svgEl('svg', { viewBox: `0 0 ${width} ${height}`, class: 'tool-chart-line', role: 'img', 'aria-label': label });
-
-  for (let tick = 0; tick <= 3; tick += 1) {
-    const y = py((max / 3) * tick);
-    svg.append(tk.svgEl('line', { x1: left, x2: width - right, y1: y, y2: y, class: 'tool-chart-grid' }));
-    const text = tk.svgEl('text', { x: left - 8, y: y + 4, class: 'tool-chart-tick', 'text-anchor': 'end' });
-    text.textContent = format((max / 3) * tick);
-    svg.append(text);
-  }
-
-  const points = values.map((value, index) => `${px(index).toFixed(2)},${py(value).toFixed(2)}`);
-  const base = py(0).toFixed(2);
-  svg.append(tk.svgEl('path', { d: `M ${px(0).toFixed(2)},${base} L ${points.join(' L ')} L ${px(values.length - 1).toFixed(2)},${base} Z`, class: 'tool-chart-area' }));
-  svg.append(tk.svgEl('path', { d: `M ${points.join(' L ')}`, class: 'tool-chart-stroke' }));
-
-  const every = Math.max(1, Math.ceil(values.length / 6));
-  xLabels.forEach((text, index) => {
-    if (index % every !== 0 && index !== xLabels.length - 1) return;
-    const anchor = index === 0 ? 'start' : index === xLabels.length - 1 ? 'end' : 'middle';
-    const node = tk.svgEl('text', { x: px(index), y: height - 8, class: 'tool-chart-tick', 'text-anchor': anchor });
-    node.textContent = text;
-    svg.append(node);
-  });
-
-  container.replaceChildren(svg);
-};
+installImageHelpers(tk);
+installChartHelpers(tk);
 
 // Copy / download buttons work declaratively via data attributes.
 document.addEventListener('click', (event) => {

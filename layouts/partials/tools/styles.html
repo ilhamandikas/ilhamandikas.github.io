@@ -1,0 +1,12 @@
+{{- $css := slice
+  (resources.Get "css/tools.css")
+  (resources.Get "css/components/tool-controls.css")
+  (resources.Get "css/components/tool-knowledge-memory.css")
+  (resources.Get "css/components/tool-result-panels.css")
+  (resources.Get "css/components/tool-interactive-panels.css")
+  (resources.Get "css/components/tool-device-media-panels.css")
+  (resources.Get "css/components/tool-games.css")
+  (resources.Get "css/components/tool-data-panels.css")
+  (resources.Get "css/components/tool-workspace.css")
+  | resources.Concat "css/tools-bundle.css" | minify | fingerprint -}}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">

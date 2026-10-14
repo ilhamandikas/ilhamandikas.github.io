@@ -1121,7 +1121,7 @@ const check = (label, actual, expected) => {
   }
   {
     // jsdom has no layout engine, so guard the size by inspecting the rule.
-    const css = fs.readFileSync(path.join(__dirname, '..', '..', 'assets', 'css', 'tools.css'), 'utf8');
+    const css = fs.readFileSync(path.join(__dirname, '..', '..', 'assets', 'css', 'components', 'tool-controls.css'), 'utf8');
     const rule = css.slice(css.indexOf('.tool-sort-btn {'), css.indexOf('.tool-sort-btn:hover'));
     check('sort button: box has a fixed width', /(^|\s)width:\s*\d/.test(rule), true);
     check('sort button: box has a fixed height', /(^|\s)height:\s*\d/.test(rule), true);

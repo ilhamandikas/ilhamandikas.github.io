@@ -7,17 +7,13 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const dom = new JSDOM(fs.readFileSync(path.join(root, 'public/tools/javascript-playground/index.html'), 'utf8'), { runScripts: 'outside-only' });
 const w = dom.window;
-function mockDialogs(window) {
-  // jsdom does not implement the native dialog top layer; browser checks cover it.
-  window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
-  window.HTMLDialogElement.prototype.close = function (value = '') {
-    this.returnValue = value;
-    this.removeAttribute('open');
-    this.dispatchEvent(new window.Event('close'));
-  };
-}
-mockDialogs(w);
-w.tk = { setStatus: (el, message) => { el.textContent = message; } };
+const { mockDialogs } = require('./browser-stubs.cjs');
+const { buildSync } = require('esbuild');
+const bundle = (entry) => buildSync({ entryPoints: [path.join(root, entry)], bundle: true, format: 'iife', write: false }).outputFiles[0].text;
+const toolkitSource = bundle('assets/js/toolkit.js');
+const playgroundSource = bundle('assets/js/tools/javascript-playground.js');
+function setupToolkit(window) { mockDialogs(window); window.eval(toolkitSource); }
+setupToolkit(w);
 const sources = new Map();
 let next = 0;
 w.Blob = class { constructor(parts) { this.source = parts.join(''); } };
@@ -37,7 +33,7 @@ w.Worker = class {
   postMessage(data) { this.worker.postMessage(data); }
   terminate() { this.worker.terminate(); }
 };
-w.eval(fs.readFileSync(path.join(root, 'assets/js/tools/javascript-playground.js'), 'utf8'));
+w.eval(playgroundSource);
 const el = (id) => w.document.querySelector(`#jsp-${id}`);
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function until(test) {
@@ -46,6 +42,26 @@ async function until(test) {
 }
 function run(code) { el('code').value = code; el('run').click(); }
 (async () => {
+  for (const file of ['assets/js/toolkit.js', 'assets/js/tool-ui.js', 'assets/js/tools/javascript-playground.js',
+    ...fs.readdirSync(path.join(root, 'assets/js/tools/playground')).map((name) => `assets/js/tools/playground/${name}`)]) {
+    assert(!/\.style\s*[.\[]|setAttribute\(\s*['"]style['"]/.test(fs.readFileSync(path.join(root, file), 'utf8')), `${file} must not author inline CSS`);
+  }
+  assert(!/\bstyle\s*=|<style\b/.test(fs.readFileSync(path.join(root, 'layouts/partials/tools/playground.html'), 'utf8')));
+  assert(!/\.tool-fullscreen\s+\.btn/.test(fs.readFileSync(path.join(root, 'assets/css/components/tool-workspace.css'), 'utf8')));
+  assert.equal(el('input-form').hidden, false);
+  assert.equal(el('send').disabled, true);
+  el('input').focus();
+  assert.equal(w.document.activeElement, el('input'));
+  el('input').value = 'Draft café 😀';
+  el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  assert.equal(el('input').value, 'Draft café 😀');
+  run("await new Promise(r => setTimeout(r, 50)); return await prompt('Draft?');");
+  await until(() => !el('send').disabled);
+  assert.equal(el('input').value, 'Draft café 😀');
+  el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await until(() => el('output').textContent.includes('resultDraft café 😀'));
+  assert.equal(el('input').value, '');
+  el('stop').click();
   run("console.log('first'); await new Promise(r => setTimeout(r, 300)); return 42;");
   await until(() => el('output').textContent.includes('first'));
   assert(!el('output').textContent.includes('42'));
@@ -56,25 +72,25 @@ function run(code) { el('code').value = code; el('run').click(); }
   const elapsed = Number(el('metrics').textContent.match(/Main code: (\d+) ms/)[1]);
   assert(elapsed >= 250 && elapsed < 2000);
   run("const name = await prompt('Name?', 'Ilham'); console.log(name); return 'done';");
-  await until(() => !el('input-form').hidden);
+  await until(() => !el('send').disabled);
   assert.equal(el('input-label').textContent, 'Name?');
   el('input').value = '<img src=x onerror=alert(1)>';
   el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await until(() => el('output').textContent.includes('done'));
   assert.equal(el('output').querySelector('img'), null);
   run("return await prompt('EOF?');");
-  await until(() => !el('input-form').hidden);
+  await until(() => !el('send').disabled);
   el('eof').click();
   await until(() => el('output').textContent.includes('resultnull'));
   assert(el('output').textContent.includes('^D (EOF)'));
   run("console.log('blank:', JSON.stringify(await prompt('Blank?'))); console.log(await prompt('Unicode?'));");
-  await until(() => !el('input-form').hidden);
+  await until(() => !el('send').disabled);
   el('input').value = '';
   el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await until(() => el('input-label').textContent === 'Unicode?');
   el('input').value = 'café 😀';
   el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await until(() => [...el('output').querySelectorAll('.jsp-line')].some((row) => row.querySelector('.jsp-tag')?.textContent === 'log' && row.textContent.includes('café 😀')));
+  await until(() => [...el('output').querySelectorAll('.tool-console-line')].some((row) => row.querySelector('.tool-console-tag')?.textContent === 'log' && row.textContent.includes('café 😀')));
   assert(el('output').textContent.includes('blank: ""'));
   run("throw new Error('boom')");
   await until(() => el('status').textContent.includes('Threw'));
@@ -116,6 +132,7 @@ function run(code) { el('code').value = code; el('run').click(); }
   el('example').dispatchEvent(new w.Event('change'));
   assert.equal(el('replace-dialog').open, true);
   el('replace-accept').click();
+  await sleep(0);
   assert.equal(el('replace-dialog').open, false);
   assert(!el('code').value.includes("console.log('keep me');"));
   assert.equal(el('auto').checked, false);
@@ -129,10 +146,11 @@ function run(code) { el('code').value = code; el('run').click(); }
   assert.equal(el('code').value, `${examples[pyramidIndex].code.trimEnd()}\n`);
   el('run').click();
   await until(() => el('status').textContent.includes('Main code finished'));
-  assert.deepEqual([...el('output').querySelectorAll('.jsp-line > span:last-child')].map((row) => row.textContent), ['    *', '   ***', '  *****', ' *******', '*********']);
+  assert.deepEqual([...el('output').querySelectorAll('.tool-console-line > span:last-child')].map((row) => row.textContent), ['    *', '   ***', '  *****', ' *******', '*********']);
   run("await Promise.all([prompt('one'), prompt('two')]);");
   await until(() => el('status').textContent.includes('Concurrent prompts'));
-  assert.equal(el('input-form').hidden, true);
+  assert.equal(el('input-form').hidden, false);
+  assert.equal(el('send').disabled, true);
   assert.equal(el('stop').disabled, true);
   el('category').value = examples[pyramidIndex].category;
   el('category').dispatchEvent(new w.Event('change'));
@@ -147,10 +165,9 @@ function run(code) { el('code').value = code; el('run').click(); }
   for (const lang of ['typescript', 'python', 'ruby', 'c', 'cpp']) {
     const other = new JSDOM(fs.readFileSync(path.join(root, `public/tools/${lang}-playground/index.html`), 'utf8'), { runScripts: 'outside-only', url: `https://example.com/tools/${lang}-playground/` });
     const window = other.window;
-    mockDialogs(window);
+    setupToolkit(window);
     const field = (id) => window.document.querySelector(`#jsp-${id}`);
     let worker;
-    window.tk = w.tk;
     window.URL.createObjectURL = () => 'blob:test';
     window.URL.revokeObjectURL = () => {};
     window.Worker = class {
@@ -158,7 +175,7 @@ function run(code) { el('code').value = code; el('run').click(); }
       postMessage() {}
       terminate() {}
     };
-    window.eval(fs.readFileSync(path.join(root, 'assets/js/tools/javascript-playground.js'), 'utf8'));
+    window.eval(playgroundSource);
     if (field('input-mode')) {
       assert.equal(field('input-mode').value, 'prepared');
       assert.equal(field('stdin-field').hidden, false);
@@ -179,6 +196,7 @@ function run(code) { el('code').value = code; el('run').click(); }
       field('example').value = String(sample);
       field('example').dispatchEvent(new window.Event('change'));
       field('replace-accept').click();
+      await sleep(0);
       assert.equal(field('stdin').value, items[sample].stdin);
       assert.equal(field('code').value, `${items[sample].code.trimEnd()}\n`);
     }
@@ -206,24 +224,24 @@ function run(code) { el('code').value = code; el('run').click(); }
   const beforeFullscreen = el('code').value;
   assert.equal(el('options').open, true);
   el('fullscreen').click();
-  assert(el('workspace').classList.contains('jsp-expanded'));
-  assert(w.document.body.classList.contains('jsp-focus-open'));
+  assert(el('workspace').classList.contains('tool-fullscreen'));
+  assert(w.document.body.classList.contains('tool-focus-open'));
   assert.equal(el('fullscreen').textContent, 'Exit full screen');
   assert.equal(el('fullscreen').getAttribute('aria-pressed'), 'true');
   assert.equal(el('options').open, false);
   w.innerHeight = 600;
   w.dispatchEvent(new w.Event('resize'));
-  assert.equal(el('workspace').style.getPropertyValue('--jsp-viewport-height'), '600px');
+  assert.equal(el('workspace').getAttribute('style'), null);
   el('options').open = true;
   el('options').querySelector('summary').dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
   assert.equal(el('options').open, false);
-  assert(el('workspace').classList.contains('jsp-expanded'));
+  assert(el('workspace').classList.contains('tool-fullscreen'));
   assert(outside.hasAttribute('inert'));
   assert.equal(w.document.activeElement, el('options').querySelector('summary'));
   el('fullscreen').dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-  assert(!el('workspace').classList.contains('jsp-expanded'));
+  assert(!el('workspace').classList.contains('tool-fullscreen'));
   assert.equal(el('options').open, true);
-  assert.equal(el('workspace').style.getPropertyValue('--jsp-viewport-height'), '');
+  assert.equal(el('workspace').getAttribute('style'), null);
   assert(!outside.hasAttribute('inert'));
   assert(alreadyInert.hasAttribute('inert'));
   assert.equal(w.document.activeElement, el('code'));
@@ -250,11 +268,11 @@ function run(code) { el('code').value = code; el('run').click(); }
   await sleep(0);
   fullscreenElement = null;
   w.document.dispatchEvent(new w.Event('fullscreenchange'));
-  assert(!el('workspace').classList.contains('jsp-expanded'));
+  assert(!el('workspace').classList.contains('tool-fullscreen'));
   el('workspace').requestFullscreen = async () => { throw new Error('Denied'); };
   el('fullscreen').click();
   await sleep(0);
-  assert(el('workspace').classList.contains('jsp-expanded'));
+  assert(el('workspace').classList.contains('tool-fullscreen'));
   assert.equal(el('fullscreen').disabled, false);
   el('fullscreen').click();
   await sleep(0);

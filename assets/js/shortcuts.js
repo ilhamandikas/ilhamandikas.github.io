@@ -82,9 +82,9 @@ help.className = 'kbd-help';
 help.hidden = true;
 help.innerHTML = `
   <div class="kbd-help-backdrop" data-kbd-close></div>
-  <div class="kbd-help-panel" role="dialog" aria-modal="true" aria-labelledby="kbd-help-title" tabindex="-1">
+  <div class="dialog-panel kbd-help-panel" role="dialog" aria-modal="true" aria-labelledby="kbd-help-title" tabindex="-1">
     <div class="kbd-help-head">
-      <h2 class="kbd-help-title" id="kbd-help-title">Keyboard shortcuts</h2>
+      <h2 class="dialog-title kbd-help-title" id="kbd-help-title">Keyboard shortcuts</h2>
       <button type="button" class="kbd-help-close" data-kbd-close>Close</button>
     </div>
     <div class="kbd-help-list"></div>
@@ -154,7 +154,7 @@ globalSearch.className = 'global-search';
 globalSearch.hidden = true;
 globalSearch.innerHTML = `
   <div class="global-search-backdrop" data-global-search-close></div>
-  <div class="global-search-panel" role="dialog" aria-modal="true" aria-labelledby="global-search-title">
+  <div class="dialog-panel global-search-panel" role="dialog" aria-modal="true" aria-labelledby="global-search-title">
     <div class="global-search-field">
       <span class="global-search-icon" aria-hidden="true">⌕</span>
       <input type="search" autocomplete="off" id="global-search-input" aria-labelledby="global-search-title" placeholder="Search tools, guides, and posts…">

@@ -13,6 +13,7 @@ const path = require('path');
 const vm = require('vm');
 const { pathToFileURL } = require('url');
 const { JSDOM, VirtualConsole } = require('jsdom');
+const { mockDialogs } = require('./browser-stubs.cjs');
 
 const ROOT = path.join(__dirname, '..', '..', 'public');
 const TOOLS = path.join(ROOT, 'tools');
@@ -162,20 +163,7 @@ function installGlobals(w) {
   globalThis.prompt = () => '';
   if (!w.matchMedia) w.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} });
 
-  // jsdom lacks the native dialog top layer. Real-browser checks cover focus
-  // trapping and fullscreen; DOM tests only need its open/close lifecycle.
-  if (w.HTMLDialogElement && !w.HTMLDialogElement.prototype.showModal) {
-    w.HTMLDialogElement.prototype.showModal = function () {
-      this.setAttribute('open', '');
-      this.querySelector('[autofocus]')?.focus();
-    };
-    w.HTMLDialogElement.prototype.close = function (value = '') {
-      if (!this.open) return;
-      this.returnValue = value;
-      this.removeAttribute('open');
-      this.dispatchEvent(new w.Event('close'));
-    };
-  }
+  mockDialogs(w);
 
   // jsdom implements neither execCommand nor the query* helpers; browsers do.
   w.document.execCommand = () => false;

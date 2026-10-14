@@ -1,0 +1,79 @@
+@media (max-width: 768px) {
+  .nav-toggle-label {
+    margin-left: auto;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 40px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .nav-toggle-label span {
+    display: block;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform .18s ease, opacity .18s ease;
+  }
+  .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) { opacity: 0; }
+  .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .nav-toggle:focus-visible + .nav-toggle-label { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .site-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 6px 18px 14px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-toggle:checked ~ .site-nav { display: flex; }
+  .site-nav a { padding: 11px 4px; font-size: 15px; }
+  .site-nav .nav-help { padding: 11px 4px; text-align: left; }
+  .nav-playgrounds > summary { padding: 11px 4px; }
+  .nav-playgrounds-links { position: static; width: auto; max-width: none; padding-left: 14px; }
+}
+
+@media (min-width: 769px) {
+  .site-nav { margin-left: auto; }
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 18px; }
+  .profile-hero-inner { flex-direction: column; align-items: flex-start; gap: 22px; }
+  .avatar { width: 88px; height: 88px; }
+  .hero { padding: 56px 0 36px; }
+  .contact-box { padding: 20px; }
+}
+
+@media (max-width: 380px) {
+  .brand span:not(.brand-mark):not(.dot) { font-size: 15px; }
+}
+
+.tool-crumb { margin: 0 0 8px; font-size: 13.5px; font-family: var(--mono); }
+.tool-crumb a { color: var(--muted); }
+.tool-crumb a:hover { color: var(--accent); }
+
+@view-transition { navigation: auto; }
+
+.site-header { view-transition-name: site-header; }
+
+.tool-aside { view-transition-name: tool-nav; }
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: vt-out 110ms ease-out both; }
+  ::view-transition-new(root) { animation: vt-in 200ms ease-in both; }
+}
+
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }
