@@ -11,7 +11,8 @@ about: >-
   integer-fraction arithmetic. This experimental release includes a reference
   catalogue of 193 object options from the DJP calculator, but only selected
   scenarios have audited calculation rules. Historical filing-code validity is
-  not verified, and dates after 2024-12-31 are blocked.
+  not verified. Income-tax coverage ends in 2024; selected domestic VAT
+  scenarios cover 2025. No scenario supports 2026 or later yet.
 faq:
 - q: Does this cover every Indonesian tax object and historical period?
   a: >-
@@ -19,11 +20,14 @@ faq:
     calculator HTML, not a complete national or historical filing registry.
     Calculation coverage is narrower and listed on the tool. Unsupported
     periods and scenarios are blocked rather than assigned a guessed rate.
-- q: Can I calculate current VAT using this release?
+- q: What changes for VAT in 2025?
   a: >-
-    No. Audited VAT coverage ends on 2024-12-31. The historical 10% and 11%
-    model must not be extrapolated to 2025 or later, where statutory rates,
-    adjusted bases and transition rules need separate handling.
+    Select an explicit 2025 domestic scenario. The statutory rate is 12%.
+    For ordinary non-luxury goods/services, DPP is 11/12 of the price,
+    giving an effective 11% burden. Luxury final-consumer supplies use
+    that adjusted base only in January, then the full price from February.
+    Other taxable domestic luxury supplies use the full price throughout
+    2025. PPnBM amounts, special regimes, imports and 2026 are not supported.
 - q: Why can the result contain a fraction of a rupiah?
   a: >-
     Gross-up and VAT-inclusive calculations can produce recurring fractions.
@@ -56,9 +60,10 @@ replacement for the official definition. The selector is a snapshot, not proof
 that a code was valid for a historical filing. A supported calculation models
 the named transaction; it does not certify the displayed filing code.
 
-**The audited calculation windows end on 2024-12-31.** These are coverage
-boundaries, not statements that the regulations were repealed on that date.
-Do not change the date merely to get a result for an unsupported transaction.
+**Income-tax audit windows end on 2024-12-31; selected domestic VAT windows
+extend through 2025-12-31.** These are coverage boundaries, not statements that
+regulations were repealed on those dates. Do not change the date merely to get
+a result for an unsupported transaction.
 
 ## A service payment: gross base versus take-home amount
 
@@ -118,9 +123,50 @@ For **IDR 11,100,000 including VAT** on 2022-04-01, the base is
 `11,100,000 / 1.11 = 10,000,000`. Multiplying an already VAT-inclusive total
 by 11% would overstate the VAT.
 
-These examples do not cover exports, exemptions, special tax bases, facilities,
-or the VAT rules applying from 2025. A 2025 or later date is intentionally
-blocked, not treated as another 11% transaction.
+These historical examples do not cover exports, exemptions, special tax bases
+or facilities. The historical scenario remains blocked for 2025; choose an
+explicit 2025 scenario instead.
+
+## VAT in 2025: statutory rate versus effective burden
+
+For a taxable domestic supply by a VAT-registered seller, PMK 131/2024
+separates the **selling price/reimbursement** from the **tax base (DPP)**.
+The statutory rate is **12%**, even when the effective burden relative to the
+price is 11%. The three 2025 selectors are calculation scenarios, not filing codes.
+
+For a price before VAT of **IDR 12,000,000**:
+
+| Domestic supply | Date | DPP | VAT at 12% of DPP | Price + VAT only |
+| --- | --- | --- | --- | --- |
+| Non-luxury goods/services | Any supported 2025 date | IDR 11,000,000 | IDR 1,320,000 | IDR 13,320,000 |
+| Luxury goods, final consumer | 2025-01-31 | IDR 11,000,000 | IDR 1,320,000 | IDR 13,320,000 |
+| Luxury goods, final consumer | 2025-02-01 | IDR 12,000,000 | IDR 1,440,000 | IDR 13,440,000 |
+| Luxury goods, not a final consumer | Any supported 2025 date | IDR 12,000,000 | IDR 1,440,000 | IDR 13,440,000 |
+
+The adjusted calculation is `12% × (11/12 × 12,000,000) = 1,320,000`.
+Do **not** enter IDR 11,000,000 as the price: the tool would apply the 11/12
+factor a second time. DPP itself may be fractional; it is not rounded before
+multiplication.
+
+With a **price + VAT only** input of IDR 13,320,000 for the non-luxury scenario,
+the tool recovers a selling price of IDR 12,000,000, a DPP of IDR 11,000,000
+and VAT of IDR 1,320,000. Dividing that inclusive input by 1.12 would be wrong
+because the effective burden on the selling price is 11%, not 12%.
+
+Luxury means goods legally classified as subject to **PPnBM**, not merely
+expensive goods. You must establish that classification and whether the buyer
+has final-consumer characteristics. The tool does not determine either.
+**PPnBM itself is not calculated**, and the displayed price + VAT is not an
+invoice total when PPnBM is charged separately. Both input modes must exclude
+any separately charged PPnBM; do not deduct costs already embedded in the
+selling price.
+
+These modes exclude imports, exports, exemptions, facilities and separately
+regulated special-base or specified-amount regimes. PMK 11/2025 Article 2
+distinguishes those special bases from PMK 131/2024 Article 3. For example,
+do not use these ordinary modes for gold, insurance commissions or
+self-building. The special-regime amendments in PMK 52/2025 and PMK 53/2025
+are not additional supported scenarios. Dates in 2026 remain blocked.
 
 ## Annual tax is not monthly withholding
 
@@ -186,6 +232,8 @@ mistake; otherwise use the official rules or obtain professional advice.
 
 - [UU 7/2021 — Article 17, PKP rounding, VAT rate change and commencement provisions](https://www.pajak.go.id/sites/default/files/2021-12/Salinan%20UU%20Nomor%207%20Tahun%202021.pdf).
 - [UU 42/2009 — ordinary VAT rate and commencement](https://jdih.kemenkeu.go.id/dok/uu-42-tahun-2009).
+- [PMK 131/2024 — 2025 VAT rate, adjusted bases and January retail transition](https://jdih.kemenkeu.go.id/dok/pmk-131-tahun-2024).
+- [PMK 11/2025 — Article 2, distinction from separately regulated special bases](https://jdih.kemenkeu.go.id/dok/pmk-11-tahun-2025).
 - [PMK 141/PMK.03/2015 — service types, taxable base and documented exclusions](https://jdih.kemenkeu.go.id/dok/141-pmk-03-2015).
 - [DJP PPh 23 rate table](https://pajak.go.id/id/pph-pasal-23), used for standard rates and the no-NPWP multiplier only. Its older dividend conditions and filing deadlines are not adopted here.
 - [PP 34/2017 — land and building rental](https://jdih.kemenkeu.go.id/dok/pp-34-tahun-2017).

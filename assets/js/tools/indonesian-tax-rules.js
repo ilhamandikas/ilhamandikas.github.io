@@ -1,9 +1,13 @@
 // Deliberately bounded audit windows, not claims about when a law was repealed.
 // See scripts/tax/README.md before extending any window or object mapping.
+import { vatRuleFor } from './indonesian-tax-vat-rules.js';
+
 export const AUDIT_END = '2024-12-31';
 export const SOURCES = {
   hpp: { name: 'UU 7/2021, Article 17 and commencement provisions', url: 'https://www.pajak.go.id/sites/default/files/2021-12/Salinan%20UU%20Nomor%207%20Tahun%202021.pdf' },
   vat2009: { name: 'UU 42/2009, Article 7 and Article II', url: 'https://jdih.kemenkeu.go.id/dok/uu-42-tahun-2009' },
+  vat2025: { name: 'PMK 131/2024, Articles 2–6: 2025 VAT bases and retail transition', url: 'https://jdih.kemenkeu.go.id/dok/pmk-131-tahun-2024' },
+  vatSpecial2025: { name: 'PMK 11/2025, Article 2: separately regulated special-base scope (excluded)', url: 'https://jdih.kemenkeu.go.id/dok/pmk-11-tahun-2025' },
   services: { name: 'PMK 141/PMK.03/2015, Articles 1–4', url: 'https://jdih.kemenkeu.go.id/dok/141-pmk-03-2015' },
   article23: { name: 'DJP: PPh Article 23 rate table (rates only; not its outdated dividend or filing guidance)', url: 'https://pajak.go.id/id/pph-pasal-23' },
   construction: { name: 'PP 9/2022, Article 3 and Article II', url: 'https://jdih.kemenkeu.go.id/dok/pp-9-tahun-2022' },
@@ -25,7 +29,10 @@ export const EXTRA_OBJECTS = [
   { group: 'corporate', code: 'standard', name: 'Standard Article 17 corporate rate, without facilities', officialName: 'Tarif Pasal 17 ayat (1) huruf b' },
   { group: 'corporate', code: '31e', name: 'Article 31E turnover facility — not yet supported', officialName: 'Pasal 31E ayat (1)' },
   { group: 'corporate', code: 'listed', name: 'Qualifying listed-company rate — not yet supported', officialName: 'Pasal 17 ayat (2b)' },
-  { group: 'vat', code: 'ordinary', name: 'Ordinary domestic taxable goods or services, standard base', officialName: 'Penyerahan dalam negeri dengan DPP biasa' },
+  { group: 'vat', code: 'ordinary', name: 'Historical domestic VAT — ordinary base, through 2024', officialName: 'Penyerahan dalam negeri dengan DPP biasa sampai 2024' },
+  { group: 'vat', code: 'non-luxury-2025', name: '2025 domestic non-luxury goods or services — 11/12 base', officialName: 'Penyerahan BKP selain barang mewah atau JKP — Pasal 3 PMK 131/2024' },
+  { group: 'vat', code: 'luxury-retail-2025', name: '2025 domestic luxury goods — final-consumer supply', officialName: 'Penyerahan BKP mewah kepada konsumen akhir — Pasal 5 PMK 131/2024' },
+  { group: 'vat', code: 'luxury-other-2025', name: '2025 domestic luxury goods — not a final-consumer supply', officialName: 'Penyerahan BKP mewah selain kepada konsumen akhir — Pasal 2 PMK 131/2024' },
   { group: 'luxury', code: 'classification', name: 'PPnBM requires a verified goods classification and period', officialName: 'Pajak Penjualan atas Barang Mewah' },
 ];
 
@@ -41,11 +48,8 @@ export function validDate(value) {
 export function ruleFor(group, code, date) {
   if (!validDate(date)) return { available: false, reason: 'Enter a real transaction date in YYYY-MM-DD format.' };
   let rule;
-  if (group === 'vat' && code === 'ordinary') {
-    rule = date < '2022-04-01'
-      ? bounds('2010-04-01', 'vat2009', { kind: 'vat', bps: 1000, note: 'Ordinary domestic taxable supply; no exemption, export, special tax base or facility.' })
-      : bounds('2022-04-01', 'hpp', { kind: 'vat', bps: 1100, note: 'Ordinary domestic taxable supply; no exemption, export, special tax base or facility.' });
-    rule.to = date < '2022-04-01' ? '2022-03-31' : AUDIT_END;
+  if (group === 'vat') {
+    rule = vatRuleFor(code, date);
   } else if (group === 'pph21' && ['21-100-01', '21-100-02'].includes(code)) {
     rule = bounds('2022-01-01', 'hpp', {
       kind: 'progressive', note: 'Annual resident Article 17 tax from already determined PKP only. Not monthly TER, gross-up, an A1/A2 form, or last-period reconciliation.',
@@ -170,12 +174,23 @@ export function calculate({ group, code, date, amount, mode = 'gross', registere
     row('Tax before credits / previous withholding', exactMoney(result.tax));
   } else if (rule.kind === 'vat') {
     if (!['gross', 'inclusive'].includes(mode)) throw new Error('Choose a VAT-exclusive or VAT-inclusive amount.');
-    const base = mode === 'inclusive' ? fraction(input * SCALE, SCALE + BigInt(rule.bps)) : fraction(input);
-    result.tax = multiply(base, BigInt(rule.bps), SCALE);
+    const numerator = BigInt(rule.baseNumerator ?? 1);
+    const denominator = BigInt(rule.baseDenominator ?? 1);
+    const rate = BigInt(rule.bps);
+    const supply = mode === 'inclusive'
+      ? fraction(input * SCALE * denominator, SCALE * denominator + rate * numerator)
+      : fraction(input);
+    const base = multiply(supply, numerator, denominator);
+    result.tax = multiply(base, rate, SCALE);
+    const total = add(supply, result.tax);
+    result.vat = { supply, base, total };
+    row(rule.excludesPPnBM ? 'Price / reimbursement before VAT (no separate PPnBM charge)' : 'Price / reimbursement before VAT', exactMoney(supply));
+    if (rule.baseNumerator !== undefined) row('DPP adjustment', `${numerator}/${denominator} of the VAT-exclusive price`);
     row('Tax base (DPP)', exactMoney(base));
-    row('VAT rate', rateText(rule.bps));
+    row('Statutory VAT rate on DPP', rateText(rule.bps));
+    if (rule.effectiveBps !== undefined) row('Effective VAT relative to the price before VAT', rateText(rule.effectiveBps));
     row('VAT before tax-document rounding', exactMoney(result.tax));
-    row('Total including VAT', exactMoney(add(base, result.tax)));
+    row(rule.excludesPPnBM ? 'Price + VAT only (no separate PPnBM charge)' : 'Total including VAT', exactMoney(total));
   } else {
     if (!['gross', 'net'].includes(mode)) throw new Error('Choose a taxable gross base or a net-after-withholding amount.');
     if (group === 'pph23' && typeof registered !== 'boolean') throw new Error('Select the recipient’s tax registration status.');

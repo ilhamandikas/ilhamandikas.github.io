@@ -59,6 +59,56 @@ same(run('vat', 'ordinary', '11100000', { mode: 'inclusive', date: '2022-04-01' 
 same(run('vat', 'ordinary', '1', { mode: 'inclusive' }).tax, 11n, 111n);
 assert.equal(exactMoney(fraction(11n, 111n)), 'IDR 0 + 11/111 rupiah');
 
+// PMK 131/2024 Articles 2/3/5: keep statutory rate, DPP and
+// transaction price separate. These are law-derived fixtures, not claimed
+// official worked examples. PPnBM is deliberately absent from these totals.
+const vat2025 = ['non-luxury-2025', 'luxury-retail-2025', 'luxury-other-2025'];
+for (const code of vat2025) {
+  blocked('vat', code, '2024-12-31');
+  blocked('vat', code, '2026-01-01');
+  assert.equal(ruleFor('vat', code, '2025-01-01').available, true);
+  assert.equal(ruleFor('vat', code, '2025-12-31').available, true);
+}
+for (const date of ['2025-01-01', '2025-01-31', '2025-02-01', '2025-02-04', '2025-08-01', '2025-12-31']) {
+  const ordinary = run('vat', 'non-luxury-2025', '12000000', { date });
+  same(ordinary.vat.supply, 12000000n);
+  same(ordinary.vat.base, 11000000n);
+  same(ordinary.tax, 1320000n);
+  same(ordinary.vat.total, 13320000n);
+  assert.equal(ordinary.rule.bps, 1200);
+  assert.equal(ordinary.rule.effectiveBps, 1100);
+  const reverse = run('vat', 'non-luxury-2025', '13320000', { date, mode: 'inclusive' });
+  assert.deepEqual(reverse.vat, ordinary.vat);
+  same(reverse.tax, 1320000n);
+  same(run('vat', 'luxury-other-2025', '12000000', { date }).tax, 1440000n);
+}
+for (const date of ['2025-01-01', '2025-01-31']) {
+  const retail = run('vat', 'luxury-retail-2025', '12000000', { date });
+  same(retail.vat.base, 11000000n);
+  same(retail.tax, 1320000n);
+  assert.equal(retail.rule.from, '2025-01-01');
+  assert.equal(retail.rule.to, '2025-01-31');
+}
+for (const date of ['2025-02-01', '2025-12-31']) {
+  const retail = run('vat', 'luxury-retail-2025', '12000000', { date });
+  same(retail.vat.base, 12000000n);
+  same(retail.tax, 1440000n);
+  same(retail.vat.total, 13440000n);
+  assert.equal(retail.rule.from, '2025-02-01');
+  assert.equal(retail.rule.to, '2025-12-31');
+  const reverse = run('vat', 'luxury-retail-2025', '13440000', { date, mode: 'inclusive' });
+  assert.deepEqual(reverse.vat, retail.vat);
+}
+const oneRupiah = run('vat', 'non-luxury-2025', '1', { date: '2025-01-01' });
+same(oneRupiah.vat.base, 11n, 12n);
+same(oneRupiah.tax, 11n, 100n);
+same(oneRupiah.vat.total, 111n, 100n);
+same(run('vat', 'luxury-other-2025', '1', { date: '2025-01-01', mode: 'inclusive' }).tax, 3n, 28n);
+same(run('vat', 'non-luxury-2025', '999999999999999999', { date: '2025-12-31' }).tax, 10999999999999999989n, 100n);
+same(run('vat', 'non-luxury-2025', '0', { date: '2025-01-01' }).tax, 0n);
+blocked('vat', 'unknown-2025', '2025-01-01');
+assert.throws(() => run('vat', 'non-luxury-2025', '100', { date: '2025-01-01', mode: 'net' }), /VAT-exclusive/);
+
 // PMK 141/2015 annex, first worked example: taxable base 20m × 2% = 400k.
 same(run('pph23', '24-104-25', '20000000').tax, 400000n);
 same(run('pph23', '24-104-25', '10000000').tax, 200000n);
@@ -101,6 +151,11 @@ for (let i = 0; i < 500; i++) {
   assert.equal(vat.n * 111n, amount * 11n * vat.d);
   const grossup = run('pph23', '24-104-25', amount, { mode: 'net' }).tax;
   assert.equal(grossup.n * 49n, amount * grossup.d);
+  const adjusted = run('vat', 'non-luxury-2025', amount, { date: '2025-06-30', mode: 'inclusive' });
+  assert.equal(adjusted.tax.n * 111n, amount * 11n * adjusted.tax.d);
+  assert.equal(adjusted.vat.base.n * 12n * adjusted.vat.supply.d, adjusted.vat.supply.n * 11n * adjusted.vat.base.d);
+  const full = run('vat', 'luxury-retail-2025', amount, { date: '2025-02-01', mode: 'inclusive' });
+  assert.equal(full.tax.n * 28n, amount * 3n * full.tax.d);
 }
 
 const html = readFileSync(new URL('../../layouts/partials/tools/body/indonesian-tax-calculator.html', import.meta.url), 'utf8');
@@ -178,6 +233,33 @@ $('reset').click();
 assert.equal($('category').value, 'vat');
 assert.equal($('amount').value, '');
 assert.equal($('confirm').checked, false);
+assert.equal($('result').hidden, true);
+assert.equal($('copy').disabled, true);
+choose('vat', 'non-luxury-2025');
+assert.equal($('object').options.length, 4);
+assert.equal($('calculate').disabled, true);
+$('date').value = '2025-01-31'; fire('date');
+$('amount').value = '13320000'; $('mode').value = 'inclusive'; confirm(); submit();
+assert.equal($('tax').textContent, 'IDR 1,320,000');
+assert.match($('rows').textContent, /11\/12/);
+assert.match($('rows').textContent, /Statutory VAT rate on DPP12%/);
+assert.match($('rows').textContent, /Effective VAT relative to the price before VAT11%/);
+assert.equal($('sources').querySelectorAll('a').length, 2);
+$('copy').click();
+await new Promise((resolve) => setTimeout(resolve, 0));
+assert.match(copied, /DPP adjustment: 11\/12/);
+assert.match(copied, /pmk-131-tahun-2024/);
+choose('vat', 'luxury-retail-2025');
+$('mode').value = 'gross'; $('amount').value = '12000000'; confirm(); submit();
+assert.equal($('tax').textContent, 'IDR 1,320,000');
+$('date').value = '2025-02-01'; fire('date');
+assert.equal($('confirm').checked, false);
+assert.equal($('result').hidden, true);
+confirm(); submit();
+assert.equal($('tax').textContent, 'IDR 1,440,000');
+assert.match($('rows').textContent, /no separate PPnBM charge/);
+$('date').value = '2026-01-01'; fire('date');
+assert.equal($('calculate').disabled, true);
 assert.equal($('result').hidden, true);
 assert.equal($('copy').disabled, true);
 assert.equal(document.querySelectorAll('input:not([data-no-memory]), select:not([data-no-memory]), textarea:not([data-no-memory])').length, 0);

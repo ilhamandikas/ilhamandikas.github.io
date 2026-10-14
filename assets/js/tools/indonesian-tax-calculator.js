@@ -48,8 +48,8 @@ function updateScenario() {
     $('amount-label').textContent = 'Taxable income (PKP), after deductions and PTKP where applicable (IDR)';
     $('mode').append(option('gross', 'Annual taxable income (PKP)'));
   } else if (kind === 'vat') {
-    $('amount-label').textContent = 'Supply amount (IDR)';
-    $('mode').append(option('gross', 'VAT-exclusive price / reimbursement'), option('inclusive', 'Total including VAT'));
+    $('amount-label').textContent = rule.excludesPPnBM ? 'Price / reimbursement or price + VAT only (IDR; no separate PPnBM charge)' : 'Supply amount (IDR)';
+    $('mode').append(option('gross', 'VAT-exclusive price / reimbursement'), option('inclusive', 'Price + VAT only'));
   } else {
     $('amount-label').textContent = 'Taxable gross base or agreed net amount, excluding VAT (IDR)';
     $('mode').append(option('gross', 'Taxable gross base'), option('net', 'Net after withholding — calculate gross-up'));

@@ -12,6 +12,8 @@ coverage as calculation coverage or as a complete national code registry.
   effective dates are inferred from HTML attributes.
 - `assets/js/tools/indonesian-tax-rules.js`: pure calculation functions,
   explicit audit windows, source identifiers, and unsupported-scenario handling.
+- `assets/js/tools/indonesian-tax-vat-rules.js`: historical and 2025 VAT
+  scenario selection, statutory rates, base factors and retail transition.
 - `assets/js/tools/indonesian-tax-calculator.js`: DOM adapter only.
 - `content/guides/indonesian-tax-calculator.md`: English walkthrough, limitations,
   source links and worked examples.
@@ -70,7 +72,10 @@ added to the project or shipped to visitors.
 | [DJP PPh 23 page](https://pajak.go.id/id/pph-pasal-23) | Standard 2%/15% rates and 100%-higher no-NPWP rate only. Do not adopt its outdated dividend conditions or filing deadlines | `901eb6b0256b90f2097c3e996aff7a57ddc83f8e9563b3ead789c84e412e7257` |
 | [PP 34/2017](https://jdih.kemenkeu.go.id/dok/pp-34-tahun-2017) | Articles 2/4 rental scope and 10% base including related charges; Article 7 starts 2018-01-02; explanation example IDR 200m + 15m | `2f5af8d0c92628fa4f1a0607b41bc20a25cc76b74878dc678b2a24f0f29ddad6` |
 | [PP 9/2022](https://jdih.kemenkeu.go.id/dok/pp-9-tahun-2022) | Article 3 seven construction rates; Article II payment-date transition, effective 2022-02-21 | `aeabd03bc870e8328c85b6e3b31218a0560ff939c16457c9fb2deba0699796da` |
-| [PMK 131/2024](https://jdih.kemenkeu.go.id/dok/pmk-131-tahun-2024) | Inspected to establish why the historical VAT model must NOT be extrapolated: Articles 2–5 distinguish luxury goods, adjusted bases, separate special regimes and January 2025 consumer transitions. Not implemented | `bd2b45907407c6640a6313500adb87c5a95854d79df3b53c1f5064ace71305cd` |
+| [PMK 131/2024](https://jdih.kemenkeu.go.id/dok/pmk-131-tahun-2024) | Articles 2–6: statutory 12%, 11/12 ordinary non-luxury base, special-regime exclusions, January final-consumer luxury transition; effective 2025-01-01 | `bd2b45907407c6640a6313500adb87c5a95854d79df3b53c1f5064ace71305cd` |
+| [PMK 11/2025](https://jdih.kemenkeu.go.id/dok/pmk-11-tahun-2025) | Article 2 explicitly distinguishes its special bases from Article 3 of PMK 131/2024. Special scenarios are excluded, not assigned ordinary rates | `373a13e091cc697145b6624aa450c3dc60c8594501e900685964584152b35b6c` |
+| [PMK 52/2025](https://jdih.kemenkeu.go.id/dok/pmk-52-tahun-2025) | Reviewed amendments concerning gold; gold-specific treatment is not implemented and excluded from ordinary scenarios | `068bf8cf20f74f88158dd7bbf526945be818a9c2f860151c707be2ed9c0b2cc1` |
+| [PMK 53/2025](https://jdih.kemenkeu.go.id/dok/pmk-53-tahun-2025) | Article I amends PMK 11 Article 20: insurance commissions, self-building, and deleted provisions; effective 2025-08-01. These special cases remain excluded | `8e01b291898f145c1b87649b9dbf53308a8e3cb75537eb954202c4afde1ebce5` |
 
 Some JDIH `.../view` routes returned fallback HTML despite a successful HTTP
 response. Use the linked document routes and inspect the actual downloaded
@@ -79,7 +84,8 @@ PDF; HTTP 200 alone is not evidence that the regulation was retrieved.
 ## Supported calculations
 
 Audit windows are deliberately narrower than regulations' full legal lifetimes.
-The common end date **2024-12-31** is a coverage boundary, not a repeal date.
+The income-tax end date **2024-12-31** and selected domestic VAT end date
+**2025-12-31** are coverage boundaries, not repeal dates.
 
 - Annual resident Article 17 from **already determined PKP**, 2022–2024;
   reference employee/pension objects only. No gross-to-PKP, monthly TER,
@@ -89,6 +95,16 @@ The common end date **2024-12-31** is a coverage boundary, not a repeal date.
 - Ordinary domestic VAT, 2010-04-01 through 2024-12-31. 10% before
   2022-04-01; 11% from that date. Exclude exports, exemptions, special bases
   and facilities. Gross/exclusive and VAT-inclusive inputs.
+- Explicit 2025 domestic VAT scenarios: non-luxury goods/services use 12%
+  on 11/12 DPP; luxury final-consumer supplies use that adjusted base in
+  January and full DPP from February; other taxable domestic luxury supplies
+  use full DPP throughout 2025. The non-luxury model excludes special regimes
+  under PMK 11/2025 and amendments, exemptions, facilities and imports. All
+  three models are VAT-only; PPnBM itself and goods classification remain
+  unsupported. Inputs are the unadjusted selling price/reimbursement or that
+  price plus VAT only, without separately charged PPnBM. Embedded costs must
+  not be deducted from the price. Preserve exact fractional DPP without
+  rounding before multiplication; inclusive reversal uses the effective burden.
 - PPh 23 standard services `24-104-01` through `65` and standard taxable
   awards, non-land/building asset rental, interest and royalties,
   2016–2024. The 2016 lower limit is intentionally conservative, not the
@@ -124,9 +140,10 @@ exemption, certificate, residency or liability determination.
    simplified assumptions as authoritative tax law.
 6. Implement corporate Article 31E, listed-company eligibility and historical
    standard rates, credits and instalments where the mode promises them.
-7. Audit 2025+ VAT and PPnBM goods classification, statutory versus effective
-   rates, adjusted bases, retail transition rules, special amounts and subsequent
-   amendments. Source inspection of PMK 131/2024 alone is not full coverage.
+7. Complete VAT imports, 2026+ rules, special-base/specified-amount regimes,
+   facilities and PPnBM goods classification/rates. Selected ordinary domestic
+   2025 scenarios are implemented, not comprehensive 2025 VAT coverage.
+   Audit subsequent amendments before extending the calendar-year cutoff.
 8. Specify tax-document rounding from authoritative rules for each output type;
    test gross-up after rounding when that capability is added.
 9. Extend tests with official worked examples and start/end ±1 day fixtures
@@ -165,3 +182,21 @@ jsdom's semantic/behaviour tests; jsdom cannot establish responsive layout.
   The same result was reproduced on the pre-tax baseline commit `9f61cf1`.
   No search ranking change is included in this feature. Both sitemap checks,
   including exclusion of this noindex tool, pass.
+
+### 2025 VAT extension validation (2026-10-14)
+
+- Law-derived fixtures verify the January 1 start, January 31 / February 1
+  final-consumer transition, ordinary non-luxury and other luxury supplies,
+  exact fractional DPP, reverse VAT, zero and 18-digit inputs, and rejection
+  of 2024 dates for new scenarios and all 2026 dates.
+- Each of 500 varied amounts also checks exact 2025 reverse-VAT identities
+  for both adjusted and full DPP, independently of the production arithmetic.
+- DOM tests verify scenario selection, reset of confirmations/stale results
+  across the retail transition, statutory-versus-effective rate labels,
+  references and copied adjusted-base reports.
+- Hugo build, AI/link checks and dedicated tax tests pass. The full DOM/e2e
+  command booted 186 tools without uncaught errors; it still fails only the
+  existing OpenSSL ranking expectation, so the full suite is not reported green.
+- Chromium checks pass for the tool and guide at 320/375/768/1280 pixels in
+  light/dark modes, including 2025 reverse VAT and the retail transition.
+  No horizontal page overflow or financial-input storage was detected.

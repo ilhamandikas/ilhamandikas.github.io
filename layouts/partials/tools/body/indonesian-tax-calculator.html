@@ -1,7 +1,7 @@
 <div class="tool-panel">
   <h2>Calculate Indonesian tax</h2>
   <p class="tool-hint"><strong>Experimental · partial coverage.</strong> Runs locally in your browser. Amounts are not uploaded or saved by this tool. Independent calculator, not affiliated with DJP.</p>
-  <p class="tool-hint">The reference catalogue contains all 193 object options from the downloaded DJP calculator, not every national or historical filing code. Audited calculations cover selected scenarios only, ending <strong>2024-12-31</strong>. Later dates and unaudited scenarios are blocked. <a href="#itc-coverage">Check coverage before relying on a result.</a></p>
+  <p class="tool-hint">The reference catalogue contains all 193 object options from the downloaded DJP calculator, not every national or historical filing code. Income-tax coverage ends on <strong>2024-12-31</strong>; selected domestic VAT scenarios also cover <strong>2025</strong>. Unsupported dates and scenarios are blocked. <a href="#itc-coverage">Check coverage before relying on a result.</a></p>
   <noscript><p>This calculator requires JavaScript. The coverage notes and linked guide remain available below.</p></noscript>
   <form id="itc-form" autocomplete="off" novalidate>
     <div class="tool-field">
@@ -86,10 +86,11 @@
         <tr><th scope="row">Construction</th><td>2022-02-21 – 2024-12-31</td><td>PP 9/2022 provider/certificate categories; payment excluding VAT.</td></tr>
         <tr><th scope="row">Corporate income tax</th><td>2022-01-01 – 2024-12-31</td><td>Standard 22% from PKP, before credits. No facilities or listed-company reduction.</td></tr>
         <tr><th scope="row">Ordinary domestic VAT</th><td>2010-04-01 – 2024-12-31</td><td>10% through 2022-03-31; 11% from 2022-04-01. No export, exemption, special base or facility.</td></tr>
+        <tr><th scope="row">2025 domestic VAT</th><td>2025-01-01 – 2025-12-31</td><td>Explicit non-luxury and luxury scenarios under PMK 131/2024. Statutory 12%, adjusted 11/12 DPP where applicable, and the January final-consumer transition. VAT only; no PPnBM amount, imports, special regimes or facilities.</td></tr>
         <tr><th scope="row">PPh 22, PPh 15, other final-tax objects, PPnBM</th><td>Not audited</td><td>Reference only. No automatic or user-invented rate fallback.</td></tr>
       </tbody>
     </table>
   </div>
-  <p class="tool-hint">Coverage limits are conservative audit boundaries, not legal repeal dates. In particular, do not extrapolate the historical VAT model to 2025 or later. Full historical code validity and the remaining tax scenarios are not implemented yet.</p>
+  <p class="tool-hint">Coverage limits are conservative audit boundaries, not legal repeal dates. Use the explicit 2025 VAT scenarios for that year, not the historical ordinary-base mode. No scenario supports 2026 or later yet. Full historical code validity and the remaining tax scenarios are not implemented yet.</p>
   <p class="tool-hint">For salary after tax and employee contributions, use the separate <a href="/tools/take-home-pay-calculator/">Take-Home Pay Calculator</a>. This calculator focuses on tax, not net salary.</p>
 </section>
