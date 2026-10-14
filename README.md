@@ -434,6 +434,12 @@ same logic:
   is *measured* to be unreadable by OpenSSH 9.6, not assumed to be.
 - **File hashes** are compared against `crypto.createHash` over bytes that are
   deliberately not valid UTF-8.
+- **tar and rsync commands** run against real GNU `tar` and `rsync` in disposable
+  temporary directories. `scripts/domtest/archive-transfer-builders.mjs` checks
+  archive round trips, excludes, overwrite refusal, source trailing slashes,
+  dry-run behavior, destination deletion, and POSIX shell quoting. Both commands
+  must be installed to run this test; it never makes an SSH connection. Run it
+  directly with `node scripts/domtest/archive-transfer-builders.mjs`.
 
 Two limits are worth stating rather than glossing over. jsdom has no layout engine,
 no canvas and no `<script type="module">`, so the PNG export path, the QR logo

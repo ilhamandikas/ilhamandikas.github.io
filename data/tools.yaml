@@ -376,6 +376,16 @@
       desc: Generate a foreground application service with a non-root user, restart policy, environment file, and installation commands.
       keywords: [systemd, service, unit, linux, deploy, restart, systemctl, journalctl, environment file, daemon]
       status: done
+    - slug: tar-command-builder
+      name: tar Command Builder
+      desc: Build GNU tar create, list, and extract commands with compression, excludes, path stripping, and overwrite warnings.
+      keywords: [tar, archive, extract, gzip, bzip2, xz, zstd, backup, exclude, linux, command, builder]
+      status: done
+    - slug: rsync-command-builder
+      name: rsync Command Builder
+      desc: Build local or SSH directory transfers with dry-run, trailing-slash explanations, excludes, bandwidth limits, and guarded deletion.
+      keywords: [rsync, sync, transfer, copy, ssh, backup, dry run, delete, exclude, trailing slash, linux, command, builder]
+      status: done
     - slug: find-command-builder
       name: find Command Builder
       desc: Assemble a find command with name, type, size, age and depth tests, then choose to print, delete or exec on each match.

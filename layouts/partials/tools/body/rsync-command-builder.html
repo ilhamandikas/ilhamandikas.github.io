@@ -1,0 +1,43 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally; inputs are not uploaded or saved. Builds directory-transfer commands for rsync on a POSIX shell. It does not connect to SSH, inspect files, or transfer anything.</p>
+  <label class="tool-field"><span>Transfer direction</span><select id="rs-mode" class="tool-select" data-no-memory><option value="local">Local → local</option><option value="upload">Local → SSH server (upload)</option><option value="download">SSH server → local (download)</option></select></label>
+  <div class="tool-grid-2">
+    <label class="tool-field"><span id="rs-source-label">Local source directory</span><input id="rs-source" class="tool-input" type="text" value="/opt/example-app" data-no-memory></label>
+    <label class="tool-field"><span id="rs-destination-label">Local destination directory</span><input id="rs-destination" class="tool-input" type="text" value="/srv/backups/example-app" data-no-memory></label>
+  </div>
+  <label class="tool-check"><input id="rs-contents" type="checkbox" checked data-no-memory> Copy directory contents (add a trailing / to the source)</label>
+  <p id="rs-slash-help" class="tool-hint"></p>
+  <div id="rs-ssh-fields" hidden>
+    <div class="tool-grid-2">
+      <label class="tool-field"><span>SSH host (hostname or IPv4; no host:path syntax)</span><input id="rs-host" class="tool-input" type="text" value="backup.example.com" data-no-memory></label>
+      <label class="tool-field"><span>SSH user (optional)</span><input id="rs-user" class="tool-input" type="text" value="deploy" data-no-memory></label>
+      <label class="tool-field"><span>SSH port</span><input id="rs-port" class="tool-input" type="number" min="1" max="65535" value="22" data-no-memory></label>
+      <label class="tool-field"><span>Local SSH identity file path (optional; not key contents)</span><input id="rs-identity" class="tool-input" type="text" placeholder="/home/user/.ssh/id_ed25519" data-no-memory></label>
+    </div>
+    <p class="tool-hint">SSH mode uses -s to protect remote arguments and requires rsync 3.0+ on both sides. Remote paths must be absolute. IPv6 host notation, rsync daemons, and remote-to-remote copies are not supported. Identity paths are limited to letters, digits, underscores, hyphens, dots, and slashes.</p>
+  </div>
+  <label class="tool-field"><span>rsync exclude patterns (optional, one per line)</span><textarea id="rs-excludes" class="tool-input tool-code" rows="3" spellcheck="false" data-no-memory placeholder="node_modules/&#10;*.log"></textarea></label>
+  <label class="tool-field"><span>Bandwidth limit in KiB/s (optional)</span><input id="rs-bandwidth" class="tool-input" type="number" min="1" max="1000000000" placeholder="10240" data-no-memory></label>
+  <div class="tool-row">
+    <label class="tool-check"><input id="rs-dryRun" type="checkbox" checked data-no-memory> Dry-run: show changes without transferring</label>
+    <label class="tool-check"><input id="rs-compress" type="checkbox" data-no-memory> Compress transferred data</label>
+    <label class="tool-check"><input id="rs-checksum" type="checkbox" data-no-memory> Compare checksums (extra disk I/O)</label>
+    <label class="tool-check"><input id="rs-delete" type="checkbox" data-no-memory> Delete destination-only entries (--delete)</label>
+  </div>
+  <label id="rs-delete-confirm" class="tool-check" hidden><input id="rs-ackDelete" type="checkbox" data-no-memory> I understand this real command can delete destination-only files. I have checked source, destination, and the dry-run.</label>
+  <p class="tool-hint">Use /absolute or ./relative directory paths, without .. segments, wildcards, or tilde expansion. Source and destination are separate fields; do not paste user@host:path into either. The destination is always treated as a directory. Nothing here checks symlinks, overlapping trees, or missing mounts.</p>
+  <p id="rs-status" class="tool-status" role="status" aria-live="polite"></p>
+</div>
+<div class="tool-panel">
+  <h2>Command</h2>
+  <label class="tool-field"><span>Generated rsync command</span><textarea id="rs-output" class="tool-input tool-code" rows="5" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row"><button id="rs-copy" class="btn" type="button" data-copy="#rs-output" data-status="#rs-copy-status">Copy command</button><span id="rs-copy-status" class="tool-status" role="status"></span></div>
+  <ul id="rs-warnings" class="tool-hint" aria-label="Transfer warnings"></ul>
+  <ul id="rs-explanations" class="tool-hint" aria-label="Option explanations"></ul>
+</div>
+<div class="tool-panel">
+  <h2>Dry-run first</h2>
+  <label class="tool-field"><span>Preview command (always includes --dry-run)</span><textarea id="rs-preview" class="tool-input tool-code" rows="5" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row"><button id="rs-copy-preview" class="btn" type="button" data-copy="#rs-preview" data-status="#rs-copy-status">Copy dry-run</button></div>
+  <p class="tool-hint">A dry-run still reads local paths and may connect and authenticate over SSH when you run it. Inspect its itemized output, including any *deleting entries. A later real run can differ if the filesystem changes.</p>
+</div>
