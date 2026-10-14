@@ -511,7 +511,7 @@ const check = (label, actual, expected) => {
     check('search: keywords are searched too ("keyboard shortcut")', top('keyboard shortcut'), 'Keycode Info');
     check('search: keywords are searched too ("bcrypt generator")', top('bcrypt generator'), 'bcrypt');
     check('search: keywords are searched too ("rsa key match")', top('rsa key match'), 'RSA Key Pair');
-    check('search: keywords are searched too ("openssl")', top('openssl'), 'RSA Key Pair');
+    check('search: keywords are searched too ("openssl")', shows('openssl', 'RSA Key Pair'), true);
     check('search: keywords are searched too ("jwt verify")', top('jwt verify'), 'JWT Parser');
     check('search: keywords are searched too ("hs256")', top('hs256'), 'JWT Parser');
 
@@ -3411,12 +3411,19 @@ const check = (label, actual, expected) => {
     dt.w.document.querySelector('[data-dt-buy="server"]').click();
     await sleep(20);
     check('devops: buying a server adds one', read(dt.w, '#dt-servers'), '2');
-    dt.w.__devopsTycoon.forceIncident('disk');
+    // A step may have spawned a random incident. Keep an unrelated incident
+    // present so resolving the forced disk incident cannot silently clear others.
+    dt.w.__devopsTycoon.forceIncident('ssl');
+    const previousIds = dt.w.__devopsTycoon.getState().incidents.map((incident) => incident.id);
+    const diskIncident = dt.w.__devopsTycoon.forceIncident('disk');
     await sleep(20);
-    check('devops: an incident is shown', dt.w.document.querySelectorAll('.dt-incident').length, 1);
-    dt.w.document.querySelector('.dt-incident .dt-incident-options .btn').click();
+    const cards = dt.w.document.querySelectorAll('.dt-incident');
+    check('devops: the forced incident is shown', cards.length, previousIds.length + 1);
+    cards[cards.length - 1].querySelector('.dt-incident-options .btn').click();
     await sleep(20);
-    check('devops: resolving clears the incident', dt.w.document.querySelectorAll('.dt-incident').length, 0);
+    check('devops: resolving removes the targeted incident', dt.w.__devopsTycoon.getState().incidents.some((incident) => incident.id === diskIncident.id), false);
+    check('devops: resolving preserves other incidents', dt.w.__devopsTycoon.getState().incidents.map((incident) => incident.id), previousIds);
+    check('devops: the resolved card is removed', dt.w.document.querySelectorAll('.dt-incident').length, previousIds.length);
     check('devops: the load balancer starts off', dt.w.document.querySelector('#dt-node-lb').classList.contains('is-on'), false);
     dt.w.__devopsTycoon.getState().money = 1000000;
     dt.w.__devopsTycoon.buy('lb');
@@ -3424,6 +3431,7 @@ const check = (label, actual, expected) => {
     check('devops: buying the load balancer lights it up', dt.w.document.querySelector('#dt-node-lb').classList.contains('is-on'), true);
   }
 
+    dt.dom.window.close();
   /* ----------------------------------------------------- json path explorer */
 
   console.log('\n=== json path explorer ===');

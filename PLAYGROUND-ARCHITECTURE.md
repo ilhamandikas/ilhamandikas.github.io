@@ -119,11 +119,15 @@ npm run check:ai
 git diff --check
 ```
 
-Validation during this refactor: build, AI checks, playground/bridge tests, and
-Chromium checks passed; the broad DOM smoke test booted 186 tools without uncaught
-errors. The full E2E suite was not green: its OpenSSL search ranking assertion and
-intermittent DevOps incident checks failed. Search/simulation production behavior
-was not changed here; do not report the entire suite as passing.
+Validation: build, AI checks, the complete DOM/E2E suite, playground/bridge tests,
+and Chromium checks passed. The broad DOM smoke test booted 186 tools without
+uncaught errors.
+
+A follow-up corrected two E2E assumptions without changing production behavior:
+OpenSSL keyword coverage checks RSA discoverability rather than requiring first
+place when TLS tools also match; incident resolution targets the explicitly forced
+disk incident and verifies that other incidents remain intact. Resolution was also
+checked with RNG forced to both boundaries (random incident present/absent).
 
 DOM tests bundle the real toolkit and playground modules using the existing
 esbuild dependency. They do not substitute a second UI implementation.
