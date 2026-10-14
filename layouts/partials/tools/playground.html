@@ -22,13 +22,13 @@
     <div class="jsp-example-picker">
       <div class="tool-field">
         <label for="jsp-category">Example category</label>
-        <select id="jsp-category" data-no-memory>
+        <select id="jsp-category" class="tool-select" data-no-memory>
           <option value="">All categories</option>
         </select>
       </div>
       <div class="tool-field">
         <label for="jsp-example">Code example</label>
-        <select id="jsp-example" aria-describedby="jsp-example-hint" data-no-memory>
+        <select id="jsp-example" class="tool-select" aria-describedby="jsp-example-hint" data-no-memory>
           <option value="">Choose an example…</option>
           {{ range $index, $example := $items }}<option value="{{ $index }}">{{ $example.name }}</option>{{ end }}
         </select>
