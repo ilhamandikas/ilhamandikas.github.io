@@ -25,7 +25,7 @@
         {{- end -}}
       </div>
       {{ partial "tools/learn.html" $slug }}
-      {{ if not $meta.playground }}
+      {{ if and (not $meta.playground) (not .Params.no_memory) }}
       {{ partial "tools/history.html" . }}
       {{ partial "tools/memory.html" . }}
       {{ end }}

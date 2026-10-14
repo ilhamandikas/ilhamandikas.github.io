@@ -193,6 +193,11 @@
       desc: Encrypt and decrypt text with AES.
       keywords: [aes, encrypt, decrypt, cipher, crypto]
       status: done
+    - slug: tls-certificate-decoder
+      name: TLS Certificate Decoder
+      desc: Decode X.509 PEM certificates to inspect subject, issuer, SANs, validity dates, public key details, and SHA-256 fingerprints locally.
+      keywords: [tls, ssl, certificate, x509, pem, san, subject alternative name, issuer, expiry, fingerprint, openssl, chain]
+      status: done
     - slug: rsa-key-pair
       name: RSA Key Pair
       desc: Generate an RSA public and private key pair, and check whether two keys match.
@@ -723,6 +728,11 @@
       name: Line Comma Formatter
       desc: Add commas, quotes, arrays or SQL IN formatting to one-item-per-line lists.
       keywords: [list, comma, lines, quote, array, sql in, csv, formatter]
+      status: done
+    - slug: env-diff-checker
+      name: .env Diff Checker
+      desc: Compare two .env configurations for missing keys, changed values, and empty values, with result values hidden by default.
+      keywords: [env, dotenv, environment, variables, config, diff, compare, staging, production, missing keys, secrets]
       status: done
     - slug: env-key-sorter
       name: .env Key Sorter

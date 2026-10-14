@@ -1,0 +1,24 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally in your browser. Certificate input is not uploaded or saved. Paste certificates only—never private keys.</p>
+  <label class="tool-field"><span>X.509 certificate or PEM bundle</span>
+    <textarea id="tls-input" class="tool-input tool-code" rows="12" spellcheck="false" autocomplete="off" data-no-memory placeholder="-----BEGIN CERTIFICATE-----&#10;...&#10;-----END CERTIFICATE-----"></textarea>
+  </label>
+  <div class="tool-row">
+    <button id="tls-decode" class="btn primary" type="button">Decode</button>
+    <button id="tls-example" class="btn" type="button">Load example</button>
+    <button id="tls-clear" class="btn" type="button">Clear</button>
+    <span id="tls-status" class="tool-status" role="status" aria-live="polite">Paste a certificate to inspect its fields.</span>
+  </div>
+  <p class="tool-hint">Up to 20 PEM certificates, maximum 1,000,000 input characters. Dates are shown in UTC and checked against your device clock. This does not check signatures, hostname matches, trust chains, or revocation, and does not contact a server. A bundle is decoded in input order, not verified as a chain.</p>
+</div>
+<div class="tool-panel">
+  <h2>Certificate details</h2>
+  <label class="tool-field"><span>Decoded report</span>
+    <textarea id="tls-output" class="tool-input tool-code" rows="20" readonly spellcheck="false" data-no-memory placeholder="Subject, issuer, SANs, validity dates, algorithms, serial number, and SHA-256 fingerprint will appear here."></textarea>
+  </label>
+  <div class="tool-row">
+    <button id="tls-copy" class="btn" type="button" disabled data-copy="#tls-output" data-status="#tls-copy-status">Copy report</button>
+    <span id="tls-copy-status" class="tool-status" role="status"></span>
+  </div>
+  <p class="tool-hint">The report can include internal domain names, email addresses, and IP addresses. Review it before sharing. Extensions other than SAN are listed by OID but not decoded.</p>
+</div>

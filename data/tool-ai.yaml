@@ -3,6 +3,51 @@
 # small: most tools already get their keywords from data/tools.yaml and their
 # example questions from the FAQ in each tool guide (content/guides/*.md).
 
+tls-certificate-decoder:
+  features:
+    - Decode core X.509 certificate fields and SANs
+    - Inspect UTC validity dates against the device clock
+    - Compute a SHA-256 certificate fingerprint
+    - Decode up to 20 PEM certificates in input order
+  input:
+    type: text
+    format: X.509 CERTIFICATE PEM blocks
+    sensitive: true
+  output:
+    type: text
+    format: Decoded certificate report
+  limitations:
+    - No signature, trust chain, hostname, or revocation verification
+    - No remote server connection
+    - Only SAN extensions are decoded; others are listed by OID
+    - RSA-PSS parameters and uncommon name string types are not decoded
+    - PEM only, with a 1,000,000-character input limit
+  related_tools:
+    - nginx-reverse-proxy-wizard
+    - file-hash-checker
+
+env-diff-checker:
+  features:
+    - Compare missing, changed, unchanged, and empty values
+    - Hide result values by default
+    - Copy a key-only report
+    - Reject duplicate keys and unsupported syntax
+  input:
+    type: text
+    format: Two single-line .env configurations
+    sensitive: true
+  output:
+    type: table
+    format: Key statuses and optionally revealed literal values
+  limitations:
+    - Single-line assignments only; no multiline values
+    - Variable references and escapes are not expanded
+    - Duplicate keys are rejected
+    - Input text is visible; only result values are masked
+  related_tools:
+    - env-key-sorter
+    - text-diff
+
 linux-ops:
   use_cases:
     - check which process uses a port

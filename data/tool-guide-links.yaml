@@ -109,6 +109,12 @@ email-normalizer:
 emoji-picker:
   title: Emoji Picker Guide
   url: /guides/emoji-picker/
+tls-certificate-decoder:
+  title: TLS Certificate Decoder Guide
+  url: /guides/tls-certificate-decoder/
+env-diff-checker:
+  title: .env Diff Checker Guide
+  url: /guides/env-diff-checker/
 env-key-sorter:
   title: .env Key Sorter Guide
   url: /guides/env-key-sorter/

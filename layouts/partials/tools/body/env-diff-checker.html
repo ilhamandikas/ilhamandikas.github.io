@@ -1,0 +1,35 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally in your browser. Inputs are not uploaded or saved. Pasted inputs remain visible; result values are hidden by default.</p>
+  <div class="tool-grid-2">
+    <label class="tool-field"><span>Left .env (baseline, e.g. staging)</span>
+      <textarea id="ed-left" class="tool-input tool-code" rows="10" spellcheck="false" autocomplete="off" data-no-memory placeholder="APP_ENV=staging&#10;PORT=3000"></textarea>
+    </label>
+    <label class="tool-field"><span>Right .env (e.g. production)</span>
+      <textarea id="ed-right" class="tool-input tool-code" rows="10" spellcheck="false" autocomplete="off" data-no-memory placeholder="APP_ENV=production&#10;PORT=3000"></textarea>
+    </label>
+  </div>
+  <div class="tool-row">
+    <button id="ed-run" class="btn primary" type="button">Compare</button>
+    <button id="ed-example" class="btn" type="button">Load example</button>
+    <button id="ed-clear" class="btn" type="button">Clear</button>
+  </div>
+  <p class="tool-hint">Single-line KEY=value assignments only. Comments and optional export prefixes are ignored. Outer quotes are removed; escapes and ${VARIABLE} references are compared literally, not expanded. Keys are case-sensitive. Duplicate keys and multiline values must be resolved first. Maximum 1,000,000 characters per input.</p>
+</div>
+<div class="tool-panel">
+  <h2>Comparison</h2>
+  <div class="tool-row">
+    <label class="tool-check"><input id="ed-same" type="checkbox" data-no-memory> Include unchanged keys</label>
+    <label class="tool-check"><input id="ed-reveal" type="checkbox" data-no-memory> Reveal result values</label>
+    <button id="ed-copy" class="btn" type="button" disabled data-copy="#ed-report" data-status="#ed-copy-status">Copy key-only report</button>
+    <span id="ed-copy-status" class="tool-status" role="status"></span>
+  </div>
+  <p id="ed-status" class="tool-status" role="status" aria-live="polite">Paste two .env configurations, then compare. An empty side is treated as having no keys.</p>
+  <div class="tool-table-wrap">
+    <table class="tool-table" id="ed-table" hidden>
+      <caption>Configuration keys and literal value differences</caption>
+      <thead><tr><th scope="col">Key</th><th scope="col">Status</th><th scope="col">Left value</th><th scope="col">Right value</th></tr></thead>
+      <tbody id="ed-results"></tbody>
+    </table>
+  </div>
+  <textarea id="ed-report" hidden readonly data-no-memory></textarea>
+</div>
