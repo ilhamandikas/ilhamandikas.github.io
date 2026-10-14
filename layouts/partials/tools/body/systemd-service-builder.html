@@ -1,0 +1,41 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally. Inputs are not uploaded or saved. Generates a system-level service for a foreground application under an existing non-root account; nothing is installed or executed here.</p>
+  <div class="tool-grid-2">
+    <label class="tool-field"><span>Service name (without .service)</span><input id="sd-name" class="tool-input" type="text" value="example-app" data-no-memory></label>
+    <label class="tool-field"><span>Description</span><input id="sd-description" class="tool-input" type="text" value="Example application" data-no-memory></label>
+    <label class="tool-field"><span>Executable (absolute path)</span><input id="sd-executable" class="tool-input" type="text" value="/usr/bin/node" data-no-memory></label>
+    <label class="tool-field"><span>Working directory (absolute path)</span><input id="sd-directory" class="tool-input" type="text" value="/opt/example-app" data-no-memory></label>
+    <label class="tool-field"><span>Existing service user</span><input id="sd-user" class="tool-input" type="text" value="app" data-no-memory></label>
+    <label class="tool-field"><span>Group (optional; otherwise user's primary group)</span><input id="sd-group" class="tool-input" type="text" placeholder="app" data-no-memory></label>
+  </div>
+  <label class="tool-field"><span>Arguments (one literal argument per line; blank lines ignored)</span><textarea id="sd-args" class="tool-input tool-code" rows="4" spellcheck="false" data-no-memory>/opt/example-app/server.js</textarea></label>
+  <p class="tool-hint">Do not paste a shell command. Spaces inside a line belong to that single argument. Dollar signs and percent signs are escaped as literals: no variable expansion, pipes, redirects, or shell evaluation.</p>
+  <label class="tool-field"><span>Environment file path (optional; do not paste its contents)</span><input id="sd-envFile" class="tool-input" type="text" placeholder="/etc/example-app.env" data-no-memory></label>
+  <div class="tool-row">
+    <label class="tool-inline">Restart policy <select id="sd-restart" class="tool-select" data-no-memory><option value="on-failure">On failure</option><option value="always">Always</option><option value="no">Never</option></select></label>
+    <label class="tool-inline">Restart delay (seconds) <input id="sd-restartSec" class="tool-input" type="number" min="1" max="3600" value="5" data-no-memory></label>
+    <label class="tool-inline">Stop timeout (seconds) <input id="sd-stopSec" class="tool-input" type="number" min="1" max="3600" value="30" data-no-memory></label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input id="sd-envOptional" type="checkbox" data-no-memory> Ignore a missing environment file</label>
+    <label class="tool-check"><input id="sd-network" type="checkbox" data-no-memory> Wait for network-online.target</label>
+    <label class="tool-check"><input id="sd-harden" type="checkbox" data-no-memory> NoNewPrivileges + PrivateTmp</label>
+  </div>
+  <p class="tool-hint">Network ordering is not a guarantee of connectivity. Hardening is optional: it prevents gaining privileges and isolates /tmp and /var/tmp, which can change application behavior. Review paths, permissions, and environment-file syntax on your server.</p>
+  <div class="tool-row"><button id="sd-reset" class="btn" type="button">Reset example</button><span id="sd-status" class="tool-status" role="status" aria-live="polite"></span></div>
+</div>
+<div class="tool-panel">
+  <h2>Service unit</h2>
+  <label class="tool-field"><span>Generated .service file</span><textarea id="sd-output" class="tool-input tool-code" rows="18" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row">
+    <button id="sd-copy" class="btn" type="button" data-copy="#sd-output" data-status="#sd-copy-status">Copy unit</button>
+    <button id="sd-download" class="btn" type="button" data-download="#sd-output" data-filename="example-app.service" data-mime="text/plain">Download .service</button>
+    <span id="sd-copy-status" class="tool-status" role="status"></span>
+  </div>
+</div>
+<div class="tool-panel">
+  <h2>Review and install on your server</h2>
+  <p class="tool-hint">These commands modify system configuration and start the application when you run them. Download the unit first. Create the service account and deploy the application separately; the builder cannot check either exists.</p>
+  <label class="tool-field"><span>Installation and troubleshooting commands</span><textarea id="sd-commands" class="tool-input tool-code" rows="13" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row"><button id="sd-copy-commands" class="btn" type="button" data-copy="#sd-commands" data-status="#sd-copy-status">Copy commands</button></div>
+</div>

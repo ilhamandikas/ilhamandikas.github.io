@@ -109,6 +109,9 @@ email-normalizer:
 emoji-picker:
   title: Emoji Picker Guide
   url: /guides/emoji-picker/
+systemd-service-builder:
+  title: systemd Service Builder Guide
+  url: /guides/systemd-service-builder/
 tls-certificate-decoder:
   title: TLS Certificate Decoder Guide
   url: /guides/tls-certificate-decoder/

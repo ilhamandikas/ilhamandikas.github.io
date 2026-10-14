@@ -3,6 +3,31 @@
 # small: most tools already get their keywords from data/tools.yaml and their
 # example questions from the FAQ in each tool guide (content/guides/*.md).
 
+systemd-service-builder:
+  features:
+    - Generate a system-level Type=simple unit for a foreground application
+    - Configure a non-root user and optional group and environment file
+    - Quote literal arguments without shell execution or variable expansion
+    - Download the unit and copy installation and log commands
+    - Add optional network ordering and NoNewPrivileges and PrivateTmp
+  input:
+    type: form
+    format: Service settings and one literal argument per line
+    sensitive: true
+  output:
+    type: text
+    format: systemd service unit and shell commands
+  limitations:
+    - No installation, execution, or server validation
+    - Only foreground Type=simple system services with an existing non-root user
+    - No empty arguments, standalone semicolon arguments, or variable expansion
+    - Conventional lowercase Linux account names only
+    - Absolute paths only; backslashes in paths are not supported
+  related_tools:
+    - linux-ops
+    - nginx-reverse-proxy-wizard
+    - env-diff-checker
+
 tls-certificate-decoder:
   features:
     - Decode core X.509 certificate fields and SANs
