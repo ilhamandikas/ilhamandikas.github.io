@@ -1201,7 +1201,9 @@ const check = (label, actual, expected) => {
 
     const sitemap = read('sitemap.xml');
     const dated = new Set([...sitemap.matchAll(/<loc>https:\/\/ilham\.dev\/tools\/([^/]+)\/<\/loc><lastmod>/g)].map((m) => m[1]));
-    check('seo: every tool has a dated sitemap entry', slugs.filter((s) => !dated.has(s)), []);
+    const noindex = new Set(slugs.filter((slug, i) => /<meta\b[^>]*name=["']?robots["']?[^>]*content=["']?noindex\b/.test(pages[i])));
+    check('seo: every indexable tool has a dated sitemap entry', slugs.filter((s) => !noindex.has(s) && !dated.has(s)), []);
+    check('seo: noindex tools are excluded from the sitemap', [...noindex].filter((s) => dated.has(s)), []);
 
     const robots = read('robots.txt');
     check('seo: robots.txt allows crawling', /^Allow: \/$/m.test(robots), true);

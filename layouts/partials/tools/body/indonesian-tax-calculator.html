@@ -1,0 +1,95 @@
+<div class="tool-panel">
+  <h2>Calculate Indonesian tax</h2>
+  <p class="tool-hint"><strong>Experimental · partial coverage.</strong> Runs locally in your browser. Amounts are not uploaded or saved by this tool. Independent calculator, not affiliated with DJP.</p>
+  <p class="tool-hint">The reference catalogue contains all 193 object options from the downloaded DJP calculator, not every national or historical filing code. Audited calculations cover selected scenarios only, ending <strong>2024-12-31</strong>. Later dates and unaudited scenarios are blocked. <a href="#itc-coverage">Check coverage before relying on a result.</a></p>
+  <noscript><p>This calculator requires JavaScript. The coverage notes and linked guide remain available below.</p></noscript>
+  <form id="itc-form" autocomplete="off" novalidate>
+    <div class="tool-field">
+      <label class="tool-field">
+        <span>Tax type</span>
+        <select id="itc-category" class="tool-select" data-no-memory aria-describedby="itc-catalogue-note"></select>
+      </label>
+      <label class="tool-field">
+        <span>Transaction / payment date</span>
+        <input id="itc-date" class="tool-input" type="date" value="2024-12-31" data-no-memory aria-describedby="itc-date-note">
+      </label>
+    </div>
+    <p id="itc-date-note" class="tool-hint">For annual Article 17 tax, use the tax-year end date (31 December). Construction uses the payment date, not the contract date. Date alone does not determine whether a transaction is taxable.</p>
+    <label class="tool-field">
+      <span>Find an object by code, English name or official Indonesian name</span>
+      <input id="itc-search" class="tool-input" type="search" maxlength="200" placeholder="24-104-25 or website" data-no-memory>
+    </label>
+    <label class="tool-field">
+      <span>Tax object / calculation scenario</span>
+      <select id="itc-object" class="tool-select" data-no-memory aria-describedby="itc-official itc-catalogue-note"></select>
+    </label>
+    <p id="itc-official" class="tool-hint"></p>
+    <p id="itc-catalogue-note" class="tool-hint">Object names and codes are a reference snapshot, not a period-validated filing registry. A calculated transaction does not validate its displayed code for historical filing. English descriptions are explanatory translations; official Indonesian wording is retained.</p>
+    <p id="itc-availability" class="tool-hint" role="status"></p>
+    <div class="tool-field">
+      <label class="tool-field">
+        <span id="itc-amount-label">Amount (IDR)</span>
+        <input id="itc-amount" class="tool-input" type="text" inputmode="numeric" maxlength="18" placeholder="10000000" data-no-memory aria-describedby="itc-amount-note">
+      </label>
+      <label class="tool-field">
+        <span>Amount basis</span>
+        <select id="itc-mode" class="tool-select" data-no-memory></select>
+      </label>
+      <label id="itc-registration-field" class="tool-field" hidden>
+        <span>Recipient tax registration</span>
+        <select id="itc-registration" class="tool-select" data-no-memory>
+          <option value="registered">Has NPWP — standard rate</option>
+          <option value="unregistered">No NPWP — 100% higher PPh 23 rate</option>
+        </select>
+      </label>
+    </div>
+    <p id="itc-amount-note" class="tool-hint">Enter whole rupiah using digits only. No commas, decimal fractions or exponent notation. Taxable bases must already exclude legally permitted exclusions; this tool does not determine them.</p>
+    <p id="itc-assumptions" class="tool-hint"></p>
+    <label class="tool-check">
+      <input id="itc-confirm" type="checkbox" data-no-memory>
+      <span>I have checked that this standard-tax scenario applies, including its taxable base and recipient/provider status. No unmodelled exemption, reduced base, treaty or special facility applies.</span>
+    </label>
+    <div class="tool-actions">
+      <button id="itc-calculate" class="tool-btn" type="submit" disabled>Calculate</button>
+      <button id="itc-reset" class="tool-btn secondary" type="button">Reset</button>
+    </div>
+    <p id="itc-status" class="tool-status" role="status" aria-live="polite">Choose a scenario, enter its amount and confirm the assumptions.</p>
+  </form>
+</div>
+
+<section id="itc-result" class="tool-panel" hidden aria-labelledby="itc-result-heading">
+  <h2 id="itc-result-heading">Tax calculation</h2>
+  <p id="itc-context" class="tool-hint"></p>
+  <p id="itc-tax" class="tool-result"></p>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <thead><tr><th scope="col">Calculation step</th><th scope="col">Value</th></tr></thead>
+      <tbody id="itc-rows"></tbody>
+    </table>
+  </div>
+  <p class="tool-hint">Arithmetic is exact, using integer fractions rather than floating-point money. Recurring amounts are shown as exact fractions of a rupiah. Only statutory PKP rounding is applied. Withholding and VAT figures are before tax-document rounding; gross-up is algebraic, not a rounded payroll reconciliation. This is not a tax return or a determination of liability.</p>
+  <h3>Rule references</h3>
+  <ul id="itc-sources"></ul>
+  <div class="tool-actions"><button id="itc-copy" class="tool-btn secondary" type="button" disabled>Copy calculation</button></div>
+  <p id="itc-copy-status" class="tool-status" role="status"></p>
+</section>
+
+<section id="itc-coverage" class="tool-panel" aria-labelledby="itc-coverage-heading">
+  <h2 id="itc-coverage-heading">Coverage and historical limits</h2>
+  <div class="tool-table-wrap">
+    <table class="tool-table">
+      <thead><tr><th scope="col">Scenario</th><th scope="col">Audited dates</th><th scope="col">Included</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Annual resident Article 17</th><td>2022-01-01 – 2024-12-31</td><td>Tax from already determined PKP. No monthly TER, gross-to-PKP, gross-up or final-period reconciliation.</td></tr>
+        <tr><th scope="row">PPh 23</th><td>2016-01-01 – 2024-12-31</td><td>Standard services 24-104-01 through 65; taxable awards, asset rental, interest and royalties. Dividends and service objects 66–69 are reference only.</td></tr>
+        <tr><th scope="row">Land/building rental</th><td>2018-01-02 – 2024-12-31</td><td>Ordinary rental; no accommodation or build-operate-transfer transition cases.</td></tr>
+        <tr><th scope="row">Construction</th><td>2022-02-21 – 2024-12-31</td><td>PP 9/2022 provider/certificate categories; payment excluding VAT.</td></tr>
+        <tr><th scope="row">Corporate income tax</th><td>2022-01-01 – 2024-12-31</td><td>Standard 22% from PKP, before credits. No facilities or listed-company reduction.</td></tr>
+        <tr><th scope="row">Ordinary domestic VAT</th><td>2010-04-01 – 2024-12-31</td><td>10% through 2022-03-31; 11% from 2022-04-01. No export, exemption, special base or facility.</td></tr>
+        <tr><th scope="row">PPh 22, PPh 15, other final-tax objects, PPnBM</th><td>Not audited</td><td>Reference only. No automatic or user-invented rate fallback.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tool-hint">Coverage limits are conservative audit boundaries, not legal repeal dates. In particular, do not extrapolate the historical VAT model to 2025 or later. Full historical code validity and the remaining tax scenarios are not implemented yet.</p>
+  <p class="tool-hint">For salary after tax and employee contributions, use the separate <a href="/tools/take-home-pay-calculator/">Take-Home Pay Calculator</a>. This calculator focuses on tax, not net salary.</p>
+</section>

@@ -206,6 +206,29 @@ snap-signature:
     - verify snap signature
     - api banking indonesia
 
+indonesian-tax-calculator:
+  features:
+    - Exact integer-fraction tax arithmetic with explicit PKP rounding
+    - Selected audited historical scenarios through 2024-12-31
+    - Search 193 reference object options by code or English or Indonesian name
+    - Block unsupported dates and scenarios without a fallback rate
+  input:
+    type: number
+    format: Whole-rupiah taxable amount, date, object and confirmed standard-tax assumptions
+    sensitive: true
+  output:
+    type: table
+    format: Exact calculation steps, assumptions, audit window and official rule references
+  limitations:
+    - Experimental partial release, not a complete tax calculator or tax return
+    - No calculation after 2024-12-31
+    - Snapshot codes are not period-validated historical filing codes
+    - PPh 22, PPh 15, PPnBM and several other scenarios are reference only
+    - No monthly TER, gross-to-PKP, exemptions or automatic facility determination
+    - VAT and withholding results precede tax-document rounding
+  related_tools:
+    - take-home-pay-calculator
+
 take-home-pay-calculator:
   keywords:
     - take home pay indonesia
