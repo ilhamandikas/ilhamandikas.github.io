@@ -640,6 +640,11 @@
       desc: Filter docker compose logs with grep-style context, invert and dedupe modes.
       keywords: [docker, compose, logs, grep, filter, context, log]
       status: done
+    - slug: log-redactor
+      name: Log Redactor
+      desc: Redact common sensitive fields, private-key blocks, URL credentials, JWT-like tokens, emails, and IPs before manually reviewing logs for sharing.
+      keywords: [log, redact, mask, sanitize, secrets, token, authorization, cookie, password, email, ip, privacy, anonymize]
+      status: done
     - slug: log-parser
       name: Log Parser
       desc: Parse JSON Lines, Apache/Nginx access logs, syslog, logfmt and plain logs into a searchable table.

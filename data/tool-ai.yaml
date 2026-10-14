@@ -3,6 +3,31 @@
 # small: most tools already get their keywords from data/tools.yaml and their
 # example questions from the FAQ in each tool guide (content/guides/*.md).
 
+log-redactor:
+  features:
+    - Replace common sensitive-field lines and PEM private-key blocks
+    - Detect URL credentials, JWT-like tokens, common emails, IPv4, and IPv6
+    - Add case-sensitive exact-text redactions without regex
+    - Preview results and overlapping per-category match counts
+    - Copy or download only the redacted preview
+  input:
+    type: text
+    format: Log excerpt and optional exact-text entries
+    sensitive: true
+  output:
+    type: text
+    format: Redacted log with a fixed marker
+  limitations:
+    - Best-effort pattern detection, not an anonymization or secret-removal guarantee
+    - Sensitive fields redact the rest of a line and ambiguous values can hide the remaining input
+    - Output may no longer be valid JSON or logfmt
+    - No comprehensive encoded-secret, arbitrary multiline, or personal-data detection
+    - Maximum 500,000 log characters and 20,000 detected matches
+  related_tools:
+    - docker-logs-grep
+    - log-parser
+    - string-obfuscator
+
 systemd-service-builder:
   features:
     - Generate a system-level Type=simple unit for a foreground application

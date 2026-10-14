@@ -280,6 +280,9 @@ list-converter:
 loan-calculator:
   title: Loan Calculator Guide
   url: /guides/loan-calculator/
+log-redactor:
+  title: Log Redactor Guide
+  url: /guides/log-redactor/
 log-parser:
   title: Log Parser Guide
   url: /guides/log-parser/
