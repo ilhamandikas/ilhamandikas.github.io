@@ -40,7 +40,7 @@ faq:
     fail. PNG, JPEG, GIF, WebP and BMP all work.
 ---
 
-A QR code generator with the full set of style controls: module shape, finder-corner shape, a two-colour gradient, a transparent background, and a logo with its own size, padding, corner radius and background box. Six presets set the whole look at once if you would rather not tune each part. The encoder runs in the page, so the text and any logo you load stay on your machine. The hint under the Logo heading tracks the error-correction budget as you resize the logo and tells you when the code is likely to stop scanning.
+Changing a QR code's appearance can also affect how easily it scans. [QR Editor](/tools/qr-editor/) previews changes to module shapes, finder corners, gradients, backgrounds and logos, with a hint about the logo's error-correction budget. Six presets set the whole look at once if you would rather not tune each part. The encoder runs in the page, so the text and any logo you load stay on your machine. The hint under the Logo heading tracks the error-correction budget as you resize the logo and tells you when the code is likely to stop scanning.
 
 ## Restyle an existing QR code
 

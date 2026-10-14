@@ -24,7 +24,7 @@ faq:
     JSON instead of free text, so the fields can be labelled reliably rather than pattern-matched.
 ---
 
-Show the registrar, registration and expiry dates, status codes and nameservers for a domain. It reads the registry's own RDAP service, discovered from the IANA bootstrap directory, so there is no third-party proxy in the middle. When a registry publishes no RDAP service at all, the tool says so instead of guessing.
+DNS records do not tell you when a domain registration expires or which registrar manages it. [WHOIS Lookup](/tools/whois-lookup/) reads registration dates, status codes and nameservers from RDAP records. It reads the registry's own RDAP service, discovered from the IANA bootstrap directory, so there is no third-party proxy in the middle. When a registry publishes no RDAP service at all, the tool says so instead of guessing.
 
 ## Look up a domain
 

@@ -27,7 +27,7 @@ faq:
     deliberately fake so nothing generated can collide with a real person or mailbox.
 ---
 
-Describe a response shape once as name: type pairs and the page generates a realistic JSON body with the number of records you ask for. It is the quick way to stub an endpoint, seed a fixture or show a frontend what the real payload will look like before the API exists.
+A frontend often needs sample responses before the API is ready. [API Mock Response Builder](/tools/api-mock-response-builder/) turns `name: type` pairs into a JSON body with a chosen number of records, so fixtures can keep the intended shape while the values change.
 
 ## Describe a shape and get a payload
 

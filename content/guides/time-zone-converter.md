@@ -32,7 +32,7 @@ faq:
     with the offset that is in force at that moment.
 ---
 
-Paste a timestamp the way it appears in a log — for example "Sep 26, 2026 @ 00:24:20.437" — pick the zone it was written in, and every row shows that same instant in another zone. The default source is UTC because that is what most servers and container runtimes log, which is exactly the thing that is easy to forget when reading an incident. The conversion uses the browser's own time zone database, so daylight-saving changes are handled at the instant you enter, not by a fixed offset.
+Two log entries with different clock times may describe the same instant. [Time Zone Converter](/tools/time-zone-converter/) reads a timestamp such as `Sep 26, 2026 @ 00:24:20.437` in its source zone and shows that instant across other zones. The default source is UTC because that is what most servers and container runtimes log, which is exactly the thing that is easy to forget when reading an incident. The conversion uses the browser's own time zone database, so daylight-saving changes are handled at the instant you enter, not by a fixed offset.
 
 ## Read a log timestamp in every zone
 

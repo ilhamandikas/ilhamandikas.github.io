@@ -23,7 +23,7 @@ faq:
     in your file browser. Use the Up and Down buttons to set the order you actually want.
 ---
 
-Combine several PDFs into a single document. The files are listed in the order they will appear, and the order can be changed before the result is built, which matters when a cover page or an appendix has to land in the right place.
+A cover page and an appendix need to land at opposite ends of a merged document. [PDF Merger](/tools/pdf-merger/) lists the source files in their output order, with controls to rearrange them before downloading the combined PDF.
 
 ## Merge two throwaway PDFs
 

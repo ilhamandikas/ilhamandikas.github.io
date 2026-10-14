@@ -32,7 +32,7 @@ faq:
     to the microphone.
 ---
 
-Find out whether a microphone is picking anything up, and how loudly, then keep a clip of it. The browser opens the input and the level is measured on a bar with a peak marker, so a quiet headset or a muted laptop mic is obvious at a glance. Press Record and the same signal is captured, so the recording can be played back on the page straight away or downloaded as a file.
+A microphone can be detected by the browser yet still deliver a quiet or silent signal. [Mic Tester](/tools/mic-tester/) shows the input level and peak marker, with a recording you can play back to hear what was actually captured. Press Record and the same signal is captured, so the recording can be played back on the page straight away or downloaded as a file.
 
 ## Check a microphone
 

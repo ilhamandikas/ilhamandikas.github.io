@@ -25,7 +25,7 @@ faq:
     here. Nothing is logged by this site.
 ---
 
-Show the public IP address you are connecting from, or look up any address, along with its country, region, city, coordinates, timezone and ISP. This is one of the few tools on this site that talks to the internet: it uses free, key-less services and falls back to a second one if the first is unavailable.
+An IP address can point to an ISP and an approximate location, but not necessarily the device's physical position. [IP Lookup](/tools/ip-lookup/) shows those provider-reported details for your public address or another address you specify. This is one of the few tools on this site that talks to the internet: it uses free, key-less services and falls back to a second one if the first is unavailable.
 
 ## Look up an address
 

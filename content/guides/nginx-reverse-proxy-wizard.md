@@ -32,7 +32,7 @@ faq:
     and says so rather than pretending it helps.
 ---
 
-A guided way to write a reverse proxy server block. Step through the domain, the upstream pool (one or more hosts, a balancing method and keepalive), TLS with a plain-HTTP redirect, and the extras an app usually needs — WebSocket upgrade, streaming, security headers and upload size. The config is built live beside the steps and can be copied or downloaded.
+A reverse proxy configuration connects several decisions: where requests go, how TLS is handled, and whether the app needs WebSockets or streaming. [nginx Reverse Proxy Wizard](/tools/nginx-reverse-proxy-wizard/) keeps the generated server block beside those settings, so each change can be traced to the directives it adds or removes.
 
 ## Step through a proxy config
 

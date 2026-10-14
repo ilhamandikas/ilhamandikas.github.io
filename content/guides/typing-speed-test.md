@@ -33,7 +33,7 @@ faq:
     test, or the Restart button, to go again with fresh words.
 ---
 
-A focused typing test. Pick a time goal (15, 30, 60 or 120 seconds) or a word goal (10 to 100 words), optionally add punctuation and numbers, then start typing. The timer starts on your first keystroke, every character is coloured as you go, and the result panel reports net and raw WPM, accuracy, consistency, character counts and total time. Everything runs on your device and nothing is uploaded.
+Typing quickly and typing accurately are different measurements. [Typing Speed Test](/tools/typing-speed-test/) reports raw and net WPM alongside accuracy, using a timed test or a fixed word count. The timer starts on your first keystroke, every character is coloured as you go, and the result panel reports net and raw WPM, accuracy, consistency, character counts and total time. Everything runs on your device and nothing is uploaded.
 
 ## Take a 30-second test
 

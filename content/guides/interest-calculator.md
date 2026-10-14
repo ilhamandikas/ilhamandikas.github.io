@@ -49,7 +49,7 @@ faq:
     naming are local.'
 ---
 
-A calculator for the interest methods that are easy to mix up: simple, compound, tiered, step-up, floating, flat, effective and annuity. Enter a principal, a rate and a tenor and the page shows the formula it used, the result as gross, tax and net where tax applies, and a period-by-period breakdown. The product presets follow the tax and day-count conventions commonly used in Indonesia and are marked ID; everything is computed in the browser.
+The same annual rate can produce different returns depending on the interest method and day-count basis. [Interest Calculator](/tools/interest-calculator/) puts the formula beside the result for simple, compound, tiered, step-up, floating, flat, effective and annuity calculations. Enter a principal, a rate and a tenor and the page shows the formula it used, the result as gross, tax and net where tax applies, and a period-by-period breakdown. The product presets follow the tax and day-count conventions commonly used in Indonesia and are marked ID; everything is computed in the browser.
 
 ## Work out a one-month deposit
 

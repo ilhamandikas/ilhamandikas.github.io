@@ -38,7 +38,7 @@ faq:
     ask; the browser decides.
 ---
 
-A request builder that sends the request from your browser with fetch, straight to the address you type, and shows the status, headers and body that come back. Nothing is relayed through this site and no server of ours sees the request. Because the request is made by the browser, the browser's own rules apply — most visibly the same-origin policy, which is the one thing this page cannot work around. If you want to paste and explain a curl command instead, use the [curl Tester](/tools/curl-tester/); the two tools are deliberately kept separate.
+A response's status only tells part of the story; the headers and body explain the rest. [HTTP Request Tester](/tools/http-request-tester/) shows all three after sending a request directly from your browser with `fetch`. Nothing is relayed through this site and no server of ours sees the request. Because the request is made by the browser, the browser's own rules apply — most visibly the same-origin policy, which is the one thing this page cannot work around. If you want to paste and explain a curl command instead, use the [curl Tester](/tools/curl-tester/); the two tools are deliberately kept separate.
 
 ## Send a request and read the reply
 

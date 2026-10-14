@@ -25,7 +25,7 @@ faq:
     the document you pasted.
 ---
 
-Paste an OpenAPI or Swagger document and read it as a list of operations rather than as a wall of YAML. Each endpoint shows its method, its parameters, its request body and the responses it can return, with references resolved so a schema appears where it is used.
+An API's request and response shapes can be scattered across paths and schema definitions. [OpenAPI Viewer](/tools/openapi-viewer/) brings them together as a list of operations from a pasted OpenAPI or Swagger document. Each endpoint shows its method, its parameters, its request body and the responses it can return, with references resolved so a schema appears where it is used.
 
 ## Read the sample specification
 

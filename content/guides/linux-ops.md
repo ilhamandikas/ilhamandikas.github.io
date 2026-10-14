@@ -34,7 +34,7 @@ faq:
     into a production shell.
 ---
 
-A troubleshooting companion for Linux servers. Describe the problem in plain language — which process is using port 8080, disk is full, nginx returns 503 — and it finds the matching command, explains every flag, rates how risky it is and suggests what to check next. There is also an analyzer: paste the output of df, free, ss, docker ps, nginx -t, systemctl status or journalctl and it reads the output back to you. Everything runs in your browser; nothing is uploaded, and a search that looks like it contains a secret is kept out of the URL.
+Finding a command is only half the job when a server is misbehaving; understanding its flags and risks matters just as much. [Linux Ops](/tools/linux-ops/) matches problems such as a busy port, a full disk or an nginx 503 to commands with explanations and suggested next checks. There is also an analyzer: paste the output of df, free, ss, docker ps, nginx -t, systemctl status or journalctl and it reads the output back to you. Everything runs in your browser; nothing is uploaded, and a search that looks like it contains a secret is kept out of the URL.
 
 ## Ask a question and get a command
 

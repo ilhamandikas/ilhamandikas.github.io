@@ -27,7 +27,7 @@ faq:
   a: Stop terminates the Worker. Runtime loading has a 90-second timeout, and execution outside input waits has a separate 30-second limit. Each answer may wait up to 2 minutes. Output is capped at 500 rows; input remains available to edit.
 ---
 
-Use the [TypeScript Playground](/tools/typescript-playground/) to try a typed snippet without setting up a project.
+Type annotations describe code, but they do not survive into the JavaScript that runs. [TypeScript Playground](/tools/typescript-playground/) makes that distinction visible with small typed examples and their runtime output.
 
 ## An interface disappears at runtime
 

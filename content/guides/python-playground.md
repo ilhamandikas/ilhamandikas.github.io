@@ -27,7 +27,7 @@ faq:
   a: No. Python runs in a Worker without direct DOM access, but the JavaScript bridge can use browser APIs and make network requests. Only run code you trust. Stop terminates the Worker; code and input are not saved by the tool.
 ---
 
-Open the [Python Playground](/tools/python-playground/) for small Python experiments without a backend.
+Python's list comprehensions and ranges are easier to check with a few values than with a large dataset. [Python Playground](/tools/python-playground/) runs the examples below in the browser and shows their printed output.
 
 ## Read the default result
 

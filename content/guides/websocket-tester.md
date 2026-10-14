@@ -36,7 +36,7 @@ faq:
     need to see when a handshake succeeds but the application protocol is wrong.
 ---
 
-Open a WebSocket from your browser, send text or binary frames, and watch everything that arrives in a timestamped log. The connection is made by the page itself, so it goes from your machine to the server you name and through nothing else. Binary frames can be typed as hex and are converted for you, and JSON that comes back is indented so it is readable. Close codes are explained rather than just printed.
+A WebSocket problem may happen when connecting, exchanging messages or closing the connection. [WebSocket Tester](/tools/websocket-tester/) records those events in a timestamped log alongside incoming and outgoing text or binary frames. The connection is made by the page itself, so it goes from your machine to the server you name and through nothing else. Binary frames can be typed as hex and are converted for you, and JSON that comes back is indented so it is readable. Close codes are explained rather than just printed.
 
 ## Talk to an echo server
 

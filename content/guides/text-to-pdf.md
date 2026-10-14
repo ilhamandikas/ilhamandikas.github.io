@@ -25,7 +25,7 @@ faq:
     to the page. The three standard fonts are always available and need nothing extra.
 ---
 
-Turn a note, a receipt or a block of plain text into a PDF. The text is wrapped to the page width and carried onto a new page when the space runs out, with a choice of page size, font, size, margin and line spacing.
+A short receipt may fit on one page until a larger font or margin pushes it onto two. [Text to PDF](/tools/text-to-pdf/) recalculates the page layout as those settings change. The text is wrapped to the page width and carried onto a new page when the space runs out, with a choice of page size, font, size, margin and line spacing.
 
 ## Turn a note into a PDF
 

@@ -42,7 +42,7 @@ faq:
     Copy before you leave, or paste it into your own notes.
 ---
 
-A console for trying JavaScript without leaving the page, built on the Monaco editor — the same editor that powers Visual Studio Code — so the code gets syntax highlighting, bracket matching, code folding and a formatter. Write or paste a snippet, press Run, and see everything it logs, the value it returns and how long it took. Monaco is a large bundle, so it is fetched from a CDN only when you press Enable Monaco; until then, and if the fetch fails, the page uses a plain text area with the same run, copy, download and clear actions. Output streams live from a Web Worker. The tool does not save or upload code, but snippets can make network requests.
+A snippet's return value and its console output are not always the same thing. [JavaScript Playground](/tools/javascript-playground/) displays both, with an optional Monaco editor for syntax highlighting, bracket matching, code folding and formatting. Write or paste a snippet, press Run, and see everything it logs, the value it returns and how long it took. Monaco is a large bundle, so it is fetched from a CDN only when you press Enable Monaco; until then, and if the fetch fails, the page uses a plain text area with the same run, copy, download and clear actions. Output streams live from a Web Worker. The tool does not save or upload code, but snippets can make network requests.
 
 ## Run the sample snippet
 

@@ -25,7 +25,7 @@ faq:
     hundred megabytes of photographs is fine on a desktop and heavy on a phone.
 ---
 
-Pick a handful of files and get one zip back, without installing anything. The archive is assembled in the page from the bytes already on your disk, so nothing is uploaded, and a compression level lets you trade a little time for a smaller download.
+Bundling files is not always about making them smaller; sometimes it is about keeping them together. [ZIP Builder](/tools/zip-builder/) lists the archive contents and resulting size, with a choice of compression levels. The archive is assembled in the page from the bytes already on your disk, so nothing is uploaded, and a compression level lets you trade a little time for a smaller download.
 
 ## Bundle two small files
 

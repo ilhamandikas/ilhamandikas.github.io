@@ -36,7 +36,7 @@ faq:
     so use it deliberately rather than by default.'
 ---
 
-Fill in a form and get a Dockerfile. Start from a preset for Node, Python, Go, a static site on Nginx, PHP or a Java Maven build, or from scratch, then adjust the base image, workdir, ENV, ARG, COPY, RUN, EXPOSE, VOLUME, USER, LABEL, HEALTHCHECK, ENTRYPOINT and CMD. Multi-stage builds get a builder stage and copy the artifacts into the runtime image. The output is built in the page and can be copied or downloaded as a Dockerfile.
+The difference between a build stage and a runtime stage becomes clearer when you compare their instructions. [Dockerfile Builder](/tools/dockerfile-builder/) lays out both stages as editable Dockerfile text. Presets cover Node, Python, Go, static sites on Nginx, PHP and Java Maven builds; each can be adjusted through the base image, workdir and individual instructions. Multi-stage builds get a builder stage and copy the artifacts into the runtime image. The output is built in the page and can be copied or downloaded as a Dockerfile.
 
 ## Generate a Node image from a preset
 

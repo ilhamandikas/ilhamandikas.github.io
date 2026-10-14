@@ -24,7 +24,7 @@ A short walkthrough attached to exactly one tool.
 
 - One per tool.
 - Explains how to read the tool's result on a small, real example.
-- Links back to the tool at the start.
+- Links back to the tool naturally in the opening explanation or before the first worked example.
 - Optional `broader_guide` link for more background.
 
 Example:
@@ -148,6 +148,40 @@ Good practices:
 
 ---
 
+## Natural Links to Tools
+
+When writing or editing a tool guide, include a contextual link to its tool
+without waiting for a separate request. The link should be part of the
+explanation, not a standalone invitation or promotional CTA.
+
+- Identify the specific point where seeing the tool's output helps the reader
+  understand the topic. Place the link there, usually in the opening paragraph
+  or just before the first example; the position need not be identical in every guide.
+- Write wording specific to that tool and the reader's task. Do not reuse one
+  generic sentence across guides or merely swap tool names into a template.
+- Explain a concrete benefit that the implementation actually provides, such
+  as inspecting the signed string, reading formatted JSON, or checking a subnet's range.
+- Use the tool name or a descriptive phrase as the linked text.
+- Avoid explicit invitations such as “Open tool”, “Want to try it yourself?”,
+  “Click here”, or “Follow along”. Let the relevance make the next step obvious.
+- Keep it short and factual. Do not use clickbait, manufactured curiosity,
+  marketing claims, or repeat the About paragraph.
+
+Example for SNAP signature verification:
+
+```markdown
+A signature mismatch is easier to trace when you can see the exact string being
+signed. [SNAP BI Asymmetric Signature](/tools/snap-signature/) shows that string
+alongside the body hash and verification result.
+```
+
+Write the contextual link directly in the guide's Markdown body, so it appears
+in both the HTML page and machine-readable versions. There is no generic
+template fallback: every tool guide owns its link wording. Do not repeat the
+same explanation in a separate opening block.
+
+---
+
 ## Structure of a Topic Guide
 
 Topic guides are free-form. Prefer sections that answer a real workflow:
@@ -206,7 +240,7 @@ Follow `CONTENT-GUIDELINES.md`:
 
 - [ ] Front matter is valid and matches the guide type.
 - [ ] A tool guide's `tool_guide_slug` matches an existing tool.
-- [ ] The tool is linked near the top.
+- [ ] The tool is linked naturally in the opening explanation or before the first example, with wording specific to its function rather than a generic CTA.
 - [ ] The guide works on a 320px-wide screen.
 - [ ] Code and values do not overflow horizontally.
 - [ ] Privacy/processing language matches the tool's actual model.

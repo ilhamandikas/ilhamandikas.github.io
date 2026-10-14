@@ -37,7 +37,7 @@ faq:
     to store and nothing to clean up. Nothing is sent anywhere.
 ---
 
-A browser-based infrastructure management game. You run an internet service with one application server and a small budget. Traffic grows on its own, every served request earns money, and servers, bandwidth and the database all cost money to keep running. Buy capacity before the load outruns it, and answer incidents — CPU overload, disk full, database overload, traffic spikes, crashes — before users give up. The simulation is a simple one-second tick and everything runs on this page.
+Adding servers too early costs money; adding them too late costs requests. In [DevOps Tycoon](/tools/devops-tycoon/), that trade-off starts with one application server and a small budget. Traffic grows on its own, every served request earns money, and servers, bandwidth and the database all cost money to keep running. Buy capacity before the load outruns it, and answer incidents — CPU overload, disk full, database overload, traffic spikes, crashes — before users give up. The simulation is a simple one-second tick and everything runs on this page.
 
 ## Run your first minute of infrastructure
 

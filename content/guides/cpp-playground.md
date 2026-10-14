@@ -26,7 +26,7 @@ faq:
   a: No. A Worker prevents direct DOM access and can be terminated, but compiled code can make network requests through WASI. The tool itself does not upload or persist code or input. Each Run starts fresh; output is limited to 500 rows.
 ---
 
-Open the [C++ Playground](/tools/cpp-playground/) to compile and run small C++20 programs without installing a toolchain.
+Containers and classes are easier to reason about in a short program than in a full project. The examples below run in [C++ Playground](/tools/cpp-playground/), which compiles C++20 and displays diagnostics alongside the output.
 
 ## Read the default result
 

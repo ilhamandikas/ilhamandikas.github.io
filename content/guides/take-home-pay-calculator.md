@@ -34,7 +34,7 @@ faq:
     mid-year. Treat the result as a close estimate and the payslip as the record.
 ---
 
-A contract salary is not what reaches the bank account, and the gap is made of two compulsory deductions: income tax under Article 21 and the employee share of the BPJS programmes. This works out the monthly figure from the gross salary, the PTKP status and whether BPJS applies. The tax follows the annual Article 17 brackets, the same total the December reconciliation arrives at, and every deduction is shown separately so the difference can be checked line by line against a payslip.
+A contract salary is not what reaches the bank account, and the gap is made of two compulsory deductions: income tax under Article 21 and the employee share of the BPJS programmes. [Take-Home Pay Calculator](/tools/take-home-pay-calculator/) separates those deductions using the gross salary, PTKP status and BPJS setting, so the gap can be checked against a payslip. The tax follows the annual Article 17 brackets, the same total the December reconciliation arrives at, and every deduction is shown separately so the difference can be checked line by line against a payslip.
 
 ## From a gross salary to what lands in the bank
 

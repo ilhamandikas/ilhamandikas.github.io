@@ -33,7 +33,7 @@ faq:
     period separately.
 ---
 
-A loan is repaid in equal instalments, but the split inside each instalment changes every month: early on almost all of it is interest, and by the end almost all of it is principal. This works out the instalment with the annuity formula, builds the schedule behind it, and draws the balance as it falls. It also shows what happens when a little extra is paid each month, which shortens the term instead of lowering the instalment.
+A loan is repaid in equal instalments, but the split inside each instalment changes every month: early on almost all of it is interest, and by the end almost all of it is principal. [Loan Calculator](/tools/loan-calculator/) makes that changing split visible in a repayment schedule and balance chart, using the annuity formula to work out the instalment. It also shows what happens when a little extra is paid each month, which shortens the term instead of lowering the instalment.
 
 ## A 15-year home loan
 

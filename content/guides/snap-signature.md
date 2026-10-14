@@ -35,7 +35,7 @@ faq:
     Generate key pair to create a throwaway 2048-bit pair and try the flow end to end.
 ---
 
-A workbench for the asymmetric signature in Bank Indonesia's SNAP BI standard, the scheme banks and payment providers use for API requests and notifications. It builds the string to sign from the HTTP method, endpoint, a SHA-256 hash of the minified body and the X-TIMESTAMP, then signs it with an RSA private key or verifies it with the sender's public key. Both operations run in the browser with the Web Crypto API.
+A signature mismatch is easier to trace when you can see the exact string being signed. [SNAP BI Asymmetric Signature](/tools/snap-signature/) shows that string alongside the body hash and verification result. It builds the string from the HTTP method, endpoint, a SHA-256 hash of the minified body and the X-TIMESTAMP, then signs it with an RSA private key or verifies it with the sender's public key. Both operations run in the browser with the Web Crypto API.
 
 ## Check the built-in sample
 

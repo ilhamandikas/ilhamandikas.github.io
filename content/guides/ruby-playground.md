@@ -26,7 +26,7 @@ faq:
   a: No. A Worker prevents direct DOM access and can be terminated, but Ruby's JavaScript bridge can make network requests. The tool itself does not upload or persist code or input. Each Run starts fresh; output is limited to 500 rows.
 ---
 
-Open the [Ruby Playground](/tools/ruby-playground/) for small Ruby experiments without a backend.
+Ruby's `puts`, `print` and `inspect` produce different views of the same value. [Ruby Playground](/tools/ruby-playground/) shows those differences in the output of small programs, including the array and class examples below.
 
 ## Read the default result
 

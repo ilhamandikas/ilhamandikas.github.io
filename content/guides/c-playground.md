@@ -26,7 +26,7 @@ faq:
   a: No. A Worker prevents direct DOM access and can be terminated, but compiled code can make network requests through WASI. The tool itself does not upload or persist code or input. Each Run starts fresh; output is limited to 500 rows.
 ---
 
-Open the [C Playground](/tools/c-playground/) to compile and run small C programs without installing a toolchain.
+A small C program can reveal a lot about pointers and memory once you see what it prints. [C Playground](/tools/c-playground/) keeps compiler diagnostics and program output together, without a local toolchain.
 
 ## Read the default result
 

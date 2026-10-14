@@ -33,7 +33,7 @@ faq:
     and prefer a test secret over a live one.'
 ---
 
-A webhook workbench that runs entirely in the browser. Build a payload, sign it with HMAC-SHA256 in the format a provider expects, paste a signature you received to check it, or send the signed request to a test endpoint. The signing secret stays on your machine and is never uploaded.
+Matching the HMAC algorithm is not enough if the sender and receiver disagree about the signed text or header format. [Webhook Tester](/tools/webhook-tester/) shows provider-specific signatures for a payload and checks a pasted signature against it, with an optional test request. The signing secret stays on your machine and is never uploaded.
 
 ## Sign a Stripe-style event
 

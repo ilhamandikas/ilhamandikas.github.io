@@ -36,7 +36,7 @@ faq:
     from the priority value.'
 ---
 
-Turn a wall of log text into rows you can read. The page detects the shape of the log — JSON Lines, Apache/Nginx access logs (common and combined), syslog (RFC 3164 and 5424), nginx error logs, logfmt and plain timestamp-level-message lines — then pulls out the time, the level and the message, and keeps every other field as its own column. Filter by level, search with a substring or a regular expression, and copy or download the result as JSON or CSV. Nothing is uploaded.
+A status code or error level is easy to miss in a wall of log text. [Log Parser](/tools/log-parser/) separates entries into rows and fields, detecting the shape of the log — JSON Lines, Apache/Nginx access logs (common and combined), syslog (RFC 3164 and 5424), nginx error logs, logfmt and plain timestamp-level-message lines — then pulls out the time, the level and the message, and keeps every other field as its own column. Filter by level, search with a substring or a regular expression, and copy or download the result as JSON or CSV. Nothing is uploaded.
 
 ## Parse a few nginx lines
 

@@ -37,7 +37,7 @@ faq:
     Repeating them is the standard workaround, and the notes say why they are there twice.
 ---
 
-Build an nginx server block by answering a few questions: which hostnames, static files or a reverse proxy, TLS or plain HTTP, caching, compression, security headers and logging. The output is a complete file you can drop into sites-available, and every line of a nested block is indented so it reads as the block it is. Anything the tool could not do properly is written into the output as a # !! comment rather than left in a status line, so a config that would not load cannot be mistaken for one that will.
+An nginx server block changes depending on whether it serves files or forwards requests to an application. [nginx Config Generator](/tools/nginx-config-generator/) shows how hostnames, TLS, caching, compression, security headers and logging fit into that configuration. The output is a complete file you can drop into sites-available, and every line of a nested block is indented so it reads as the block it is. Anything the tool could not do properly is written into the output as a # !! comment rather than left in a status line, so a config that would not load cannot be mistaken for one that will.
 
 ## Generate a static-site config and read it
 
