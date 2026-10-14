@@ -21,7 +21,7 @@ faq:
 - q: Can I use pip or any Python package?
   a: No packages are installed automatically by this tool. Pure Python packages and specially built Pyodide packages may be possible through additional runtime APIs, but arbitrary native desktop packages do not work unchanged.
 - q: Does choosing an example erase my code?
-  a: No. It adds the example above your code and pauses Auto-run. Clear the editor first to run only the example. The input example fills standard input only if that field is empty.
+  a: Selecting only previews the description. Load example replaces code and standard input, and pauses Auto-run. If either field was edited, confirm replacement or keep your work.
 - q: Is this a security sandbox?
   a: No. Python runs in a Worker without direct DOM access, but the JavaScript bridge can use browser APIs and make network requests. Only run code you trust. Stop terminates the Worker; code and input are not saved by the tool.
 ---
@@ -34,7 +34,7 @@ The initial snippet doubles `[1, 2, 3, 4]` with a list comprehension. **Run** pr
 
 ## Find prime numbers
 
-Clear the editor and choose **Find prime numbers** under **Code examples**. The output lists:
+Choose **Find prime numbers** in the **Code example** picker and press **Load example**, then **Run**. The output lists:
 
 ```text
 2, 3, 5, 7, 11, 13, 17, 19, 23, 29
@@ -58,11 +58,11 @@ Choose **Centered pyramid** to print five rows with 1, 3, 5, 7 and 9 stars:
 
 The leading spaces are `height - row`; the star count is `2 * row - 1`. There are also right-triangle, inverted-pyramid, diamond, hollow-pyramid and number-pyramid examples. Output is monospace; **Copy output** preserves indentation and line breaks.
 
-Other exercises cover arithmetic, conditions, odd/even numbers, factorial, Fibonacci, FizzBuzz, palindrome, bubble sort, binary search, list transformations, word counts and classes. Selecting an example adds it above existing code and pauses Auto-run. Clear first if you only want the selected exercise.
+Other exercises cover arithmetic, conditions, odd/even numbers, factorial, Fibonacci, FizzBuzz, palindrome, bubble sort, binary search, list transformations, word counts and classes. Selecting previews the example; **Load example** replaces code and input and pauses Auto-run, with confirmation if either field was edited.
 
 ## Prepare answers before Run
 
-Choose **Read standard input**, which fills the empty stdin field with `Ilham`. The snippet uses:
+Load **Read standard input**, which replaces the stdin field with `Ilham`. The snippet uses:
 
 ```python
 name = input('What is your name? ')

@@ -19,7 +19,7 @@ faq:
 - q: Can I use await and interactive input?
   a: Yes. The transpiled snippet runs inside an async function. Use await prompt('Question') and enter an answer in the output panel. Ask one question at a time; return displays a result.
 - q: Does clicking an example run it?
-  a: No. An example is inserted in a separate block above existing code, and Auto-run is paused. Clear the editor first to run only that example, then press Run.
+  a: No. Selecting previews its description. Load example replaces the code and pauses Auto-run, asking for confirmation if code was edited. Press Run to execute it.
 - q: Can I import npm packages?
   a: No. This is a single-snippet browser runner, not Node.js or a project bundler. document and window are also unavailable inside the Worker.
 - q: What happens when code never finishes?
@@ -30,7 +30,7 @@ Use the [TypeScript Playground](/tools/typescript-playground/) to try a typed sn
 
 ## An interface disappears at runtime
 
-Clear the editor, open **Code examples**, and choose **Typed function**. It adds:
+Choose **Typed function** in the **Code example** picker and press **Load example**. It loads:
 
 ```typescript
 interface Rectangle {
@@ -51,7 +51,7 @@ For example, assigning a string to a variable annotated `number` is a semantic t
 
 The examples include odd/even numbers, prime numbers up to 30, factorial, Fibonacci, FizzBuzz, palindrome, bubble sort, binary search, word frequency, OOP and six triangle/pyramid/diamond patterns. The shared JavaScript examples also work as TypeScript; **Typed function** and **Generic function** demonstrate TypeScript-specific syntax.
 
-Choosing an example preserves your current code below it, pauses Auto-run, and shows an explanation of the expected result. Clear first if you want a single exercise. Star-pattern spaces are significant; the output uses monospace text and **Copy output** preserves those spaces and line breaks.
+Choosing an example previews its description. **Load example** replaces code and pauses Auto-run; edited code requires confirmation before replacement. Star-pattern spaces are significant; the output uses monospace text and **Copy output** preserves those spaces and line breaks.
 
 ## Input, limits and privacy
 

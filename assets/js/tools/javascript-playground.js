@@ -26,6 +26,15 @@ const els = {
   stdin: document.querySelector('#jsp-stdin'),
   workspace: document.querySelector('#jsp-workspace'),
   copyOutput: document.querySelector('#jsp-copy-output'),
+  metrics: document.querySelector('#jsp-metrics'),
+  category: document.querySelector('#jsp-category'),
+  example: document.querySelector('#jsp-example'),
+  exampleHint: document.querySelector('#jsp-example-hint'),
+  exampleLoad: document.querySelector('#jsp-example-load'),
+  exampleConfirm: document.querySelector('#jsp-example-confirm'),
+  exampleReplace: document.querySelector('#jsp-example-replace'),
+  exampleCancel: document.querySelector('#jsp-example-cancel'),
+  suggestions: document.querySelector('#jsp-suggestions'),
 };
 
 const language = els.workspace?.dataset.language || 'javascript';
@@ -33,9 +42,6 @@ const languageName = { javascript: 'JavaScript', typescript: 'TypeScript', pytho
 const preparedInput = ['python', 'ruby', 'c', 'cpp'].includes(language);
 // Monaco has no separate C language; its `cpp` grammar covers C too.
 const monacoLanguage = language === 'c' ? 'cpp' : language;
-// Compiled examples are complete programs, so they replace the editor instead
-// of stacking above it (two main() functions would not link).
-const compiled = ['c', 'cpp'].includes(language);
 const runtimeModule = els.workspace?.dataset.runtimeModule
   ? new URL(els.workspace.dataset.runtimeModule, location.href).href : null;
 const exampleData = JSON.parse(document.querySelector('#jsp-examples')?.textContent || '[]');
@@ -55,6 +61,10 @@ let autoTimer = null;
 let promptId = null;
 let outputCount = 0;
 let outputText = [];
+let runTiming = null;
+let baselineCode = els.code.value;
+let baselineInput = els.stdin?.value || '';
+let pendingExample = null;
 
 /* ------------------------------------------------------------------ editor */
 
@@ -116,6 +126,24 @@ function enableMonaco() {
 
   loadMonaco()
     .then(() => {
+      const { javascriptDefaults, typescriptDefaults } = window.monaco.languages.typescript;
+      for (const defaults of [javascriptDefaults, typescriptDefaults]) {
+        // Top-level return/await are valid in the runner's async wrapper.
+        defaults.setDiagnosticsOptions({
+          noSyntaxValidation: false,
+          noSemanticValidation: false,
+          diagnosticCodesToIgnore: [1108, 1375, 1378],
+        });
+        defaults.setCompilerOptions({
+          ...defaults.getCompilerOptions(),
+          allowNonTsExtensions: true,
+          allowJs: true,
+          checkJs: true,
+          lib: ['es2022', 'webworker'],
+          target: window.monaco.languages.typescript.ScriptTarget.ES2022,
+        });
+        defaults.addExtraLib('declare function prompt(message?: string, value?: string): Promise<string>;\n', 'ts:playground-globals.d.ts');
+      }
       editor = window.monaco.editor.create(els.container, {
         value: els.code.value,
         language: monacoLanguage,
@@ -136,8 +164,14 @@ function enableMonaco() {
         colorDecorators: true,
         stickyScroll: { enabled: true },
         unicodeHighlight: { ambiguousCharacters: true, invisibleCharacters: true },
-        cursorSmoothCaretAnimation: 'on',
-        smoothScrolling: true,
+        quickSuggestions: els.suggestions.checked,
+        suggestOnTriggerCharacters: els.suggestions.checked,
+        wordBasedSuggestions: els.suggestions.checked ? 'currentDocument' : 'off',
+        tabCompletion: els.suggestions.checked ? 'on' : 'off',
+        acceptSuggestionOnEnter: 'smart',
+        renderValidationDecorations: 'on',
+        cursorSmoothCaretAnimation: 'off',
+        smoothScrolling: false,
         lineNumbersMinChars: 3,
       });
       editor.onDidChangeModelContent(syncToTextarea);
@@ -220,6 +254,19 @@ function workerMain() {
       return;
     }
     if (data.type !== 'run') return;
+    const preparationStarted = performance.now();
+    let executionStarted = null;
+    let memory = null;
+    const start = () => {
+      executionStarted = performance.now();
+      send({ type: 'started', preparation: executionStarted - preparationStarted });
+    };
+    const finish = (type) => send({
+      type,
+      preparation: (executionStarted ?? performance.now()) - preparationStarted,
+      execution: executionStarted === null ? null : performance.now() - executionStarted,
+      memory,
+    });
     try {
       let code = data.code;
       if (data.language === 'python') {
@@ -231,7 +278,7 @@ function workerMain() {
         const inputLines = data.stdin.split(/\r?\n/);
         if (inputLines.at(-1) === '') inputLines.pop();
         py.setStdin({ stdin: () => inputLines.shift() });
-        send({ type: 'started' });
+        start();
         const value = await py.runPythonAsync(code);
         if (value !== undefined && value !== null) write('result', [String(value)]);
         value?.destroy?.();
@@ -264,7 +311,7 @@ function workerMain() {
         wasi.fds[1] = stdout.fd;
         wasi.fds[2] = stderr.fd;
         vm.eval('$stdout.sync = true; $stderr.sync = true');
-        send({ type: 'started' });
+        start();
         try { vm.eval(code); } finally { stdout.flush(); stderr.flush(); }
       } else if (data.language === 'c' || data.language === 'cpp') {
         send({ type: 'loading' });
@@ -302,12 +349,13 @@ function workerMain() {
           stdout.fd,
           stderr.fd,
         ]);
-        send({ type: 'started' });
+        const instance = await WebAssembly.instantiate(module, { wasi_snapshot_preview1: wasi.wasiImport });
+        start();
         try {
-          const instance = await WebAssembly.instantiate(module, { wasi_snapshot_preview1: wasi.wasiImport });
           const exitCode = wasi.start(instance);
-          if (exitCode) write('error', [`Program exited with status ${exitCode}.`]);
+          if (exitCode) throw new Error(`Program exited with status ${exitCode}.`);
         } finally {
+          if (instance.exports.memory instanceof WebAssembly.Memory) memory = instance.exports.memory.buffer.byteLength;
           stdout.flush();
           stderr.flush();
         }
@@ -330,15 +378,15 @@ function workerMain() {
           }
           code = transpiled.outputText;
         }
-        send({ type: 'started' });
+        start();
         const fn = new Function('console', 'prompt', `"use strict"; return (async () => {\n${code}\n})();`);
         const value = await fn(console, prompt);
         if (value !== undefined) write('result', [value]);
       }
-      send({ type: 'done' });
+      finish('done');
     } catch (error) {
       write('error', [error]);
-      send({ type: 'failed' });
+      finish('failed');
     }
   };
 }
@@ -367,6 +415,24 @@ function appendOutput(kind, text) {
   if (outputCount === 500) tk.setStatus(els.status, 'Output limited to 500 rows. Stop or run again to reset.', '');
 }
 
+function duration(ms) {
+  return ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(2)} s`;
+}
+
+function showMetrics(data = null, stopped = false) {
+  if (!runTiming) return;
+  const now = performance.now();
+  const preparation = data?.preparation ?? runTiming.preparation ?? now - runTiming.requested;
+  const execution = data ? data.execution : runTiming.started === null ? null : now - runTiming.started;
+  const parts = [`Preparation: ${duration(preparation)}`];
+  if (execution !== null && execution !== undefined) {
+    const label = stopped ? 'Elapsed execution until Stop' : preparedInput ? 'Execution' : 'Main code';
+    parts.push(`${label}: ${duration(execution)}`);
+  }
+  if (Number.isFinite(data?.memory)) parts.push(`WASM linear memory: ${(data.memory / 1048576).toFixed(2)} MiB`);
+  els.metrics.textContent = parts.join(' · ');
+}
+
 function stop() {
   activeWorker?.terminate();
   activeWorker = null;
@@ -380,11 +446,14 @@ function run() {
   clearTimeout(autoTimer);
   stop();
   clearOutput();
+  runTiming = null;
+  els.metrics.textContent = '';
   if (!els.code.value.trim()) {
     tk.setStatus(els.status, `Write ${languageName} first, then press Run.`, '');
     return;
   }
-  let started = performance.now();
+  runTiming = { requested: performance.now(), started: null, preparation: null };
+  els.metrics.textContent = '';
   let url;
   try {
     url = URL.createObjectURL(new Blob([`${format.toString()}\n(${workerMain.toString()})();`], { type: 'text/javascript' }));
@@ -397,9 +466,11 @@ function run() {
       if (data.type === 'loading') tk.setStatus(els.status, `Loading ${languageName} runtime from jsDelivr… Stop cancels loading.`, '');
       if (data.type === 'started') {
         clearTimeout(deadline);
-        started = performance.now();
+        runTiming.started = performance.now();
+        runTiming.preparation = data.preparation;
         tk.setStatus(els.status, 'Running…', '');
         deadline = setTimeout(() => {
+          showMetrics(null, true);
           stop();
           tk.setStatus(els.status, 'Stopped at the 30-second execution limit. You can run again.', '');
         }, 30000);
@@ -409,6 +480,7 @@ function run() {
       if (data.type === 'prompt') {
         if (promptId !== null) {
           appendOutput('error', 'Use await prompt() sequentially, not concurrent prompts.');
+          showMetrics(null, true);
           stop();
           tk.setStatus(els.status, 'Concurrent prompts are unsupported. Ask one question at a time, then Run again.', 'err');
           return;
@@ -421,20 +493,25 @@ function run() {
         tk.setStatus(els.status, 'Waiting for input…', '');
       }
       if (data.type === 'done') {
+        showMetrics(data);
         if (preparedInput) stop();
-        tk.setStatus(els.status, `Ran in ${Math.round(performance.now() - started)} ms.${preparedInput ? '' : ' Timers stay live until Stop or the 30-second limit.'}`, 'ok');
+        tk.setStatus(els.status, preparedInput ? 'Finished.' : 'Main code finished. Timers stay live until Stop or the 30-second limit.', 'ok');
       }
       if (data.type === 'failed') {
+        showMetrics(data);
         stop();
         tk.setStatus(els.status, 'Threw an error or could not load the runtime. Check the output, then run again.', 'err');
       }
     };
     worker.onerror = (event) => {
+      if (activeWorker !== worker) return;
       appendOutput('error', event.message || 'Worker execution failed.');
+      showMetrics(null, true);
       stop();
       tk.setStatus(els.status, 'Could not execute the snippet.', 'err');
     };
     deadline = setTimeout(() => {
+      showMetrics(null, true);
       stop();
       tk.setStatus(els.status, 'Runtime loading timed out after 90 seconds. Check your connection and try Run again.', 'err');
     }, 90000);
@@ -460,39 +537,75 @@ function scheduleRun() {
 els.run.addEventListener('click', run);
 els.stop.addEventListener('click', () => {
   clearTimeout(autoTimer);
+  if (activeWorker) showMetrics(null, true);
   stop();
   tk.setStatus(els.status, 'Stopped.', '');
 });
 els.auto.addEventListener('change', scheduleRun);
 els.clearOutput.addEventListener('click', clearOutput);
 els.copyOutput?.addEventListener('click', () => tk.copy(outputText.join('\n'), els.status));
-document.querySelectorAll('[data-jsp-example]').forEach((button) => {
-  button.addEventListener('click', () => {
-    const example = exampleData[Number(button.dataset.jspExample)];
-    if (!example) return;
-    els.auto.checked = false;
-    clearTimeout(autoTimer);
-    stop();
-    let prefix;
-    if (compiled) {
-      // Full programs replace the snippet so the example always links and runs.
-      const code = `${example.code.trimEnd()}\n`;
-      if (editor) editor.setValue(code);
-      els.code.value = code;
-      if (els.stdin) els.stdin.value = example.stdin || '';
-      updateMeta();
-      tk.setStatus(els.status, `${example.name} loaded and replaced the editor. ${example.hint} Press Run; Auto-run is paused.`, 'ok');
-      return;
-    }
-    prefix = preparedInput
-      ? `# Example: ${example.name}\n${example.code}\n`
-      : `// Example: ${example.name}\n{\n${example.code.trimEnd().split('\n').map((line) => `  ${line}`).join('\n')}\n}\n\n`;
-    const code = prefix + (editor ? editor.getValue() : els.code.value);
-    if (editor) editor.setValue(code);
-    els.code.value = code;
-    if (els.stdin && example.stdin && !els.stdin.value) els.stdin.value = example.stdin;
-    updateMeta();
-    tk.setStatus(els.status, `${example.name} added above your code. ${example.hint} Press Run; Auto-run is paused.`, 'ok');
+function exampleOption(label, value) {
+  const option = document.createElement('option');
+  option.textContent = label;
+  option.value = value;
+  return option;
+}
+for (const category of new Set(exampleData.map((example) => example.category))) {
+  els.category.add(exampleOption(category, category));
+}
+function previewExample() {
+  pendingExample = null;
+  els.exampleConfirm.hidden = true;
+  const example = els.example.value === '' ? null : exampleData[Number(els.example.value)];
+  els.exampleLoad.disabled = !example;
+  els.exampleHint.textContent = example ? example.hint : 'Choose an example. Loading replaces the code and input, and pauses Auto-run.';
+}
+els.category.addEventListener('change', () => {
+  els.example.replaceChildren(exampleOption('Choose an example…', ''));
+  exampleData.forEach((example, index) => {
+    if (!els.category.value || example.category === els.category.value) els.example.add(exampleOption(example.name, String(index)));
+  });
+  previewExample();
+});
+els.example.addEventListener('change', previewExample);
+function loadExample(example) {
+  els.auto.checked = false;
+  clearTimeout(autoTimer);
+  stop();
+  const code = `${example.code.trimEnd()}\n`;
+  if (editor) editor.setValue(code);
+  els.code.value = code;
+  if (els.stdin) els.stdin.value = example.stdin || '';
+  baselineCode = code;
+  baselineInput = els.stdin?.value || '';
+  pendingExample = null;
+  els.exampleConfirm.hidden = true;
+  updateMeta();
+  tk.setStatus(els.status, `${example.name} loaded. Press Run; Auto-run is paused.`, 'ok');
+  if (editor) editor.focus(); else els.code.focus();
+}
+els.exampleLoad.addEventListener('click', () => {
+  if (els.example.value === '') return;
+  const example = exampleData[Number(els.example.value)];
+  if (!example) return;
+  if (els.code.value !== baselineCode || (els.stdin?.value || '') !== baselineInput) {
+    pendingExample = example;
+    els.exampleConfirm.hidden = false;
+    els.exampleCancel.focus();
+  } else loadExample(example);
+});
+els.exampleReplace.addEventListener('click', () => { if (pendingExample) loadExample(pendingExample); });
+els.exampleCancel.addEventListener('click', () => {
+  pendingExample = null;
+  els.exampleConfirm.hidden = true;
+  els.exampleLoad.focus();
+});
+els.suggestions.addEventListener('change', () => {
+  editor?.updateOptions({
+    quickSuggestions: els.suggestions.checked,
+    suggestOnTriggerCharacters: els.suggestions.checked,
+    wordBasedSuggestions: els.suggestions.checked ? 'currentDocument' : 'off',
+    tabCompletion: els.suggestions.checked ? 'on' : 'off',
   });
 });
 els.inputForm.addEventListener('submit', (event) => {
@@ -528,6 +641,12 @@ els.clear.addEventListener('click', () => {
   clearTimeout(autoTimer);
   els.code.value = '';
   if (els.stdin) els.stdin.value = '';
+  baselineCode = '';
+  baselineInput = '';
+  pendingExample = null;
+  els.exampleConfirm.hidden = true;
+  runTiming = null;
+  els.metrics.textContent = '';
   updateMeta();
   clearOutput();
   tk.setStatus(els.status, 'Cleared.', '');

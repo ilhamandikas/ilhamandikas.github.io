@@ -20,7 +20,7 @@ faq:
 - q: Can I use exceptions, threads, fork or sockets?
   a: This is a WASI build of Clang, not a desktop toolchain. Exceptions are unavailable in C, and threads, fork, and native OS processes are not supported. The standard C library works for console programs.
 - q: Does selecting an example erase my code?
-  a: Yes. C examples are complete programs with their own main, so clicking one replaces the editor and pauses Auto-run. Copy anything you want to keep first.
+  a: Selecting only previews the description. Load example replaces code and standard input, and pauses Auto-run. Edited code or input requires confirmation before replacement.
 - q: Is this a security sandbox?
   a: No. A Worker prevents direct DOM access and can be terminated, but compiled code can make network requests through WASI. The tool itself does not upload or persist code or input. Each Run starts fresh; output is limited to 500 rows.
 ---
@@ -33,7 +33,7 @@ The initial program sums `{2, 4, 6, 8}` and prints `sum: 20`. When you press Run
 
 ## Find prime numbers
 
-Choose **Find prime numbers**. It prints:
+Choose **Find prime numbers**, press **Load example**, then **Run**. It prints:
 
 ```text
 Primes: 2 3 5 7 11 13 17 19 23 29

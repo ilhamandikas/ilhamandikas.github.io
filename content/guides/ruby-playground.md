@@ -20,7 +20,7 @@ faq:
 - q: Can I install gems or run Rails?
   a: This runner provides a browser WASI build, not a desktop Ruby installation or a web server. No gems are installed automatically; arbitrary native extensions and OS subprocesses are unavailable.
 - q: Does selecting an example erase my code?
-  a: No. It adds code above the existing snippet and pauses Auto-run. Clear first to run just the example. Ruby examples share the snippet's namespace, so later definitions can replace earlier ones.
+  a: Selecting only previews its description. Load example replaces code and standard input, and pauses Auto-run. If either field was edited, confirm replacement or keep your work.
 - q: Is this a security sandbox?
   a: No. A Worker prevents direct DOM access and can be terminated, but Ruby's JavaScript bridge can make network requests. The tool itself does not upload or persist code or input. Each Run starts fresh; output is limited to 500 rows.
 ---
@@ -33,7 +33,7 @@ The initial snippet maps `[1, 2, 3, 4]` to `[2, 4, 6, 8]` and prints its sum, `2
 
 ## Find prime numbers
 
-Clear the editor and choose **Find prime numbers**. It prints:
+Choose **Find prime numbers**, press **Load example**, then **Run**. It prints:
 
 ```text
 [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
@@ -59,7 +59,7 @@ String multiplication repeats the spaces and stars. Row `r` uses `height - r` sp
 
 ## Prepare input and recover from errors
 
-The **Read standard input** example fills an empty input field with `Ilham`:
+Loading the **Read standard input** example replaces the input field with `Ilham`:
 
 ```ruby
 name = STDIN.readline.chomp
