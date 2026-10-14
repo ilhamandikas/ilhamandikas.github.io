@@ -54,7 +54,7 @@ Press **Enable Monaco** to fetch the real editor from a CDN; the badge changes t
 
 ## Distraction-free workspace
 
-Press **Full screen** to expand the editor and console without the site navigation or related content. **Exit full screen** or Esc returns to the page without resetting code, input or execution. When browser fullscreen is unavailable or denied, the tool fills the page instead. The exit control stays visible while scrolling; no fullscreen preference is saved.
+Press **Full screen** to fit the editor above the console within one viewport, without scrolling the workspace. Long code and output scroll inside their own panes. Examples, editor settings and prepared input remain available under **Options**; supporting text is hidden. **Exit full screen** or Esc returns to the page without resetting code, input or execution (Esc closes an open Options panel first). When browser fullscreen is unavailable or denied, the tool fills the page instead. No fullscreen preference is saved.
 
 ## Interactive execution
 

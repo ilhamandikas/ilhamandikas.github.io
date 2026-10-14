@@ -37,6 +37,7 @@ const els = {
   suggestions: document.querySelector('#jsp-suggestions'),
   fullscreen: document.querySelector('#jsp-fullscreen'),
   fullscreenHint: document.querySelector('#jsp-fullscreen-hint'),
+  options: document.querySelector('#jsp-options'),
 };
 
 const language = els.workspace?.dataset.language || 'javascript';
@@ -77,6 +78,16 @@ let expanded = false;
 let nativeFullscreen = false;
 let previousFocus = null;
 let outsideElements = [];
+let optionsWereOpen = true;
+
+function fitExpandedViewport() {
+  if (!expanded) return;
+  const height = window.visualViewport?.height || window.innerHeight;
+  els.workspace.style.setProperty('--jsp-viewport-height', `${height}px`);
+  editor?.layout();
+}
+window.addEventListener('resize', fitExpandedViewport);
+window.visualViewport?.addEventListener('resize', fitExpandedViewport);
 
 function setExpanded(value) {
   if (expanded === value) return;
@@ -88,6 +99,10 @@ function setExpanded(value) {
   els.fullscreenHint.hidden = !value;
   if (value) {
     previousFocus = document.activeElement;
+    optionsWereOpen = els.options.open;
+    els.options.open = false;
+    els.workspace.scrollTop = 0;
+    fitExpandedViewport();
     // In the fallback, hide surrounding controls from keyboard and assistive
     // technology without moving the editor or recreating its model.
     for (let node = els.workspace; node.parentElement; node = node.parentElement) {
@@ -101,6 +116,8 @@ function setExpanded(value) {
     }
     els.fullscreen.focus({ preventScroll: true });
   } else {
+    els.options.open = optionsWereOpen;
+    els.workspace.style.removeProperty('--jsp-viewport-height');
     for (const element of outsideElements) element.removeAttribute('inert');
     outsideElements = [];
     previousFocus?.focus({ preventScroll: true });
@@ -151,8 +168,14 @@ els.workspace.addEventListener('keydown', (event) => {
   event.stopPropagation();
   if (event.key === 'Escape' && !event.defaultPrevented) {
     event.preventDefault();
-    void exitExpanded();
+    if (els.options.open) {
+      els.options.open = false;
+      els.options.querySelector('summary').focus({ preventScroll: true });
+    } else void exitExpanded();
   }
+});
+els.workspace.addEventListener('click', (event) => {
+  if (expanded && els.options.open && !els.options.contains(event.target)) els.options.open = false;
 });
 window.addEventListener('pagehide', () => { nativeFullscreen = false; setExpanded(false); });
 
@@ -856,6 +879,7 @@ function loadExample(example) {
   if (els.stdin) els.stdin.value = example.stdin || '';
   updateMeta();
   tk.setStatus(els.status, `${example.name} loaded. Press Run; Auto-run is paused.`, 'ok');
+  if (expanded) els.options.open = false;
   if (editor) editor.focus(); else els.code.focus();
 }
 els.suggestions.addEventListener('change', () => {

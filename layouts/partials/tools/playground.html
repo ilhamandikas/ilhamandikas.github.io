@@ -24,35 +24,54 @@
       <button class="btn" type="button" id="jsp-fullscreen" aria-controls="jsp-workspace" aria-pressed="false">Full screen</button>
     </div>
   </div>
-  <div class="tool-panel">
+  <div class="tool-panel jsp-code-panel">
     <h2>{{ $name }} code</h2>
-    <div class="jsp-example-picker">
-      <div class="tool-field">
-        <label for="jsp-category">Example category</label>
-        <select id="jsp-category" class="tool-select" data-no-memory>
-          <option value="">All categories</option>
-        </select>
+    <details class="jsp-editor-options" id="jsp-options" open>
+      <summary class="btn">Options</summary>
+      <div class="jsp-options-body">
+        <div class="jsp-example-picker">
+          <div class="tool-field">
+            <label for="jsp-category">Example category</label>
+            <select id="jsp-category" class="tool-select" data-no-memory>
+              <option value="">All categories</option>
+            </select>
+          </div>
+          <div class="tool-field">
+            <label for="jsp-example">Code example</label>
+            <select id="jsp-example" class="tool-select" aria-describedby="jsp-example-hint" data-no-memory>
+              <option value="">Choose an example…</option>
+              {{ range $index, $example := $items }}<option value="{{ $index }}">{{ $example.name }}</option>{{ end }}
+            </select>
+          </div>
+        </div>
+        <p class="tool-hint" id="jsp-example-hint">Choosing an example replaces code and input, and pauses Auto-run. Multiline code requires confirmation.</p>
+        <p class="tool-hint">{{ if ne $language "javascript" }}The first Run downloads the language runtime from jsDelivr. {{ end }}Ctrl/Cmd + Enter runs code. Monaco loads from a CDN only when enabled.</p>
+        <script type="application/json" id="jsp-examples">{{ $items | jsonify | safeJS }}</script>
+        <div class="mon-toolbar">
+          <button class="btn" type="button" id="jsp-load">Enable Monaco</button>
+          <label class="jsp-auto"><input type="checkbox" id="jsp-suggestions" checked data-no-memory> Suggestions</label>
+          <button class="btn" type="button" id="jsp-format"{{ if $preparedInput }} disabled title="A {{ $name }} formatter is not bundled"{{ end }}>Format</button>
+          <button class="btn" type="button" id="jsp-clear">Clear</button>
+          <button class="btn" type="button" data-copy="#jsp-code" data-status="#jsp-status">Copy</button>
+          <button class="btn" type="button" data-download="#jsp-code" data-filename="snippet.{{ if eq $language "python" }}py{{ else if eq $language "ruby" }}rb{{ else if eq $language "c" }}c{{ else if eq $language "cpp" }}cpp{{ else if eq $language "typescript" }}ts{{ else }}js{{ end }}" data-mime="text/plain">Download</button>
+          <span class="mon-badge" id="jsp-badge">Plain editor</span>
+        </div>
+        {{ if $preparedInput }}
+        <div class="tool-field">
+          <label for="jsp-input-mode">Input mode</label>
+          <select id="jsp-input-mode" class="tool-select" data-no-memory>
+            <option value="interactive">Interactive terminal</option>
+            <option value="prepared">Prepared standard input</option>
+          </select>
+          <p class="tool-hint" id="jsp-input-mode-hint">Interactive input waits for each answer in the console. Requires HTTPS and service workers; no backend and no persisted input.</p>
+        </div>
+        <div class="tool-field" id="jsp-stdin-field" hidden>
+          <label for="jsp-stdin">Prepared standard input — one answer per line</label>
+          <textarea id="jsp-stdin" rows="3" spellcheck="false" data-no-memory placeholder="Ilham"></textarea>
+        </div>
+        {{ end }}
       </div>
-      <div class="tool-field">
-        <label for="jsp-example">Code example</label>
-        <select id="jsp-example" class="tool-select" aria-describedby="jsp-example-hint" data-no-memory>
-          <option value="">Choose an example…</option>
-          {{ range $index, $example := $items }}<option value="{{ $index }}">{{ $example.name }}</option>{{ end }}
-        </select>
-      </div>
-    </div>
-    <p class="tool-hint" id="jsp-example-hint">Choosing an example replaces code and input, and pauses Auto-run. Multiline code requires confirmation.</p>
-    <p class="tool-hint">{{ if ne $language "javascript" }}The first Run downloads the language runtime from jsDelivr. {{ end }}Ctrl/Cmd + Enter runs code. Monaco loads from a CDN only when enabled.</p>
-    <script type="application/json" id="jsp-examples">{{ $items | jsonify | safeJS }}</script>
-    <div class="mon-toolbar">
-      <button class="btn" type="button" id="jsp-load">Enable Monaco</button>
-      <label class="jsp-auto"><input type="checkbox" id="jsp-suggestions" checked data-no-memory> Suggestions</label>
-      <button class="btn" type="button" id="jsp-format"{{ if $preparedInput }} disabled title="A {{ $name }} formatter is not bundled"{{ end }}>Format</button>
-      <button class="btn" type="button" id="jsp-clear">Clear</button>
-      <button class="btn" type="button" data-copy="#jsp-code" data-status="#jsp-status">Copy</button>
-      <button class="btn" type="button" data-download="#jsp-code" data-filename="snippet.{{ if eq $language "python" }}py{{ else if eq $language "ruby" }}rb{{ else if eq $language "c" }}c{{ else if eq $language "cpp" }}cpp{{ else if eq $language "typescript" }}ts{{ else }}js{{ end }}" data-mime="text/plain">Download</button>
-      <span class="mon-badge" id="jsp-badge">Plain editor</span>
-    </div>
+    </details>
     <div class="mon-editor-wrap">
       <label for="jsp-code" class="tool-hint">{{ $name }} code</label>
       <div id="jsp-container" class="mon-container" hidden></div>
@@ -86,33 +105,21 @@ const doubled = nums.map((n) => n * 2);
 console.log('doubled:', doubled);
 return doubled.reduce((sum, n) => sum + n, 0);{{ end }}</textarea>
     </div>
-    {{ if $preparedInput }}
-    <div class="tool-field">
-      <label for="jsp-input-mode">Input mode</label>
-      <select id="jsp-input-mode" class="tool-select" data-no-memory>
-        <option value="interactive">Interactive terminal</option>
-        <option value="prepared">Prepared standard input</option>
-      </select>
-      <p class="tool-hint" id="jsp-input-mode-hint">Interactive input waits for each answer in the console. Requires HTTPS and service workers; no backend and no persisted input.</p>
-    </div>
-    <div class="tool-field" id="jsp-stdin-field" hidden>
-      <label for="jsp-stdin">Prepared standard input — one answer per line</label>
-      <textarea id="jsp-stdin" rows="3" spellcheck="false" data-no-memory placeholder="Ilham"></textarea>
-    </div>
-    {{ end }}
-    <div class="mon-toolbar">
+    <div class="mon-toolbar jsp-run-controls">
       <button class="btn primary" type="button" id="jsp-run">Run</button>
       <button class="btn" type="button" id="jsp-stop" disabled>Stop</button>
-      <label class="jsp-auto"><input type="checkbox" id="jsp-auto" data-no-memory> Auto-run (700 ms)</label>
+      <label class="jsp-auto"><input type="checkbox" id="jsp-auto" data-no-memory> Auto-run<span class="jsp-action-suffix"> (700 ms)</span></label>
       <span class="mon-meta" id="jsp-meta">0 lines · 0 chars</span>
     </div>
     <p class="tool-hint">Monaco offers word suggestions (Ctrl + Space), plus JavaScript/TypeScript syntax and type diagnostics. Other languages have limited suggestions; check errors after Run. Suggestions need Monaco.</p>
   </div>
-  <div class="tool-panel">
-    <h2>Console</h2>
-    <div class="mon-toolbar">
-      <button class="btn" type="button" id="jsp-clear-output">Clear output</button>
-      <button class="btn" type="button" id="jsp-copy-output">Copy output</button>
+  <div class="tool-panel jsp-console-panel">
+    <div class="jsp-console-head">
+      <h2>Console</h2>
+      <div class="mon-toolbar">
+        <button class="btn" type="button" id="jsp-clear-output" aria-label="Clear console output"><span>Clear<span class="jsp-action-suffix"> output</span></span></button>
+        <button class="btn" type="button" id="jsp-copy-output" aria-label="Copy console output"><span>Copy<span class="jsp-action-suffix"> output</span></span></button>
+      </div>
     </div>
     <div id="jsp-output" class="jsp-output" role="log" aria-label="Console output" aria-live="polite"></div>
     <form id="jsp-input-form" class="jsp-input-form" hidden>
@@ -120,8 +127,8 @@ return doubled.reduce((sum, n) => sum + n, 0);{{ end }}</textarea>
       <div class="tool-row">
         <span aria-hidden="true">&gt;</span>
         <input id="jsp-input" type="text" autocomplete="off" spellcheck="false" maxlength="16384" data-no-memory>
-        <button class="btn primary" type="submit">Send (Enter)</button>
-        <button class="btn" type="button" id="jsp-eof">EOF (Ctrl + D)</button>
+        <button class="btn primary" type="submit"><span>Send<span class="jsp-action-suffix"> (Enter)</span></span></button>
+        <button class="btn" type="button" id="jsp-eof"><span>EOF<span class="jsp-action-suffix"> (Ctrl + D)</span></span></button>
       </div>
       <p class="tool-hint">Enter sends one line. EOF signals the end of input; Stop ends the program. Answers are echoed in the console, not saved.</p>
     </form>

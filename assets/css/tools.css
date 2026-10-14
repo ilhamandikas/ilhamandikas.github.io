@@ -282,7 +282,8 @@
 .tool-fold-body { padding: 18px 24px 24px; }
 .tool-fold:not([open]) > .tool-fold-body { display: none; }
 .tool-panel > h2,
-.tool-panel > h3 {
+.tool-panel > h3,
+.jsp-console-head > h2 {
   margin: 0 0 18px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
@@ -1512,32 +1513,87 @@ textarea.tool-text { resize: vertical; }
 .jsp-workspace-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .jsp-workspace-header { justify-content: space-between; }
 .jsp-workspace-actions .tool-hint { margin: 0; }
+.jsp-editor-options > summary { display: none; }
 body.jsp-focus-open { overflow: hidden; }
 .jsp-workspace.jsp-expanded {
   position: fixed;
   inset: 0;
   z-index: 80;
   width: 100%;
-  height: 100%;
+  height: var(--jsp-viewport-height, 100%);
   max-width: none;
   max-height: none;
   margin: 0;
-  padding: clamp(12px, 2vw, 24px);
+  padding: clamp(8px, 1vw, 16px);
+  overflow: hidden;
+  gap: 8px;
+  grid-template-rows: auto minmax(0, 3fr) minmax(0, 2fr);
+  background: var(--bg);
+}
+.jsp-expanded .jsp-workspace-header { flex-wrap: nowrap; }
+.jsp-expanded .jsp-workspace-header > strong { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jsp-expanded .jsp-workspace-actions { flex-wrap: nowrap; flex-shrink: 0; }
+.jsp-expanded .btn { min-height: 44px; padding: 8px 10px; font-size: 13px; }
+.jsp-expanded > .tool-panel { min-height: 0; padding: 8px; }
+.jsp-expanded .jsp-code-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px;
+}
+.jsp-expanded .jsp-code-panel > h2,
+.jsp-expanded .jsp-code-panel > .tool-hint,
+.jsp-expanded .jsp-console-panel > .tool-hint,
+.jsp-expanded .jsp-console-panel > .tool-note,
+.jsp-expanded > .jsp-runtime,
+.jsp-expanded .mon-editor-wrap > label,
+.jsp-expanded .jsp-action-suffix,
+.jsp-expanded #jsp-meta { display: none; }
+.jsp-expanded .jsp-run-controls { grid-row: 1; grid-column: 1; margin: 0; gap: 6px; flex-wrap: nowrap; align-items: center; }
+.jsp-expanded .jsp-auto { min-height: 44px; font-size: 13px; gap: 4px; white-space: nowrap; }
+.jsp-expanded .jsp-editor-options { grid-row: 1; grid-column: 2; position: relative; z-index: 6; }
+.jsp-expanded .jsp-editor-options > summary { display: flex; list-style: none; }
+.jsp-expanded .jsp-editor-options > summary::-webkit-details-marker { display: none; }
+.jsp-expanded .jsp-options-body {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: min(480px, calc(100vw - 32px));
+  max-height: calc(var(--jsp-viewport-height, 100dvh) - 140px);
   overflow: auto;
-  overscroll-behavior: contain;
-  align-content: start;
-  background: var(--bg);
+  padding: 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: var(--surface);
 }
-.jsp-expanded .jsp-workspace-header {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  padding: 8px 0;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
+.jsp-expanded .mon-editor-wrap { grid-row: 2; grid-column: 1 / -1; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); }
+.jsp-expanded .mon-textarea,
+.jsp-expanded .mon-container { height: 100%; min-height: 0; max-height: 100%; }
+.jsp-expanded .mon-textarea { resize: none; }
+.jsp-expanded .jsp-console-panel { display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+.jsp-expanded .jsp-console-head { display: flex; align-items: center; justify-content: space-between; flex: none; gap: 8px; }
+.jsp-expanded .jsp-console-head h2 { margin: 0; padding: 0; border: 0; font-size: 14px; }
+.jsp-expanded .jsp-console-head .mon-toolbar { margin: 0; gap: 6px; flex-wrap: nowrap; }
+.jsp-workspace.jsp-expanded .jsp-output { flex: 1 1 0; min-height: 0; max-height: none; }
+.jsp-expanded .jsp-input-form { flex: none; padding: 8px; margin: 0; }
+.jsp-expanded .jsp-input-form label { margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.jsp-expanded .jsp-input-form .tool-row { flex-wrap: nowrap; gap: 6px; margin: 0; }
+.jsp-expanded .jsp-input-form input { width: 0; flex: 1 1 0; }
+.jsp-expanded .jsp-input-form .tool-hint { display: none; }
+.jsp-expanded #jsp-status,
+.jsp-expanded #jsp-metrics { flex: none; margin: 0; font-size: 12px; line-height: 1.4; max-height: 2.8em; overflow: hidden; }
+.jsp-expanded #jsp-status:empty,
+.jsp-expanded #jsp-metrics:empty { display: none; }
+@media (max-width: 480px), (max-height: 640px) {
+  .jsp-workspace.jsp-expanded { grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr); }
+  .jsp-expanded #jsp-fullscreen-hint { display: none; }
 }
-.jsp-expanded .mon-textarea { min-height: clamp(300px, 45vh, 620px); }
-.jsp-expanded .mon-container { height: clamp(300px, 45vh, 620px); }
+@media (max-height: 480px) {
+  .jsp-workspace.jsp-expanded:has(#jsp-input-form:not([hidden])) { grid-template-rows: auto minmax(0, 2fr) minmax(0, 3fr); }
+  .jsp-expanded .jsp-input-form label,
+  .jsp-expanded:has(#jsp-input-form:not([hidden])) #jsp-status,
+  .jsp-expanded:has(#jsp-input-form:not([hidden])) #jsp-metrics { display: none; }
+}
 .jsp-auto { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
 .jsp-input-form { margin-top: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-soft); }
 .jsp-input-form label,
