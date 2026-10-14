@@ -1634,6 +1634,11 @@ When an AI agent creates or modifies a tool:
 13. Test error handling.
 14. Preserve existing URLs.
 15. Keep the tool focused.
+16. Reuse `window.tk` and its shared modules before adding a local UI helper. Dialog and fullscreen controllers belong in the shared UI layer.
+17. Split growing files by responsibility, usually before roughly 400 lines; this is a review trigger, not a reason to create meaningless wrappers.
+18. Keep tool-specific runtime logic separate from reusable UI. Do not promote a helper to global scope unless it represents a real shared concern.
+19. Put CSS in the central stylesheet bundles; do not author inline CSS or duplicate global control styling.
+20. Record architectural changes and update relevant tests. See `PLAYGROUND-ARCHITECTURE.md` for the playground module boundaries.
 
 ---
 

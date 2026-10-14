@@ -1,0 +1,20 @@
+/* One panel surface for native confirmations, keyboard help and site search. */
+.dialog-panel {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  padding: 18px 20px 16px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+}
+.dialog-panel:focus { outline: none; }
+dialog.dialog-panel { position: fixed; inset: 0; margin: auto; width: calc(100% - 32px); }
+dialog.dialog-panel::backdrop { background: var(--overlay); }
+.dialog-title { margin: 0; font-size: 16px; }
+.dialog-description { margin: 12px 0 20px; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.clipboard-fallback { position: fixed; opacity: 0; pointer-events: none; }

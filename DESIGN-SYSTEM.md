@@ -1373,6 +1373,11 @@ AI agents working on design must:
 8. Preserve performance.
 9. Avoid changing unrelated visual styles.
 10. Prefer functional clarity over visual novelty.
+11. Do not author inline CSS (`style` attributes, `<style>` blocks, or JS writes to element styles). Use shared classes and design tokens.
+12. Reuse global button, input, select, checkbox, panel, and dialog styles; component CSS should handle structure, not create another visual theme.
+13. Keep shared styles modular and assembled through the central Hugo bundles. Do not load a competing per-tool stylesheet.
+
+See `PLAYGROUND-ARCHITECTURE.md` for the shared UI implementation and validation workflow. Third-party renderers such as Monaco manage their own internal DOM styles; do not patch those internals to enforce the authored-CSS rule.
 
 ---
 

@@ -1,5 +1,9 @@
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {{- $playground := false -}}
+  {{- if and (eq .Section "tools") .File -}}
+    {{- $playground = (partial "tools/meta.html" .File.ContentBaseName).playground -}}
+  {{- end }}
+  <meta name="viewport" content="width=device-width, initial-scale=1{{ if $playground }}, interactive-widget=resizes-content{{ end }}">
 
   {{- $desc := site.Params.description -}}
   {{- with .Description }}{{ $desc = . }}{{ end -}}
@@ -80,7 +84,7 @@
 
   {{ partial "schema.html" . }}
 
-  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") (resources.Get "css/search-mascot.css") | resources.Concat "css/site.css" | minify | fingerprint }}
+  {{- $css := slice (resources.Get "css/chroma.css") (resources.Get "css/styles.css") (resources.Get "css/components/site-content.css") (resources.Get "css/components/dialog.css") (resources.Get "css/components/site-shortcuts.css") (resources.Get "css/components/site-responsive.css") (resources.Get "css/search-mascot.css") | resources.Concat "css/site.css" | minify | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
 
   {{- /* Warm up likely next pages without rendering or executing them in the

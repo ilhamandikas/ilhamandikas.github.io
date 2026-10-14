@@ -46,8 +46,7 @@
 {{ end }}
 
 {{ define "styles" }}
-{{- $toolsCSS := resources.Get "css/tools.css" | minify | fingerprint }}
-<link rel="stylesheet" href="{{ $toolsCSS.RelPermalink }}" integrity="{{ $toolsCSS.Data.Integrity }}">
+{{ partial "tools/styles.html" . }}
 {{ end }}
 
 {{ define "scripts" }}

@@ -1,11 +1,6 @@
 {{- $meta := partial "tools/meta.html" .File.ContentBaseName -}}
 {{- $language := $meta.playground | default "javascript" -}}
-{{- $name := "JavaScript" -}}
-{{- if eq $language "typescript" }}{{ $name = "TypeScript" }}{{ end -}}
-{{- if eq $language "python" }}{{ $name = "Python" }}{{ end -}}
-{{- if eq $language "ruby" }}{{ $name = "Ruby" }}{{ end -}}
-{{- if eq $language "c" }}{{ $name = "C" }}{{ end -}}
-{{- if eq $language "cpp" }}{{ $name = "C++" }}{{ end -}}
+{{- $name := strings.TrimSuffix " Playground" $meta.name -}}
 {{- $preparedInput := in (slice "python" "ruby" "c" "cpp") $language -}}
 {{- $runtimeModule := "" -}}
 {{- if in (slice "ruby" "c" "cpp") $language -}}
@@ -16,20 +11,20 @@
 {{- $items := index $examples $language -}}
 {{- if eq $language "typescript" }}{{ $items = (index $examples "javascript") | append $items }}{{ end -}}
 {{ partial "tools/playground-links.html" .File.ContentBaseName }}
-<div class="jsp-workspace" id="jsp-workspace" data-language="{{ $language }}" data-input-worker-url="{{ "/tools/playground-input-sw.js" | relURL }}"{{ with $runtimeModule }} data-runtime-module="{{ . }}"{{ end }}>
-  <div class="jsp-workspace-header">
+<div class="tool-workspace" id="jsp-workspace" data-language="{{ $language }}" data-language-name="{{ $name }}" data-input-worker-url="{{ "/tools/playground-input-sw.js" | relURL }}"{{ with $runtimeModule }} data-runtime-module="{{ . }}"{{ end }}>
+  <div class="tool-workspace-header">
     <strong>{{ $name }} Playground</strong>
-    <div class="jsp-workspace-actions">
-      <span class="tool-hint" id="jsp-fullscreen-hint" hidden>Esc to exit</span>
+    <div class="tool-workspace-actions">
+      <span class="tool-hint tool-workspace-exit-hint" id="jsp-fullscreen-hint" hidden>Esc to exit</span>
       <button class="btn" type="button" id="jsp-fullscreen" aria-controls="jsp-workspace" aria-pressed="false">Full screen</button>
     </div>
   </div>
-  <div class="tool-panel jsp-code-panel">
+  <div class="tool-panel tool-workspace-editor">
     <h2>{{ $name }} code</h2>
-    <details class="jsp-editor-options" id="jsp-options" open>
+    <details class="tool-workspace-options" id="jsp-options" open>
       <summary class="btn">Options</summary>
-      <div class="jsp-options-body">
-        <div class="jsp-example-picker">
+      <div class="tool-workspace-options-body">
+        <div class="tool-grid-2">
           <div class="tool-field">
             <label for="jsp-category">Example category</label>
             <select id="jsp-category" class="tool-select" data-no-memory>
@@ -47,14 +42,14 @@
         <p class="tool-hint" id="jsp-example-hint">Choosing an example replaces code and input, and pauses Auto-run. Multiline code requires confirmation.</p>
         <p class="tool-hint">{{ if ne $language "javascript" }}The first Run downloads the language runtime from jsDelivr. {{ end }}Ctrl/Cmd + Enter runs code. Monaco loads from a CDN only when enabled.</p>
         <script type="application/json" id="jsp-examples">{{ $items | jsonify | safeJS }}</script>
-        <div class="mon-toolbar">
+        <div class="tool-row">
           <button class="btn" type="button" id="jsp-load">Enable Monaco</button>
-          <label class="jsp-auto"><input type="checkbox" id="jsp-suggestions" checked data-no-memory> Suggestions</label>
+          <label class="tool-check"><input type="checkbox" id="jsp-suggestions" checked data-no-memory> Suggestions</label>
           <button class="btn" type="button" id="jsp-format"{{ if $preparedInput }} disabled title="A {{ $name }} formatter is not bundled"{{ end }}>Format</button>
           <button class="btn" type="button" id="jsp-clear">Clear</button>
           <button class="btn" type="button" data-copy="#jsp-code" data-status="#jsp-status">Copy</button>
           <button class="btn" type="button" data-download="#jsp-code" data-filename="snippet.{{ if eq $language "python" }}py{{ else if eq $language "ruby" }}rb{{ else if eq $language "c" }}c{{ else if eq $language "cpp" }}cpp{{ else if eq $language "typescript" }}ts{{ else }}js{{ end }}" data-mime="text/plain">Download</button>
-          <span class="mon-badge" id="jsp-badge">Plain editor</span>
+          <span class="tool-badge" id="jsp-badge">Plain editor</span>
         </div>
         {{ if $preparedInput }}
         <div class="tool-field">
@@ -67,15 +62,15 @@
         </div>
         <div class="tool-field" id="jsp-stdin-field" hidden>
           <label for="jsp-stdin">Prepared standard input — one answer per line</label>
-          <textarea id="jsp-stdin" rows="3" spellcheck="false" data-no-memory placeholder="Ilham"></textarea>
+          <textarea id="jsp-stdin" class="tool-input" rows="3" spellcheck="false" data-no-memory placeholder="Ilham"></textarea>
         </div>
         {{ end }}
       </div>
     </details>
-    <div class="mon-editor-wrap">
+    <div class="tool-code-wrap">
       <label for="jsp-code" class="tool-hint">{{ $name }} code</label>
-      <div id="jsp-container" class="mon-container" hidden></div>
-      <textarea id="jsp-code" class="mon-textarea" rows="16" spellcheck="false" data-no-memory>{{ if eq $language "python" }}nums = [1, 2, 3, 4]
+      <div id="jsp-container" class="tool-code-editor" hidden></div>
+      <textarea id="jsp-code" class="tool-input tool-code-textarea" rows="16" spellcheck="false" data-no-memory>{{ if eq $language "python" }}nums = [1, 2, 3, 4]
 doubled = [n * 2 for n in nums]
 print('doubled:', doubled)
 print('sum:', sum(doubled)){{ else if eq $language "ruby" }}nums = [1, 2, 3, 4]
@@ -105,47 +100,47 @@ const doubled = nums.map((n) => n * 2);
 console.log('doubled:', doubled);
 return doubled.reduce((sum, n) => sum + n, 0);{{ end }}</textarea>
     </div>
-    <div class="mon-toolbar jsp-run-controls">
+    <div class="tool-row tool-workspace-run-controls">
       <button class="btn primary" type="button" id="jsp-run">Run</button>
       <button class="btn" type="button" id="jsp-stop" disabled>Stop</button>
-      <label class="jsp-auto"><input type="checkbox" id="jsp-auto" data-no-memory> Auto-run<span class="jsp-action-suffix"> (700 ms)</span></label>
-      <span class="mon-meta" id="jsp-meta">0 lines · 0 chars</span>
+      <label class="tool-check"><input type="checkbox" id="jsp-auto" data-no-memory> Auto-run<span class="tool-action-suffix"> (700 ms)</span></label>
+      <span class="tool-code-meta" id="jsp-meta">0 lines · 0 chars</span>
     </div>
     <p class="tool-hint">Monaco offers word suggestions (Ctrl + Space), plus JavaScript/TypeScript syntax and type diagnostics. Other languages have limited suggestions; check errors after Run. Suggestions need Monaco.</p>
   </div>
-  <div class="tool-panel jsp-console-panel">
-    <div class="jsp-console-head">
+  <div class="tool-panel tool-workspace-console">
+    <div class="tool-console-head">
       <h2>Console</h2>
-      <div class="mon-toolbar">
-        <button class="btn" type="button" id="jsp-clear-output" aria-label="Clear console output"><span>Clear<span class="jsp-action-suffix"> output</span></span></button>
-        <button class="btn" type="button" id="jsp-copy-output" aria-label="Copy console output"><span>Copy<span class="jsp-action-suffix"> output</span></span></button>
+      <div class="tool-row">
+        <button class="btn" type="button" id="jsp-clear-output" aria-label="Clear console output"><span>Clear<span class="tool-action-suffix"> output</span></span></button>
+        <button class="btn" type="button" id="jsp-copy-output" aria-label="Copy console output"><span>Copy<span class="tool-action-suffix"> output</span></span></button>
       </div>
     </div>
-    <div id="jsp-output" class="jsp-output" role="log" aria-label="Console output" aria-live="polite"></div>
-    <form id="jsp-input-form" class="jsp-input-form" hidden>
-      <label for="jsp-input" id="jsp-input-label">Terminal input</label>
-      <div class="tool-row">
+    <div id="jsp-output" class="tool-input tool-output tool-console-output" role="log" aria-label="Console output" aria-live="polite"></div>
+    <form id="jsp-input-form" class="tool-terminal">
+      <label class="tool-label" for="jsp-input" id="jsp-input-label">Terminal input</label>
+      <div class="tool-terminal-controls">
         <span aria-hidden="true">&gt;</span>
-        <input id="jsp-input" type="text" autocomplete="off" spellcheck="false" maxlength="16384" data-no-memory>
-        <button class="btn primary" type="submit"><span>Send<span class="jsp-action-suffix"> (Enter)</span></span></button>
-        <button class="btn" type="button" id="jsp-eof"><span>EOF<span class="jsp-action-suffix"> (Ctrl + D)</span></span></button>
+        <input id="jsp-input" class="tool-input" type="text" autocomplete="off" spellcheck="false" maxlength="16384" aria-describedby="jsp-terminal-hint" data-no-memory>
+        <button class="btn primary" type="submit" id="jsp-send" disabled>Send</button>
+        <button class="btn" type="button" id="jsp-eof" disabled>EOF</button>
       </div>
-      <p class="tool-hint">Enter sends one line. EOF signals the end of input; Stop ends the program. Answers are echoed in the console, not saved.</p>
+      <p class="tool-hint" id="jsp-terminal-hint">You can type ahead. Enter sends a line when the program asks; EOF ends input. Answers are echoed in the console, not saved.</p>
     </form>
     <p class="tool-status" id="jsp-status" role="status" aria-live="polite"></p>
-    <p class="mon-meta" id="jsp-metrics" aria-live="polite"></p>
+    <p class="tool-code-meta tool-workspace-metrics" id="jsp-metrics" aria-live="polite"></p>
     <p class="tool-hint">Timing measures elapsed time, not CPU time; waiting for input is included. WASM memory, when available, is linear memory capacity, not total RAM or peak usage.</p>
     <p class="tool-note">{{ if eq $language "python" }}Use <code>input()</code> for terminal input.{{ else if eq $language "ruby" }}Use <code>STDIN.readline</code> for terminal input.{{ else if eq $language "c" }}Read terminal input with <code>scanf</code> or <code>fgets</code>.{{ else if eq $language "cpp" }}Read terminal input with <code>std::cin</code> or <code>std::getline</code>.{{ else }}Output streams live, including timers. Use <code>await prompt('Your name?')</code> for interactive input.{{ end }} Runs in a Web Worker, without direct DOM access. Stop terminates execution; execution outside input waits is limited to 30 seconds, each answer can wait up to 2 minutes, and output is capped at 500 rows. Code can still make network requests, so only run code you trust. The tool does not save or upload your code or input.</p>
   </div>
-  <dialog id="jsp-replace-dialog" class="kbd-help-panel jsp-confirm" aria-labelledby="jsp-replace-title" aria-describedby="jsp-replace-description">
-    <h2 id="jsp-replace-title" class="kbd-help-title">Replace existing code?</h2>
-    <p id="jsp-replace-description">Loading <strong id="jsp-replace-name"></strong> will delete the current code{{ if $preparedInput }} and replace prepared standard input{{ end }}. Cancel to keep your work.</p>
-    <div class="jsp-confirm-actions">
-      <button class="btn" type="button" id="jsp-replace-cancel" autofocus>Cancel</button>
-      <button class="btn primary" type="button" id="jsp-replace-accept">Replace code</button>
+  <dialog id="jsp-replace-dialog" class="dialog-panel" aria-labelledby="jsp-replace-title" aria-describedby="jsp-replace-description">
+    <h2 id="jsp-replace-title" class="dialog-title">Replace existing code?</h2>
+    <p id="jsp-replace-description" class="dialog-description">Loading <strong id="jsp-replace-name"></strong> will replace the current code and input. Cancel to keep your work.</p>
+    <div class="dialog-actions">
+      <button class="btn" type="button" id="jsp-replace-cancel" data-dialog-cancel autofocus>Cancel</button>
+      <button class="btn primary" type="button" id="jsp-replace-accept" data-dialog-accept>Replace code</button>
     </div>
   </dialog>
-  <details class="jsp-runtime">
+  <details class="tool-workspace-runtime">
     <summary>Runtime details</summary>
     {{ if $preparedInput }}<p class="tool-note">Interactive stdin installs a service worker scoped to /tools/ on its first Run. It answers only reserved input requests locally, without caching pages or persisting answers. If unavailable, use Prepared standard input. This is line-based input, not a shell or full terminal emulator.</p>{{ end }}
     {{ if eq $language "typescript" }}
