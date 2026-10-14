@@ -1508,10 +1508,45 @@ textarea.tool-text { resize: vertical; }
 }
 .jsp-workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .jsp-workspace > .tool-panel { min-width: 0; margin: 0; }
+.jsp-workspace-header,
+.jsp-workspace-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.jsp-workspace-header { justify-content: space-between; }
+.jsp-workspace-actions .tool-hint { margin: 0; }
+body.jsp-focus-open { overflow: hidden; }
+.jsp-workspace.jsp-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: clamp(12px, 2vw, 24px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  align-content: start;
+  background: var(--bg);
+}
+.jsp-expanded .jsp-workspace-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 8px 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.jsp-expanded .mon-textarea { min-height: clamp(300px, 45vh, 620px); }
+.jsp-expanded .mon-container { height: clamp(300px, 45vh, 620px); }
 .jsp-auto { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
-.jsp-input-form { margin-top: 12px; }
+.jsp-input-form { margin-top: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-soft); }
+.jsp-input-form label,
+.jsp-input-form input,
+.jsp-input-form .tool-row > span { font-family: var(--mono); }
+.jsp-input-form label { display: block; margin-bottom: 8px; overflow-wrap: anywhere; }
+.jsp-input-form .tool-hint { margin-bottom: 0; }
 .jsp-input-form[hidden] { display: none; }
-.jsp-input-form input { min-width: 0; flex: 1; }
+.jsp-input-form input { min-width: 0; flex: 1 1 160px; }
 .jsp-workspace .jsp-output { min-height: 200px; max-height: 480px; overflow: auto; }
 .jsp-output {
   min-height: 80px;

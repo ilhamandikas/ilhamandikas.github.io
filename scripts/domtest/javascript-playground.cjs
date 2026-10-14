@@ -52,6 +52,20 @@ function run(code) { el('code').value = code; el('run').click(); }
   el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await until(() => el('output').textContent.includes('done'));
   assert.equal(el('output').querySelector('img'), null);
+  run("return await prompt('EOF?');");
+  await until(() => !el('input-form').hidden);
+  el('eof').click();
+  await until(() => el('output').textContent.includes('resultnull'));
+  assert(el('output').textContent.includes('^D (EOF)'));
+  run("console.log('blank:', JSON.stringify(await prompt('Blank?'))); console.log(await prompt('Unicode?'));");
+  await until(() => !el('input-form').hidden);
+  el('input').value = '';
+  el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await until(() => el('input-label').textContent === 'Unicode?');
+  el('input').value = 'café 😀';
+  el('input-form').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await until(() => [...el('output').querySelectorAll('.jsp-line')].some((row) => row.querySelector('.jsp-tag')?.textContent === 'log' && row.textContent.includes('café 😀')));
+  assert(el('output').textContent.includes('blank: ""'));
   run("throw new Error('boom')");
   await until(() => el('status').textContent.includes('Threw'));
   assert(el('output').textContent.includes('boom'));
@@ -73,27 +87,32 @@ function run(code) { el('code').value = code; el('run').click(); }
   await until(() => el('output').textContent.includes('automatic'));
   el('clear').click();
   assert.equal(el('code').value, '');
-  el('code').value = "console.log('keep me');";
+  el('code').value = "console.log('keep me');\nreturn 1;";
   el('auto').checked = true;
   const examples = JSON.parse(el('examples').textContent);
   const pyramidIndex = examples.findIndex((item) => item.name === 'Centered pyramid');
+  let confirmations = 0;
+  w.confirm = (message) => { confirmations++; assert(message.includes('delete the existing code')); return false; };
   el('example').value = String(pyramidIndex);
   el('example').dispatchEvent(new w.Event('change'));
-  assert.equal(el('code').value, "console.log('keep me');");
-  assert(el('example-hint').textContent);
-  el('example-load').click();
-  assert.equal(el('example-confirm').hidden, false);
-  assert.equal(el('code').value, "console.log('keep me');");
-  el('example-cancel').click();
-  assert.equal(el('example-confirm').hidden, true);
-  el('example-load').click();
-  el('example-replace').click();
+  assert.equal(confirmations, 1);
+  assert.equal(el('example').value, '');
+  assert.equal(el('code').value, "console.log('keep me');\nreturn 1;");
+  assert.equal(el('auto').checked, true);
+  w.confirm = () => { confirmations++; return true; };
+  el('example').value = String(pyramidIndex);
+  el('example').dispatchEvent(new w.Event('change'));
+  assert.equal(confirmations, 2);
   assert(!el('code').value.includes("console.log('keep me');"));
   assert.equal(el('auto').checked, false);
   await sleep(800);
   assert.equal(el('output').textContent, '(no output)');
   el('clear').click();
-  el('example-load').click();
+  el('code').value = "console.log('one line');\n";
+  el('example').value = String(pyramidIndex);
+  el('example').dispatchEvent(new w.Event('change'));
+  assert.equal(confirmations, 2);
+  assert.equal(el('code').value, `${examples[pyramidIndex].code.trimEnd()}\n`);
   el('run').click();
   await until(() => el('status').textContent.includes('Main code finished'));
   assert.deepEqual([...el('output').querySelectorAll('.jsp-line > span:last-child')].map((row) => row.textContent), ['    *', '   ***', '  *****', ' *******', '*********']);
@@ -103,7 +122,7 @@ function run(code) { el('code').value = code; el('run').click(); }
   assert.equal(el('stop').disabled, true);
   el('category').value = examples[pyramidIndex].category;
   el('category').dispatchEvent(new w.Event('change'));
-  assert.equal(el('example-load').disabled, true);
+  assert.equal(el('example').value, '');
   for (const option of [...el('example').options].slice(1)) assert.equal(examples[Number(option.value)].category, el('category').value);
   el('category').value = '';
   el('category').dispatchEvent(new w.Event('change'));
@@ -125,18 +144,25 @@ function run(code) { el('code').value = code; el('run').click(); }
       terminate() {}
     };
     window.eval(fs.readFileSync(path.join(root, 'assets/js/tools/javascript-playground.js'), 'utf8'));
+    if (field('input-mode')) {
+      assert.equal(field('input-mode').value, 'prepared');
+      assert.equal(field('stdin-field').hidden, false);
+      assert.equal(field('input-mode').querySelector('[value="interactive"]').disabled, true);
+    }
     const items = JSON.parse(field('examples').textContent);
     const sample = items.findIndex((item) => item.stdin);
     if (sample >= 0) {
       field('stdin').value = 'my answer';
+      const originalCode = field('code').value;
+      window.confirm = () => false;
       field('example').value = String(sample);
       field('example').dispatchEvent(new window.Event('change'));
-      field('example-load').click();
-      assert.equal(field('example-confirm').hidden, false);
-      field('example-cancel').click();
+      assert.equal(field('example').value, '');
+      assert.equal(field('code').value, originalCode);
       assert.equal(field('stdin').value, 'my answer');
-      field('example-load').click();
-      field('example-replace').click();
+      window.confirm = () => true;
+      field('example').value = String(sample);
+      field('example').dispatchEvent(new window.Event('change'));
       assert.equal(field('stdin').value, items[sample].stdin);
       assert.equal(field('code').value, `${items[sample].code.trimEnd()}\n`);
     }
@@ -154,6 +180,61 @@ function run(code) { el('code').value = code; el('run').click(); }
     other.window.close();
   }
 
+  // Full-size fallback keeps state and restores focus and surrounding controls.
+  const outside = w.document.createElement('button');
+  w.document.body.append(outside);
+  const alreadyInert = w.document.createElement('div');
+  alreadyInert.setAttribute('inert', '');
+  w.document.body.append(alreadyInert);
+  el('code').focus();
+  const beforeFullscreen = el('code').value;
+  el('fullscreen').click();
+  assert(el('workspace').classList.contains('jsp-expanded'));
+  assert(w.document.body.classList.contains('jsp-focus-open'));
+  assert.equal(el('fullscreen').textContent, 'Exit full screen');
+  assert.equal(el('fullscreen').getAttribute('aria-pressed'), 'true');
+  assert(outside.hasAttribute('inert'));
+  assert.equal(w.document.activeElement, el('fullscreen'));
+  el('fullscreen').dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  assert(!el('workspace').classList.contains('jsp-expanded'));
+  assert(!outside.hasAttribute('inert'));
+  assert(alreadyInert.hasAttribute('inert'));
+  assert.equal(w.document.activeElement, el('code'));
+  assert.equal(el('code').value, beforeFullscreen);
+
+  let fullscreenElement = null;
+  Object.defineProperty(w.document, 'fullscreenElement', { get: () => fullscreenElement });
+  el('workspace').requestFullscreen = async () => {
+    fullscreenElement = el('workspace');
+    w.document.dispatchEvent(new w.Event('fullscreenchange'));
+  };
+  w.document.exitFullscreen = async () => {
+    fullscreenElement = null;
+    w.document.dispatchEvent(new w.Event('fullscreenchange'));
+  };
+  el('fullscreen').click();
+  await sleep(0);
+  assert.equal(fullscreenElement, el('workspace'));
+  el('fullscreen').click();
+  await sleep(0);
+  assert.equal(fullscreenElement, null);
+  assert.equal(el('fullscreen').getAttribute('aria-pressed'), 'false');
+  el('fullscreen').click();
+  await sleep(0);
+  fullscreenElement = null;
+  w.document.dispatchEvent(new w.Event('fullscreenchange'));
+  assert(!el('workspace').classList.contains('jsp-expanded'));
+  el('workspace').requestFullscreen = async () => { throw new Error('Denied'); };
+  el('fullscreen').click();
+  await sleep(0);
+  assert(el('workspace').classList.contains('jsp-expanded'));
+  assert.equal(el('fullscreen').disabled, false);
+  el('fullscreen').click();
+  await sleep(0);
+  assert(!outside.hasAttribute('inert'));
+  outside.remove();
+  alreadyInert.remove();
+
   // Verify the on-demand Monaco configuration without downloading its CDN bundle.
   const defaults = () => ({
     diagnostics: null, compiler: {}, libs: [],
@@ -167,7 +248,7 @@ function run(code) { el('code').value = code; el('run').click(); }
   let options;
   const mockEditor = {
     getValue: () => el('code').value,
-    onDidChangeModelContent() {}, addCommand() {},
+    onDidChangeModelContent() {}, addCommand() {}, layout() {},
     updateOptions(value) { Object.assign(options, value); },
   };
   w.monaco = {
@@ -184,7 +265,7 @@ function run(code) { el('code').value = code; el('run').click(); }
   assert.equal(jsDefaults.compiler.checkJs, true);
   assert.deepEqual([...jsDefaults.compiler.lib], ['es2022', 'webworker']);
   assert.equal(tsDefaults.diagnostics.noSemanticValidation, false);
-  assert(jsDefaults.libs[0].includes('Promise<string>'));
+  assert(jsDefaults.libs[0].includes('Promise<string | null>'));
   el('suggestions').checked = false;
   el('suggestions').dispatchEvent(new w.Event('change'));
   assert.equal(options.quickSuggestions, false);
@@ -192,5 +273,5 @@ function run(code) { el('code').value = code; el('run').click(); }
   el('suggestions').checked = true;
   el('suggestions').dispatchEvent(new w.Event('change'));
   assert.equal(options.tabCompletion, 'on');
-  console.log('PASS JavaScript playground: execution, timing, isolation, examples with confirmation/filtering, and Monaco suggestion/diagnostic configuration');
+  console.log('PASS JavaScript playground: execution, timing, isolation, automatic examples, fullscreen/fallback recovery, and Monaco suggestion/diagnostic configuration');
 })().catch((error) => { console.error(error); process.exitCode = 1; }).finally(() => { el('stop').click(); w.close(); });

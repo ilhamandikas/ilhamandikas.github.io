@@ -3,7 +3,7 @@ title: JavaScript Playground Guide
 description: Write JavaScript with syntax highlighting and run it in the page, reading its
   console output, return value and timing.
 date: '2026-09-27'
-lastmod: '2026-10-04'
+lastmod: '2026-10-14'
 tags:
 - web
 tool_guide_slug: javascript-playground
@@ -32,7 +32,7 @@ faq:
     This is not a security sandbox; code can still make network requests. Only run trusted code.
 - q: Why did my console.log output not appear?
   a: Output streams live, including timers after the snippet returns. Stop, a new run or the
-    30-second limit ends the worker. Output is capped at 500 rows.
+    30-second execution limit outside input waits ends the worker. Output is capped at 500 rows.
 - q: Can I edit other languages?
   a: The playground is for JavaScript, so the editor stays in JavaScript mode. The plain text
     area still holds whatever you paste, but the highlighting and the formatter are the JavaScript
@@ -52,9 +52,13 @@ Delete the code and try `await Promise.resolve('hi')` on its own line. Because t
 
 Press **Enable Monaco** to fetch the real editor from a CDN; the badge changes to **Monaco** and highlighting, folding and **Format** become available. **Suggestions** enables automatic word and code completion; Ctrl + Space opens suggestions manually. Monaco underlines detected syntax and type errors, including many misspelled identifiers. These editor diagnostics do not block Run. If the CDN is blocked the status says so and the plain text area keeps working. Snippets run in a Web Worker: `document`, `window` and Node.js APIs are unavailable. They can still make network requests, so only run code you trust.
 
+## Distraction-free workspace
+
+Press **Full screen** to expand the editor and console without the site navigation or related content. **Exit full screen** or Esc returns to the page without resetting code, input or execution. When browser fullscreen is unavailable or denied, the tool fills the page instead. The exit control stays visible while scrolling; no fullscreen preference is saved.
+
 ## Interactive execution
 
-Enable **Auto-run** to rerun 700 ms after edits. **Stop** terminates execution, even during an infinite loop. Each run has a 30-second limit. Timers continue logging after the main snippet returns, until stopped; output is capped at 500 rows.
+Enable **Auto-run** to rerun 700 ms after edits. **Stop** terminates execution, even during an infinite loop. Execution outside input waits has a 30-second limit, with up to 2 minutes to answer each prompt. Timers continue logging after the main snippet returns, until stopped; output is capped at 500 rows.
 
 Try interactive input:
 
@@ -65,13 +69,13 @@ await new Promise((resolve) => setTimeout(resolve, 500));
 return 'Done';
 ```
 
-This `prompt` returns a Promise, unlike `window.prompt`. Use `await`, one question at a time. **Clear output** removes logs without clearing code.
+This `prompt` returns a Promise, unlike `window.prompt`. Use `await`, one question at a time. Type in the console and press Enter; each answer is echoed without being persisted. **EOF** (or Ctrl + D) returns `null`, while Enter on an empty field sends an empty string. **Clear output** removes logs without clearing code.
 
 ## Coding exercises and pyramid patterns
 
 Use the **Code example** picker above the editor to choose arithmetic, conditions, odd/even numbers, primes, factorial, Fibonacci, FizzBuzz, palindrome, bubble sort, binary search, word counts or a class-based bank account. There are also right-triangle, centered-pyramid, inverted-pyramid, diamond, hollow-pyramid and number-pyramid patterns.
 
-Selecting an example previews its description without changing code. **Load example** replaces the editor and pauses Auto-run; if code has been edited, confirm replacement or keep your code. Nothing runs until you press Run. **Copy output** preserves line breaks and the leading spaces used by pyramid patterns.
+Selecting an example immediately replaces the editor and pauses Auto-run. If the editor contains more than one line, a confirmation warns that existing code will be deleted; cancel to keep it. Nothing runs until you press Run. **Copy output** preserves line breaks and the leading spaces used by pyramid patterns.
 
 For instance, **Find prime numbers** prints primes from 2 through 30. The divisor loop stops at the square root; 1 is not a prime. **Centered pyramid** prints five rows, with star counts 1, 3, 5, 7 and 9, prefixed by decreasing spaces.
 

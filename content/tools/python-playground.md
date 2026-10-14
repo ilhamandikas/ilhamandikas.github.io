@@ -1,6 +1,6 @@
 ---
 title: "Python Playground"
-description: "Run Python in your browser with Pyodide, prepared standard input, console output and coding examples."
+description: "Run Python in your browser with Pyodide, interactive or prepared input, console output and coding examples."
 js: "js/tools/python-playground.js"
-lastmod: 2026-10-04
+lastmod: 2026-10-14
 ---

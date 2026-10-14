@@ -23,6 +23,10 @@ const els = {
   inputForm: document.querySelector('#jsp-input-form'),
   inputLabel: document.querySelector('#jsp-input-label'),
   input: document.querySelector('#jsp-input'),
+  eof: document.querySelector('#jsp-eof'),
+  inputMode: document.querySelector('#jsp-input-mode'),
+  inputModeHint: document.querySelector('#jsp-input-mode-hint'),
+  stdinField: document.querySelector('#jsp-stdin-field'),
   stdin: document.querySelector('#jsp-stdin'),
   workspace: document.querySelector('#jsp-workspace'),
   copyOutput: document.querySelector('#jsp-copy-output'),
@@ -30,11 +34,9 @@ const els = {
   category: document.querySelector('#jsp-category'),
   example: document.querySelector('#jsp-example'),
   exampleHint: document.querySelector('#jsp-example-hint'),
-  exampleLoad: document.querySelector('#jsp-example-load'),
-  exampleConfirm: document.querySelector('#jsp-example-confirm'),
-  exampleReplace: document.querySelector('#jsp-example-replace'),
-  exampleCancel: document.querySelector('#jsp-example-cancel'),
   suggestions: document.querySelector('#jsp-suggestions'),
+  fullscreen: document.querySelector('#jsp-fullscreen'),
+  fullscreenHint: document.querySelector('#jsp-fullscreen-hint'),
 };
 
 const language = els.workspace?.dataset.language || 'javascript';
@@ -62,9 +64,97 @@ let promptId = null;
 let outputCount = 0;
 let outputText = [];
 let runTiming = null;
-let baselineCode = els.code.value;
-let baselineInput = els.stdin?.value || '';
-let pendingExample = null;
+let selectedExample = '';
+let bridgeSession = null;
+let bridgeReady = null;
+let runGeneration = 0;
+let executionRemaining = 30000;
+let executionResumedAt = null;
+
+/* --------------------------------------------------------------- fullscreen */
+
+let expanded = false;
+let nativeFullscreen = false;
+let previousFocus = null;
+let outsideElements = [];
+
+function setExpanded(value) {
+  if (expanded === value) return;
+  expanded = value;
+  els.workspace.classList.toggle('jsp-expanded', value);
+  document.body.classList.toggle('jsp-focus-open', value);
+  els.fullscreen.textContent = value ? 'Exit full screen' : 'Full screen';
+  els.fullscreen.setAttribute('aria-pressed', String(value));
+  els.fullscreenHint.hidden = !value;
+  if (value) {
+    previousFocus = document.activeElement;
+    // In the fallback, hide surrounding controls from keyboard and assistive
+    // technology without moving the editor or recreating its model.
+    for (let node = els.workspace; node.parentElement; node = node.parentElement) {
+      for (const sibling of node.parentElement.children) {
+        if (sibling !== node && !sibling.hasAttribute('inert')) {
+          sibling.setAttribute('inert', '');
+          outsideElements.push(sibling);
+        }
+      }
+      if (node.parentElement === document.body) break;
+    }
+    els.fullscreen.focus({ preventScroll: true });
+  } else {
+    for (const element of outsideElements) element.removeAttribute('inert');
+    outsideElements = [];
+    previousFocus?.focus({ preventScroll: true });
+    previousFocus = null;
+  }
+  editor?.layout();
+}
+
+async function exitExpanded() {
+  if (document.fullscreenElement === els.workspace) {
+    try {
+      await document.exitFullscreen();
+    } catch {
+      tk.setStatus(els.status, 'Could not exit full screen. Press Esc to leave browser fullscreen.', 'err');
+      return;
+    }
+  }
+  nativeFullscreen = false;
+  setExpanded(false);
+}
+
+els.fullscreen.addEventListener('click', async () => {
+  if (expanded) { await exitExpanded(); return; }
+  setExpanded(true);
+  if (!els.workspace.requestFullscreen) return;
+  els.fullscreen.disabled = true;
+  try {
+    await els.workspace.requestFullscreen();
+  } catch {
+    // Keep the in-page full-size workspace when fullscreen is unsupported or denied.
+  } finally {
+    els.fullscreen.disabled = false;
+    if (expanded) els.fullscreen.focus({ preventScroll: true });
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  if (document.fullscreenElement === els.workspace) {
+    nativeFullscreen = true;
+    setExpanded(true);
+  } else if (nativeFullscreen) {
+    nativeFullscreen = false;
+    setExpanded(false);
+  }
+});
+els.workspace.addEventListener('keydown', (event) => {
+  if (!expanded) return;
+  // Leave editor shortcuts intact, but don't trigger site navigation/search.
+  event.stopPropagation();
+  if (event.key === 'Escape' && !event.defaultPrevented) {
+    event.preventDefault();
+    void exitExpanded();
+  }
+});
+window.addEventListener('pagehide', () => { nativeFullscreen = false; setExpanded(false); });
 
 /* ------------------------------------------------------------------ editor */
 
@@ -142,7 +232,7 @@ function enableMonaco() {
           lib: ['es2022', 'webworker'],
           target: window.monaco.languages.typescript.ScriptTarget.ES2022,
         });
-        defaults.addExtraLib('declare function prompt(message?: string, value?: string): Promise<string>;\n', 'ts:playground-globals.d.ts');
+        defaults.addExtraLib('declare function prompt(message?: string, value?: string): Promise<string | null>;\n', 'ts:playground-globals.d.ts');
       }
       editor = window.monaco.editor.create(els.container, {
         value: els.code.value,
@@ -190,6 +280,74 @@ function enableMonaco() {
       els.load.disabled = false;
       tk.setStatus(els.status, `${error.message} The plain editor still works.`, '');
     });
+}
+
+/* --------------------------------------------------------------- local stdin */
+
+function timed(promise, message) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), 10000); }),
+  ]).finally(() => clearTimeout(timer));
+}
+
+async function openInputBridge() {
+  const scriptURL = new URL(els.workspace.dataset.inputWorkerUrl, location.href).href;
+  if (!bridgeReady) {
+    bridgeReady = (async () => {
+      await timed(navigator.serviceWorker.register(scriptURL), 'Local input bridge registration timed out.');
+      await timed(navigator.serviceWorker.ready, 'Local input bridge activation timed out.');
+      if (navigator.serviceWorker.controller?.scriptURL !== scriptURL) {
+        await new Promise((resolve, reject) => {
+          const cleanup = () => { clearTimeout(timer); navigator.serviceWorker.removeEventListener('controllerchange', check); };
+          const check = () => {
+            if (navigator.serviceWorker.controller?.scriptURL === scriptURL) { cleanup(); resolve(); }
+          };
+          const timer = setTimeout(() => { cleanup(); reject(new Error('Local input bridge could not control this page.')); }, 10000);
+          navigator.serviceWorker.addEventListener('controllerchange', check);
+          check();
+        });
+      }
+    })().catch((error) => { bridgeReady = null; throw error; });
+  }
+  await bridgeReady;
+  const controller = navigator.serviceWorker.controller;
+  if (controller?.scriptURL !== scriptURL) { bridgeReady = null; throw new Error('Local input bridge disconnected.'); }
+  const token = crypto.randomUUID();
+  const channel = new MessageChannel();
+  try {
+    await timed(new Promise((resolve, reject) => {
+      channel.port1.onmessage = ({ data }) => data.ok ? resolve() : reject(new Error('Local input bridge is busy.'));
+      controller.postMessage({ type: 'open', token }, [channel.port2]);
+    }), 'Local input session timed out.');
+  } catch (error) {
+    controller.postMessage({ type: 'close', token });
+    throw error;
+  } finally {
+    channel.port1.close();
+    channel.port2.close();
+  }
+  return { controller, token, url: new URL(`./__playground_input__/${token}/`, scriptURL).href };
+}
+
+function updateInputMode() {
+  if (els.stdinField) els.stdinField.hidden = els.inputMode.value !== 'prepared';
+}
+if (els.inputMode) {
+  if (!window.isSecureContext || !navigator.serviceWorker) {
+    els.inputMode.value = 'prepared';
+    els.inputMode.querySelector('[value="interactive"]').disabled = true;
+    els.inputModeHint.textContent = 'Interactive stdin needs HTTPS and service worker support. Prepared input remains available in this browser.';
+  }
+  els.inputMode.addEventListener('change', () => {
+    clearTimeout(autoTimer);
+    els.auto.checked = false;
+    stop();
+    updateInputMode();
+    tk.setStatus(els.status, 'Input mode changed. Press Run; Auto-run is paused.', '');
+  });
+  updateInputMode();
 }
 
 /* ----------------------------------------------------------------- running */
@@ -267,21 +425,80 @@ function workerMain() {
       execution: executionStarted === null ? null : performance.now() - executionStarted,
       memory,
     });
+    const readLine = () => {
+      const id = ++nextPrompt;
+      send({ type: 'prompt', id, label: '', value: '', synchronous: true });
+      const request = new XMLHttpRequest();
+      request.open('GET', `${data.inputURL}${id}`, false);
+      request.send();
+      if (request.status !== 200) throw new Error('Interactive input was interrupted. Run again or select prepared input.');
+      return JSON.parse(request.responseText).value;
+    };
+    const terminalFd = (OpenFile, File, flush) => {
+      const fd = new OpenFile(new File(new Uint8Array()));
+      let pending = new Uint8Array();
+      let eof = false;
+      fd.fd_read = (size) => {
+        if (!size) return { ret: 0, data: new Uint8Array() };
+        if (!pending.length && !eof) {
+          flush();
+          const line = readLine();
+          eof = line === null;
+          if (!eof) pending = new TextEncoder().encode(`${line}\n`);
+        }
+        const bytes = pending.slice(0, size);
+        pending = pending.slice(bytes.length);
+        return { ret: 0, data: bytes };
+      };
+      // WASI character-device stdin (type 2) is non-seekable (ERRNO_SPIPE 70),
+      // so runtimes do not mistake the initially empty buffer for a regular file.
+      const stat = fd.fd_fdstat_get.bind(fd);
+      fd.fd_fdstat_get = () => { const value = stat(); value.fdstat.filetype = 2; return value; };
+      const fileStat = fd.fd_filestat_get.bind(fd);
+      fd.fd_filestat_get = () => { const value = fileStat(); value.filestat.filetype = 2; return value; };
+      fd.fd_seek = () => ({ ret: 70, offset: 0n });
+      return fd;
+    };
     try {
       let code = data.code;
       if (data.language === 'python') {
         send({ type: 'loading' });
         importScripts(`${data.runtimeURL}pyodide.js`);
         const py = await self.loadPyodide({ indexURL: data.runtimeURL });
-        py.setStdout({ batched: (text) => write('log', [text]) });
-        py.setStderr({ batched: (text) => write('error', [text]) });
+        const pythonStream = (kind) => {
+          const decoder = new TextDecoder();
+          let pending = '';
+          return {
+            write(bytes) {
+              const lines = (pending + decoder.decode(bytes, { stream: true })).split('\n');
+              pending = lines.pop().slice(0, 20000);
+              for (const line of lines) write(kind, [line.replace(/\r$/, '')]);
+              return bytes.length;
+            },
+            flush() { if (pending) write(kind, [pending]); pending = ''; },
+          };
+        };
+        const stdout = pythonStream('log');
+        const stderr = pythonStream('error');
+        py.setStdout({ write: (bytes) => stdout.write(bytes) });
+        py.setStderr({ write: (bytes) => stderr.write(bytes) });
         const inputLines = data.stdin.split(/\r?\n/);
         if (inputLines.at(-1) === '') inputLines.pop();
-        py.setStdin({ stdin: () => inputLines.shift() });
+        let eof = false;
+        py.setStdin({ isatty: Boolean(data.inputURL), stdin: () => {
+          if (!data.inputURL) return inputLines.shift();
+          stdout.flush(); stderr.flush();
+          if (eof) return null;
+          const value = readLine();
+          eof = value === null;
+          return value;
+        } });
         start();
-        const value = await py.runPythonAsync(code);
-        if (value !== undefined && value !== null) write('result', [String(value)]);
-        value?.destroy?.();
+        try {
+          const value = await py.runPythonAsync(code);
+          if (value !== undefined && value !== null) write('result', [String(value)]);
+          value?.destroy?.();
+        } finally { stdout.flush(); stderr.flush(); }
       } else if (data.language === 'ruby') {
         send({ type: 'loading' });
         const { DefaultRubyVM, File, OpenFile, ConsoleStdout } = await import(data.runtimeModule);
@@ -307,7 +524,9 @@ function workerMain() {
         };
         const stdout = stream('log');
         const stderr = stream('error');
-        wasi.fds[0] = new OpenFile(new File(new TextEncoder().encode(data.stdin)));
+        wasi.fds[0] = data.inputURL
+          ? terminalFd(OpenFile, File, () => { stdout.flush(); stderr.flush(); })
+          : new OpenFile(new File(new TextEncoder().encode(data.stdin)));
         wasi.fds[1] = stdout.fd;
         wasi.fds[2] = stderr.fd;
         vm.eval('$stdout.sync = true; $stderr.sync = true');
@@ -345,7 +564,9 @@ function workerMain() {
         const stdout = stream('log');
         const stderr = stream('error');
         const wasi = new WASI([], [], [
-          new OpenFile(new File(new TextEncoder().encode(data.stdin))),
+          data.inputURL
+            ? terminalFd(OpenFile, File, () => { stdout.flush(); stderr.flush(); })
+            : new OpenFile(new File(new TextEncoder().encode(data.stdin))),
           stdout.fd,
           stderr.fd,
         ]);
@@ -434,6 +655,12 @@ function showMetrics(data = null, stopped = false) {
 }
 
 function stop() {
+  runGeneration++;
+  if (bridgeSession) {
+    bridgeSession.controller.postMessage({ type: 'close', token: bridgeSession.token });
+    bridgeSession = null;
+  }
+  executionResumedAt = null;
   activeWorker?.terminate();
   activeWorker = null;
   clearTimeout(deadline);
@@ -442,7 +669,17 @@ function stop() {
   promptId = null;
 }
 
-function run() {
+function armExecutionDeadline() {
+  clearTimeout(deadline);
+  executionResumedAt = performance.now();
+  deadline = setTimeout(() => {
+    showMetrics(null, true);
+    stop();
+    tk.setStatus(els.status, 'Stopped at the 30-second execution limit. You can run again.', '');
+  }, executionRemaining);
+}
+
+async function run() {
   clearTimeout(autoTimer);
   stop();
   clearOutput();
@@ -453,8 +690,29 @@ function run() {
     return;
   }
   runTiming = { requested: performance.now(), started: null, preparation: null };
+  executionRemaining = 30000;
+  const generation = runGeneration;
+  const code = els.code.value;
+  const stdin = els.stdin?.value || '';
   els.metrics.textContent = '';
   let url;
+  if (els.inputMode?.value === 'interactive') {
+    els.stop.disabled = false;
+    tk.setStatus(els.status, 'Preparing local terminal input…', '');
+    try {
+      const session = await openInputBridge();
+      if (generation !== runGeneration) {
+        session.controller.postMessage({ type: 'close', token: session.token });
+        return;
+      }
+      bridgeSession = session;
+    } catch {
+      if (generation !== runGeneration) return;
+      stop();
+      tk.setStatus(els.status, 'Interactive input could not start. Select Prepared standard input and Run again; your code is unchanged.', 'err');
+      return;
+    }
+  }
   try {
     url = URL.createObjectURL(new Blob([`${format.toString()}\n(${workerMain.toString()})();`], { type: 'text/javascript' }));
     const worker = new Worker(url);
@@ -469,11 +727,7 @@ function run() {
         runTiming.started = performance.now();
         runTiming.preparation = data.preparation;
         tk.setStatus(els.status, 'Running…', '');
-        deadline = setTimeout(() => {
-          showMetrics(null, true);
-          stop();
-          tk.setStatus(els.status, 'Stopped at the 30-second execution limit. You can run again.', '');
-        }, 30000);
+        armExecutionDeadline();
       }
       if (data.type === 'line') appendOutput(data.kind, data.text);
       if (data.type === 'clear') clearOutput();
@@ -485,8 +739,17 @@ function run() {
           tk.setStatus(els.status, 'Concurrent prompts are unsupported. Ask one question at a time, then Run again.', 'err');
           return;
         }
+        if (executionResumedAt !== null) executionRemaining = Math.max(0, executionRemaining - (performance.now() - executionResumedAt));
+        executionResumedAt = null;
+        clearTimeout(deadline);
+        deadline = setTimeout(() => {
+          showMetrics(null, true);
+          stop();
+          tk.setStatus(els.status, 'Input wait timed out after 2 minutes. Run again when ready.', '');
+        }, 120000);
         promptId = data.id;
-        els.inputLabel.textContent = data.label;
+        if (data.label) appendOutput('prompt', data.label);
+        els.inputLabel.textContent = data.label || 'Terminal input';
         els.input.value = data.value;
         els.inputForm.hidden = false;
         els.input.focus();
@@ -515,7 +778,7 @@ function run() {
       stop();
       tk.setStatus(els.status, 'Runtime loading timed out after 90 seconds. Check your connection and try Run again.', 'err');
     }, 90000);
-    worker.postMessage({ type: 'run', language, runtimeURL: runtimeURLs[language], runtimeModule, code: els.code.value, stdin: els.stdin?.value || '' });
+    worker.postMessage({ type: 'run', language, runtimeURL: runtimeURLs[language], runtimeModule, code, stdin, inputURL: bridgeSession?.url || null });
   } catch {
     stop();
     tk.setStatus(els.status, 'This browser could not start a Web Worker. Check browser support or content security policy.', 'err');
@@ -553,21 +816,36 @@ function exampleOption(label, value) {
 for (const category of new Set(exampleData.map((example) => example.category))) {
   els.category.add(exampleOption(category, category));
 }
-function previewExample() {
-  pendingExample = null;
-  els.exampleConfirm.hidden = true;
+function updateExampleHint() {
   const example = els.example.value === '' ? null : exampleData[Number(els.example.value)];
-  els.exampleLoad.disabled = !example;
-  els.exampleHint.textContent = example ? example.hint : 'Choose an example. Loading replaces the code and input, and pauses Auto-run.';
+  els.exampleHint.textContent = example ? example.hint : 'Choosing an example replaces code and input, and pauses Auto-run. Multiline code requires confirmation.';
 }
 els.category.addEventListener('change', () => {
   els.example.replaceChildren(exampleOption('Choose an example…', ''));
   exampleData.forEach((example, index) => {
     if (!els.category.value || example.category === els.category.value) els.example.add(exampleOption(example.name, String(index)));
   });
-  previewExample();
+  selectedExample = '';
+  updateExampleHint();
 });
-els.example.addEventListener('change', previewExample);
+els.example.addEventListener('change', () => {
+  const value = els.example.value;
+  const example = value === '' ? null : exampleData[Number(value)];
+  if (!example) {
+    selectedExample = '';
+    updateExampleHint();
+    return;
+  }
+  const code = editor ? editor.getValue() : els.code.value;
+  if (code.trimEnd().split(/\r\n|\r|\n/).length > 1 && !window.confirm('Loading this example will delete the existing code and replace standard input. Continue?')) {
+    els.example.value = selectedExample;
+    updateExampleHint();
+    return;
+  }
+  selectedExample = value;
+  loadExample(example);
+  updateExampleHint();
+});
 function loadExample(example) {
   els.auto.checked = false;
   clearTimeout(autoTimer);
@@ -576,30 +854,10 @@ function loadExample(example) {
   if (editor) editor.setValue(code);
   els.code.value = code;
   if (els.stdin) els.stdin.value = example.stdin || '';
-  baselineCode = code;
-  baselineInput = els.stdin?.value || '';
-  pendingExample = null;
-  els.exampleConfirm.hidden = true;
   updateMeta();
   tk.setStatus(els.status, `${example.name} loaded. Press Run; Auto-run is paused.`, 'ok');
   if (editor) editor.focus(); else els.code.focus();
 }
-els.exampleLoad.addEventListener('click', () => {
-  if (els.example.value === '') return;
-  const example = exampleData[Number(els.example.value)];
-  if (!example) return;
-  if (els.code.value !== baselineCode || (els.stdin?.value || '') !== baselineInput) {
-    pendingExample = example;
-    els.exampleConfirm.hidden = false;
-    els.exampleCancel.focus();
-  } else loadExample(example);
-});
-els.exampleReplace.addEventListener('click', () => { if (pendingExample) loadExample(pendingExample); });
-els.exampleCancel.addEventListener('click', () => {
-  pendingExample = null;
-  els.exampleConfirm.hidden = true;
-  els.exampleLoad.focus();
-});
 els.suggestions.addEventListener('change', () => {
   editor?.updateOptions({
     quickSuggestions: els.suggestions.checked,
@@ -608,13 +866,20 @@ els.suggestions.addEventListener('change', () => {
     tabCompletion: els.suggestions.checked ? 'on' : 'off',
   });
 });
-els.inputForm.addEventListener('submit', (event) => {
-  event.preventDefault();
+function sendInput(value) {
   if (!activeWorker || promptId === null) return;
-  activeWorker.postMessage({ type: 'input', id: promptId, value: els.input.value });
+  appendOutput('input', value === null ? '^D (EOF)' : value);
+  if (bridgeSession) bridgeSession.controller.postMessage({ type: 'input', token: bridgeSession.token, id: promptId, value });
+  else activeWorker.postMessage({ type: 'input', id: promptId, value });
   promptId = null;
   els.inputForm.hidden = true;
+  armExecutionDeadline();
   tk.setStatus(els.status, 'Running…', '');
+}
+els.inputForm.addEventListener('submit', (event) => { event.preventDefault(); sendInput(els.input.value); });
+els.eof.addEventListener('click', () => sendInput(null));
+els.input.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.key.toLowerCase() === 'd') { event.preventDefault(); sendInput(null); }
 });
 window.addEventListener('pagehide', stop);
 els.load.addEventListener('click', enableMonaco);
@@ -641,10 +906,9 @@ els.clear.addEventListener('click', () => {
   clearTimeout(autoTimer);
   els.code.value = '';
   if (els.stdin) els.stdin.value = '';
-  baselineCode = '';
-  baselineInput = '';
-  pendingExample = null;
-  els.exampleConfirm.hidden = true;
+  selectedExample = '';
+  els.example.value = '';
+  updateExampleHint();
   runTiming = null;
   els.metrics.textContent = '';
   updateMeta();

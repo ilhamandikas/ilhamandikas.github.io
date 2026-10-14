@@ -16,7 +16,14 @@
 {{- $items := index $examples $language -}}
 {{- if eq $language "typescript" }}{{ $items = (index $examples "javascript") | append $items }}{{ end -}}
 {{ partial "tools/playground-links.html" .File.ContentBaseName }}
-<div class="jsp-workspace" id="jsp-workspace" data-language="{{ $language }}"{{ with $runtimeModule }} data-runtime-module="{{ . }}"{{ end }}>
+<div class="jsp-workspace" id="jsp-workspace" data-language="{{ $language }}" data-input-worker-url="{{ "/tools/playground-input-sw.js" | relURL }}"{{ with $runtimeModule }} data-runtime-module="{{ . }}"{{ end }}>
+  <div class="jsp-workspace-header">
+    <strong>{{ $name }} Playground</strong>
+    <div class="jsp-workspace-actions">
+      <span class="tool-hint" id="jsp-fullscreen-hint" hidden>Esc to exit</span>
+      <button class="btn" type="button" id="jsp-fullscreen" aria-controls="jsp-workspace" aria-pressed="false">Full screen</button>
+    </div>
+  </div>
   <div class="tool-panel">
     <h2>{{ $name }} code</h2>
     <div class="jsp-example-picker">
@@ -33,16 +40,8 @@
           {{ range $index, $example := $items }}<option value="{{ $index }}">{{ $example.name }}</option>{{ end }}
         </select>
       </div>
-      <button class="btn" type="button" id="jsp-example-load" disabled>Load example</button>
     </div>
-    <p class="tool-hint" id="jsp-example-hint">Choose an example to preview its description. Loading replaces the code and pauses Auto-run.</p>
-    <div id="jsp-example-confirm" hidden>
-      <p>Your code or input has changed. Replace it with this example?</p>
-      <div class="mon-toolbar">
-        <button class="btn" type="button" id="jsp-example-replace">Replace code and input</button>
-        <button class="btn" type="button" id="jsp-example-cancel">Keep my code</button>
-      </div>
-    </div>
+    <p class="tool-hint" id="jsp-example-hint">Choosing an example replaces code and input, and pauses Auto-run. Multiline code requires confirmation.</p>
     <p class="tool-hint">{{ if ne $language "javascript" }}The first Run downloads the language runtime from jsDelivr. {{ end }}Ctrl/Cmd + Enter runs code. Monaco loads from a CDN only when enabled.</p>
     <script type="application/json" id="jsp-examples">{{ $items | jsonify | safeJS }}</script>
     <div class="mon-toolbar">
@@ -89,7 +88,15 @@ return doubled.reduce((sum, n) => sum + n, 0);{{ end }}</textarea>
     </div>
     {{ if $preparedInput }}
     <div class="tool-field">
-      <label for="jsp-stdin">Standard input — one answer per line, prepared before Run</label>
+      <label for="jsp-input-mode">Input mode</label>
+      <select id="jsp-input-mode" class="tool-select" data-no-memory>
+        <option value="interactive">Interactive terminal</option>
+        <option value="prepared">Prepared standard input</option>
+      </select>
+      <p class="tool-hint" id="jsp-input-mode-hint">Interactive input waits for each answer in the console. Requires HTTPS and service workers; no backend and no persisted input.</p>
+    </div>
+    <div class="tool-field" id="jsp-stdin-field" hidden>
+      <label for="jsp-stdin">Prepared standard input — one answer per line</label>
       <textarea id="jsp-stdin" rows="3" spellcheck="false" data-no-memory placeholder="Ilham"></textarea>
     </div>
     {{ end }}
@@ -108,28 +115,32 @@ return doubled.reduce((sum, n) => sum + n, 0);{{ end }}</textarea>
       <button class="btn" type="button" id="jsp-copy-output">Copy output</button>
     </div>
     <div id="jsp-output" class="jsp-output" role="log" aria-label="Console output" aria-live="polite"></div>
+    <form id="jsp-input-form" class="jsp-input-form" hidden>
+      <label for="jsp-input" id="jsp-input-label">Terminal input</label>
+      <div class="tool-row">
+        <span aria-hidden="true">&gt;</span>
+        <input id="jsp-input" type="text" autocomplete="off" spellcheck="false" maxlength="16384" data-no-memory>
+        <button class="btn primary" type="submit">Send (Enter)</button>
+        <button class="btn" type="button" id="jsp-eof">EOF (Ctrl + D)</button>
+      </div>
+      <p class="tool-hint">Enter sends one line. EOF signals the end of input; Stop ends the program. Answers are echoed in the console, not saved.</p>
+    </form>
     <p class="tool-status" id="jsp-status" role="status" aria-live="polite"></p>
     <p class="mon-meta" id="jsp-metrics" aria-live="polite"></p>
     <p class="tool-hint">Timing measures elapsed time, not CPU time; waiting for input is included. WASM memory, when available, is linear memory capacity, not total RAM or peak usage.</p>
-    <form id="jsp-input-form" class="jsp-input-form" hidden>
-      <label for="jsp-input" id="jsp-input-label">Input</label>
-      <div class="tool-row">
-        <input id="jsp-input" type="text" autocomplete="off" data-no-memory>
-        <button class="btn primary" type="submit">Send input</button>
-      </div>
-    </form>
-    <p class="tool-note">{{ if eq $language "python" }}Use <code>input()</code> to read the prepared standard input.{{ else if eq $language "ruby" }}Use <code>STDIN.readline</code> to read the prepared standard input.{{ else if eq $language "c" }}Read the prepared input with <code>scanf</code> or <code>fgets</code>.{{ else if eq $language "cpp" }}Read the prepared input with <code>std::cin</code> or <code>std::getline</code>.{{ else }}Output streams live, including timers. Use <code>await prompt('Your name?')</code> for interactive input.{{ end }} Runs in a Web Worker, without direct DOM access. Stop terminates execution; each run has a 30-second execution limit and output is capped at 500 rows. Code can still make network requests, so only run code you trust. The tool does not save or upload your code or input.</p>
+    <p class="tool-note">{{ if eq $language "python" }}Use <code>input()</code> for terminal input.{{ else if eq $language "ruby" }}Use <code>STDIN.readline</code> for terminal input.{{ else if eq $language "c" }}Read terminal input with <code>scanf</code> or <code>fgets</code>.{{ else if eq $language "cpp" }}Read terminal input with <code>std::cin</code> or <code>std::getline</code>.{{ else }}Output streams live, including timers. Use <code>await prompt('Your name?')</code> for interactive input.{{ end }} Runs in a Web Worker, without direct DOM access. Stop terminates execution; execution outside input waits is limited to 30 seconds, each answer can wait up to 2 minutes, and output is capped at 500 rows. Code can still make network requests, so only run code you trust. The tool does not save or upload your code or input.</p>
   </div>
   <details class="jsp-runtime">
     <summary>Runtime details</summary>
+    {{ if $preparedInput }}<p class="tool-note">Interactive stdin installs a service worker scoped to /tools/ on its first Run. It answers only reserved input requests locally, without caching pages or persisting answers. If unavailable, use Prepared standard input. This is line-based input, not a shell or full terminal emulator.</p>{{ end }}
     {{ if eq $language "typescript" }}
     <p class="tool-note">The TypeScript 5.9.3 compiler downloads from jsDelivr on your first Run. This runner transpiles code and reports syntax errors; it does not perform semantic type-checking. Monaco's editor diagnostics are separate from execution. No Node.js or package imports.</p>
     {{ else if eq $language "python" }}
-    <p class="tool-note">Pyodide 0.28.2 downloads its Python runtime and core standard library from jsDelivr on your first Run. Loading may take a moment. Fill standard input before Run; this is not a live terminal. No additional packages are installed automatically.</p>
+    <p class="tool-note">Pyodide 0.28.2 downloads its Python runtime and core standard library from jsDelivr on your first Run. Loading may take a moment. Use interactive terminal input, or prepare standard input before Run. No additional packages are installed automatically.</p>
     {{ else if eq $language "ruby" }}
-    <p class="tool-note">The Ruby 3.4 WASI runtime (ruby.wasm 2.10.1) downloads from jsDelivr on Run. The binary is approximately 16 MiB before compression. Prepare standard input before Run; no live terminal, gem installation or native OS processes. <a href="{{ "/licenses/playground-runtimes/NOTICE.txt" | relURL }}">Runtime notices</a>.</p>
+    <p class="tool-note">The Ruby 3.4 WASI runtime (ruby.wasm 2.10.1) downloads from jsDelivr on Run. The binary is approximately 16 MiB before compression. Interactive terminal or prepared standard input; no gem installation or native OS processes. <a href="{{ "/licenses/playground-runtimes/NOTICE.txt" | relURL }}">Runtime notices</a>.</p>
     {{ else if or (eq $language "c") (eq $language "cpp") }}
-    <p class="tool-note">The browsercc 0.1.1 Clang/LLD toolchain downloads from jsDelivr on the first Run — roughly 26 MiB compressed for clang.wasm, lld.wasm and the sysroot. Code is compiled to WebAssembly, then run in a fresh Worker. Prepare standard input before Run; there is no live terminal. C++ exceptions and threads are unavailable in this WASI toolchain. <a href="{{ "/licenses/playground-runtimes/NOTICE.txt" | relURL }}">Runtime notices</a>.</p>
+    <p class="tool-note">The browsercc 0.1.1 Clang/LLD toolchain downloads from jsDelivr on the first Run — roughly 26 MiB compressed for clang.wasm, lld.wasm and the sysroot. Code is compiled to WebAssembly, then run in a fresh Worker. Use interactive terminal input, or prepare standard input before Run. C++ exceptions and threads are unavailable in this WASI toolchain. <a href="{{ "/licenses/playground-runtimes/NOTICE.txt" | relURL }}">Runtime notices</a>.</p>
     {{ else }}
     <p class="tool-note">JavaScript runs without downloading a language runtime.</p>
     {{ end }}

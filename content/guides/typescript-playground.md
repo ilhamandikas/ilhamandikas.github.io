@@ -2,6 +2,7 @@
 title: TypeScript Playground Guide
 description: Try typed JavaScript, read transpilation errors and run coding exercises in a browser Worker.
 date: '2026-10-04'
+lastmod: '2026-10-14'
 tags:
 - web
 tool_guide_slug: typescript-playground
@@ -17,20 +18,20 @@ faq:
 - q: Does this check TypeScript types?
   a: No. The runner uses transpileModule, which removes types and reports syntactic errors. A mismatched type can still run. Monaco may display additional editor diagnostics when enabled, but the runner does not enforce them.
 - q: Can I use await and interactive input?
-  a: Yes. The transpiled snippet runs inside an async function. Use await prompt('Question') and enter an answer in the output panel. Ask one question at a time; return displays a result.
+  a: Yes. The transpiled snippet runs inside an async function. Use await prompt('Question') and answer in the console with Enter. EOF (or Ctrl + D) returns null. Ask one question at a time; return displays a result.
 - q: Does clicking an example run it?
-  a: No. Selecting previews its description. Load example replaces the code and pauses Auto-run, asking for confirmation if code was edited. Press Run to execute it.
+  a: No. Selecting immediately replaces code and pauses Auto-run. If the editor contains more than one line, confirm deletion of existing code or cancel to keep it. Press Run to execute the example.
 - q: Can I import npm packages?
   a: No. This is a single-snippet browser runner, not Node.js or a project bundler. document and window are also unavailable inside the Worker.
 - q: What happens when code never finishes?
-  a: Stop terminates the Worker. Runtime loading has a 90-second timeout, and execution has a separate 30-second limit. Output is capped at 500 rows; input remains available to edit.
+  a: Stop terminates the Worker. Runtime loading has a 90-second timeout, and execution outside input waits has a separate 30-second limit. Each answer may wait up to 2 minutes. Output is capped at 500 rows; input remains available to edit.
 ---
 
 Use the [TypeScript Playground](/tools/typescript-playground/) to try a typed snippet without setting up a project.
 
 ## An interface disappears at runtime
 
-Choose **Typed function** in the **Code example** picker and press **Load example**. It loads:
+Choose **Typed function** in the **Code example** picker and confirm replacement if asked. It loads:
 
 ```typescript
 interface Rectangle {
@@ -51,13 +52,13 @@ For example, assigning a string to a variable annotated `number` is a semantic t
 
 The examples include odd/even numbers, prime numbers up to 30, factorial, Fibonacci, FizzBuzz, palindrome, bubble sort, binary search, word frequency, OOP and six triangle/pyramid/diamond patterns. The shared JavaScript examples also work as TypeScript; **Typed function** and **Generic function** demonstrate TypeScript-specific syntax.
 
-Choosing an example previews its description. **Load example** replaces code and pauses Auto-run; edited code requires confirmation before replacement. Star-pattern spaces are significant; the output uses monospace text and **Copy output** preserves those spaces and line breaks.
+Choosing an example replaces code and pauses Auto-run. Editors containing more than one line require confirmation before replacement. Star-pattern spaces are significant; the output uses monospace text and **Copy output** preserves those spaces and line breaks.
 
 ## Input, limits and privacy
 
-Use `await prompt('Your name?', 'Ilham')` for input and **Send input** to resume execution. This prompt returns a Promise, unlike `window.prompt`.
+Use `await prompt('Your name?', 'Ilham')` for input and Enter or **Send** to resume execution. This prompt returns a Promise, unlike `window.prompt`. Answers are echoed in the console without being persisted. **EOF** (or Ctrl + D) returns `null`; an empty Enter sends an empty string.
 
-Each Run starts a fresh Worker. Stop interrupts even an infinite loop. Execution is limited to 30 seconds and 500 output rows. Timers can continue logging after the snippet returns until Stop, the next Run or the execution limit.
+Each Run starts a fresh Worker. Stop interrupts even an infinite loop. Execution outside input waits is limited to 30 seconds and 500 output rows, with up to 2 minutes to answer each prompt. Timers can continue logging after the snippet returns until Stop, the next Run or the execution limit.
 
 The tool does not save or upload your code or input. Compiler and optional editor assets are fetched from jsDelivr, which receives ordinary asset requests. Snippets can make network requests through browser APIs, so only run code you trust. A Worker is not a security sandbox.
 
