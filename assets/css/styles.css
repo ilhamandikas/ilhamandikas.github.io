@@ -248,6 +248,7 @@ img, svg { max-width: 100%; }
 .guide-choice-card:hover,
 .guide-choice-card:focus-visible {
   border-color: var(--accent);
+  text-decoration: none;
 }
 .guide-choice-card h2 {
   margin: 0 34px 10px 0;
