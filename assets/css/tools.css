@@ -1514,6 +1514,10 @@ textarea.tool-text { resize: vertical; }
 .jsp-workspace-header { justify-content: space-between; }
 .jsp-workspace-actions .tool-hint { margin: 0; }
 .jsp-editor-options > summary { display: none; }
+.jsp-confirm { position: fixed; inset: 0; margin: auto; width: calc(100% - 32px); color: var(--text); }
+.jsp-confirm::backdrop { background: rgba(20, 22, 26, .3); }
+.jsp-confirm p { margin: 12px 0 20px; font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
+.jsp-confirm-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 body.jsp-focus-open { overflow: hidden; }
 .jsp-workspace.jsp-expanded {
   position: fixed;
@@ -1534,6 +1538,7 @@ body.jsp-focus-open { overflow: hidden; }
 .jsp-expanded .jsp-workspace-header > strong { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .jsp-expanded .jsp-workspace-actions { flex-wrap: nowrap; flex-shrink: 0; }
 .jsp-expanded .btn { min-height: 44px; padding: 8px 10px; font-size: 13px; }
+.jsp-confirm .btn { min-height: 44px; padding: 10px 18px; font-size: 15px; }
 .jsp-expanded > .tool-panel { min-height: 0; padding: 8px; }
 .jsp-expanded .jsp-code-panel {
   display: grid;

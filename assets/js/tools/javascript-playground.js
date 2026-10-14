@@ -38,6 +38,10 @@ const els = {
   fullscreen: document.querySelector('#jsp-fullscreen'),
   fullscreenHint: document.querySelector('#jsp-fullscreen-hint'),
   options: document.querySelector('#jsp-options'),
+  replaceDialog: document.querySelector('#jsp-replace-dialog'),
+  replaceName: document.querySelector('#jsp-replace-name'),
+  replaceCancel: document.querySelector('#jsp-replace-cancel'),
+  replaceAccept: document.querySelector('#jsp-replace-accept'),
 };
 
 const language = els.workspace?.dataset.language || 'javascript';
@@ -66,6 +70,7 @@ let outputCount = 0;
 let outputText = [];
 let runTiming = null;
 let selectedExample = '';
+let pendingReplacement = null;
 let bridgeSession = null;
 let bridgeReady = null;
 let runGeneration = 0;
@@ -163,6 +168,7 @@ document.addEventListener('fullscreenchange', () => {
   }
 });
 els.workspace.addEventListener('keydown', (event) => {
+  if (els.replaceDialog.open) { event.stopPropagation(); return; }
   if (!expanded) return;
   // Leave editor shortcuts intact, but don't trigger site navigation/search.
   event.stopPropagation();
@@ -175,9 +181,14 @@ els.workspace.addEventListener('keydown', (event) => {
   }
 });
 els.workspace.addEventListener('click', (event) => {
-  if (expanded && els.options.open && !els.options.contains(event.target)) els.options.open = false;
+  if (expanded && els.options.open && !els.replaceDialog.open && !els.replaceDialog.contains(event.target) && !els.options.contains(event.target)) els.options.open = false;
 });
-window.addEventListener('pagehide', () => { nativeFullscreen = false; setExpanded(false); });
+window.addEventListener('pagehide', () => {
+  pendingReplacement = null;
+  if (els.replaceDialog.open) els.replaceDialog.close('cancel');
+  nativeFullscreen = false;
+  setExpanded(false);
+});
 
 /* ------------------------------------------------------------------ editor */
 
@@ -860,14 +871,37 @@ els.example.addEventListener('change', () => {
     return;
   }
   const code = editor ? editor.getValue() : els.code.value;
-  if (code.trimEnd().split(/\r\n|\r|\n/).length > 1 && !window.confirm('Loading this example will delete the existing code and replace standard input. Continue?')) {
+  if (code.trimEnd().split(/\r\n|\r|\n/).length > 1) {
+    pendingReplacement = { value, example };
     els.example.value = selectedExample;
     updateExampleHint();
+    els.replaceName.textContent = example.name;
+    els.replaceDialog.returnValue = 'cancel';
+    els.replaceDialog.showModal();
+    els.replaceCancel.focus({ preventScroll: true });
     return;
   }
   selectedExample = value;
   loadExample(example);
   updateExampleHint();
+});
+function finishReplacement(accepted) {
+  const pending = pendingReplacement;
+  pendingReplacement = null;
+  els.replaceDialog.close(accepted ? 'replace' : 'cancel');
+  if (!accepted || !pending) return;
+  els.example.value = pending.value;
+  selectedExample = pending.value;
+  loadExample(pending.example);
+  updateExampleHint();
+}
+els.replaceCancel.addEventListener('click', () => finishReplacement(false));
+els.replaceAccept.addEventListener('click', () => finishReplacement(true));
+els.replaceDialog.addEventListener('cancel', (event) => { event.preventDefault(); finishReplacement(false); });
+els.replaceDialog.addEventListener('click', (event) => {
+  if (event.target !== els.replaceDialog) return;
+  const rect = els.replaceDialog.getBoundingClientRect();
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) finishReplacement(false);
 });
 function loadExample(example) {
   els.auto.checked = false;

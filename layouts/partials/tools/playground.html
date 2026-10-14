@@ -137,6 +137,14 @@ return doubled.reduce((sum, n) => sum + n, 0);{{ end }}</textarea>
     <p class="tool-hint">Timing measures elapsed time, not CPU time; waiting for input is included. WASM memory, when available, is linear memory capacity, not total RAM or peak usage.</p>
     <p class="tool-note">{{ if eq $language "python" }}Use <code>input()</code> for terminal input.{{ else if eq $language "ruby" }}Use <code>STDIN.readline</code> for terminal input.{{ else if eq $language "c" }}Read terminal input with <code>scanf</code> or <code>fgets</code>.{{ else if eq $language "cpp" }}Read terminal input with <code>std::cin</code> or <code>std::getline</code>.{{ else }}Output streams live, including timers. Use <code>await prompt('Your name?')</code> for interactive input.{{ end }} Runs in a Web Worker, without direct DOM access. Stop terminates execution; execution outside input waits is limited to 30 seconds, each answer can wait up to 2 minutes, and output is capped at 500 rows. Code can still make network requests, so only run code you trust. The tool does not save or upload your code or input.</p>
   </div>
+  <dialog id="jsp-replace-dialog" class="kbd-help-panel jsp-confirm" aria-labelledby="jsp-replace-title" aria-describedby="jsp-replace-description">
+    <h2 id="jsp-replace-title" class="kbd-help-title">Replace existing code?</h2>
+    <p id="jsp-replace-description">Loading <strong id="jsp-replace-name"></strong> will delete the current code{{ if $preparedInput }} and replace prepared standard input{{ end }}. Cancel to keep your work.</p>
+    <div class="jsp-confirm-actions">
+      <button class="btn" type="button" id="jsp-replace-cancel" autofocus>Cancel</button>
+      <button class="btn primary" type="button" id="jsp-replace-accept">Replace code</button>
+    </div>
+  </dialog>
   <details class="jsp-runtime">
     <summary>Runtime details</summary>
     {{ if $preparedInput }}<p class="tool-note">Interactive stdin installs a service worker scoped to /tools/ on its first Run. It answers only reserved input requests locally, without caching pages or persisting answers. If unavailable, use Prepared standard input. This is line-based input, not a shell or full terminal emulator.</p>{{ end }}

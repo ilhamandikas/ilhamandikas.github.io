@@ -7,6 +7,16 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const dom = new JSDOM(fs.readFileSync(path.join(root, 'public/tools/javascript-playground/index.html'), 'utf8'), { runScripts: 'outside-only' });
 const w = dom.window;
+function mockDialogs(window) {
+  // jsdom does not implement the native dialog top layer; browser checks cover it.
+  window.HTMLDialogElement.prototype.showModal = function () { this.setAttribute('open', ''); };
+  window.HTMLDialogElement.prototype.close = function (value = '') {
+    this.returnValue = value;
+    this.removeAttribute('open');
+    this.dispatchEvent(new window.Event('close'));
+  };
+}
+mockDialogs(w);
 w.tk = { setStatus: (el, message) => { el.textContent = message; } };
 const sources = new Map();
 let next = 0;
@@ -91,18 +101,22 @@ function run(code) { el('code').value = code; el('run').click(); }
   el('auto').checked = true;
   const examples = JSON.parse(el('examples').textContent);
   const pyramidIndex = examples.findIndex((item) => item.name === 'Centered pyramid');
-  let confirmations = 0;
-  w.confirm = (message) => { confirmations++; assert(message.includes('delete the existing code')); return false; };
+  w.confirm = () => assert.fail('Do not use the unstyled browser confirmation');
   el('example').value = String(pyramidIndex);
   el('example').dispatchEvent(new w.Event('change'));
-  assert.equal(confirmations, 1);
+  assert.equal(el('replace-dialog').open, true);
+  assert.equal(el('replace-name').textContent, examples[pyramidIndex].name);
+  assert.equal(w.document.activeElement, el('replace-cancel'));
+  el('replace-cancel').click();
+  assert.equal(el('replace-dialog').open, false);
   assert.equal(el('example').value, '');
   assert.equal(el('code').value, "console.log('keep me');\nreturn 1;");
   assert.equal(el('auto').checked, true);
-  w.confirm = () => { confirmations++; return true; };
   el('example').value = String(pyramidIndex);
   el('example').dispatchEvent(new w.Event('change'));
-  assert.equal(confirmations, 2);
+  assert.equal(el('replace-dialog').open, true);
+  el('replace-accept').click();
+  assert.equal(el('replace-dialog').open, false);
   assert(!el('code').value.includes("console.log('keep me');"));
   assert.equal(el('auto').checked, false);
   await sleep(800);
@@ -111,7 +125,7 @@ function run(code) { el('code').value = code; el('run').click(); }
   el('code').value = "console.log('one line');\n";
   el('example').value = String(pyramidIndex);
   el('example').dispatchEvent(new w.Event('change'));
-  assert.equal(confirmations, 2);
+  assert.equal(el('replace-dialog').open, false);
   assert.equal(el('code').value, `${examples[pyramidIndex].code.trimEnd()}\n`);
   el('run').click();
   await until(() => el('status').textContent.includes('Main code finished'));
@@ -133,6 +147,7 @@ function run(code) { el('code').value = code; el('run').click(); }
   for (const lang of ['typescript', 'python', 'ruby', 'c', 'cpp']) {
     const other = new JSDOM(fs.readFileSync(path.join(root, `public/tools/${lang}-playground/index.html`), 'utf8'), { runScripts: 'outside-only', url: `https://example.com/tools/${lang}-playground/` });
     const window = other.window;
+    mockDialogs(window);
     const field = (id) => window.document.querySelector(`#jsp-${id}`);
     let worker;
     window.tk = w.tk;
@@ -154,15 +169,16 @@ function run(code) { el('code').value = code; el('run').click(); }
     if (sample >= 0) {
       field('stdin').value = 'my answer';
       const originalCode = field('code').value;
-      window.confirm = () => false;
       field('example').value = String(sample);
       field('example').dispatchEvent(new window.Event('change'));
+      assert.equal(field('replace-dialog').open, true);
+      field('replace-cancel').click();
       assert.equal(field('example').value, '');
       assert.equal(field('code').value, originalCode);
       assert.equal(field('stdin').value, 'my answer');
-      window.confirm = () => true;
       field('example').value = String(sample);
       field('example').dispatchEvent(new window.Event('change'));
+      field('replace-accept').click();
       assert.equal(field('stdin').value, items[sample].stdin);
       assert.equal(field('code').value, `${items[sample].code.trimEnd()}\n`);
     }
