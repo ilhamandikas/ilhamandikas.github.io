@@ -1,0 +1,33 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally in your browser. Inputs are not uploaded or saved. Original log text stays visible here; do not paste it while screen sharing.</p>
+  <label class="tool-field"><span>Original log (maximum 500,000 characters)</span><textarea id="lr-input" class="tool-input tool-code" rows="12" spellcheck="false" autocomplete="off" data-no-memory placeholder="Paste a log to redact before sharing"></textarea></label>
+  <div class="tool-row">
+    <label class="tool-check"><input id="lr-privateKeys" type="checkbox" checked data-no-memory> PEM private keys</label>
+    <label class="tool-check"><input id="lr-fields" type="checkbox" checked data-no-memory> Authorization, cookies, and sensitive fields</label>
+    <label class="tool-check"><input id="lr-credentials" type="checkbox" checked data-no-memory> URL credentials</label>
+    <label class="tool-check"><input id="lr-jwt" type="checkbox" checked data-no-memory> JWT-like tokens</label>
+    <label class="tool-check"><input id="lr-email" type="checkbox" checked data-no-memory> Email addresses</label>
+    <label class="tool-check"><input id="lr-ipv4" type="checkbox" checked data-no-memory> IPv4 addresses</label>
+    <label class="tool-check"><input id="lr-ipv6" type="checkbox" checked data-no-memory> IPv6 addresses</label>
+  </div>
+  <label class="tool-field"><span>Additional exact text to redact (optional, one case-sensitive value per line)</span><textarea id="lr-custom" class="tool-input tool-code" rows="4" spellcheck="false" autocomplete="off" data-no-memory placeholder="internal.example.com&#10;customer-reference-example"></textarea></label>
+  <p class="tool-hint">Exact-text entries are literal, not regex. Minimum 3 characters per entry; maximum 100 distinct entries and 10,000 characters total. Blank lines are ignored; spaces are significant.</p>
+  <div class="tool-row">
+    <button id="lr-run" class="btn primary" type="button">Redact</button>
+    <button id="lr-example" class="btn" type="button">Load example</button>
+    <button id="lr-clear" class="btn" type="button">Clear</button>
+  </div>
+  <p class="tool-hint">Sensitive fields redact the rest of their line, so the output may no longer be valid JSON. An incomplete quoted, empty, or object-valued sensitive field, or an unclosed private-key block, hides the remaining log. Detection can miss secrets and can redact harmless text. It is not an anonymization guarantee.</p>
+</div>
+<div class="tool-panel">
+  <h2>Redacted preview</h2>
+  <p id="lr-status" class="tool-status" role="status" aria-live="polite">Paste a log, choose the patterns, and redact. Review the result before sharing it.</p>
+  <ul id="lr-counts" class="tool-hint" aria-label="Detected matches by category"></ul>
+  <label class="tool-field"><span>Output (manual review required)</span><textarea id="lr-output" class="tool-input tool-code" rows="12" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row">
+    <button id="lr-copy" class="btn" type="button" disabled data-copy="#lr-output" data-status="#lr-copy-status">Copy redacted output</button>
+    <button id="lr-download" class="btn" type="button" disabled data-download="#lr-output" data-filename="redacted.log" data-mime="text/plain">Download redacted.log</button>
+    <span id="lr-copy-status" class="tool-status" role="status"></span>
+  </div>
+  <p class="tool-hint">Only the preview is copied or downloaded. Check for internal hostnames, customer IDs, addresses, opaque tokens, encoded data, and secrets under unexpected field names. Use exact-text entries for values the automatic patterns miss. Match counts can overlap.</p>
+</div>

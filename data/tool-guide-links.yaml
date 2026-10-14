@@ -109,6 +109,12 @@ email-normalizer:
 emoji-picker:
   title: Emoji Picker Guide
   url: /guides/emoji-picker/
+tar-command-builder:
+  title: tar Command Builder Guide
+  url: /guides/tar-command-builder/
+rsync-command-builder:
+  title: rsync Command Builder Guide
+  url: /guides/rsync-command-builder/
 systemd-service-builder:
   title: systemd Service Builder Guide
   url: /guides/systemd-service-builder/
@@ -280,6 +286,9 @@ list-converter:
 loan-calculator:
   title: Loan Calculator Guide
   url: /guides/loan-calculator/
+log-redactor:
+  title: Log Redactor Guide
+  url: /guides/log-redactor/
 log-parser:
   title: Log Parser Guide
   url: /guides/log-parser/

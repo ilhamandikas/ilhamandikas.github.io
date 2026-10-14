@@ -3,6 +3,76 @@
 # small: most tools already get their keywords from data/tools.yaml and their
 # example questions from the FAQ in each tool guide (content/guides/*.md).
 
+tar-command-builder:
+  features:
+    - Generate GNU tar create, list, and extract commands
+    - Choose creation compression and GNU tar exclude patterns
+    - List an archive before extracting and optionally strip path components
+    - Refuse existing extraction files by default and explain overwrite risks
+  input:
+    type: form
+    format: Archive path, operation, source or destination, and options
+    sensitive: true
+  output:
+    type: text
+    format: POSIX shell commands for GNU tar
+  limitations:
+    - Generates text only; no file inspection or execution
+    - GNU tar required; compression programs must be installed separately
+    - No stdin/stdout pipelines, tilde expansion, or parent-path segments in source members
+    - Extraction options do not make untrusted archives safe
+  related_tools:
+    - rsync-command-builder
+    - zip-builder
+
+rsync-command-builder:
+  features:
+    - Generate local copy and SSH upload or download directory commands
+    - Enable dry-run by default with a separate preview command
+    - Explain directory versus contents source trailing-slash behavior
+    - Require renewed acknowledgement before a real destination-deletion command
+    - Configure excludes, checksums, compression, and bandwidth limits
+  input:
+    type: form
+    format: Directory paths, optional SSH endpoint, and transfer settings
+    sensitive: true
+  output:
+    type: text
+    format: POSIX shell rsync commands
+  limitations:
+    - No connection, filesystem inspection, or command execution
+    - SSH modes require rsync 3.0+ on both sides and hostname or IPv4 endpoints
+    - No IPv6 hosts, daemon mode, remote-to-remote transfers, wildcard paths, or file-only copies
+    - Cannot detect symlink aliases, overlapping trees, missing mounts, or all dangerous paths
+  related_tools:
+    - tar-command-builder
+    - ssh-tunnel-builder
+
+log-redactor:
+  features:
+    - Replace common sensitive-field lines and PEM private-key blocks
+    - Detect URL credentials, JWT-like tokens, common emails, IPv4, and IPv6
+    - Add case-sensitive exact-text redactions without regex
+    - Preview results and overlapping per-category match counts
+    - Copy or download only the redacted preview
+  input:
+    type: text
+    format: Log excerpt and optional exact-text entries
+    sensitive: true
+  output:
+    type: text
+    format: Redacted log with a fixed marker
+  limitations:
+    - Best-effort pattern detection, not an anonymization or secret-removal guarantee
+    - Sensitive fields redact the rest of a line and ambiguous values can hide the remaining input
+    - Output may no longer be valid JSON or logfmt
+    - No comprehensive encoded-secret, arbitrary multiline, or personal-data detection
+    - Maximum 500,000 log characters and 20,000 detected matches
+  related_tools:
+    - docker-logs-grep
+    - log-parser
+    - string-obfuscator
+
 systemd-service-builder:
   features:
     - Generate a system-level Type=simple unit for a foreground application

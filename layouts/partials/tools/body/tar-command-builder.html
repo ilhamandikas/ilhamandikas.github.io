@@ -1,0 +1,34 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally; inputs are not uploaded or saved. Generates commands for GNU tar on a POSIX shell. No files are read, archived, or extracted by this page.</p>
+  <div class="tool-grid-2">
+    <label class="tool-field"><span>Operation</span><select id="tar-mode" class="tool-select" data-no-memory><option value="create">Create archive</option><option value="list">List archive</option><option value="extract">Extract archive</option></select></label>
+    <label class="tool-field"><span>Archive filename (relative to terminal directory, or absolute)</span><input id="tar-archive" class="tool-input" type="text" value="backup.tar.gz" data-no-memory></label>
+    <label class="tool-field" id="tar-sourceDirectory-field"><span>Source base directory</span><input id="tar-sourceDirectory" class="tool-input" type="text" value="/opt/example-app" data-no-memory></label>
+    <label class="tool-field" id="tar-extractDirectory-field" hidden><span>Existing extraction directory</span><input id="tar-extractDirectory" class="tool-input" type="text" value="./restore" data-no-memory></label>
+    <label class="tool-field" id="tar-compression-field"><span>Compression for creation (filename is not changed automatically)</span><select id="tar-compression" class="tool-select" data-no-memory><option value="gzip">gzip</option><option value="none">None</option><option value="bzip2">bzip2</option><option value="xz">xz</option><option value="zstd">zstd</option></select></label>
+  </div>
+  <div id="tar-create-fields">
+    <label class="tool-field"><span>Relative source paths (one literal path per line; . means the entire base)</span><textarea id="tar-members" class="tool-input tool-code" rows="4" spellcheck="false" data-no-memory>.</textarea></label>
+    <label class="tool-field"><span>GNU tar exclude patterns (optional, one per line)</span><textarea id="tar-excludes" class="tool-input tool-code" rows="3" spellcheck="false" data-no-memory placeholder="./node_modules&#10;*.log"></textarea></label>
+  </div>
+  <div id="tar-extract-fields" hidden>
+    <label class="tool-field"><span>Strip leading path components</span><input id="tar-strip" class="tool-input" type="number" min="0" max="99" value="0" data-no-memory></label>
+    <label class="tool-check"><input id="tar-keepOld" type="checkbox" checked data-no-memory> Refuse to overwrite existing files (--keep-old-files)</label>
+    <p class="tool-hint">The extraction directory must already exist. Inspect the listing first and use an empty destination without root privileges. An archive listing is not a security audit.</p>
+  </div>
+  <label class="tool-check"><input id="tar-verbose" type="checkbox" checked data-no-memory> Verbose filenames</label>
+  <p class="tool-hint">Base/destination directories must start with / or ./ and cannot contain .. segments or wildcards. Paths are literal: no tilde, variable, or shell-glob expansion. Excludes accept GNU tar patterns. Compression programs must be installed separately.</p>
+  <p id="tar-status" class="tool-status" role="status" aria-live="polite"></p>
+</div>
+<div class="tool-panel">
+  <h2>Command</h2>
+  <label class="tool-field"><span>Generated GNU tar command</span><textarea id="tar-output" class="tool-input tool-code" rows="5" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row"><button id="tar-copy" class="btn" type="button" data-copy="#tar-output" data-status="#tar-copy-status">Copy command</button><span id="tar-copy-status" class="tool-status" role="status"></span></div>
+  <ul id="tar-warnings" class="tool-hint" aria-label="Command warnings"></ul>
+  <ul id="tar-explanations" class="tool-hint" aria-label="Option explanations"></ul>
+</div>
+<div id="tar-preview-panel" class="tool-panel" hidden>
+  <h2>Inspect before extracting</h2>
+  <label class="tool-field"><span>List the archive's original paths (does not extract)</span><textarea id="tar-preview" class="tool-input tool-code" rows="4" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row"><button id="tar-copy-preview" class="btn" type="button" data-copy="#tar-preview" data-status="#tar-copy-status">Copy listing command</button></div>
+</div>
