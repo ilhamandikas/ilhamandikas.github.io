@@ -31,6 +31,11 @@
         <span id="itc-amount-label">Amount (IDR)</span>
         <input id="itc-amount" class="tool-input" type="text" inputmode="numeric" maxlength="18" placeholder="10000000" data-no-memory aria-describedby="itc-amount-note">
       </label>
+      <label id="itc-turnover-field" class="tool-field" hidden>
+        <span>Annual Article 31E gross turnover (IDR)</span>
+        <input id="itc-turnover" class="tool-input" type="text" inputmode="numeric" maxlength="18" placeholder="30000000000" data-no-memory aria-describedby="itc-turnover-note">
+        <span id="itc-turnover-note" class="tool-hint">Use gross turnover legally determined for Article 31E, not taxable profit or only the part receiving a reduced rate. Turnover composition and other tax regimes must be checked separately.</span>
+      </label>
       <label class="tool-field">
         <span>Amount basis</span>
         <select id="itc-mode" class="tool-select" data-no-memory></select>
@@ -67,7 +72,7 @@
       <tbody id="itc-rows"></tbody>
     </table>
   </div>
-  <p class="tool-hint">Arithmetic is exact, using integer fractions rather than floating-point money. Recurring amounts are shown as exact fractions of a rupiah. Only statutory PKP rounding is applied. Withholding and VAT figures are before tax-document rounding; gross-up is algebraic, not a rounded payroll reconciliation. This is not a tax return or a determination of liability.</p>
+  <p class="tool-hint">Arithmetic is exact, using integer fractions rather than floating-point money. Recurring amounts are shown as exact fractions of a rupiah. Only statutory PKP rounding is applied. All tax figures are before tax-document rounding. Article 31E allocations are not rounded at intermediate steps; gross-up is algebraic, not a rounded payroll reconciliation. This is not a tax return or a determination of liability.</p>
   <h3>Rule references</h3>
   <ul id="itc-sources"></ul>
   <div class="tool-actions"><button id="itc-copy" class="tool-btn secondary" type="button" disabled>Copy calculation</button></div>
@@ -84,7 +89,7 @@
         <tr><th scope="row">PPh 23</th><td>2016-01-01 – 2024-12-31</td><td>Standard services 24-104-01 through 65; taxable awards, asset rental, interest and royalties. Dividends and service objects 66–69 are reference only.</td></tr>
         <tr><th scope="row">Land/building rental</th><td>2018-01-02 – 2024-12-31</td><td>Ordinary rental; no accommodation or build-operate-transfer transition cases.</td></tr>
         <tr><th scope="row">Construction</th><td>2022-02-21 – 2024-12-31</td><td>PP 9/2022 provider/certificate categories; payment excluding VAT.</td></tr>
-        <tr><th scope="row">Corporate income tax</th><td>2022-01-01 – 2024-12-31</td><td>Standard 22% from PKP, before credits. No facilities or listed-company reduction.</td></tr>
+        <tr><th scope="row">Corporate income tax</th><td>2009-01-01 – 2024-12-31</td><td>Calendar-year standard rate: 28% in 2009, 25% in 2010–2019, 22% in 2020–2024. Article 31E allocates the reduced rate by annual turnover up to IDR 50 billion. No listed-company reduction, final-turnover regime or credits.</td></tr>
         <tr><th scope="row">Ordinary domestic VAT</th><td>2010-04-01 – 2024-12-31</td><td>10% through 2022-03-31; 11% from 2022-04-01. No export, exemption, special base or facility.</td></tr>
         <tr><th scope="row">2025 domestic VAT</th><td>2025-01-01 – 2025-12-31</td><td>Explicit non-luxury and luxury scenarios under PMK 131/2024. Statutory 12%, adjusted 11/12 DPP where applicable, and the January final-consumer transition. VAT only; no PPnBM amount, imports, special regimes or facilities.</td></tr>
         <tr><th scope="row">PPh 22, PPh 15, other final-tax objects, PPnBM</th><td>Not audited</td><td>Reference only. No automatic or user-invented rate fallback.</td></tr>

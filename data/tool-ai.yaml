@@ -210,12 +210,13 @@ indonesian-tax-calculator:
   features:
     - Exact integer-fraction tax arithmetic with explicit PKP rounding
     - Selected audited income-tax scenarios through 2024-12-31
+    - Corporate standard rates and Article 31E turnover allocation for calendar tax years 2009–2024
     - Selected 2025 domestic VAT scenarios with statutory rates, adjusted bases and retail transition
     - Search 193 reference object options by code or English or Indonesian name
     - Block unsupported dates and scenarios without a fallback rate
   input:
     type: number
-    format: Whole-rupiah taxable amount, date, object and confirmed standard-tax assumptions
+    format: Whole-rupiah taxable amount, date, object, optional Article 31E turnover and confirmed scenario assumptions
     sensitive: true
   output:
     type: table
@@ -226,8 +227,9 @@ indonesian-tax-calculator:
     - No 2026 calculations, VAT imports, special regimes or PPnBM amount calculation
     - Snapshot codes are not period-validated historical filing codes
     - PPh 22, PPh 15, PPnBM and several other scenarios are reference only
-    - No monthly TER, gross-to-PKP, exemptions or automatic facility determination
-    - VAT and withholding results precede tax-document rounding
+    - No monthly TER, gross-to-PKP, exemptions or automatic tax-regime or turnover-composition determination
+    - No listed-company corporate reduction or non-calendar corporate tax years
+    - All tax figures precede tax-document rounding; Article 31E allocations have no intermediate rounding
   related_tools:
     - take-home-pay-calculator
 

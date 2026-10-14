@@ -49,7 +49,7 @@ audited rule. It is an independent tool, not a DJP service or tax-filing system.
 ## Start with the period, not the rate
 
 Select the tax type and the transaction or payment date. For annual resident
-Article 17 or standard corporate tax, use **31 December of the tax year**.
+Article 17 or either supported corporate mode, use **31 December of the tax year**.
 Short and non-calendar tax years are not supported. Construction uses the
 payment date; a contract signed earlier does not automatically preserve an
 older rate for later payments under PP 9/2022.
@@ -193,12 +193,67 @@ subtracted. For salary after employee contributions and estimated tax, the
 separate [Take-Home Pay Calculator](/tools/take-home-pay-calculator/) has a
 different purpose; it is not a historical filing calculator either.
 
+## Corporate income tax and Article 31E
+
+The standard and Article 31E modes cover complete calendar tax years
+**2009–2024**, starting from already determined PKP:
+
+| Tax year | Standard corporate rate | Half-rate used for allocated Article 31E PKP |
+| --- | --- | --- |
+| 2009 | 28% | 14% |
+| 2010–2019 | 25% | 12.5% |
+| 2020–2024 | 22% | 11% |
+
+UU 2/2020 set 22% for 2020–2021 and originally scheduled 20% from 2022.
+**Do not use that planned 20% in 2022:** UU 7/2021 set the corporate rate at
+22% from tax year 2022.
+
+Article 31E is a rate reduction for qualifying domestic resident companies,
+not a deduction of IDR 4.8 billion from PKP:
+
+- Annual gross turnover up to **IDR 4.8 billion**, inclusive: all PKP receives
+  half the applicable standard rate.
+- Turnover above **IDR 4.8 billion** and up to **IDR 50 billion**, inclusive:
+  allocate PKP using `rounded PKP × 4.8 billion / gross turnover`. Apply half
+  the standard rate to that allocated part and the full rate to the remainder.
+- Turnover above **IDR 50 billion**: no Article 31E reduction. The result states
+  this and calculates tax at the standard rate; it does not continue the ratio
+  beyond the facility ceiling.
+
+For tax year **2024**, take PKP of **IDR 3,000,000,000** and annual Article 31E
+gross turnover of **IDR 30,000,000,000**:
+
+```text
+Allocated PKP: 3,000,000,000 × 4,800,000,000 / 30,000,000,000
+             = IDR 480,000,000
+Remaining PKP = IDR 2,520,000,000
+Allocated tax: 480,000,000 × 11%     = IDR  52,800,000
+Remaining tax: 2,520,000,000 × 22%  = IDR 554,400,000
+Total before credits               = IDR 607,200,000
+```
+
+The official explanation to UU 36/2008 uses those same PKP/turnover inputs
+for **2009**, when the rates were 14% and 28%. Its result is
+**IDR 772,800,000**, not the 2024 figure. Its first example uses turnover of
+IDR 4.5 billion and PKP of IDR 500 million in 2009, producing IDR 70 million.
+Both official examples are checked by the automated tests.
+
+Use gross turnover legally determined for Article 31E, not taxable profit,
+not just the first IDR 4.8 billion, and not an assumed subset of taxable sales.
+Turnover composition, residency and whether the ordinary non-final regime
+applies must be checked separately. The tool does not determine those matters.
+This mode excludes permanent establishments, the listed-company reduction,
+final-turnover regimes and other facilities; it does not subtract credits or
+instalments. The standard mode should not be used to bypass an applicable
+facility or a different tax regime.
+
+Total PKP is first rounded down to whole IDR 1,000. Its allocation is then kept
+as an exact fraction, with **no intermediate allocation rounding**. All results
+are before tax-document rounding. A zero-turnover allocation is blocked with an
+explanation rather than dividing by zero or claiming eligibility.
+
 ## Other supported scenarios
 
-- **Standard corporate income tax:** 22% of rounded PKP for 2022–2024,
-  before credits and instalments. Article 31E and the qualifying listed-company
-  reduction are not implemented. Do not select the standard rate when a
-  different regime applies.
 - **Ordinary land/building rental:** 10% of the gross rental base from
   2018-01-02 through 2024-12-31. Include related rental charges covered by
   PP 34/2017; accommodation services and build-operate-transfer transition
@@ -230,6 +285,9 @@ mistake; otherwise use the official rules or obtain professional advice.
 
 ## References
 
+- [UU 36/2008 — Articles 17 and 31E, historical corporate rates and commencement](https://jdih.kemenkeu.go.id/fullText/2008/36TAHUN2008UU.htm).
+- [Official explanation to UU 36/2008 — Article 31E examples](https://jdih.kemenkeu.go.id/fullText/2008/36TAHUN2008UUPenj.htm).
+- [UU 2/2020 — annex Article 5, corporate rate for 2020–2021](https://jdih.kemenkeu.go.id/dok/uu-2-tahun-2020).
 - [UU 7/2021 — Article 17, PKP rounding, VAT rate change and commencement provisions](https://www.pajak.go.id/sites/default/files/2021-12/Salinan%20UU%20Nomor%207%20Tahun%202021.pdf).
 - [UU 42/2009 — ordinary VAT rate and commencement](https://jdih.kemenkeu.go.id/dok/uu-42-tahun-2009).
 - [PMK 131/2024 — 2025 VAT rate, adjusted bases and January retail transition](https://jdih.kemenkeu.go.id/dok/pmk-131-tahun-2024).

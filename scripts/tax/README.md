@@ -5,6 +5,9 @@ requested all-object, all-historical-period calculator. Tool and guide are
 `noindex` while that broader work is unfinished. Do not describe catalogue
 coverage as calculation coverage or as a complete national code registry.
 
+New corporate mappings, thresholds, rounding decisions and exclusions are
+recorded in [CORPORATE-RULES.md](CORPORATE-RULES.md).
+
 ## Architecture
 
 - `assets/js/data/indonesian-tax-objects.js`: reference selector snapshot,
@@ -14,6 +17,8 @@ coverage as calculation coverage or as a complete national code registry.
   explicit audit windows, source identifiers, and unsupported-scenario handling.
 - `assets/js/tools/indonesian-tax-vat-rules.js`: historical and 2025 VAT
   scenario selection, statutory rates, base factors and retail transition.
+- `assets/js/tools/indonesian-tax-corporate-rules.js`: historical standard-rate
+  windows and Article 31E scenario scope.
 - `assets/js/tools/indonesian-tax-calculator.js`: DOM adapter only.
 - `content/guides/indonesian-tax-calculator.md`: English walkthrough, limitations,
   source links and worked examples.
@@ -23,7 +28,7 @@ coverage as calculation coverage or as a complete national code registry.
 All money arithmetic uses `BigInt` integers or reduced rational fractions. Rates
 are integer basis points. `Number` is used for bounded object suffixes and rate
 labels, never for monetary calculation. PKP is floored to a multiple of IDR 1,000
-where Article 17 requires it. VAT/withholding tax-document rounding is **not**
+where Article 17 requires it. Final tax-document rounding for any mode is **not**
 implemented: results and copy reports explicitly say they are before that
 rounding. Gross-up is algebraic, not a rounded document/payroll solver.
 
@@ -67,6 +72,9 @@ added to the project or shipped to visitors.
 | Source | Relevant provisions / evidence | SHA-256 |
 | --- | --- | --- |
 | [UU 7/2021 PDF](https://www.pajak.go.id/sites/default/files/2021-12/Salinan%20UU%20Nomor%207%20Tahun%202021.pdf) | Article 17 individual brackets, corporate 22%, PKP flooring; VAT 11% from 2022-04-01; tax-year 2022 commencement | `4e4be3e276bf327e6e9e8a4a031838f572feb4014c2476f6cea0d9a54dd38d5b` |
+| [UU 36/2008](https://jdih.kemenkeu.go.id/fullText/2008/36TAHUN2008UU.htm) | Articles 17 and 31E: corporate 28% in 2009, 25% from 2010, PKP flooring and turnover allocation; calendar-year 2009 commencement | `77aef905cb880210457ba4fcb800532b3f40df1ecfd78a3f8fc4f3f9158d48aa` |
+| [UU 36/2008 explanation](https://jdih.kemenkeu.go.id/fullText/2008/36TAHUN2008UUPenj.htm) | Article 31E official 2009 examples: IDR 70 million and IDR 772.8 million tax | `a8f7b7430f03e0a815232ba5cbe52969176e464f4f8e3585b1a67cc2193f1ddd` |
+| [UU 2/2020](https://jdih.kemenkeu.go.id/dok/uu-2-tahun-2020) | Annex Article 5: 22% in 2020–2021 only. Its planned 20% from 2022 is superseded by UU 7/2021 and must not be applied | `38996edda9911dfefe47a27848dd999e941ef31a3639639a9d78ebf848a0f636` |
 | [UU 42/2009](https://jdih.kemenkeu.go.id/dok/uu-42-tahun-2009) | Article 7 ordinary VAT 10%, Article II commencement 2010-04-01 | `a8d57e4828e7f59f1a69d7fd45e40d821b9c9610dee809ea7a6dbef7fa53e071` |
 | [PMK 141/PMK.03/2015](https://jdih.kemenkeu.go.id/dok/141-pmk-03-2015) | Article 1 standard services 2%, VAT exclusion, documented base exclusions, service list; Article 4 commencement 30 days after promulgation; annex example IDR 20m × 2% = IDR 400k | `cd107a9b7de8ad12b6eff1e3cf64f512b712f63ce58e62b3dba2a35d6ccbf1f4` |
 | [DJP PPh 23 page](https://pajak.go.id/id/pph-pasal-23) | Standard 2%/15% rates and 100%-higher no-NPWP rate only. Do not adopt its outdated dividend conditions or filing deadlines | `901eb6b0256b90f2097c3e996aff7a57ddc83f8e9563b3ead789c84e412e7257` |
@@ -90,8 +98,13 @@ The income-tax end date **2024-12-31** and selected domestic VAT end date
 - Annual resident Article 17 from **already determined PKP**, 2022–2024;
   reference employee/pension objects only. No gross-to-PKP, monthly TER,
   gross-up, A1/A2 preparation or last-period reconciliation.
-- Standard corporate 22% from PKP, 2022–2024. No credits, Article 31E,
-  qualifying listed-company reductions, or final turnover regime.
+- Corporate standard rates from already determined PKP, calendar tax years
+  2009–2024: 28% in 2009, 25% in 2010–2019, 22% in 2020–2024. Article 31E
+  takes positive annual gross turnover and allocates the reduced-rate PKP
+  exactly within its IDR 4.8 billion / IDR 50 billion thresholds. No credits,
+  listed-company reductions, final-turnover regimes or non-calendar years.
+  Turnover composition and other-regime eligibility are not determined here.
+  See [CORPORATE-RULES.md](CORPORATE-RULES.md) for the rule register.
 - Ordinary domestic VAT, 2010-04-01 through 2024-12-31. 10% before
   2022-04-01; 11% from that date. Exclude exports, exemptions, special bases
   and facilities. Gross/exclusive and VAT-inclusive inputs.
@@ -138,8 +151,10 @@ exemption, certificate, residency or liability determination.
    final benefits, gross-up, gross-to-PKP and full annual reconciliation,
    including prior rules and transitions. Do not reuse the take-home-pay tool's
    simplified assumptions as authoritative tax law.
-6. Implement corporate Article 31E, listed-company eligibility and historical
-   standard rates, credits and instalments where the mode promises them.
+6. Complete corporate listed-company eligibility, other regimes/facilities,
+   turnover composition, credits and instalments where the mode promises them.
+   Calendar-year standard rates and Article 31E arithmetic for 2009–2024 are
+   implemented, not a complete corporate return or eligibility determination.
 7. Complete VAT imports, 2026+ rules, special-base/specified-amount regimes,
    facilities and PPnBM goods classification/rates. Selected ordinary domestic
    2025 scenarios are implemented, not comprehensive 2025 VAT coverage.

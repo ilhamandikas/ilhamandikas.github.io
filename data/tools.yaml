@@ -840,7 +840,7 @@
     - slug: indonesian-tax-calculator
       name: Indonesian Tax Calculator
       desc: Calculate selected Indonesian tax scenarios with exact arithmetic, rule references and explicit historical coverage limits.
-      keywords: [indonesian tax, pajak, kalkulator pajak, pph 21, pph 22, pph 23, pph final, pph 15, pph badan, ppn, vat, ppnbm, tax object code, withholding, gross up, historical tax]
+      keywords: [indonesian tax, pajak, kalkulator pajak, pph 21, pph 22, pph 23, pph final, pph 15, pph badan, corporate tax, pasal 31e, omzet, ppn, vat, ppnbm, tax object code, withholding, gross up, historical tax]
       status: done
     - slug: take-home-pay-calculator
       name: Take-Home Pay Calculator

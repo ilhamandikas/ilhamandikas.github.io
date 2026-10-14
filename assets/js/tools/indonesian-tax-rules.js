@@ -1,9 +1,13 @@
 // Deliberately bounded audit windows, not claims about when a law was repealed.
 // See scripts/tax/README.md before extending any window or object mapping.
 import { vatRuleFor } from './indonesian-tax-vat-rules.js';
+import { corporateRuleFor } from './indonesian-tax-corporate-rules.js';
 
 export const AUDIT_END = '2024-12-31';
 export const SOURCES = {
+  income2008: { name: 'UU 36/2008, Articles 17 and 31E and commencement provisions', url: 'https://jdih.kemenkeu.go.id/fullText/2008/36TAHUN2008UU.htm' },
+  explanation2008: { name: 'UU 36/2008 explanation, Article 31E: official allocation examples', url: 'https://jdih.kemenkeu.go.id/fullText/2008/36TAHUN2008UUPenj.htm' },
+  covid2020: { name: 'UU 2/2020 annex, Article 5: corporate rates for 2020–2021 only', url: 'https://jdih.kemenkeu.go.id/dok/uu-2-tahun-2020' },
   hpp: { name: 'UU 7/2021, Article 17 and commencement provisions', url: 'https://www.pajak.go.id/sites/default/files/2021-12/Salinan%20UU%20Nomor%207%20Tahun%202021.pdf' },
   vat2009: { name: 'UU 42/2009, Article 7 and Article II', url: 'https://jdih.kemenkeu.go.id/dok/uu-42-tahun-2009' },
   vat2025: { name: 'PMK 131/2024, Articles 2–6: 2025 VAT bases and retail transition', url: 'https://jdih.kemenkeu.go.id/dok/pmk-131-tahun-2024' },
@@ -27,7 +31,7 @@ export const CATEGORIES = [
 
 export const EXTRA_OBJECTS = [
   { group: 'corporate', code: 'standard', name: 'Standard Article 17 corporate rate, without facilities', officialName: 'Tarif Pasal 17 ayat (1) huruf b' },
-  { group: 'corporate', code: '31e', name: 'Article 31E turnover facility — not yet supported', officialName: 'Pasal 31E ayat (1)' },
+  { group: 'corporate', code: '31e', name: 'Article 31E — turnover-based corporate rate reduction', officialName: 'Pasal 31E ayat (1)' },
   { group: 'corporate', code: 'listed', name: 'Qualifying listed-company rate — not yet supported', officialName: 'Pasal 17 ayat (2b)' },
   { group: 'vat', code: 'ordinary', name: 'Historical domestic VAT — ordinary base, through 2024', officialName: 'Penyerahan dalam negeri dengan DPP biasa sampai 2024' },
   { group: 'vat', code: 'non-luxury-2025', name: '2025 domestic non-luxury goods or services — 11/12 base', officialName: 'Penyerahan BKP selain barang mewah atau JKP — Pasal 3 PMK 131/2024' },
@@ -54,10 +58,8 @@ export function ruleFor(group, code, date) {
     rule = bounds('2022-01-01', 'hpp', {
       kind: 'progressive', note: 'Annual resident Article 17 tax from already determined PKP only. Not monthly TER, gross-up, an A1/A2 form, or last-period reconciliation.',
     });
-  } else if (group === 'corporate' && code === 'standard') {
-    rule = bounds('2022-01-01', 'hpp', {
-      kind: 'corporate', bps: 2200, note: 'Standard corporate income tax on PKP, before credits or instalments. No Article 31E, listed-company reduction, final turnover tax or other facility.',
-    });
+  } else if (group === 'corporate') {
+    rule = corporateRuleFor(code, date);
   } else if (group === 'pph23') {
     const service = /^24-104-(\d{2})$/.exec(code);
     if (service && Number(service[1]) >= 1 && Number(service[1]) <= 65) {
@@ -142,7 +144,7 @@ export function exactMoney(value) {
 
 const BRACKETS = [[60000000n, 500], [250000000n, 1500], [500000000n, 2500], [5000000000n, 3000], [null, 3500]];
 
-export function calculate({ group, code, date, amount, mode = 'gross', registered = true, confirmed = false }) {
+export function calculate({ group, code, date, amount, turnover, mode = 'gross', registered = true, confirmed = false }) {
   const rule = ruleFor(group, code, date);
   if (!rule.available) throw new Error(rule.reason);
   if (confirmed !== true) throw new Error('Confirm that the selected standard-tax scenario applies. Exemptions and special facilities are not determined by this calculator.');
@@ -158,8 +160,29 @@ export function calculate({ group, code, date, amount, mode = 'gross', registere
     row('Taxable income entered (PKP)', exactMoney(input));
     row('PKP rounded down to whole IDR 1,000', exactMoney(pkp));
     if (rule.kind === 'corporate') {
-      result.tax = multiply(fraction(pkp), BigInt(rule.bps), SCALE);
       row('Standard corporate rate', rateText(rule.bps));
+      if (rule.article31E) {
+        const gross = parseRupiah(turnover, 'Annual Article 31E gross turnover');
+        if (gross === 0n) throw new Error('Annual Article 31E gross turnover must be positive. A zero-turnover facility allocation is not supported; check the turnover and tax regime.');
+        const eligible = gross <= 50000000000n;
+        const qualifyingTurnover = eligible ? (gross < 4800000000n ? gross : 4800000000n) : 0n;
+        const favoured = fraction(pkp * qualifyingTurnover, gross);
+        const ordinary = subtract(fraction(pkp), favoured);
+        const reducedTax = multiply(favoured, BigInt(rule.bps), SCALE * 2n);
+        const ordinaryTax = multiply(ordinary, BigInt(rule.bps), SCALE);
+        result.corporate = { pkp, turnover: gross, favoured, ordinary, reducedTax, ordinaryTax };
+        result.tax = add(reducedTax, ordinaryTax);
+        row('Annual Article 31E gross turnover', exactMoney(gross));
+        row('Article 31E threshold result', eligible ? 'Within IDR 50 billion turnover ceiling' : 'Above IDR 50 billion: no Article 31E reduction');
+        row('Turnover eligible for allocation', exactMoney(qualifyingTurnover));
+        row('PKP allocation formula (no intermediate rounding)', `${exactMoney(pkp)} × ${qualifyingTurnover}/${gross}`);
+        row('PKP receiving the reduced rate', exactMoney(favoured));
+        row('PKP at the standard rate', exactMoney(ordinary));
+        row(`Tax on allocated PKP at ${rateText(rule.bps / 2)} (50% of standard rate)`, exactMoney(reducedTax));
+        row(`Tax on remaining PKP at ${rateText(rule.bps)}`, exactMoney(ordinaryTax));
+      } else {
+        result.tax = multiply(fraction(pkp), BigInt(rule.bps), SCALE);
+      }
     } else {
       let floor = 0n;
       for (const [ceiling, rate] of BRACKETS) {

@@ -42,10 +42,11 @@ function updateScenario() {
   $('calculate').disabled = !rule.available || !obj;
   $('assumptions').textContent = rule.note || 'No calculation is offered until this scenario and its period have been audited.';
   $('registration-field').hidden = $('category').value !== 'pph23';
+  $('turnover-field').hidden = !rule.article31E;
   $('confirm').checked = false;
   $('mode').replaceChildren();
   if (kind === 'progressive' || kind === 'corporate') {
-    $('amount-label').textContent = 'Taxable income (PKP), after deductions and PTKP where applicable (IDR)';
+    $('amount-label').textContent = kind === 'corporate' ? 'Annual taxable income (PKP), after tax adjustments (IDR)' : 'Taxable income (PKP), after deductions and PTKP (IDR)';
     $('mode').append(option('gross', 'Annual taxable income (PKP)'));
   } else if (kind === 'vat') {
     $('amount-label').textContent = rule.excludesPPnBM ? 'Price / reimbursement or price + VAT only (IDR; no separate PPnBM charge)' : 'Supply amount (IDR)';
@@ -82,7 +83,7 @@ form.addEventListener('submit', (event) => {
     if (!obj) throw new Error('Choose a tax object or shorten the search to see matching objects.');
     const result = calculate({
       group: obj.group, code: obj.code, date: $('date').value,
-      amount: $('amount').value, mode: $('mode').value,
+      amount: $('amount').value, turnover: $('turnover').value, mode: $('mode').value,
       registered: $('registration').value === 'registered', confirmed: $('confirm').checked,
     });
     const context = `${obj.name} · ${obj.code} · ${$('date').value}`;
@@ -134,7 +135,7 @@ $('search').addEventListener('input', filterObjects);
 $('object').addEventListener('change', updateScenario);
 $('date').addEventListener('input', updateScenario);
 $('date').addEventListener('change', updateScenario);
-for (const id of ['amount', 'mode', 'registration', 'confirm']) {
+for (const id of ['amount', 'turnover', 'mode', 'registration', 'confirm']) {
   $(id).addEventListener('input', clearResult);
   $(id).addEventListener('change', clearResult);
 }
