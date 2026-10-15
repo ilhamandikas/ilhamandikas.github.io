@@ -8,9 +8,8 @@ tool_guide_slug: color-converter
 broader_guide:
   title: Practical Image Tools
   url: /guides/practical-image-tools/
-about: Convert a colour between HEX, RGB, RGBA, HSL, HSLA and CMYK, with a live preview. It
-  accepts shorthand hex and alpha channels, and reports the nearest CSS colour name when there
-  is one.
+about: Convert a colour to HEX, RGB, RGBA, HSL and approximate CMYK as you type. Accepts
+  CSS colour names, shorthand HEX, RGB and HSL syntax, including alpha channels.
 faq:
 - q: Why is the CMYK value approximate?
   a: CMYK describes ink on paper and depends on the printer profile. The value here is the
@@ -32,6 +31,8 @@ Replace the input with `red`. You should get the same HEX and RGB values. This i
 ## What to watch for
 
 **RGBA** includes an extra value for transparency, but the plain **HEX** row only shows red, green, and blue. If you enter a partly transparent colour, copying that HEX value alone loses the transparency. **CMYK** is only a simple screen-to-ink estimate; printing depends on the printer and its colour profile. If the tool says **Unrecognised color**, check the spelling or try a HEX value such as `#FF0000`.
+
+Use a concrete colour value rather than a stylesheet expression such as `var(--accent)` or `light-dark(...)`. Wide-gamut and perceptual formats such as `color(display-p3 ...)`, `lab(...)` and `oklch(...)` are not supported.
 
 ## Where your input goes
 

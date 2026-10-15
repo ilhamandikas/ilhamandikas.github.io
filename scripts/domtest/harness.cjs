@@ -13,7 +13,7 @@ const path = require('path');
 const vm = require('vm');
 const { pathToFileURL } = require('url');
 const { JSDOM, VirtualConsole } = require('jsdom');
-const { mockDialogs } = require('./browser-stubs.cjs');
+const { mockDialogs, mockColorCanvas } = require('./browser-stubs.cjs');
 
 const ROOT = path.join(__dirname, '..', '..', 'public');
 const TOOLS = path.join(ROOT, 'tools');
@@ -164,6 +164,7 @@ function installGlobals(w) {
   if (!w.matchMedia) w.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} });
 
   mockDialogs(w);
+  mockColorCanvas(w);
 
   // jsdom implements neither execCommand nor the query* helpers; browsers do.
   w.document.execCommand = () => false;

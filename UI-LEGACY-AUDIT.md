@@ -203,17 +203,64 @@ painting/hit-testing there before treating cross-browser behavior as verified.
 The clean scoped snapshot also passed Hugo build, the complete E2E suite,
 all-page smoke tests in five sequential processes, all companion/quote/cat/motion
 tests, shared ordering/gauge/game-motion regressions, playground/bridge tests,
-and AI compatibility. The audit scan now finds only the Color Converter parsing
-probe among the previously identified authored element-style accesses; that
-separate migration is still pending.
+and AI compatibility. At this stage, the audit scan found only the Color Converter
+parsing probe among the previously identified authored element-style accesses;
+that separate migration is recorded in stage 4 below.
+
+## Color parsing — stage 4 completed
+
+Color Converter uses a lazily created, detached 1×1 Canvas 2D context to parse
+colors. It reads the native `fillStyle` serialization, never pixel data, so it
+does not lose transparent RGB channels or introduce an extra 8-bit-alpha
+readback round trip. No probe is attached to the page and no element styles are
+written. The context is reused; empty input does not allocate it.
+
+Canvas ignores invalid fill assignments, so validation assigns each input from
+two different starting colors and compares the resulting serialization. This
+rejects invalid input without mistaking either sentinel for an invalid color.
+HEX/RGB serialization is decoded into the existing output/conversion functions;
+no replacement HSL/named-color grammar or dependency was introduced. Standalone
+`currentColor` and CSS-wide inheritance/reset keywords retain the old body-child
+semantics through read-only computed-style access.
+
+Compatibility is scoped explicitly rather than promising “any CSS color”:
+
+- HEX (including shorthand/alpha), RGB/RGBA, HSL/HSLA, named colors, transparent
+  channels, normal whitespace/case, supported HWB and channel clamping remain.
+- Wide-gamut/perceptual serialization such as `color(display-p3 ...)`, `lab(...)`
+  and `oklch(...)` still produces a helpful unsupported-format error. The old
+  implementation also rejected these because it only understood computed RGB.
+- Stylesheet-dependent expressions such as `var(--accent)` and `light-dark(...)`
+  now explicitly produce an error. Some previously resolved through the page's
+  stylesheet. Preserving arbitrary CSS evaluation would require another style
+  probe or a substantially larger evaluator, neither appropriate for this small
+  converter. The UI and guide disclose this intentional boundary.
+- The guide's old preview/nearest-name claims were removed: the existing tool
+  presents text formats, not those features. Input, output, privacy, copy controls
+  and public URLs otherwise remain unchanged.
+
+Native Chromium compared 496 supported-input/theme cases against the previous
+parser with identical results, including low/zero alpha and both sentinel colors.
+Live input/error/recovery/empty states and 320/375/768/1280px light/dark layouts
+passed. `color-converter.mjs` adds automated coverage for empty/context reuse, normalized
+formats/alpha, validation/recovery, no DOM probes/styles, and unavailable Canvas.
+The color-page-only jsdom Canvas stub is not evidence of native browser support;
+Chromium checks exercise the real Canvas implementation.
+
+A clean scoped snapshot passed Hugo build, the complete E2E suite, all-page smoke
+checks in five sequential processes, the Color Converter test, shared
+ordering/gauge/game-motion/companion regressions, playground/bridge tests, AI
+compatibility and whitespace checks. Safari/iOS and Firefox remain unverified.
+
+Reference: [HTML Canvas fill/stroke parsing and serialization](https://html.spec.whatwg.org/multipage/canvas.html#fill-and-stroke-styles).
 
 ## Remaining work — not claimed complete
 
-The repository still has legacy dynamic style writes outside the migrated scope:
-
-| Area | Remaining concern | Preferred next step |
-| --- | --- | --- |
-| Color Converter | DOM color-parser probe | Verify a native color parsing alternative without breaking supported colors |
+The previously identified application-authored element-style writes in
+`assets/js/` and tool/layout partials have been migrated. No CSSOM rule injection
+or generated positioning stylesheet was introduced. Cross-browser/device checks
+below remain outstanding; this is not a claim that every runtime dependency or
+external application is free of its own style generation.
 
 Do not mechanically replace dynamic CSS variables with generated CSS rules or a
 wrapper around `.style`; that would keep the same problem. Validate each migration

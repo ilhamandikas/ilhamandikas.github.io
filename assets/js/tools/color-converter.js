@@ -1,22 +1,37 @@
-// Color converter — the browser parses the input, we present every format.
+// Color converter — Canvas parses supported CSS colors; results stay text-only.
 const { tk } = window;
 
 const input = document.querySelector('#color-input');
+let context;
 
 function parse(text) {
-  const value = text.trim();
+  let value = text.trim();
   if (value === '') return null;
-  const probe = document.createElement('span');
-  probe.style.color = '';
-  probe.style.color = value;
-  if (!probe.style.color) throw new Error('Unrecognised color');
-  document.body.appendChild(probe);
-  const computed = getComputedStyle(probe).color;
-  probe.remove();
+  // Keep standalone CSS-wide keywords consistent with the old body-child probe.
+  if (/^(currentcolor|inherit|unset|revert|revert-layer)$/i.test(value)) value = getComputedStyle(document.body).color;
+  if (/^initial$/i.test(value)) value = '#000000';
+  if (!context) {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    context = canvas.getContext('2d');
+  }
+  if (!context) throw new Error('Canvas color parsing is unavailable in this browser. Try another browser.');
 
-  const match = computed.match(/rgba?\(([^)]+)\)/);
-  if (!match) throw new Error('Unrecognised color');
+  // Invalid fillStyle assignments are ignored. Two different starting colors
+  // distinguish rejection from a valid color that happens to equal one sentinel.
+  context.fillStyle = '#010203';
+  context.fillStyle = value;
+  const normalized = context.fillStyle;
+  context.fillStyle = '#040506';
+  context.fillStyle = value;
+  if (context.fillStyle !== normalized) throw new Error('Unrecognised color. Use HEX, rgb(), hsl(), or a CSS color name; stylesheet expressions such as var() are not supported.');
+
+  const hexColor = normalized.match(/^#([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i);
+  if (hexColor) return { r: parseInt(hexColor[1], 16), g: parseInt(hexColor[2], 16), b: parseInt(hexColor[3], 16), a: 1 };
+  const match = normalized.match(/^rgba?\(([^)]+)\)$/);
+  if (!match) throw new Error('This color format is not supported. Use HEX, rgb(), hsl(), or a CSS color name.');
   const parts = match[1].split(',').map((p) => parseFloat(p));
+  if (parts.length < 3 || parts.length > 4 || parts.some((p) => !Number.isFinite(p))) throw new Error('Unrecognised color. Try #3498db.');
   return { r: parts[0], g: parts[1], b: parts[2], a: parts[3] === undefined ? 1 : parts[3] };
 }
 
