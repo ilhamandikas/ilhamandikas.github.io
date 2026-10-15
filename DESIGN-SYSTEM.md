@@ -826,6 +826,12 @@ animated backgrounds
 
 # Reduced Motion
 
+For bounded entry staggering, reuse global `.stagger-step-0` through
+`.stagger-step-19`. These static CSS classes define `--stagger-step`; consumers
+apply their own fixed delay multiplier inside a `no-preference` media query.
+Scripts may select a class but must not write CSS variables or inject CSS rules.
+See `UI-LEGACY-AUDIT.md` for random-result and post-batch limits and tests.
+
 Respect reduced-motion preferences where practical.
 
 Do not require animation to understand the interface.

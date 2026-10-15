@@ -309,10 +309,33 @@ img, svg { max-width: 100%; }
 }
 .post-item { padding: 22px 0; border-bottom: 1px solid var(--border); }
 
+/* Bounded stagger steps shared by post batches and random-picker results.
+   Only static CSS assigns these values; scripts select a class, never a style. */
+.stagger-step-0 { --stagger-step: 0; }
+.stagger-step-1 { --stagger-step: 1; }
+.stagger-step-2 { --stagger-step: 2; }
+.stagger-step-3 { --stagger-step: 3; }
+.stagger-step-4 { --stagger-step: 4; }
+.stagger-step-5 { --stagger-step: 5; }
+.stagger-step-6 { --stagger-step: 6; }
+.stagger-step-7 { --stagger-step: 7; }
+.stagger-step-8 { --stagger-step: 8; }
+.stagger-step-9 { --stagger-step: 9; }
+.stagger-step-10 { --stagger-step: 10; }
+.stagger-step-11 { --stagger-step: 11; }
+.stagger-step-12 { --stagger-step: 12; }
+.stagger-step-13 { --stagger-step: 13; }
+.stagger-step-14 { --stagger-step: 14; }
+.stagger-step-15 { --stagger-step: 15; }
+.stagger-step-16 { --stagger-step: 16; }
+.stagger-step-17 { --stagger-step: 17; }
+.stagger-step-18 { --stagger-step: 18; }
+.stagger-step-19 { --stagger-step: 19; }
+
 @media (prefers-reduced-motion: no-preference) {
   .post-item.infinite-new-item {
     animation: infinite-post-in 180ms ease-out both;
-    animation-delay: calc(var(--infinite-i, 0) * 28ms);
+    animation-delay: calc(var(--stagger-step, 0) * 28ms);
   }
 }
 

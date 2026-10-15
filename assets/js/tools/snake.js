@@ -26,7 +26,6 @@ let dead = false;
 const cells = [];
 
 function buildBoard() {
-  els.board.style.setProperty('--snake-cols', String(COLS));
   els.board.replaceChildren();
   cells.length = 0;
   for (let r = 0; r < ROWS; r += 1) {

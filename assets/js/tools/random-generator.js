@@ -49,7 +49,7 @@ function render(out) {
     ...out.map((value, index) => {
       const li = document.createElement('li');
       li.textContent = value;
-      li.style.setProperty('--random-i', String(index));
+      li.classList.add(`stagger-step-${index}`);
       return li;
     }),
   );

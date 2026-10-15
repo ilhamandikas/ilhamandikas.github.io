@@ -108,15 +108,47 @@ The Hugo build, complete E2E suite, all-page smoke test in five sequential batch
 shared gauge/ordering tests, playground/bridge regressions, and AI compatibility
 checks also passed against an isolated snapshot of the scoped changes.
 
+## Game grids and staggered motion — stage 2 completed
+
+- Snake and Tetris boards use fixed 20/10-column declarations in the global game
+  CSS. The duplicate JavaScript CSS-variable assignments were removed.
+- Memory Match selects 4/6 columns and Minesweeper 9/12/16 through a bounded
+  `data-columns` attribute. Existing difficulty definitions remain the source of
+  logical board dimensions. Unsupported select values still fall back to Easy.
+- Tetris previews select 2/3/4-column layouts with the same attribute. Empty Hold
+  previews remove the attribute on reset; gameplay, shape matrices and input
+  controls are unchanged.
+- The two Difficulty labels now wrap their existing select controls when needed,
+  fixing the Minesweeper field's overflow at 320px without changing its options.
+- `.stagger-step-0` through `.stagger-step-19` are shared, static global classes.
+  Only CSS defines `--stagger-step`; JavaScript selects a bounded class and never
+  writes a CSS variable or generates stylesheet rules.
+- Random results keep their existing maximum of 20 items and 55ms delay per step.
+  Each fetched post batch restarts at step zero, caps at step five, and keeps its
+  28ms delay per step. Both animations remain inside their existing
+  `prefers-reduced-motion: no-preference` rules.
+- Fetch URLs, pagination, failure fallback, chooser timing, privacy, storage and
+  dependencies are unchanged. No new stylesheet request was introduced.
+
+`scripts/domtest/game-layout-motion.cjs` runs through `npm run test:dom`. It checks
+all board sizes and reset, safe first Minesweeper reveal, all Tetris preview sizes
+and Hold reset, bounded/unique random results, post batch restart/capping,
+concurrent-load protection and end-of-pagination cleanup, plus no inline CSS.
+
+Chromium checks passed for all difficulty layouts at 320, 375, 768 and 1280px in
+light/dark themes, fixed boards and preview geometry, exact random/post animation
+delays and reduced motion. Post pagination was exercised with a synthetic batch
+fixture, since the current public posts list has no next page. Hugo build, the
+complete E2E suite, all-page smoke test in five sequential batches, shared
+ordering/gauge checks, playground/bridge regressions, and AI compatibility also
+passed against an isolated snapshot of this change.
+
 ## Remaining work — not claimed complete
 
 The repository still has legacy dynamic style writes outside the migrated scope:
 
 | Area | Remaining concern | Preferred next step |
 | --- | --- | --- |
-| Games | Board column counts | Fixed-size class variants using the global bundle |
-| Random picker | Per-item animation delay | Bounded class variants using global animation rules |
-| Infinite posts | Entry animation index | Bounded shared animation classes |
 | Color Converter | DOM color-parser probe | Verify a native color parsing alternative without breaking supported colors |
 | Search mascot | Drag/dock coordinates and transforms | Separate interaction audit; preserve touch, reduced-motion and visibility behavior |
 | Mascot visibility | Temporary measurement styles | Shared measurement classes with reliable cleanup |

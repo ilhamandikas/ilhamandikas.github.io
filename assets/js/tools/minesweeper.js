@@ -67,7 +67,7 @@ function newGame() {
   over = false;
   started = 0;
   stopTimer();
-  els.board.style.setProperty('--ms-cols', String(cols));
+  els.board.dataset.columns = String(cols);
   els.mines.textContent = String(mineCount);
   els.time.textContent = '0s';
   tk.setStatus(els.status, '');

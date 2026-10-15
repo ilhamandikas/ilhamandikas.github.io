@@ -44,7 +44,6 @@ const cells = [];
 const clone = (matrix) => matrix.map((row) => [...row]);
 
 function buildBoard() {
-  els.board.style.setProperty('--tetris-cols', String(COLS));
   els.board.replaceChildren();
   cells.length = 0;
   for (let r = 0; r < ROWS; r += 1) {
@@ -214,10 +213,13 @@ function hold() {
 
 function preview(container, type) {
   container.replaceChildren();
-  if (!type) return;
+  if (!type) {
+    delete container.dataset.columns;
+    return;
+  }
   const matrix = SHAPES[type];
   const size = matrix.length;
-  container.style.setProperty('--mini-cols', String(size));
+  container.dataset.columns = String(size);
   for (let r = 0; r < size; r += 1) {
     for (let c = 0; c < size; c += 1) {
       const cell = document.createElement('div');

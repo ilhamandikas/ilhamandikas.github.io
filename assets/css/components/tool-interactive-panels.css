@@ -82,7 +82,7 @@
 
   .random-results li {
     animation: random-in 0.34s ease-out both;
-    animation-delay: calc(var(--random-i, 0) * 55ms);
+    animation-delay: calc(var(--stagger-step, 0) * 55ms);
   }
 }
 @keyframes random-pulse {

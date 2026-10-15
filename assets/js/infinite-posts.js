@@ -50,8 +50,7 @@ if (list && pager && nextLink) {
       const fragment = document.createDocumentFragment();
       items.forEach((item, index) => {
         const node = document.importNode(item, true);
-        node.classList.add('infinite-new-item');
-        node.style.setProperty('--infinite-i', String(Math.min(index, 5)));
+        node.classList.add('infinite-new-item', `stagger-step-${Math.min(index, 5)}`);
         fragment.append(node);
       });
       list.append(fragment);

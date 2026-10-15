@@ -14,11 +14,14 @@
 }
 .mm-inline {
   display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
   color: var(--muted);
 }
+.mm-inline > .tool-select { min-width: 0; max-width: 100%; }
 .mm-stats { display: flex; flex-wrap: wrap; gap: 18px; margin-left: auto; }
 .mm-stat { display: flex; flex-direction: column; line-height: 1.15; }
 .mm-stat span {
@@ -84,11 +87,12 @@
 /* Memory match */
 .mm-board {
   display: grid;
-  grid-template-columns: repeat(var(--mm-cols, 4), 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   max-width: 520px;
   margin: 0 auto;
 }
+.mm-board[data-columns="6"] { grid-template-columns: repeat(6, 1fr); }
 .mm-card {
   display: flex;
   align-items: center;
@@ -108,7 +112,7 @@
 /* Minesweeper */
 .ms-board {
   display: grid;
-  grid-template-columns: repeat(var(--ms-cols, 9), 1fr);
+  grid-template-columns: repeat(9, 1fr);
   gap: 2px;
   max-width: 560px;
   margin: 0 auto;
@@ -118,6 +122,8 @@
   border-radius: 10px;
   user-select: none;
 }
+.ms-board[data-columns="12"] { grid-template-columns: repeat(12, 1fr); }
+.ms-board[data-columns="16"] { grid-template-columns: repeat(16, 1fr); }
 .ms-cell {
   display: flex;
   align-items: center;
@@ -157,7 +163,7 @@
 }
 .snake-board {
   display: grid;
-  grid-template-columns: repeat(var(--snake-cols, 20), 1fr);
+  grid-template-columns: repeat(20, 1fr);
   gap: 1px;
   width: min(72vw, 440px);
   aspect-ratio: 1;
@@ -209,7 +215,7 @@
 }
 .tetris-board {
   display: grid;
-  grid-template-columns: repeat(var(--tetris-cols, 10), 1fr);
+  grid-template-columns: repeat(10, 1fr);
   gap: 1px;
   width: min(60vw, 260px);
   padding: 6px;
@@ -222,10 +228,12 @@
 .tetris-cell.is-ghost { background: var(--accent-soft); }
 .tetris-mini-grid {
   display: grid;
-  grid-template-columns: repeat(var(--mini-cols, 4), 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   width: 92px;
 }
+.tetris-mini-grid[data-columns="2"] { grid-template-columns: repeat(2, 1fr); }
+.tetris-mini-grid[data-columns="3"] { grid-template-columns: repeat(3, 1fr); }
 .tetris-mini { aspect-ratio: 1; border-radius: 2px; }
 .tetris-mini.is-filled { background: var(--accent); }
 .tetris-cell.is-I,

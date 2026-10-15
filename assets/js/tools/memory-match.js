@@ -57,7 +57,7 @@ function newGame() {
   lock = false;
   started = 0;
   stopTimer();
-  els.board.style.setProperty('--mm-cols', String(cols));
+  els.board.dataset.columns = String(cols);
   els.moves.textContent = '0';
   els.time.textContent = '0s';
   tk.setStatus(els.status, '');
