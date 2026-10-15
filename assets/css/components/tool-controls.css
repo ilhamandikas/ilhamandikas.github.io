@@ -95,6 +95,10 @@ textarea.tool-input { min-height: 96px; }
 }
 .tool-row:first-child { margin-top: 0; }
 .tool-row:last-child { margin-bottom: 0; }
+.tool-row > .tool-grow { margin-bottom: 0; }
+.tool-grow { flex: 1 1 220px; min-width: 0; }
+.tool-result-row > .tool-label { flex: 0 1 130px; margin: 0; }
+.tool-result-row > .tool-input { flex: 1 1 180px; min-width: 0; }
 
 .tool-inline {
   display: inline-flex;

@@ -409,8 +409,7 @@ const check = (label, actual, expected) => {
 
     check('catalog: script ran', page.scripts.some((file) => path.basename(file).startsWith('tools-catalog')), true);
     check('catalog: all cards visible at rest', visibleCards() > 80, true);
-    // Same trap as the sidebar: ranked groups use negative `order` inside this
-    // flex container, so anything else in here would sort below the results.
+    // Keep search controls outside the movable category collection.
     check('catalog: the catalog holds nothing but ranked groups', [...document.querySelector('#tools-catalog').children].every((c) => c.hasAttribute('data-tools-group')), true);
 
     key({ key: 'k', metaKey: true });
@@ -425,11 +424,9 @@ const check = (label, actual, expected) => {
     const yamlOnly = visibleCards();
     check('catalog: filters to a few cards', yamlOnly > 0 && yamlOnly < 15, true);
 
-    // Ranking is expressed as CSS `order`, so this is also the visual order.
-    const ranked = () =>
-      [...document.querySelectorAll('[data-tool-card]')]
-        .filter((c) => !c.hidden)
-        .sort((a, b) => Number(a.style.order) - Number(b.style.order));
+    // Visual and assistive-technology reading order now match the DOM.
+    const ranked = () => [...document.querySelectorAll('[data-tool-card]')].filter((c) => !c.hidden);
+    check('catalog: ranking does not author inline CSS', document.querySelectorAll('#tools-catalog [style]').length, 0);
     check('catalog: the best match is ranked first', ranked()[0].getAttribute('href').includes('yaml'), true);
 
     // jsdom has no layout engine, so the only way to catch "el.hidden = true but
@@ -466,9 +463,7 @@ const check = (label, actual, expected) => {
     const rank = (query) => {
       input.value = query;
       input.dispatchEvent(new page.w.Event('input', { bubbles: true }));
-      return cards
-        .filter((card) => !card.hidden)
-        .sort((a, b) => Number(a.style.order) - Number(b.style.order));
+      return [...document.querySelectorAll('[data-tool-card]')].filter((card) => !card.hidden);
     };
     const top = (query) => {
       const first = rank(query)[0];
@@ -550,7 +545,8 @@ const check = (label, actual, expected) => {
 
     rank('');
     check('search: clearing restores every card', cards.filter((card) => !card.hidden).length > 80, true);
-    check('search: clearing drops the ranking', cards.every((card) => card.style.order === ''), true);
+    check('search: clearing restores original DOM order', [...document.querySelectorAll('[data-tool-card]')].map((card) => card.getAttribute('href')), cards.map((card) => card.getAttribute('href')));
+    check('search: no inline CSS is created', document.querySelectorAll('#tools-catalog [style]').length, 0);
 
     const result = page.finish();
     check('search: no uncaught errors', result.thrown.length + result.errors.length, 0);
@@ -800,10 +796,7 @@ const check = (label, actual, expected) => {
     const empty = document.querySelector('#tool-nav-empty');
     const links = [...document.querySelectorAll('.tool-nav a')];
     const name = (link) => link.textContent.trim();
-    const shown = () =>
-      links
-        .filter((link) => !link.hidden)
-        .sort((a, b) => Number(a.parentElement.style.order) - Number(b.parentElement.style.order));
+    const shown = () => [...document.querySelectorAll('.tool-nav a')].filter((link) => !link.hidden);
     const selected = () => document.querySelector('.tool-nav a.selected');
     const type = (value) => {
       input.value = value;
@@ -813,9 +806,7 @@ const check = (label, actual, expected) => {
 
     check('sidebar: the field is there', Boolean(input), true);
     check('sidebar: every tool is listed', links.length, TOOL_COUNT);
-    // The field must not share a flex container with the ranked groups: a flex
-    // item's default `order` is 0 and ranked groups use negative values, so
-    // sharing one sorted the field to the bottom of the sidebar.
+    // Search controls must stay outside the movable result collection.
     check('sidebar: the field is outside the ranked list', nav.querySelector('.tool-nav-list').contains(navSearch), false);
     check('sidebar: the field is the first thing in the nav', nav.firstElementChild, navSearch);
     check('sidebar: the ranked list is a flex container', /\.tool-nav-list\{[^}]*display:flex/.test(CSS), true);
@@ -3429,9 +3420,9 @@ const check = (label, actual, expected) => {
     dt.w.__devopsTycoon.buy('lb');
     await sleep(20);
     check('devops: buying the load balancer lights it up', dt.w.document.querySelector('#dt-node-lb').classList.contains('is-on'), true);
+    dt.dom.window.close();
   }
 
-    dt.dom.window.close();
   /* ----------------------------------------------------- json path explorer */
 
   console.log('\n=== json path explorer ===');

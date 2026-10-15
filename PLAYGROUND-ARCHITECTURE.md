@@ -54,7 +54,7 @@ than claiming universal keyboard support.
 | `assets/js/tool-ui.js` | Opt-in native confirmation and fullscreen controllers |
 | `assets/js/tool-images.js` | Existing shared image helpers |
 | `assets/js/tool-charts.js` | Existing shared SVG chart helpers |
-| `assets/js/tools/javascript-playground.js` | Execution lifecycle, deadlines, and wiring |
+| `assets/js/tools/playground.js` | Execution lifecycle, deadlines, and wiring |
 | `assets/js/tools/playground/editor.js` | On-demand Monaco, formatting, suggestions, diagnostics |
 | `assets/js/tools/playground/examples.js` | Categories, selection, replacement confirmation |
 | `assets/js/tools/playground/console.js` | Safe output rendering, copy/clear, elapsed metrics |
@@ -63,7 +63,8 @@ than claiming universal keyboard support.
 | `assets/js/tools/playground/worker.js` | Isolated runtime execution and shared byte-stream decoder |
 | `static/tools/playground-input-sw.js` | Local synchronous stdin responses and session isolation |
 
-The other five language entrypoints still import the same playground orchestrator.
+All six language entrypoints import the shared `playground.js` orchestrator.
+`javascript-playground.js` remains a compatibility entrypoint like the other five.
 Do not copy the controller or CSS for another language. Display names come from
 the global tool catalog via `data-language-name`; do not maintain another language
 name table in the template or JavaScript.
@@ -96,6 +97,9 @@ TypeScript use `await prompt()`. Other languages need Interactive input mode and
 HTTPS/service-worker support; Prepared input remains the fallback. No draft,
 answer, or source code is persisted or added to analytics/URLs by this refactor.
 Execution/input-wait limits and WASM memory labeling remain unchanged.
+
+See `UI-LEGACY-AUDIT.md` for the follow-up audit of global search ordering and
+legacy utility layouts, including explicitly deferred dynamic-style migrations.
 
 ## Refactor record
 

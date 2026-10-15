@@ -1,6 +1,7 @@
 // Search and keyboard navigation for the tool sidebar, so Cmd+K can jump to
 // another tool from anywhere instead of only working on the catalog page.
 import { bindFocusShortcut, buildIndex, search, shortcutLabel } from './tools-search.js';
+import { createDomOrder } from './dom-order.js';
 
 const input = document.querySelector('#tool-nav-search');
 const nav = document.querySelector('.tool-nav');
@@ -11,6 +12,10 @@ if (input && nav) {
   const groups = Array.from(nav.querySelectorAll('.tool-nav-group'));
   const links = Array.from(nav.querySelectorAll('.tool-nav-group a'));
   const rows = new Map(links.map((link) => [link, link.parentElement]));
+  let rowOrder;
+  const resultsList = document.createElement('ul');
+  resultsList.hidden = true;
+  nav.querySelector('.tool-nav-list').append(resultsList);
   const empty = document.querySelector('#tool-nav-empty');
   const kbd = document.querySelector('#tool-nav-kbd');
   const aside = document.querySelector('.tool-aside');
@@ -41,13 +46,8 @@ if (input && nav) {
 
   let selected = -1;
 
-  // Visual order, not DOM order: rows are ranked with CSS `order`, so the arrow
-  // keys have to follow the ranking. With no query every order is 0 and the
-  // sort is stable, which leaves the list exactly as written.
-  const visible = () =>
-    links
-      .filter((link) => !link.hidden)
-      .sort((a, b) => Number(rows.get(a).style.order) - Number(rows.get(b).style.order));
+  // Keyboard and screen-reader order now follow the same actual DOM order.
+  const visible = () => Array.from(nav.querySelectorAll('a')).filter((link) => !link.hidden);
 
   const paint = () => {
     const shown = visible();
@@ -67,12 +67,11 @@ if (input && nav) {
     nav.removeAttribute('data-searching');
     links.forEach((link) => {
       link.hidden = false;
-      rows.get(link).style.order = '';
+      rows.get(link).hidden = false;
     });
-    groups.forEach((group) => {
-      group.hidden = false;
-      group.style.order = '';
-    });
+    groups.forEach((group) => { group.hidden = false; });
+    resultsList.hidden = true;
+    rowOrder?.restore();
     if (empty) empty.hidden = true;
     selected = -1;
     paint();
@@ -84,6 +83,7 @@ if (input && nav) {
       return;
     }
 
+    rowOrder ??= createDomOrder([...rows.values()]);
     const results = search(input.value, index);
     const scores = new Map(results.map((result) => [result.item.link, result.score]));
 
@@ -95,14 +95,12 @@ if (input && nav) {
     links.forEach((link) => {
       const score = scores.get(link);
       link.hidden = score === undefined;
-      rows.get(link).style.order = score === undefined ? '' : String(-score);
+      rows.get(link).hidden = link.hidden;
     });
-    groups.forEach((group) => {
-      const shown = links.filter((link) => !link.hidden && group.contains(link));
-      group.hidden = shown.length === 0;
-      group.style.order =
-        shown.length === 0 ? '' : String(-Math.max(...shown.map((link) => scores.get(link))));
-    });
+    groups.forEach((group) => { group.hidden = true; });
+    rowOrder.restore();
+    rowOrder.set(results.map((result) => rows.get(result.item.link)), resultsList);
+    resultsList.hidden = results.length === 0;
     if (empty) empty.hidden = results.length !== 0;
 
     selected = results.length > 0 ? 0 : -1;

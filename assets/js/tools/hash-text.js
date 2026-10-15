@@ -30,10 +30,12 @@ function row(label, value) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'btn';
-  btn.style.marginTop = '8px';
   btn.textContent = 'Copy';
   btn.addEventListener('click', () => tk.copy(value));
-  wrap.append(tag, field, btn);
+  const actions = document.createElement('div');
+  actions.className = 'tool-row';
+  actions.append(btn);
+  wrap.append(tag, field, actions);
   return wrap;
 }
 

@@ -1,1 +1,1 @@
-import './javascript-playground.js';
+import './playground.js';

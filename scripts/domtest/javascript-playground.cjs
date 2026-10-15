@@ -42,7 +42,7 @@ async function until(test) {
 }
 function run(code) { el('code').value = code; el('run').click(); }
 (async () => {
-  for (const file of ['assets/js/toolkit.js', 'assets/js/tool-ui.js', 'assets/js/tools/javascript-playground.js',
+  for (const file of ['assets/js/toolkit.js', 'assets/js/tool-ui.js', 'assets/js/tools/javascript-playground.js', 'assets/js/tools/playground.js',
     ...fs.readdirSync(path.join(root, 'assets/js/tools/playground')).map((name) => `assets/js/tools/playground/${name}`)]) {
     assert(!/\.style\s*[.\[]|setAttribute\(\s*['"]style['"]/.test(fs.readFileSync(path.join(root, file), 'utf8')), `${file} must not author inline CSS`);
   }

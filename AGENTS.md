@@ -432,7 +432,8 @@ Consistency with the project is usually preferable to introducing a second style
 Use the global CSS classes/tokens and shared `window.tk` helpers. Do not author
 inline CSS or create a separate tool theme. Split growing files by coherent
 responsibility rather than arbitrary line counts. For shared UI and playground
-module boundaries, read `PLAYGROUND-ARCHITECTURE.md`.
+module boundaries, read `PLAYGROUND-ARCHITECTURE.md`. For the completed legacy UI
+migrations and remaining dynamic-style audit, read `UI-LEGACY-AUDIT.md`.
 
 ---
 

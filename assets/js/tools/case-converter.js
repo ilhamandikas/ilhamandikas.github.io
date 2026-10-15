@@ -33,16 +33,26 @@ const cases = {
 function render() {
   const w = words(input.value);
   results.replaceChildren(
-    ...Object.entries(cases).map(([name, fn]) => {
+    ...Object.entries(cases).map(([name, fn], index) => {
       const value = w.length ? fn(w) : '';
       const row = document.createElement('div');
-      row.className = 'tool-row';
-      row.innerHTML = `
-        <span class="tool-label" style="min-width:130px;margin:0">${name}</span>
-        <input class="tool-input" style="flex:1;min-width:180px" readonly value="${value.replace(/"/g, '&quot;')}">
-        <button class="btn" type="button">Copy</button>`;
-      const field = row.querySelector('input');
-      row.querySelector('button').addEventListener('click', () => tk.copy(field.value));
+      row.className = 'tool-row tool-result-row';
+      const label = document.createElement('label');
+      label.className = 'tool-label';
+      label.textContent = name;
+      const field = document.createElement('input');
+      field.className = 'tool-input';
+      field.id = `case-out-${index}`;
+      field.readOnly = true;
+      field.value = value;
+      label.htmlFor = field.id;
+      const button = document.createElement('button');
+      button.className = 'btn';
+      button.type = 'button';
+      button.textContent = 'Copy';
+      button.setAttribute('aria-label', `Copy ${name}`);
+      button.addEventListener('click', () => tk.copy(field.value));
+      row.append(label, field, button);
       return row;
     }),
   );
