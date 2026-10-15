@@ -1081,6 +1081,21 @@ check whether an existing component already handles it.
 
 ---
 
+# Measurement Indicators
+
+Use a native meter/progress element when its semantics fit. For a responsive
+fill/held-peak or signed-axis pointer, reuse `tk.gauge(container, options)` from
+`tool-charts.js` and the global `.tool-gauge` styles. Its `set(value, peak)` method
+accepts percentages, clamps geometry to 0–100, and maps non-finite values to zero.
+`marker: 'line'` adds a peak; `marker: 'dot', center: true` adds an axis pointer.
+The returned `element` supports the shared `is-warn` and `is-critical` classes.
+
+Keep labelled numeric readings in HTML. The SVG is decorative, not an input or a
+live region. Update geometry attributes, never element styles; do not generate
+per-value CSS classes or inject CSS rules. See `UI-LEGACY-AUDIT.md` for coverage.
+
+---
+
 # Design Tokens
 
 Where the codebase supports them, use shared tokens for:

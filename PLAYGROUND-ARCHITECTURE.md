@@ -53,7 +53,7 @@ than claiming universal keyboard support.
 | `assets/js/toolkit.js` | Stable `window.tk` API and common utilities |
 | `assets/js/tool-ui.js` | Opt-in native confirmation and fullscreen controllers |
 | `assets/js/tool-images.js` | Existing shared image helpers |
-| `assets/js/tool-charts.js` | Existing shared SVG chart helpers |
+| `assets/js/tool-charts.js` | Shared SVG chart helpers and decorative measurement gauges |
 | `assets/js/tools/playground.js` | Execution lifecycle, deadlines, and wiring |
 | `assets/js/tools/playground/editor.js` | On-demand Monaco, formatting, suggestions, diagnostics |
 | `assets/js/tools/playground/examples.js` | Categories, selection, replacement confirmation |

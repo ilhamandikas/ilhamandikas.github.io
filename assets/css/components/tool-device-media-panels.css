@@ -1,28 +1,5 @@
-/* Microphone level meter: a filled bar with a peak marker riding along it. */
-.mic-meter {
-  position: relative;
-  height: 14px;
-  margin: 18px 0 0;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  background: #fff;
-  overflow: hidden;
-}
-.mic-bar {
-  display: block;
-  width: 0;
-  height: 100%;
-  background: var(--accent);
-}
-.mic-peak {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-  background: var(--text);
-}
-.mic-meter.mic-clip .mic-bar { background: #dc2626; }
+/* Shared SVG gauge; this wrapper only determines its layout. */
+.mic-meter { height: 14px; margin: 18px 0 0; }
 #mic-audio {
   display: block;
   width: 100%;
@@ -56,32 +33,7 @@
   font-size: 13px;
 }
 .gpd-axis-name { color: var(--muted); }
-.gpd-track {
-  position: relative;
-  height: 10px;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  background: #fff;
-}
-.gpd-track::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: -2px;
-  bottom: -2px;
-  width: 1px;
-  background: var(--border);
-}
-.gpd-dot {
-  position: absolute;
-  top: -3px;
-  width: 14px;
-  height: 14px;
-  margin-left: -7px;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  background: #fff;
-}
+.gpd-track { height: 10px; min-width: 0; }
 .gpd-axis-value {
   font-family: var(--mono);
   text-align: right;

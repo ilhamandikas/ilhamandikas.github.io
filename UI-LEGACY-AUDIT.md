@@ -69,14 +69,52 @@ work after the runner rename.
   counts did not yet match the built catalog. Those additions are not part of
   this change.
 
+## Dynamic indicators — stage 1 completed
+
+Mic Tester, Gamepad Tester, and DevOps Tycoon now share `tk.gauge()` in
+`assets/js/tool-charts.js`, built with the existing `tk.svgEl()` helper. The SVG
+fill width and pointer position are geometry attributes, not CSS. All appearance
+comes from `.tool-gauge` in the existing central CSS bundle and global palette.
+No new dependency, stylesheet request, network call, or persisted input was added.
+
+The shared component covers fill-only, fill/peak, and signed-axis pointer tracks.
+SVG is useful here because the same component can render a held peak and a
+fixed-pixel round pointer on a responsive track. Gauges are decorative and hidden
+from assistive technology; the existing labelled HTML numeric readings remain the
+accessible source of measurements, without frame-by-frame live announcements.
+
+- Microphone RMS/dBFS calculations, -60 dBFS floor, peak-held clipping, recording,
+  permission handling, Stop, restart, and page-exit track cleanup are unchanged.
+- Gamepad axes still map -1/0/+1 to the left/center/right of the track. The pointer
+  remains round and fixed-size at every viewport width. Disconnect now forces a
+  repaint even when the resulting controller list is empty, fixing stale rows.
+- DevOps values are clamped visually to 0–100%, while numeric readings may still
+  show overload. Warning remains strictly above 70%, critical strictly above 90%.
+  Simulation rules, purchases, incidents, and reset behavior are unchanged.
+- Shared tokens replace legacy hardcoded indicator surfaces and warning colors.
+  The old DevOps-only width transition is not retained; measurement geometry
+  updates directly, without adding motion or a competing gauge theme.
+
+`scripts/domtest/tool-gauges.cjs` is included in `npm run test:dom`. It exercises
+bounds and invalid numeric values, peak hold, permission denial, recording/Stop,
+restart and exit cleanup, axis positions/reconnect, warning boundaries, reset,
+and the no-authored-inline-CSS guard.
+
+Chromium checks passed at 320, 375, 768 and 1280px in light and dark themes, with
+no page overflow or console errors. Microphone/recording checks used Chromium's
+fake media device; controller checks used simulated Gamepad API readings. These
+are not a claim of physical microphone/controller or Safari/Firefox validation.
+The Hugo build, complete E2E suite, all-page smoke test in five sequential batches,
+shared gauge/ordering tests, playground/bridge regressions, and AI compatibility
+checks also passed against an isolated snapshot of the scoped changes.
+
 ## Remaining work — not claimed complete
 
 The repository still has legacy dynamic style writes outside the migrated scope:
 
 | Area | Remaining concern | Preferred next step |
 | --- | --- | --- |
-| Games | Board column counts and DevOps bar widths | Fixed-size class variants; native progress or SVG geometry |
-| Microphone/gamepad | Meter fill, peak and axis positions | Shared native meter/progress or SVG component |
+| Games | Board column counts | Fixed-size class variants using the global bundle |
 | Random picker | Per-item animation delay | Bounded class variants using global animation rules |
 | Infinite posts | Entry animation index | Bounded shared animation classes |
 | Color Converter | DOM color-parser probe | Verify a native color parsing alternative without breaking supported colors |

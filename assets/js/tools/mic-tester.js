@@ -8,8 +8,6 @@ const els = {
   stop: document.querySelector('#mic-stop'),
   status: document.querySelector('#mic-status'),
   meter: document.querySelector('#mic-meter'),
-  bar: document.querySelector('#mic-bar'),
-  peak: document.querySelector('#mic-peak'),
   level: document.querySelector('#mic-level'),
   peakValue: document.querySelector('#mic-peak-value'),
   device: document.querySelector('#mic-device'),
@@ -25,6 +23,8 @@ const els = {
   download: document.querySelector('#mic-download'),
   discard: document.querySelector('#mic-discard'),
 };
+
+const gauge = tk.gauge(els.meter, { marker: 'line' });
 
 // The meter spans this many decibels below full scale.
 const FLOOR = -60;
@@ -62,11 +62,10 @@ function percent(db) {
 }
 
 function show(db, clipping) {
-  els.bar.style.width = `${percent(db).toFixed(1)}%`;
-  els.peak.style.left = `${percent(peakDb).toFixed(1)}%`;
+  gauge.set(percent(db).toFixed(1), percent(peakDb).toFixed(1));
   els.level.textContent = `${db.toFixed(1)} dBFS`;
   els.peakValue.textContent = `${peakDb.toFixed(1)} dBFS`;
-  els.meter.classList.toggle('mic-clip', clipping);
+  gauge.element.classList.toggle('is-critical', clipping);
 }
 
 function measure() {
@@ -165,7 +164,7 @@ function release() {
   els.stop.disabled = true;
   els.record.disabled = true;
   els.recordStop.disabled = true;
-  els.meter.classList.remove('mic-clip');
+  gauge.element.classList.remove('is-critical');
 }
 
 function reasonFor(error) {
@@ -226,8 +225,7 @@ els.stop.addEventListener('click', () => {
   els.device.textContent = '—';
   els.level.textContent = '—';
   els.peakValue.textContent = '—';
-  els.bar.style.width = '0%';
-  els.peak.style.left = '0%';
+  gauge.set(0, 0);
   els.time.textContent = '0:00';
   tk.setStatus(els.status, 'Stopped. The microphone is released and the level is back at rest.');
 });

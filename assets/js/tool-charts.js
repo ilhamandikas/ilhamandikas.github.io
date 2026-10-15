@@ -9,6 +9,43 @@ export function installChartHelpers(tk) {
     return node;
   };
 
+  // Decorative measurement track; callers keep labelled numeric readings in HTML.
+  // SVG geometry supports both a fill/peak and a signed-axis pointer without CSS writes.
+  tk.gauge = (container, { marker = 'none', center = false } = {}) => {
+    const axis = marker === 'dot';
+    const element = tk.svgEl('svg', {
+      class: `tool-gauge${axis ? ' tool-gauge-axis' : ''}`,
+      'aria-hidden': 'true', focusable: 'false',
+    });
+    const fill = axis ? null : tk.svgEl('rect', { width: 0, height: '100%', class: 'tool-gauge-fill' });
+    if (fill) element.append(fill);
+    if (center) element.append(tk.svgEl('line', { x1: '50%', x2: '50%', y1: 0, y2: '100%', class: 'tool-gauge-center' }));
+    let pointer;
+    if (axis) {
+      pointer = tk.svgEl('svg', { x: '50%', y: '50%', width: 14, height: 14, class: 'tool-gauge-dot' });
+      pointer.append(tk.svgEl('circle', { cx: 0, cy: 0, r: 6 }));
+    } else if (marker === 'line') {
+      pointer = tk.svgEl('line', { x1: 0, x2: 0, y1: 0, y2: '100%', class: 'tool-gauge-marker' });
+    }
+    if (pointer) element.append(pointer);
+    container.replaceChildren(element);
+    const percent = (value) => {
+      const number = Number(value);
+      return `${Number.isFinite(number) ? Math.max(0, Math.min(100, number)) : 0}%`;
+    };
+    return {
+      element,
+      set(value, peak = value) {
+        if (fill) fill.setAttribute('width', percent(value));
+        if (axis) pointer.setAttribute('x', percent(value));
+        else if (pointer) {
+          pointer.setAttribute('x1', percent(peak));
+          pointer.setAttribute('x2', percent(peak));
+        }
+      },
+    };
+  };
+
   // A stacked bar with a legend underneath. Every part carries its own value and
   // share, so the picture is never the only place a number lives.
   tk.stackBar = (container, parts, { height = 12, label = 'Breakdown' } = {}) => {

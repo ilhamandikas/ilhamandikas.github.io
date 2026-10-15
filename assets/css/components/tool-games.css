@@ -277,20 +277,7 @@
   color: var(--muted);
 }
 .dt-stat > strong { font-size: 1.15rem; font-weight: 600; }
-.dt-bar {
-  height: 6px;
-  border-radius: 999px;
-  background: var(--bg-soft);
-  overflow: hidden;
-}
-.dt-bar-fill {
-  height: 100%;
-  width: 0;
-  background: var(--accent);
-  transition: width 0.2s ease;
-}
-.dt-bar-fill.is-warn { background: #d97706; }
-.dt-bar-fill.is-critical { background: #b91c1c; }
+.dt-bar { height: 6px; }
 .dt-event { margin: 14px 0 0; font-size: 0.85rem; color: var(--muted); }
 .dt-event.is-good { color: #15803d; }
 .dt-event.is-bad { color: #b91c1c; }

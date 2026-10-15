@@ -36,6 +36,12 @@ const els = {
   status: document.querySelector('#dt-status'),
 };
 
+const gauges = {
+  cpu: tk.gauge(els.cpuBar),
+  db: tk.gauge(els.dbBar),
+  disk: tk.gauge(els.diskBar),
+};
+
 // The shop. `level: true` items can be bought repeatedly; the rest are one-off.
 const SHOP = [
   { id: 'server', name: 'App server', desc: 'Add another application server.', base: 15000, growth: 1.6 },
@@ -383,10 +389,10 @@ function maybeEvent() {
 
 let incidentTtlRefs = {};
 
-function bar(el, pct) {
-  if (!el) return;
-  el.style.width = `${clamp(pct, 0, 100)}%`;
-  el.className = `dt-bar-fill${pct > 90 ? ' is-critical' : pct > 70 ? ' is-warn' : ''}`;
+function bar(gauge, pct) {
+  gauge.set(pct);
+  gauge.element.classList.toggle('is-critical', pct > 90);
+  gauge.element.classList.toggle('is-warn', pct > 70 && pct <= 90);
 }
 
 function renderStats() {
@@ -409,9 +415,9 @@ function renderStats() {
   els.servers.textContent = String(state.servers + state.autoServers);
   els.event.textContent = state.event ? state.event.text : 'No active event.';
   els.event.className = `dt-event${state.event ? (state.event.kind === 'bad' ? ' is-bad' : ' is-good') : ''}`;
-  bar(els.cpuBar, load.cpu);
-  bar(els.dbBar, load.dbPct);
-  bar(els.diskBar, state.disk);
+  bar(gauges.cpu, load.cpu);
+  bar(gauges.db, load.dbPct);
+  bar(gauges.disk, state.disk);
 }
 
 function renderTopology() {

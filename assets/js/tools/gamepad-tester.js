@@ -76,10 +76,7 @@ function card(pad) {
     name.textContent = AXIS_NAMES[index] || `Axis ${index}`;
     const track = document.createElement('span');
     track.className = 'gpd-track';
-    const dot = document.createElement('span');
-    dot.className = 'gpd-dot';
-    dot.style.left = `${((axis + 1) / 2) * 100}%`;
-    track.append(dot);
+    tk.gauge(track, { marker: 'dot', center: true }).set(((axis + 1) / 2) * 100);
     const reading = document.createElement('span');
     reading.className = 'gpd-axis-value';
     reading.textContent = axis.toFixed(2);
@@ -152,7 +149,7 @@ if (!supported()) {
     tk.setStatus(els.status, `${padName(event.gamepad, event.gamepad.index)} connected.`, 'ok');
   });
   window.addEventListener('gamepaddisconnected', () => {
-    signature = '';
+    signature = null;
     pressed = new Set();
     els.last.textContent = '—';
     tk.setStatus(els.status, 'A controller was disconnected.');

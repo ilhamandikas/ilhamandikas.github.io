@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "vendor": "node scripts/build-vendor.mjs",
-    "test:dom": "node scripts/domtest/dom-order.cjs && node scripts/domtest/indonesian-tax-calculator.mjs && node --experimental-vm-modules scripts/domtest/smoke.cjs && node --experimental-vm-modules scripts/domtest/e2e.cjs && node scripts/domtest/javascript-playground.cjs && node scripts/domtest/playground-input-bridge.cjs && node scripts/domtest/env-diff-checker.mjs && node scripts/domtest/tls-certificate-decoder.mjs && node scripts/domtest/systemd-service-builder.mjs && node scripts/domtest/log-redactor.mjs && node scripts/domtest/archive-transfer-builders.mjs && node scripts/domtest/sed-grep-simulators.mjs",
+    "test:dom": "node scripts/domtest/dom-order.cjs && node scripts/domtest/tool-gauges.cjs && node scripts/domtest/indonesian-tax-calculator.mjs && node --experimental-vm-modules scripts/domtest/smoke.cjs && node --experimental-vm-modules scripts/domtest/e2e.cjs && node scripts/domtest/javascript-playground.cjs && node scripts/domtest/playground-input-bridge.cjs && node scripts/domtest/env-diff-checker.mjs && node scripts/domtest/tls-certificate-decoder.mjs && node scripts/domtest/systemd-service-builder.mjs && node scripts/domtest/log-redactor.mjs && node scripts/domtest/archive-transfer-builders.mjs && node scripts/domtest/sed-grep-simulators.mjs",
     "check:ai": "node scripts/check-ai-compatibility.js"
   },
   "dependencies": {
