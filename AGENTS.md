@@ -437,6 +437,29 @@ migrations and remaining dynamic-style audit, read `UI-LEGACY-AUDIT.md`.
 
 ---
 
+# Repository Layout and Documentation
+
+`scripts/` is for project infrastructure: shared build, validation, maintenance,
+and test workflows. Do not create per-tool directories there for domain data,
+one-off importers, implementation notes, or rule registers. Tool-specific
+regression tests may follow the existing test-suite structure.
+
+Keep tool implementation and static data in the existing tool/data locations.
+Put user-facing explanations, domain rules, limitations, and references in the
+existing tool guide. Use focused code comments and regression tests for
+implementation details.
+
+Do not create a standalone Markdown file for one tool's audit, rules, plan,
+progress report, or README by default, whether under `scripts/` or elsewhere.
+Do not merely relocate such files to a new directory. Reuse existing documents;
+additional documentation files require explicit user approval. The established
+tool-page and tool-guide content files remain required by the normal workflow.
+
+Update existing repository-wide guidelines only for genuinely shared policies,
+not for one tool's domain-specific rules.
+
+---
+
 # Design Rules
 
 Do not turn the site into a generic SaaS landing page.
