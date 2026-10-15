@@ -802,6 +802,17 @@ unless they are already part of the established identity.
 
 # Animation
 
+Keep continuous decorative coordinates in native SVG geometry rather than writing
+inline CSS or generating unbounded positioning classes. The search companion's
+`mascot-position.js` and `mascot-spring.js` are the existing reference. Its native
+HTML controls live in a pointer-transparent SVG layer/foreignObject wrapper;
+never hide that entire layer from assistive technology.
+
+Web Animations effects may provide short-lived transitions, but must be cancelled
+on completion/interruption and must not become persistent positioning state.
+Temporary measurement/layout overrides belong in shared state classes, with
+reliable cleanup. See `UI-LEGACY-AUDIT.md` for browser/device limitations.
+
 Animation should support understanding or feedback.
 
 Good:

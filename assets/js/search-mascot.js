@@ -1,5 +1,6 @@
 import { createQuoteDeck } from './mascot-quotes.js';
-import { createFlexibleWire } from './mascot-wire.js';
+import { createMascotSpring } from './mascot-spring.js';
+import { createMascotPosition } from './mascot-position.js';
 import { createMascotVisibilityMotion } from './mascot-visibility.js';
 import { createMascotCatPass } from './mascot-cat.js';
 
@@ -58,7 +59,7 @@ export function initSearchMascot(openSearch) {
   const hint = root.querySelector('.search-mascot-hint');
   const art = root.querySelector('.search-mascot-art');
   const pupils = [...root.querySelectorAll('.search-mascot-pupil')];
-  const wire = createFlexibleWire(root);
+  const position = createMascotPosition(root);
   const searchDialog = document.querySelector('#global-search');
   const helpDialog = document.querySelector('#kbd-help');
   const guide = root.dataset.guideUrl
@@ -87,27 +88,15 @@ export function initSearchMascot(openSearch) {
   let level = window.innerWidth <= 480 ? 0.68 : 1;
   let tucked = false;
   let drag = null;
+  let touchTap = null;
   let suppressClick = false;
   let hovered = false;
   let bubbleHovered = false;
   let bubbleFocused = false;
   let gaze = null;
   let gazeFrame = 0;
-  let wobbleFrame = 0;
-  let wobbleTime = 0;
-  let angle = 0;
-  let angularVelocity = 0;
-  let targetAngle = 0;
-  let tailAngle = 0;
-  let tailVelocity = 0;
-  let tailLift = 0;
-  let liftVelocity = 0;
-  let targetLift = 0;
-  let dragSpeed = 0;
-  let lastMotion = 0;
+
   let dizzyTimer = 0;
-  let dockTimer = 0;
-  let dockFrame = 0;
   let dragFrame = 0;
   let gazeTime = 0;
   let peekTimer = 0;
@@ -159,6 +148,12 @@ export function initSearchMascot(openSearch) {
   const clampX = (x) => Math.max(viewport().left + 8,
     Math.min(Math.max(viewport().left + 8, viewport().left + viewport().width - width() - 8), x));
   const clampY = (y) => Math.max(minY(), Math.min(maxY(), y));
+  const spring = createMascotSpring(root, {
+    reduced: () => motion?.matches,
+    dragging: () => Boolean(drag),
+    onFrame: scheduleGaze,
+  });
+  const { kick: kickWobble, reset: resetWobble } = spring;
   const visibilityMotion = createMascotVisibilityMotion(root, () => { say(); scheduleGaze(); });
   const save = () => {
     try { localStorage.setItem(key, JSON.stringify({ side, level, tucked })); } catch { /* Optional preference. */ }
@@ -307,7 +302,7 @@ export function initSearchMascot(openSearch) {
       if (guideLink) guideLink.hidden = !guideActive;
       bubble.title = author ? 'Quotes provided by DummyJSON' : '';
       const height = bubble.offsetHeight || (showingQuote ? 180 : 60);
-      const top = drag?.currentY ?? parseFloat(root.style.top);
+      const top = drag?.currentY ?? position.get().y;
       const view = viewport();
       const below = view.top + view.height - top - (tucked ? 64 : compact() ? 88 : 100) - 12;
       const above = top - view.top - 12;
@@ -322,9 +317,10 @@ export function initSearchMascot(openSearch) {
     root.classList.toggle('is-tucked', tucked);
     if (!tucked) setNear(false);
     const view = viewport();
-    root.style.left = `${clampX(side === 'left' ? view.left + 8 : view.left + view.width - width() - 8)}px`;
-    root.style.top = `${minY() + level * (maxY() - minY())}px`;
-    root.classList.toggle('bubble-below', parseFloat(root.style.top) < 80);
+    position.resize(width(), height());
+    position.set(clampX(side === 'left' ? view.left + 8 : view.left + view.width - width() - 8),
+      minY() + level * (maxY() - minY()));
+    root.classList.toggle('bubble-below', position.get().y < 80);
     main.setAttribute('aria-label', tucked ? 'Show search companion' : 'Search tools, guides, and posts');
     if (tucked) main.removeAttribute('aria-haspopup');
     else main.setAttribute('aria-haspopup', 'dialog');
@@ -347,60 +343,10 @@ export function initSearchMascot(openSearch) {
     if (motion?.matches) return;
     void root.offsetWidth; // Restart the animation when returning via bfcache.
     root.classList.add('is-arriving');
-    angularVelocity += side === 'left' ? (fromCache ? -15 : -24) : (fromCache ? 15 : 24);
-    kickWobble();
+    spring.kick(side === 'left' ? (fromCache ? -15 : -24) : (fromCache ? 15 : 24));
     arrivalTimer = setTimeout(cancelArrival, 700);
   }
 
-  // A damped spring runs only during movement and its short settling tail.
-  function kickWobble() {
-    if (motion?.matches || document.hidden || wobbleFrame) return;
-    art.style.animation = 'none';
-    wobbleTime = 0;
-    root.classList.add('is-wobbling');
-    wobbleFrame = window.requestAnimationFrame(wobble);
-  }
-  function wobble(now) {
-    wobbleFrame = 0;
-    const dt = wobbleTime ? Math.min(0.048, (now - wobbleTime) / 1000) : 1 / 60;
-    wobbleTime = now;
-    const moving = drag && now - lastMotion < 140;
-    const frequency = 10 + Math.min(2, dragSpeed) * 3;
-    const target = moving ? targetAngle : 0;
-    // Small integration steps keep the spring stable on slower displays.
-    const steps = Math.ceil(dt / (1 / 120));
-    const step = dt / steps;
-    for (let i = 0; i < steps; i++) {
-      angularVelocity += ((target - angle) * frequency * frequency - angularVelocity * frequency * 1.2) * step;
-      angle += angularVelocity * step;
-      // A softer second spring lets the tail lag behind the head.
-      const tailFrequency = 8.5 + Math.min(2, dragSpeed);
-      tailVelocity += ((-angle * 0.8 - tailAngle) * tailFrequency * tailFrequency
-        - tailVelocity * tailFrequency * 1.3) * step;
-      tailAngle += tailVelocity * step;
-      liftVelocity += (((moving ? targetLift : 0) - tailLift) * tailFrequency * tailFrequency
-        - liftVelocity * tailFrequency * 1.3) * step;
-      tailLift += liftVelocity * step;
-    }
-    wire.bend(14 * Math.tanh(tailAngle / 14), tailLift);
-    art.style.transform = `rotate(${angle}deg)`;
-    scheduleGaze();
-    if (Math.abs(angle - target) > 0.08 || Math.abs(angularVelocity) > 0.3
-      || Math.abs(tailAngle) > 0.06 || Math.abs(tailVelocity) > 0.25
-      || Math.abs(tailLift) > 0.04 || Math.abs(liftVelocity) > 0.2 || moving) {
-      wobbleFrame = window.requestAnimationFrame(wobble);
-    } else resetWobble();
-  }
-  function resetWobble() {
-    window.cancelAnimationFrame(wobbleFrame);
-    wobbleFrame = 0;
-    root.classList.remove('is-wobbling');
-    angle = angularVelocity = targetAngle = dragSpeed = tailAngle = tailVelocity = 0;
-    tailLift = liftVelocity = targetLift = 0;
-    wire.reset();
-    art.style.removeProperty('transform');
-    art.style.removeProperty('animation');
-  }
   function getDizzy() {
     root.classList.add('is-dizzy');
     clearTimeout(dizzyTimer);
@@ -550,7 +496,7 @@ export function initSearchMascot(openSearch) {
     } else {
       visibilityMotion.stop();
       noteActivity();
-      if (!motion?.matches) { angularVelocity += 28; kickWobble(); }
+      if (!motion?.matches) spring.kick(28);
       root.classList.add('is-excited');
       clearTimeout(excitementTimer);
       excitementTimer = setTimeout(() => { root.classList.remove('is-excited'); say(); }, 1100);
@@ -559,21 +505,9 @@ export function initSearchMascot(openSearch) {
     }
   });
   function stopDocking(freeze = false) {
-    const box = freeze ? root.getBoundingClientRect() : null;
-    clearTimeout(dockTimer);
-    window.cancelAnimationFrame(dockFrame);
-    dockFrame = 0;
-    root.classList.remove('is-docking');
-    root.style.removeProperty('transform');
-    if (box) {
-      root.style.left = `${box.left}px`;
-      root.style.top = `${box.top}px`;
-    }
+    position.stop(freeze);
     syncIdle();
   }
-  root.addEventListener('transitionend', (event) => {
-    if (event.target === root && event.propertyName === 'transform') { stopDocking(); say(); }
-  });
   root.addEventListener('animationend', (event) => {
     if (event.target === root && event.animationName === 'companion-arrive') cancelArrival();
   });
@@ -586,17 +520,21 @@ export function initSearchMascot(openSearch) {
     noteActivity();
     // A genuine new tap is not the compatibility click emitted after a drag.
     if (event.button === 0 && event.isPrimary) suppressClick = false;
+    touchTap = event.button === 0 && event.isPrimary && event.pointerType === 'touch'
+      ? { id: event.pointerId, x: event.clientX, y: event.clientY } : null;
     if (event.button !== 0 || !event.isPrimary || tucked) return;
     visibilityMotion.stop();
     if (root.classList.contains('is-docking')) stopDocking(true);
+    const { x: left, y: top } = position.get();
     drag = { id: event.pointerId, x: event.clientX, y: event.clientY,
-      left: parseFloat(root.style.left), top: parseFloat(root.style.top), moved: false, hideSide: null,
-      currentX: parseFloat(root.style.left), currentY: parseFloat(root.style.top),
+      left, top, moved: false, hideSide: null,
+      currentX: left, currentY: top,
       lastX: event.clientX, lastY: event.clientY, lastTime: window.performance.now(), heading: null, turns: 0 };
     main.setPointerCapture(event.pointerId);
     say();
   });
   main.addEventListener('pointermove', (event) => {
+    if (touchTap?.id === event.pointerId && Math.hypot(event.clientX - touchTap.x, event.clientY - touchTap.y) >= 6) touchTap = null;
     if (!drag || drag.id !== event.pointerId) return;
     const dx = event.clientX - drag.x;
     const dy = event.clientY - drag.y;
@@ -608,12 +546,7 @@ export function initSearchMascot(openSearch) {
     const stepX = event.clientX - drag.lastX;
     const stepY = event.clientY - drag.lastY;
     const distance = Math.hypot(stepX, stepY);
-    const blend = 1 - Math.exp(-elapsed / 65);
-    dragSpeed += (Math.min(3, distance / elapsed) - dragSpeed) * blend;
-    targetAngle += (-18 * Math.tanh(stepX / elapsed * 0.7) - targetAngle) * blend;
-    targetLift += (-4 * Math.tanh(stepY / elapsed * 0.6) - targetLift) * blend;
-    lastMotion = now;
-    kickWobble();
+    spring.move(stepX, stepY, elapsed, now);
     if (distance >= 4) {
       const heading = Math.atan2(stepY, stepX);
       if (elapsed > 450) { drag.heading = null; drag.turns = 0; }
@@ -643,7 +576,7 @@ export function initSearchMascot(openSearch) {
     if (!dragFrame) dragFrame = window.requestAnimationFrame(() => {
       dragFrame = 0;
       if (!drag) return;
-      root.style.transform = `translate3d(${drag.currentX - drag.left}px, ${drag.currentY - drag.top}px, 0)`;
+      position.set(drag.currentX, drag.currentY);
       root.dataset.side = drag.currentX + width() / 2 < viewport().left + viewport().width / 2 ? 'left' : 'right';
       root.classList.toggle('bubble-below', drag.currentY < 80);
       scheduleGaze();
@@ -651,6 +584,7 @@ export function initSearchMascot(openSearch) {
     say();
   });
   function finish(event) {
+    if (event.type !== 'pointerup') touchTap = null;
     if (!drag || drag.id !== event.pointerId) return;
     suppressClick = drag.moved;
     window.cancelAnimationFrame(dragFrame);
@@ -668,13 +602,11 @@ export function initSearchMascot(openSearch) {
     const shouldDock = drag.moved && !willHide && !tucked && event.type === 'pointerup';
     drag = null;
     root.classList.remove('is-dragging', 'will-hide');
-    root.style.removeProperty('transform');
-    targetAngle = targetLift = 0;
+    spring.release();
     if (willHide) {
       resetWobble();
       // Start at the release position, then fold into the true peek layout.
-      root.style.left = `${fromX}px`;
-      root.style.top = `${fromY}px`;
+      position.set(fromX, fromY);
       visibilityMotion.run(() => { tucked = true; place(); }, motion?.matches);
     } else {
       if (tucked || event.type !== 'pointerup') resetWobble();
@@ -682,26 +614,22 @@ export function initSearchMascot(openSearch) {
       place();
     }
     if (shouldDock && !motion?.matches) {
-      const offsetX = fromX - parseFloat(root.style.left);
-      const offsetY = fromY - parseFloat(root.style.top);
-      const duration = Math.min(850, 420 + Math.hypot(offsetX, offsetY) * 0.65);
-      root.style.setProperty('--dock-duration', `${duration}ms`);
-      root.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
-      // FLIP: anchor at the destination, animate only the composited offset.
-      root.getBoundingClientRect();
-      root.classList.add('is-docking');
-      dockFrame = window.requestAnimationFrame(() => {
-        dockFrame = 0;
-        root.style.transform = 'translate3d(0, 0, 0)';
-        scheduleGaze();
-      });
-      clearTimeout(dockTimer);
-      dockTimer = setTimeout(() => { stopDocking(); say(); }, duration + 80);
+      position.dock(fromX, fromY, () => { syncIdle(); say(); });
+      scheduleGaze();
     }
     syncIdle();
     save();
   }
   main.addEventListener('pointerup', finish);
+  main.addEventListener('pointerup', (event) => {
+    const tap = touchTap;
+    touchTap = null;
+    if (tap?.id !== event.pointerId || Math.hypot(event.clientX - tap.x, event.clientY - tap.y) >= 6) return;
+    // Some touch streams omit the compatibility click after a captured drag.
+    // Activate within the pointer gesture, then ignore any duplicate native click.
+    main.click();
+    suppressClick = true;
+  });
   main.addEventListener('pointercancel', finish);
   main.addEventListener('lostpointercapture', finish);
   main.addEventListener('keydown', (event) => {
@@ -735,7 +663,9 @@ export function initSearchMascot(openSearch) {
     stopDocking();
     window.cancelAnimationFrame(dragFrame);
     dragFrame = 0;
+    if (drag?.moved) suppressClick = true;
     drag = null;
+    touchTap = null;
     root.classList.remove('is-dragging', 'will-hide');
     resetWobble();
     place();
@@ -746,6 +676,7 @@ export function initSearchMascot(openSearch) {
   document.addEventListener('visibilitychange', () => {
     root.classList.toggle('is-paused', document.hidden);
     if (document.hidden) {
+      resizeCompanion();
       clearTimeout(hopTimer);
       hopTimer = 0;
       stopHop();
@@ -766,7 +697,10 @@ export function initSearchMascot(openSearch) {
   window.addEventListener('pageshow', (event) => {
     active = true;
     noteActivity();
-    if (event.persisted) requestArrival(true);
+    if (event.persisted) {
+      resizeCompanion();
+      requestArrival(true);
+    }
     say();
   });
   window.addEventListener('pagehide', () => {
@@ -791,6 +725,7 @@ export function initSearchMascot(openSearch) {
     window.cancelAnimationFrame(dragFrame);
     dragFrame = 0;
     drag = null;
+    touchTap = null;
     window.cancelAnimationFrame(gazeFrame);
     gazeFrame = 0;
     resetWobble();

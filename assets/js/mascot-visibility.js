@@ -3,14 +3,11 @@ export function createMascotVisibilityMotion(root, onFinish) {
   const main = root.querySelector('.search-mascot-main');
   const art = root.querySelector('.search-mascot-art');
   let animations = [];
-  let restore = null;
   let generation = 0;
   function stop() {
     generation++;
     animations.forEach((animation) => animation.cancel());
     animations = [];
-    restore?.();
-    restore = null;
     root.classList.remove('is-transitioning');
     delete root.dataset.visibilityMotion;
   }
@@ -21,17 +18,6 @@ export function createMascotVisibilityMotion(root, onFinish) {
     if (reduced || !root.animate || !before.art.width) { onFinish(); return; }
     const after = { root: root.getBoundingClientRect(), main: main.getBoundingClientRect(), art: art.getBoundingClientRect() };
     const id = ++generation;
-    const styles = ['position', 'left', 'top', 'right'].map((name) => [name, art.style.getPropertyValue(name)]);
-    const overflow = main.style.overflow;
-    restore = () => {
-      styles.forEach(([name, value]) => value ? art.style.setProperty(name, value) : art.style.removeProperty(name));
-      main.style.overflow = overflow;
-    };
-    art.style.position = 'absolute';
-    art.style.left = '0';
-    art.style.top = '0';
-    art.style.right = 'auto';
-    main.style.overflow = 'hidden';
     root.classList.add('is-transitioning');
     root.dataset.visibilityMotion = root.classList.contains('is-tucked') ? 'hiding' : 'showing';
     const options = { duration: 440, easing: 'cubic-bezier(.22,.75,.25,1)', fill: 'both' };

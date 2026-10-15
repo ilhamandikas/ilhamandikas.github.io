@@ -6,6 +6,9 @@ import { chooseGuideInvitation, initSearchMascot } from '../../assets/js/search-
 // Strip Go template delimiters so the raw partial parses as plain HTML in jsdom.
 const markup = fs.readFileSync('layouts/partials/search-mascot.html', 'utf8').replace(/\{\{[^{}]*\}\}/g, '');
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+for (const file of ['assets/js/search-mascot.js', 'assets/js/mascot-position.js', 'assets/js/mascot-spring.js', 'assets/js/mascot-visibility.js', 'layouts/partials/search-mascot.html']) {
+  assert(!/\.style\s*[.\[]|\bstyle\s*=|<style\b/.test(fs.readFileSync(file, 'utf8')), `${file} must not author inline CSS`);
+}
 function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   const dom = new JSDOM(markup, { url: 'https://example.com/', pretendToBeVisual: true });
   globalThis.window = dom.window;
@@ -38,6 +41,17 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
   }
   if (saved) localStorage.setItem('ilham-search-companion-v1', saved);
   if (blocked) globalThis.localStorage = { getItem() { throw Error('blocked'); }, setItem() { throw Error('blocked'); } };
+  dom.window.Element.prototype.animate = function (frames, options) {
+    let resolve;
+    const finished = new Promise((done) => { resolve = done; });
+    const animation = { effect: { getKeyframes: () => frames }, finished, playState: 'running', cancel() {
+      clearTimeout(timer); this.playState = 'idle'; resolve();
+    } };
+    const timer = setTimeout(() => { animation.playState = 'finished'; resolve(); }, options.duration);
+    (this._animations ||= []).push(animation);
+    return animation;
+  };
+  dom.window.Element.prototype.getAnimations = function () { return (this._animations || []).filter((a) => a.playState !== 'idle'); };
   let opens = 0;
   initSearchMascot(() => opens++);
   const root = document.querySelector('#search-mascot');
@@ -51,8 +65,14 @@ function setup(saved, blocked = false, reduced = false, fetcher, options = {}) {
     target.dispatchEvent(event);
   };
   const key = (value) => main.dispatchEvent(new window.KeyboardEvent('keydown', { key: value, bubbles: true }));
-  const close = () => { dom.window.dispatchEvent(new dom.window.Event('pagehide')); dom.window.close(); };
-  return { dom, root, main, art, pointer, key, close, opens: () => opens };
+  const close = () => {
+    dom.window.dispatchEvent(new dom.window.Event('pagehide'));
+    assert.equal(root.closest('.search-mascot-layer').querySelectorAll('[style], style').length, 0);
+    assert(!root.matches('.is-docking,.is-transitioning,.is-wobbling'));
+    dom.window.close();
+  };
+  const position = () => ({ x: Number(root.closest('.search-mascot-anchor').getAttribute('x')), y: Number(root.closest('.search-mascot-anchor').getAttribute('y')) });
+  return { dom, root, main, art, pointer, key, close, position, opens: () => opens };
 }
 const invitationCount = 24;
 const invitationTexts = new Set();
@@ -108,21 +128,21 @@ const originalWire = page.root.querySelector('.search-mascot-wire').getAttribute
 page.pointer('pointerdown', 40, 200);
 page.pointer('pointermove', 400, 250);
 await pause(120);
-assert.ok(page.art.style.transform.includes('rotate('), 'drag excites the spring');
+assert.ok(page.art.querySelector('.search-mascot-spring').getAttribute('transform').includes('rotate('), 'drag excites the SVG spring');
 assert.equal(page.root.classList.contains('is-wobbling'), true, 'the spring marks itself as animating');
 assert.notEqual(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'lower wire bends independently of the head');
 assert.equal(page.root.querySelector('.search-mascot-wire').getAttribute('d'), page.root.querySelector('.search-mascot-wire-core').getAttribute('d'), 'metal outline and core stay aligned');
-assert.ok(page.root.style.transform.startsWith('translate3d('), 'drag uses a composited transform');
+assert.equal(page.position().x, 368, 'drag updates native SVG coordinates');
 page.pointer('pointerup', 400, 250);
 assert.equal(page.root.dataset.side, 'left', 'dock to nearest side');
 assert.equal(page.root.classList.contains('is-docking'), true);
-assert.ok(page.root.style.transform.includes('translate3d('), 'dock retains the release position before easing');
+assert.ok(page.root.getAnimations().some((a) => a.effect.getKeyframes()[0].transform.startsWith('translate3d(')), 'dock retains the release position in a temporary animation');
 page.main.dispatchEvent(new window.MouseEvent('click', { detail: 1 }));
 assert.equal(page.opens(), 1, 'drag must not open search');
 await pause(1600);
 assert.equal(page.root.classList.contains('is-docking'), false);
 assert.equal(page.root.classList.contains('is-wobbling'), false, 'idle companion stops advertising animation');
-assert.equal(page.art.style.transform, '', 'spring settles and stops');
+assert.equal(page.art.querySelector('.search-mascot-spring').getAttribute('transform'), null, 'spring settles and stops');
 assert.equal(page.root.querySelector('.search-mascot-wire').getAttribute('d'), originalWire, 'flexible wire returns to its original shape');
 page.main.click();
 assert.equal(page.opens(), 2, 'keyboard activation still works after drag');
@@ -157,8 +177,9 @@ page.pointer('pointerup', 400, 300);
 for (const width of [320, 375, 768, 1280]) {
   Object.defineProperty(window, 'innerWidth', { value: width, configurable: true });
   window.dispatchEvent(new window.Event('resize'));
-  const x = parseFloat(page.root.style.left);
-  assert.ok(x >= 0 && x + 96 <= width, `fits ${width}px viewport`);
+  const x = page.position().x;
+  const companionWidth = Number(page.root.closest('.search-mascot-anchor').getAttribute('width'));
+  assert.ok(x >= 0 && x + companionWidth <= width, `fits ${width}px viewport`);
 }
 page.pointer('pointerdown', 400, 300);
 page.pointer('pointermove', 400, 400);
@@ -183,7 +204,7 @@ page.pointer('pointermove', 400, 200, document);
 page.pointer('pointerdown', 900, 200);
 page.pointer('pointermove', 700, 220);
 await pause(40);
-assert.equal(page.art.style.transform, '', 'reduced motion disables spring');
+assert.equal(page.art.querySelector('.search-mascot-spring').getAttribute('transform'), null, 'reduced motion disables spring');
 assert.equal(page.root.querySelector('.search-mascot-pupil').getAttribute('transform'), null);
 page.pointer('pointerup', 700, 220);
 page.key('h');
@@ -192,21 +213,43 @@ page.close();
 const view = new EventTarget();
 Object.assign(view, { width: 320, height: 700, offsetLeft: 0, offsetTop: 0 });
 page = setup(null, false, false, undefined, { width: 320, height: 700, viewport: view });
-assert.ok(parseFloat(page.root.style.top) < 450, 'new mobile position stays above the bottom action area');
-const startY = parseFloat(page.root.style.top) + 44;
+assert.ok(page.position().y < 450, 'new mobile position stays above the bottom action area');
+const startY = page.position().y + 44;
 page.pointer('pointerdown', 270, startY, page.main, 'touch');
 page.pointer('pointermove', 301, startY, page.main, 'touch');
 assert.equal(page.root.querySelector('.search-mascot-bubble').textContent, 'Release to hide!', 'touch gets a wider edge zone');
 page.pointer('pointerup', 301, startY, page.main, 'touch');
 assert.equal(page.root.classList.contains('is-tucked'), true);
 page.pointer('pointerdown', 290, startY, page.main, 'touch');
+page.pointer('pointerup', 290, startY, page.main, 'touch');
+assert.equal(page.root.classList.contains('is-tucked'), false, 'first genuine tap after a touch drag reveals without needing a compatibility click');
 page.main.dispatchEvent(new window.MouseEvent('click', { detail: 1, bubbles: true }));
-assert.equal(page.root.classList.contains('is-tucked'), false, 'first genuine tap after a touch drag reveals the companion');
+assert.equal(page.opens(), 0, 'a duplicate compatibility click does not open search after revealing');
+page.pointer('pointerdown', 280, startY, page.main, 'touch');
+page.pointer('pointerup', 280, startY, page.main, 'touch');
+page.main.dispatchEvent(new window.MouseEvent('click', { detail: 1, bubbles: true }));
+assert.equal(page.opens(), 1, 'a touch tap activates search exactly once');
+page.pointer('pointerdown', 280, startY, page.main, 'touch');
+page.pointer('pointercancel', 280, startY, page.main, 'touch');
+page.pointer('pointerup', 280, startY, page.main, 'touch');
+assert.equal(page.opens(), 1, 'a cancelled touch tap does not activate');
 view.height = 330;
 view.offsetTop = 180;
 view.dispatchEvent(new Event('resize'));
-const mobileY = parseFloat(page.root.style.top);
+const mobileY = page.position().y;
 assert.ok(mobileY >= 188 && mobileY + 88 <= 510, 'companion stays in the visible viewport when a keyboard opens');
+page.pointer('pointerdown', 270, 250, page.main, 'touch');
+page.pointer('pointermove', 180, 280, page.main, 'touch');
+Object.defineProperty(document, 'hidden', { value: true, configurable: true });
+document.dispatchEvent(new window.Event('visibilitychange'));
+assert(!page.root.matches('.is-dragging,.is-docking,.is-transitioning,.is-wobbling'), 'hidden tab cancels the active gesture/effects');
+Object.defineProperty(document, 'hidden', { value: false, configurable: true });
+document.dispatchEvent(new window.Event('visibilitychange'));
+window.dispatchEvent(new window.Event('pagehide'));
+const restored = new window.Event('pageshow');
+Object.defineProperty(restored, 'persisted', { value: true });
+window.dispatchEvent(restored);
+assert.equal(page.position().x, 232, 'bfcache restore recomputes the right dock for the visual viewport');
 page.close();
 const nativeTimeout = globalThis.setTimeout;
 globalThis.setTimeout = (callback, delay, ...args) => nativeTimeout(callback,

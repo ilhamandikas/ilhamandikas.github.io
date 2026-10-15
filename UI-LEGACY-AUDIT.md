@@ -143,6 +143,70 @@ complete E2E suite, all-page smoke test in five sequential batches, shared
 ordering/gauge checks, playground/bridge regressions, and AI compatibility also
 passed against an isolated snapshot of this change.
 
+## Companion geometry and visibility — stage 3 completed
+
+The companion no longer reads or writes element styles. Continuous drag positions
+cannot sensibly be represented by thousands of CSS classes, so the static partial
+now wraps the existing native HTML aside/button/guide link in a presentational
+SVG `foreignObject`. Its `x`, `y`, `width` and `height` geometry attributes own the
+position and hit-box size. The fixed outer SVG is pointer-transparent; only the
+existing companion controls receive pointer events. It is not `aria-hidden`, so
+native controls remain in the accessibility tree.
+
+Responsibilities are split rather than adding another style wrapper:
+
+| Module | Responsibility |
+| --- | --- |
+| `mascot-position.js` | Native geometry, interrupted-dock freeze and temporary dock effect |
+| `mascot-spring.js` | Existing head/tail physics, SVG group rotation and flexible-wire geometry |
+| `mascot-visibility.js` | Full/peek layout measurement and temporary visibility effects |
+| `search-mascot.js` | Existing interaction, gaze, message/guide and lifecycle orchestration |
+
+- Spring rotation is an SVG group `transform`, separate from the existing CSS
+  expression/peek transforms. No animation-frame loop remains after settling.
+- Visibility measurements use the existing `is-transitioning` class with rules
+  in the central stylesheet instead of temporarily rewriting art/main styles.
+  Cancellation and completion remove the class and `data-visibility-motion`.
+- Docking and fold/unfold use bounded Web Animations effects. These are temporary
+  animation effects, not injected CSS rules or persistent coordinates. Completion,
+  resize, reduced motion, page exit and hidden-tab handling cancel the effects;
+  native SVG geometry remains the final state. Browsers without `animate()` snap
+  to that state without a lingering docking class.
+- Mouse/pointer capture, nearest-edge docking, edge-hide threshold, touch edge
+  zone, keyboard moves/H/Enter, peek, expressions, quote/invitation behavior,
+  viewport/safe-area clamping and presentation-only storage are preserved.
+- Touch taps explicitly activate within `pointerup`, ignoring a duplicate native
+  compatibility click. Chromium sometimes omitted that click after a captured
+  drag in both the old and new implementations; a new tap can now reliably reveal
+  the tucked control, without accidentally opening search twice.
+- Hidden-tab handling cancels in-progress gestures. A persisted `pageshow`
+  recalculates the dock before replaying the existing arrival effect.
+
+The controller is still a large existing orchestrator (over the 400-line review
+trigger). This pass extracts geometry/physics only; unrelated quote, invitation,
+expression and gaze policy was not broadly rewritten just to reduce line count.
+
+`mascot-motion.mjs` adds deterministic geometry, namespace, cancellation,
+completion/fallback and animation-frame-budget tests. The existing companion,
+quote and cat tests now run in `npm run test:dom`, with inline-CSS guards and touch
+tap deduplication assertions.
+
+Chromium checks passed for real mouse drag/interrupted docking, SVG rotation,
+keyboard focus and accessibility-tree exposure, hide/show, remembered state,
+320/375/768/1280px light/dark layouts, reduced motion, emulated touch drag/tap,
+page exit, a pointer-reachable/clickable guide link outside the anchor box, and
+underlying page clicks/wheel scrolling. All six playground viewport/fullscreen
+checks also passed. This does not replace real-device Safari/iOS or Firefox
+validation; in particular, verify native touch scrolling and foreignObject
+painting/hit-testing there before treating cross-browser behavior as verified.
+
+The clean scoped snapshot also passed Hugo build, the complete E2E suite,
+all-page smoke tests in five sequential processes, all companion/quote/cat/motion
+tests, shared ordering/gauge/game-motion regressions, playground/bridge tests,
+and AI compatibility. The audit scan now finds only the Color Converter parsing
+probe among the previously identified authored element-style accesses; that
+separate migration is still pending.
+
 ## Remaining work — not claimed complete
 
 The repository still has legacy dynamic style writes outside the migrated scope:
@@ -150,8 +214,6 @@ The repository still has legacy dynamic style writes outside the migrated scope:
 | Area | Remaining concern | Preferred next step |
 | --- | --- | --- |
 | Color Converter | DOM color-parser probe | Verify a native color parsing alternative without breaking supported colors |
-| Search mascot | Drag/dock coordinates and transforms | Separate interaction audit; preserve touch, reduced-motion and visibility behavior |
-| Mascot visibility | Temporary measurement styles | Shared measurement classes with reliable cleanup |
 
 Do not mechanically replace dynamic CSS variables with generated CSS rules or a
 wrapper around `.style`; that would keep the same problem. Validate each migration
