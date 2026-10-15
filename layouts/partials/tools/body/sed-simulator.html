@@ -1,0 +1,28 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally in your browser. Sample text is not uploaded or saved. This is a bounded sed simulation, not a shell or an in-place file editor.</p>
+  <label class="tool-field"><span>Operation</span><select id="sed-mode" class="tool-select" data-no-memory><option value="sub">Replace text</option><option value="delete">Delete matching lines</option><option value="print">Print matching lines only</option></select></label>
+  <div class="tool-grid-2">
+    <label class="tool-field"><span>Pattern (without / delimiters)</span><input id="sed-pattern" class="tool-input tool-code" type="text" value="cat" spellcheck="false" data-no-memory></label>
+    <label id="sed-replacement-field" class="tool-field"><span>Replacement (&amp; inserts the whole match)</span><input id="sed-replacement" class="tool-input tool-code" type="text" value="dog" spellcheck="false" data-no-memory></label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input id="sed-extended" type="checkbox" checked data-no-memory> Extended regex (-E)</label>
+    <label class="tool-check"><input id="sed-ignore" type="checkbox" data-no-memory> Ignore case (I)</label>
+    <label id="sed-global-field" class="tool-check"><input id="sed-global" type="checkbox" checked data-no-memory> Replace all occurrences per line (g)</label>
+    <label id="sed-quiet-field" class="tool-check"><input id="sed-quiet" type="checkbox" data-no-memory> Only print lines with a substitution (-n + p)</label>
+  </div>
+  <label class="tool-field"><span>Sample text</span><textarea id="sed-sim-input" class="tool-input tool-code" rows="10" spellcheck="false" autocomplete="off" data-no-memory>cat cat
+Cat and dog
+nothing to replace
+</textarea></label>
+  <div class="tool-row"><button id="sed-sim-run" class="btn primary" type="button">Simulate sed</button><button id="sed-sim-clear" class="btn" type="button">Clear sample</button></div>
+  <p class="tool-hint">ASCII/C-locale subset: literals, dot, anchors, bracket classes (including POSIX classes), groups, alternation, and greedy repetition. Groups do not expose captures: replacement backreferences such as \1, case conversions, arbitrary scripts, addresses, and multiline commands are not supported. Replacement supports &amp;, \&amp;, \\, \n, and \t.</p>
+  <p class="tool-hint">Limits: 50,000 input characters, 5,000 lines, 5,000 characters per line, 256 pattern characters, finite repetition bounds up to 50, and bounded execution/output. This is not the full GNU sed implementation.</p>
+</div>
+<div class="tool-panel">
+  <h2>sed simulation result</h2>
+  <p id="sed-sim-status" class="tool-status" role="status" aria-live="polite">Choose an operation and simulate to see the output.</p>
+  <label class="tool-field"><span>Output text</span><textarea id="sed-sim-output" class="tool-input tool-code" rows="10" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row"><button id="sed-sim-copy" class="btn" type="button" disabled data-copy="#sed-sim-output" data-status="#sed-sim-copy-status">Copy output</button><span id="sed-sim-copy-status" class="tool-status" role="status"></span></div>
+  <p class="tool-hint">An empty output can be a successful result, such as deleting every line. Original input stays unchanged. Test native commands on a disposable copy before editing real files.</p>
+</div>

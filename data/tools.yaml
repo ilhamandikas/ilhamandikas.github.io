@@ -759,6 +759,16 @@
       desc: Sort the keys in a .env file alphabetically, keeping each comment with its key and optionally dropping duplicates or aligning values.
       keywords: [env, dotenv, environment, variables, config, sort, keys, alphabetical, order, duplicates, align, secrets]
       status: done
+    - slug: sed-simulator
+      name: sed Simulator
+      desc: Simulate substitutions, line deletion, and selected-line printing on pasted ASCII text with a bounded browser-side regex subset.
+      keywords: [sed, simulator, simulation, preview, replace, substitution, delete lines, print lines, regex, stream editor, linux]
+      status: done
+    - slug: grep-simulator
+      name: grep Simulator
+      desc: Simulate line filtering, context, counts, word matching, and matching-text output on pasted ASCII text without searching files.
+      keywords: [grep, simulator, simulation, preview, filter, search, context, invert, count lines, fixed string, regex, linux]
+      status: done
     - slug: sed-replacement-builder
       name: sed Replacement Builder
       desc: Build a sed command to replace text, delete matching lines or print only matches, with in-place editing and backups.

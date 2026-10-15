@@ -151,6 +151,9 @@ gamepad-tester:
 git-cheatsheet:
   title: Git Cheatsheet Guide
   url: /guides/git-cheatsheet/
+grep-simulator:
+  title: grep Simulator Guide
+  url: /guides/grep-simulator/
 grep-pattern-builder:
   title: grep Pattern Builder Guide
   url: /guides/grep-pattern-builder/
@@ -412,6 +415,9 @@ safelink-decoder:
 screenshot-privacy-cleaner:
   title: Screenshot Privacy Cleaner Guide
   url: /guides/screenshot-privacy-cleaner/
+sed-simulator:
+  title: sed Simulator Guide
+  url: /guides/sed-simulator/
 sed-replacement-builder:
   title: sed Replacement Builder Guide
   url: /guides/sed-replacement-builder/

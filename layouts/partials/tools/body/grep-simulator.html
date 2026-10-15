@@ -1,0 +1,31 @@
+<div class="tool-panel">
+  <p class="tool-hint">Runs locally in your browser. Sample text is not uploaded or saved. Searches one virtual text input, not local files or directories.</p>
+  <div class="tool-grid-2">
+    <label class="tool-field"><span>Pattern</span><input id="grp-pattern" class="tool-input tool-code" type="text" value="ERROR|WARN" spellcheck="false" data-no-memory></label>
+    <label class="tool-field"><span>Pattern style</span><select id="grp-style" class="tool-select" data-no-memory><option value="E">Extended regex (-E)</option><option value="G">Basic regex</option><option value="F">Fixed string (-F)</option></select></label>
+    <label class="tool-field"><span>Context lines before and after (0 disables context)</span><input id="grp-context" class="tool-input" type="number" min="0" max="50" value="0" data-no-memory></label>
+  </div>
+  <div class="tool-row">
+    <label class="tool-check"><input id="grp-ignore" type="checkbox" checked data-no-memory> Ignore case (-i)</label>
+    <label class="tool-check"><input id="grp-numbers" type="checkbox" checked data-no-memory> Line numbers (-n)</label>
+    <label class="tool-check"><input id="grp-word" type="checkbox" data-no-memory> Whole word (-w)</label>
+    <label class="tool-check"><input id="grp-invert" type="checkbox" data-no-memory> Invert selection (-v)</label>
+    <label class="tool-check"><input id="grp-count" type="checkbox" data-no-memory> Count selected lines (-c)</label>
+    <label class="tool-check"><input id="grp-only" type="checkbox" data-no-memory> Matching text only (-o)</label>
+  </div>
+  <label class="tool-field"><span>Sample text</span><textarea id="grp-sim-input" class="tool-input tool-code" rows="10" spellcheck="false" autocomplete="off" data-no-memory>INFO startup
+WARN retry scheduled
+ERROR database timeout
+INFO shutdown complete
+</textarea></label>
+  <div class="tool-row"><button id="grp-sim-run" class="btn primary" type="button">Simulate grep</button><button id="grp-sim-clear" class="btn" type="button">Clear sample</button></div>
+  <p class="tool-hint">ASCII/C-locale subset: literals, dot, anchors, bracket/POSIX classes, groups, alternation, and greedy repetition. Basic mode uses escaped groups, intervals, and GNU \+ \? \| operators. Backreferences, Perl regex, shorthand/word-boundary escapes, locale-specific matching, binary inputs, and recursive file searching are not supported.</p>
+  <p class="tool-hint">Count takes precedence over matching-text output and ignores context. With -o, context can still separate groups; with -v, matching context rows can print match fragments. With zero context, -v plus -o produces no text. Limits: 50,000 input characters, 5,000 lines, 5,000 characters per line, 256 pattern characters, context up to 50, and bounded execution/output.</p>
+</div>
+<div class="tool-panel">
+  <h2>grep simulation result</h2>
+  <p id="grp-sim-status" class="tool-status" role="status" aria-live="polite">Choose a pattern and simulate to see selected lines.</p>
+  <label class="tool-field"><span>Output text</span><textarea id="grp-sim-output" class="tool-input tool-code" rows="10" readonly spellcheck="false" data-no-memory></textarea></label>
+  <div class="tool-row"><button id="grp-sim-copy" class="btn" type="button" disabled data-copy="#grp-sim-output" data-status="#grp-sim-copy-status">Copy output</button><span id="grp-sim-copy-status" class="tool-status" role="status"></span></div>
+  <p class="tool-hint">No matches is a normal result, not a syntax error. This is a browser simulation of the documented subset, not GNU grep itself. Use the native command for Unicode, binary data, file traversal, or unsupported syntax.</p>
+</div>

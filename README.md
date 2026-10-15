@@ -440,6 +440,12 @@ same logic:
   dry-run behavior, destination deletion, and POSIX shell quoting. Both commands
   must be installed to run this test; it never makes an SSH connection. Run it
   directly with `node scripts/domtest/archive-transfer-builders.mjs`.
+- **sed and grep simulators** are separate tools using a bounded ASCII/C-locale
+  regex subset, not JavaScript regex substitution or a full native implementation.
+  `node scripts/domtest/sed-grep-simulators.mjs` cross-checks the supported operations
+  against installed GNU `sed` and `grep`, including leftmost-longest matches,
+  zero-length substitutions, context formatting, and flag combinations. It also
+  checks unsupported syntax, resource limits, stale-result clearing, and DOM output.
 
 Two limits are worth stating rather than glossing over. jsdom has no layout engine,
 no canvas and no `<script type="module">`, so the PNG export path, the QR logo

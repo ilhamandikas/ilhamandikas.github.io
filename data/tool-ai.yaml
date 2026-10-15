@@ -3,6 +3,49 @@
 # small: most tools already get their keywords from data/tools.yaml and their
 # example questions from the FAQ in each tool guide (content/guides/*.md).
 
+sed-simulator:
+  features:
+    - Simulate substitution, deleting matching lines, and printing matching lines
+    - Choose first or global replacement, ignore case, and substitution-only printing
+    - Insert the whole match with ampersand in replacements
+    - Preserve the source and copy a separate output
+  input:
+    type: text
+    format: ASCII sample, pattern, replacement, and operation settings
+    sensitive: true
+  output:
+    type: text
+    format: Simulated sed output and matched-line summary
+  limitations:
+    - Bounded ASCII/C-locale subset, not GNU sed or arbitrary script execution
+    - No capture backreferences, case conversions, hold space, addresses, or multiline commands
+    - Maximum 50,000 input characters, 256 pattern characters, 500 states, and 200,000 output characters
+    - Files and in-place edits are not performed
+  related_tools:
+    - grep-simulator
+    - sed-replacement-builder
+
+grep-simulator:
+  features:
+    - Simulate fixed-string, basic-regex, and extended-regex line searches
+    - Apply ignore case, word boundaries, inversion, context, counts, and matching-text output
+    - Use leftmost-longest whole matches within the documented subset
+    - Report selected-line counts and simulated grep exit status
+  input:
+    type: text
+    format: ASCII sample, pattern, and search settings
+    sensitive: true
+  output:
+    type: text
+    format: Simulated grep output and selected-line summary
+  limitations:
+    - Bounded ASCII/C-locale subset, not the full GNU grep implementation
+    - No Perl regex, backreferences, shorthand escapes, Unicode, binary data, or recursive file searching
+    - Maximum 50,000 input characters, 256 pattern characters, context 50, and bounded work/output
+  related_tools:
+    - sed-simulator
+    - grep-pattern-builder
+
 tar-command-builder:
   features:
     - Generate GNU tar create, list, and extract commands
