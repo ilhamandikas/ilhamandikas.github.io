@@ -67,7 +67,7 @@ prepared stdin, interactive JS/TS prompt, Stop/recovery, clipboard indentation a
 page overflow at 320/375/768/1440px. Home, the tools catalog and the playground
 index must not download runtimes. It also checks the submenu's Escape behavior.
 
-Set `ALL_EXAMPLES=1` to execute all 102 examples. `SITE_LANGUAGES=python` limits
+Set `ALL_EXAMPLES=1` to execute all 122 examples. `SITE_LANGUAGES=python` limits
 this test to one language. `DEBUG_PROBE=1` prints run locations. Unlike the
 local adapter probes, this command needs network access for the actual site's
 runtime CDN URLs. It does not load Monaco or cover all browsers/themes.
@@ -106,8 +106,11 @@ Important integration findings:
 Go, Java, C# and Rust remain **unverified by this local test suite**. Documentation
 and source show candidate approaches, not proof of compatibility with our site:
 
-- [Hackpad](https://github.com/hack-pad/hackpad): Go toolchain in-browser; version,
-  build/export procedure and current browser compatibility need a separate probe.
+- [Hackpad](https://github.com/hack-pad/hackpad): the separate
+  `go-upstream-probe.mjs` research script exercises the live upstream page, not
+  the local Worker framework. Go 1.20.3 was observed, but arithmetic execution
+  has not passed. See [GO-RESEARCH.md](GO-RESEARCH.md) for reproduction, failed
+  checks and remaining packaging/privacy requirements.
 - [JavaFiddle](https://github.com/leaningtech/javafiddle): browser-side `javac` plus
   [CheerpJ](https://github.com/leaningtech/cheerpj-meta). Check licensing and
   redistribution/loading terms before embedding assets on ilham.dev.
