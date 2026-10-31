@@ -43,7 +43,7 @@ export function Analyzer({ notify, onSelect }: Props) {
   const sensitive = useMemo(() => detectSensitive(text), [text]);
 
   return (
-    <div className="grid grid-cols-1 gap-4">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       <div className="lo-card flex flex-col p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 className="text-sm font-semibold text-fg">Paste command output</h2>
@@ -81,8 +81,8 @@ export function Analyzer({ notify, onSelect }: Props) {
         <h2 className="text-sm font-semibold text-fg">What this output means</h2>
         {!analysis ? (
           <p className="mt-2 text-sm text-muted">
-            Paste output above. The analyzer recognises the common tools and explains what it sees, with the next commands
-            to run.
+            Paste output on the left. The analyzer recognises the common tools and explains what it sees, with the next
+            commands to run.
           </p>
         ) : (
           <div className="mt-3 space-y-3">
