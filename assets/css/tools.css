@@ -245,3 +245,8 @@
 .tool-main { min-width: 0; }
 .tool-header { margin-bottom: 26px; }
 .tool-body { max-width: 1040px; }
+
+/* Keep the Linux Ops analyzer vertical: paste first, analysis below. */
+.tool-page-linux-ops .lo-app [class~="lg:grid-cols-2"] {
+  grid-template-columns: minmax(0, 1fr);
+}
