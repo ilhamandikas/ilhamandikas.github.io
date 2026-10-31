@@ -121,9 +121,10 @@
   grid-template-columns: 232px minmax(0, 1fr);
   gap: 40px;
   align-items: start;
+  max-width: 1360px;
 }
 
-.tool-layout-wide { max-width: 1280px; }
+.tool-layout-wide { max-width: 1440px; }
 
 /* Two-column builder: the form on the left, a sticky live result on the right. */
 .tool-split {
@@ -243,4 +244,4 @@
 
 .tool-main { min-width: 0; }
 .tool-header { margin-bottom: 26px; }
-.tool-body { max-width: 840px; }
+.tool-body { max-width: 1040px; }
