@@ -87,9 +87,10 @@
 .search-mascot-face, .search-mascot-brows, .search-mascot-brow-left, .search-mascot-brow-right { transition: transform 260ms ease-out; }
 .search-mascot-brow-left { transform-origin: 28px 21px; }
 .search-mascot-brow-right { transform-origin: 52px 21px; }
-.search-mascot-happy-mouth, .search-mascot-sleep-mouth, .search-mascot-zzz { display: none; }
+.search-mascot-happy-mouth, .search-mascot-sleep-mouth, .search-mascot-zzz, .search-mascot-sleep-eyes { display: none; }
 .search-mascot-happy-mouth { fill: var(--text); }
 .search-mascot-sleep-mouth { stroke: var(--text); stroke-width: 1.8; stroke-linecap: round; }
+.search-mascot-sleep-eyes { fill: none; stroke: var(--text); stroke-width: 1.8; stroke-linecap: round; }
 .search-mascot-zzz { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
 .search-mascot[data-expression="curious"] .search-mascot-face { transform: translateY(-1.5px); }
 .search-mascot[data-expression="curious"] .search-mascot-brow-left { transform: translateY(-2px) rotate(-9deg); }
@@ -99,13 +100,13 @@
 .search-mascot[data-expression="excited"] .search-mascot-smile,
 .search-mascot[data-expression="sleepy"] .search-mascot-smile,
 .search-mascot[data-expression="drowsy"] .search-mascot-smile,
-.search-mascot[data-expression="sleepy"] .search-mascot-pupil { display: none; }
+.search-mascot[data-expression="sleepy"] .search-mascot-eyes { display: none; }
 .search-mascot[data-expression="excited"] .search-mascot-happy-mouth,
 .search-mascot[data-expression="sleepy"] .search-mascot-sleep-mouth,
 .search-mascot[data-expression="drowsy"] .search-mascot-sleep-mouth,
+.search-mascot[data-expression="sleepy"] .search-mascot-sleep-eyes,
 .search-mascot[data-expression="sleepy"] .search-mascot-zzz { display: inline; }
 .search-mascot[data-expression="sleepy"] .search-mascot-face { transform: translateY(2px); }
-.search-mascot[data-expression="sleepy"] .search-mascot-eyes { animation: none; transform: scaleY(.55); }
 .search-mascot[data-expression="drowsy"] .search-mascot-face { transform: translateY(1px); }
 .search-mascot[data-expression="drowsy"] .search-mascot-brows { transform: translateY(1.5px); }
 .search-mascot[data-expression="drowsy"] .search-mascot-eyes { animation: none; transform: scaleY(.68); }
@@ -203,7 +204,7 @@
 }
 @media (forced-colors: active) {
   .search-mascot-main:focus-visible { outline: 2px solid ButtonText; outline-offset: 2px; }
-  .search-mascot-wire, .search-mascot-wire-core, .search-mascot-smile, .search-mascot-dizzy-eyes,
+  .search-mascot-wire, .search-mascot-wire-core, .search-mascot-smile, .search-mascot-sleep-eyes, .search-mascot-dizzy-eyes,
   .search-mascot-stars, .search-mascot-feet { stroke: CanvasText; }
   .search-mascot-bubble, .search-mascot-bubble::after { border-color: CanvasText; background: Canvas; color: CanvasText; }
   .search-mascot-guide-link { color: LinkText; }
